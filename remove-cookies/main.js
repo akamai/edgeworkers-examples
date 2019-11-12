@@ -3,7 +3,7 @@
 // import the Cookies helper module
 import {Cookies} from 'cookies';
 
-// list of cookies to remove
+// list of GA cookies to safely remove
 const removeGACookieList =
     ['_ga', '_gat', '__utm.', 'utmctr', 'utmcmd.', 'utmccn.'];
 

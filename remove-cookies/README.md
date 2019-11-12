@@ -2,10 +2,10 @@
 
 This example will prevent Google Analytics cookies from being sent to the origin. Reducing the request size. 
 
-## Before you begin
+## Getting started
 
-## Get started
-
+### Create
+### Bundle
 ### Deploy
 
 ## More details  

@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "1.2",
+    "description" : "Accrue values in a cookie as a visitor traverses a site, and trigger a promotional cookie."
+}

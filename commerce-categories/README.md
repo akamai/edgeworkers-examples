@@ -16,7 +16,7 @@ This example uses the following data:
         desc: 'Makeup, skin care, perfume, cologne, hair care, shampoo, conditioner.'},
        {title: 'Jewelry', id: 1150,
         desc: 'Watches, bracelets, necklaces, earings, gemstones, pearls, diamonds, rings.'},
-       {title: 'Electronics', id: 1150,
+       {title: 'Electronics', id: 1250,
         desc: 'Smartphones, tablets, fitness trackers, smart pens, computers, monitors.'}];
 
 This EdgeWorker tests for `/commerce/categories` in the URI path in
@@ -39,6 +39,11 @@ server that answers it.
     GET /commerce/categories/?search=rugs
 
     [{"title":"Furniture","id":1040,"desc":"Desks, chairs, couches, tables, lamps, rugs."}]
+
+
+    GET /commerce/categories/?search=1150
+
+    [{"title":"Jewelry","id":1150,"desc":"Watches, bracelets, necklaces, earings, gemstones, pearls, diamonds, rings."}]
 
 ## More details on EdgeWorkers
 - [Akamai EdgeWorkers](https://developer.akamai.com/akamai-edgeworkers-overview)

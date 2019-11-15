@@ -13,7 +13,7 @@ const categories =
         desc: 'Makeup, skin care, perfume, cologne, hair care, shampoo, conditioner.'},
        {title: 'Jewelry', id: 1150,
         desc: 'Watches, bracelets, necklaces, earings, gemstones, pearls, diamonds, rings.'},
-       {title: 'Electronics', id: 1150,
+       {title: 'Electronics', id: 1250,
         desc: 'Smartphones, tablets, fitness trackers, smart pens, computers, monitors.'},
       ];
 

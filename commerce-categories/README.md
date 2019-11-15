@@ -17,14 +17,19 @@ This example uses the following data:
        {title: 'Jewelry', id: 1150,
         desc: 'Watches, bracelets, necklaces, earings, gemstones, pearls, diamonds, rings.'},
        {title: 'Electronics', id: 1150,
-        desc: 'Smartphones, tablets, fitness trackers, smart pens, computers, monitors.'},
-      ];
+        desc: 'Smartphones, tablets, fitness trackers, smart pens, computers, monitors.'}];
 
 This EdgeWorker tests for `/commerce/categories` in the URI path in
 order to act. It will then respond to a GET parameter named `search`
 by running a case-insensitive regex against each `title` and `desc`
 field, and a numeric comparison against each `id`, and returning an
 array of matching category entities, serialized as JSON.
+
+Because the response is generated at the Edge, origin will not be
+contacted, and the request will be fully resolved at the first Edge
+server that answers it.
+
+## Examples
 
     GET /commerce/categories/?search=beauty
 

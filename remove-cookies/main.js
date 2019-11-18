@@ -1,5 +1,10 @@
-/*jshint esversion: 6 */
+/*
+(c) Copyright 2019 Akamai Technologies, Inc. Licensed under Apache 2 license.
 
+Version: 0.1
+Purpose:  Remove unwanted Cookies from being sent to the Origin
+Repo: https://github.com/akamai/edgeworkers-examples/tree/master/remove-cookies
+*/
 // import the Cookies helper module
 import {Cookies} from 'cookies';
 

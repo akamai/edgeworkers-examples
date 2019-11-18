@@ -6,7 +6,26 @@
 EdgeWorker example to redirect visitors based on the location of the request to present location relevant pages.
 
 ## Usage Examples
+    // Request originates from Canada 
+    GET / HTTP/1.1
+    Host: www.example.com
 
+    HTTP/1.1 302 Moved Temporarily
+    Location: http://www.example.ca/
+
+    // Request originates from United Kingdom 
+    GET / HTTP/1.1
+    Host: www.example.com
+
+    HTTP/1.1 302 Moved Temporarily
+    Location: http://www.example.co.uk/
+
+    // Request originates from United States 
+    GET / HTTP/1.1
+    Host: www.example.ca
+    
+    HTTP/1.1 302 Moved Temporarily
+    Location: http://www.example.com/
 
 ## Similar Uses
 Similar logic could be crafted to consider language (from the Accept-Language request header) and country to provide the user more specific content

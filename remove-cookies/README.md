@@ -6,7 +6,15 @@
 This example will prevent Google Analytics cookies from being sent to the origin, reducing the request size sent forward.
 
 ## Usage Examples
-
+    // Incoming Request
+    GET / HTTP/1.1
+    Host: www.example.com
+    Cookies: _ga=GA1.3.12345678.1234567890; site_cookie="some_data_here";
+    
+    // Request forwarded to Origin
+    GET / HTTP/1.1
+    Host: www.example.com
+    Cookies: site_cookie="some_data_here";
 
 ## Similar Uses
 Similar logic could be crafted to add, modify or delete cookies that were received by the CDN edge or any other cookier filtering needs.

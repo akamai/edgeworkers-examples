@@ -1,8 +1,9 @@
 # commerce-categories
 
-This use-case is the projection forward of a whole endpoint from
-origin, perhaps useful for slow-changing and simple data that can be
-statically included in the code.
+*Keyword(s):* data, dictionary, products, commerce, lookup<br>
+*[Since](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-14077BCA-0D9F-422C-8273-2F3E37339D5B.html):* 1.0
+
+This use-case is the projection forward of a whole endpoint from origin, perhaps useful for slow-changing and simple data that can be statically included in the code.
 
 This example uses the following data:
 
@@ -29,7 +30,7 @@ Because the response is generated at the Edge, origin will not be
 contacted, and the request will be fully resolved at the first Edge
 server that answers it.
 
-## Examples
+## Usage Examples
 
     GET /commerce/categories/?search=beauty
 
@@ -45,7 +46,8 @@ server that answers it.
 
     [{"title":"Jewelry","id":1150,"desc":"Watches, bracelets, necklaces, earings, gemstones, pearls, diamonds, rings."}]
 
-## More details on EdgeWorkers
-- [Akamai EdgeWorkers](https://developer.akamai.com/akamai-edgeworkers-overview)
-- [Akamai EdgeWorkers Examples](https://github.com/akamai/edgeworkers-examples)
-- [Akamai CLI for EdgeWorkers](https://developer.akamai.com/legacy/cli/packages/edgeworkers.html)
+## Similar Uses
+Could be extended to apply to any small, low volitility dictionary data set to help offload data set lookup roundtrip time.
+
+## Resources
+See the repo [README](https://github.com/akamai/edgeworkers-examples#Resources) for additional guidance.

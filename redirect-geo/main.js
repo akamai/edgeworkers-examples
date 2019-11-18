@@ -1,5 +1,10 @@
-/*jshint esversion: 6 */
+/*
+(c) Copyright 2019 Akamai Technologies, Inc. Licensed under Apache 2 license.
 
+Version: 0.1
+Purpose:  Using EdgeScape geo data, redirect user to country specific content
+Repo: https://github.com/akamai/edgeworkers-examples/tree/master/redirect-geo
+*/
 // define country top level domain mapping
 const tldMap = {
   'CA' : '.ca',
@@ -32,7 +37,6 @@ export function onClientRequest(request) {
     // redirect to new host
     request.respondWith(302, {
       'Location' : [ request.scheme + '://' + redirectDomain + request.url ]
-    },
-                        '');
+    }, '');
   }
 }

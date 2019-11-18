@@ -1,5 +1,10 @@
-// serve a commerce category API directly from a small set of data
+/*
+(c) Copyright 2019 Akamai Technologies, Inc. Licensed under Apache 2 license.
 
+Version: 0.1
+Purpose:  Serve a commerce category API directly from a small set of data
+Repo: https://github.com/akamai/edgeworkers-examples/tree/master/commerce-categories
+*/
 import URLSearchParams from 'url-search-params';
 
 const categories =

@@ -10,17 +10,19 @@ With this example you learn the basics of creating and deploying an EdgeWorker t
 1. Add blank Rule to delivery property called **Hello World**
 2. Add match condition for path /hello-world
 3. Add EdgeWorkers behaviour
-4. Create new EdgeWorker Identifier by clicking **here** in the behaviour
-5. Click the **Create Worker ID** button
-6. Enter **Hello World** in the Name field 
-7. Select the group you want the EdgeWorker to be available in
-8. Click the newly create ID or Name
-9. Click **Create Version** button
-10. Drag n Drop/Select the hello-world.tgz file 
-11. Select the **Create Version** button.
-12. Active the newly added version to staging/production from the action menu
-13. Save the property
-14. Active the property to staging/production 
+4. Save the property
+5. Create new EdgeWorker Identifier by clicking **here** in the behaviour
+6. Click the **Create Worker ID** button
+7. Enter **Hello World** in the Name field 
+8. Select the group you want the EdgeWorker to be available in
+9. Click the newly create ID or Name
+10. Click **Create Version** button
+11. Drag n Drop/Select the hello-world.tgz file 
+12. Select the **Create Version** button.
+13. Active the newly added version to staging/production from the action menu
+14. Reload the property, select the newly created EdgeWorker
+15. Save the property
+16. Active the property to staging/production 
 
 ## Example
 

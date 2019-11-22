@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "0.1",
+    "description" : "Present a useful error page to the user, instead of a plain 503, and include js to automatically retry after the period indicated in the 'Retry-After' header."
+}

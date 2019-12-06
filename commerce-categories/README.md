@@ -47,7 +47,7 @@ server that answers it.
     [{"title":"Jewelry","id":1150,"desc":"Watches, bracelets, necklaces, earings, gemstones, pearls, diamonds, rings."}]
 
 ## Similar Uses
-Could be extended to apply to any small, low volitility dictionary data set to help offload data set lookup roundtrip time.
+Could be extended to apply to any small, low volatility dictionary data set to help offload data set lookup roundtrip time.
 
 ## Resources
 See the repo [README](https://github.com/akamai/edgeworkers-examples#Resources) for additional guidance.

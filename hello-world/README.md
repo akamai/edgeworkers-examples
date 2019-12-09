@@ -24,7 +24,7 @@ With this example you learn the basics of creating and deploying an EdgeWorker t
 15. Save the property
 16. Active the property to staging/production 
 
-## Example
+## Examples
 
     GET /hello-world
     Host: mysite

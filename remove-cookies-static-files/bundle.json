@@ -1,4 +1,4 @@
 {
     "edgeworker-version": "0.1",
-    "description" : "Unset Cookies for Static Files"
+    "description" : "Remove incoming Cookies and Remove Set-Cookie for outgoing for Static Files"
   }

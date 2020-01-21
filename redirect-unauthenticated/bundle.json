@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "0.1",
+    "description" : "Redirect Unauthenticated Users to a Sign-In Page Example"
+}

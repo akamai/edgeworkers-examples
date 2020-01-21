@@ -16,7 +16,7 @@ export function onClientRequest(request) {
   // create a Cookie jar from incoming request
   let cookieJar = new Cookies(request.getHeader('Cookie'));
 
-  // get value of session identidentier cookie if exists
+  // get value of session identifier cookie if exists
   let sessionCookie = cookieJar.get('session-id');
 
   let encodedRequestURL = encodeURIComponent(request.scheme + '://' + request.host + request.url) ;

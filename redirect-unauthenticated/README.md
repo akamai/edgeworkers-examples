@@ -9,15 +9,17 @@ This example will check request originates from an authenticated user. If not wi
     // Incoming Request
     GET / HTTP/1.1
     Host: www.example.com
-    Cookies: _ga=GA1.3.12345678.1234567890; site_cookie="some_data_here";
     
-    // Request forwarded to Origin
-    GET / HTTP/1.1
-    Host: www.example.com
-    Cookies: site_cookie="some_data_here";
+    // Response to client
+    HTTP/1.1 302 Moved Temporarily
+    Location: http://www.example.com/signin?redirect_url=http%3A%2F%2Fwww.example.com%2F
+    Content-Type: text/html
+    Content-Length: 0
+    Date: Tue, 21 Jan 2020 16:18:19 GMT
+    Connection: keep-alive
 
 ## Similar Uses
-Similar logic could be crafted to add, modify or delete cookies that were received by the CDN edge or any other cookier filtering needs.
+Similar logic could be crafted to validate headers, cookies, querystring parms that were received by the CDN edge.
 
 ## Resources
 See the repo [README](https://github.com/akamai/edgeworkers-examples#Resources) for additional guidance.

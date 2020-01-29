@@ -15,6 +15,5 @@ export function onOriginResponse(request, response) {
   
   if(response.status==503){
     var retry = parseInt(response.getHeader('Retry-After')) || 10;
-    request.respondWith(200, {'Content-Type': ['text/html']  }, '<html>The origin server is currently overloaded, please retry in ' + retry + ' seconds <script> setTimeout(function () { window.location.href= "https://www.foundry.systems/originoverload/"; }, ' + retry + '*1000);</script></html>');
-  }
+    request.respondWith(200, {'Content-Type': ['text/html']  }, '<html><script> setTimeout(function () { window.location.href="'+escape(request.path)+'"; }, ' + retry + '*1000);</script> <body>The origin server is currently overloaded, please retry in ' + retry + ' seconds </body></html>');  }
 }

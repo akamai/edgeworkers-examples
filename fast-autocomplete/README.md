@@ -11,7 +11,7 @@ This EdgeWorker needs to be activated for your autocomplete service.  It takes t
 
 The example code uses JSON formats seen in [Jquery UI](https://jqueryui.com/autocomplete/) or [Awesomplete](https://leaverou.github.io/awesomplete/).
 
-`"red":[{"label":"Red socks (103 results)","value":"cat876",{"label":"Red shoes (203 results)","value":"cat124"},{"label":"Red shirts (34 results)","value":"cat89"}]`
+`"red":[{"label":"Red socks (103 results)","value":"cat876"},{"label":"Red shoes (203 results)","value":"cat124"},{"label":"Red shirts (34 results)","value":"cat89"}]`
 
 Because the response is generated at the Edge, the origin will not be
 contacted for popular search terms, and the request will be fully resolved at the first Edge

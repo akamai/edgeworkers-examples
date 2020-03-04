@@ -7,7 +7,9 @@ This EdgeWorker serves responses for popular search terms at the Edge. Autocompl
 
 Using the EdgeWorker CLI the most popular search terms can be updated on a regular basis.
 
-This EdgeWorker needs to be activated for your autocomplete service.  It takes the GET parameter `term=` and does a lookup in searchterms.js included in the budle. If a match is found we return the serialized JSON response, when there is no match the request is forwarded to origin.
+- This EdgeWorker needs to be activated for the path matching your autocomplete service.  
+- It takes the GET parameter `term=` and does a lookup for the term in searchterms.js. 
+- If a match is found we return the serialized JSON response, when there is no match the request is forwarded to origin.
 
 The example code uses JSON formats seen in [Jquery UI](https://jqueryui.com/autocomplete/) or [Awesomplete](https://leaverou.github.io/awesomplete/).
 

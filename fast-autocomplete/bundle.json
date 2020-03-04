@@ -1,0 +1,4 @@
+{
+    "edgeworker-version":"0.1",
+    "description":"Reply instantly to most popular search terms from the Edge, unpopular terms go forward to origin."
+}

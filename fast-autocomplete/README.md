@@ -13,6 +13,5 @@ The example code uses JSON formats seen in [Jquery UI](https://jqueryui.com/auto
 
 `"red":[{"label":"Red socks (103 results)","value":"cat876"},{"label":"Red shoes (203 results)","value":"cat124"},{"label":"Red shirts (34 results)","value":"cat89"}]`
 
-
 ## Resources
 See the repo [README](https://github.com/akamai/edgeworkers-examples#Resources) for additional guidance.

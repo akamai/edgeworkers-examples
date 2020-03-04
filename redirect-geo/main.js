@@ -21,7 +21,7 @@ export function onClientRequest(request) {
   let domain = request.host.split('.')[1];
 
   // determine top level domain based on request origin country
-  let tld = domainMap[request.userLocation.country];
+  let tld = tldMap[request.userLocation.country];
 
   // if top level domain is supported default to .com
   if (tld === undefined) {

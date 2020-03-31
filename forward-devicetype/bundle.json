@@ -1,0 +1,4 @@
+{
+  "edgeworker-version": "0.1",
+  "description" : "Modify forward path based on device type to point to device specific content."
+}

@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "0.1",
+    "description" : "Randomly assign new users to an A/B testing group.  Provides override functionality via query string parameter."
+}

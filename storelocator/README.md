@@ -5,6 +5,13 @@
 
 This example implements a microservice store locator API call that returns the two stores nearest to the provide latitude and longitude.
 
+To build the EdgeWorker:
+
+````
+npm install
+npm run build
+````
+
 Data was retrieved from the OpenStreetMap project using [Overpass Turbo](https://overpass-turbo.eu/) with the following query:
 
 ````

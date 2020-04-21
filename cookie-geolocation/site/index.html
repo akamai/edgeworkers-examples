@@ -1,0 +1,45 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <div>
+      This example populates location data using Akamai EdgeWorkers and EdgeScape.
+    <div>
+      <dl>
+        <dt>Country</dt>
+        <dd id="country"></dd>
+        <dt>Region</dt>
+        <dd id="region"></dd>
+        <dt>City</dt>
+        <dd id="city"></dd>
+      </dl>
+    </div>
+    <div>
+      <dl>
+        <dt>Sales Region</dt>
+        <dd id="salesRegionName"></dd>
+        <dt>Sales Region Population</dt>
+        <dd id="salesRegionPopulation"></dd>
+      </dl>
+    </div>
+    <script type="text/javascript">
+      var locationCookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)location\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+      var locationPieces = locationCookieValue.split('%2B');
+      var country = locationPieces[0];
+      var region = locationPieces[1];
+      var city = locationPieces[2];
+      document.getElementById("country").innerText = country;
+      document.getElementById("region").innerText = region;
+      document.getElementById("city").innerText = city;
+
+      var salesRegionCookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)salesRegion\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+      if (salesRegionCookieValue) {
+        var regionPieces = salesRegionCookieValue.split('%3A');
+        var regionName = regionPieces[0];
+        var regionPopulation = regionPieces[1];
+        document.getElementById("salesRegionName").innerText = regionName;
+        document.getElementById("salesRegionPopulation").innerText = Number(regionPopulation).toLocaleString();
+      }
+    </script>
+  </body>
+</html>

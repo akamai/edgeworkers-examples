@@ -1,0 +1,22 @@
+{
+  "name": "storelocator",
+  "version": "1.0.0",
+  "description": "Example store locator service using Akamai EdgeWorkers",
+  "main": "main.js",
+  "scripts": {
+    "build": "rollup -c && cd dist/work && tar -czvf ../storelocator.tgz *"
+  },
+  "author": "josjohns@akamai.com",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "geokdbush": "^1.1.0",
+    "kdbush": "^3.0.0"
+  },
+  "devDependencies": {
+    "rollup": "^2.6.1",
+    "@rollup/plugin-commonjs": "^11.1.0",
+    "@rollup/plugin-node-resolve": "^7.1.3",
+    "rollup-plugin-copy-assets": "^2.0.1",
+    "rollup-plugin-json": "^4.0.0"
+  }
+}

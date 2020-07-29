@@ -6,7 +6,7 @@ These code samples are offered as-is, and are expected to be live, working code 
 
 ## Resources
 For more information on EdgeWorkers, refer to the following resources:
-* [EdgeWorkers Developer Page](https://developer.akamai.com/edgeworkers)
+* [EdgeWorkers Developer Page](https://developer.akamai.com/akamai-edgeworkers-overview)
 * [EdgeWorkers User Guide](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-4CC14D7E-D92D-4F2D-9292-17F8BE6E2DAE.html)
 * [EdgeWorkers API Guide](https://developer.akamai.com/api/web_performance/edgeworkers/v1.html)
 * [Akamai CLI for EdgeWorkers](https://developer.akamai.com/legacy/cli/packages/edgeworkers.html)

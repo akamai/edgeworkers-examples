@@ -9,7 +9,7 @@ This helper class can be used to simplify the interaction with EdgeKV in an Edge
 
 
 ## Setup
-The edgekv.js file must be included alongside `edgekv_tokens.js` which includes the EdgeKV authorization tokens for each namespace you wish to interact with using the EdgeKV helper class. Please refer to the getting started [guide](https://github.com/akamai/edgeworkers-examples/edgekv/) for how to work with EdgeKV in EdgeWorkers.
+The edgekv.js file must be included alongside `edgekv_tokens.js` which includes the EdgeKV authorization tokens for each namespace you wish to interact with using the EdgeKV helper class. Please refer to the getting started [guide](https://github.com/akamai/edgeworkers-examples/tree/master/edgekv) for how to work with EdgeKV in EdgeWorkers.
 
 
 ## Documentation
@@ -104,4 +104,4 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 
 
 ## Resources
-See the [edgekv samples](https://github.com/akamai/edgeworkers-examples/edgekv/) for examples using edgekv helper class.
+See the [edgekv samples](https://github.com/akamai/edgeworkers-examples/tree/master/edgekv) for examples using edgekv helper class.

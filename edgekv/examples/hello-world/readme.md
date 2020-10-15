@@ -17,11 +17,11 @@ based on the content of the Accept-Language header in the client request.
 
 Please ensure you fulfill the following pre-requisites before you execute this example:
 
-* Get familiar with the EdgeKV data model (namespace, group, item). [link]()
-* Create an EdgeWorker ID (EWID) and add it to your site's config in property manager. [link]()
-* Initialize your EdgeKV store [link to instructions](). This step also creates the default namespace used in this example.
-* Generate your OPENAPI client credentials. [link]()
-* Generate EdgeKV Access Token for the default namespace. [link]()
+* Get familiar with the EdgeKV data model (namespace, group, item). [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html)
+* Create an EdgeWorker ID (EWID) and add it to your site's config in property manager. [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-F11192E1-0BFB-415F-88FA-5878C30B7D2A.html)
+* Initialize your EdgeKV store [link to instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html). This step also creates the default namespace used in this example.
+* Generate your OPENAPI client credentials. [link](https://developer.akamai.com/api/getting-started)
+* Generate EdgeKV Access Token for the default namespace. [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html)
 * Download the following sample code. This constitutes the core of your EdgeWorker code bundle for this example.
 ```
 % git clone https://github.com/akamai/edgeworkers-examples.git
@@ -29,8 +29,8 @@ Cloning into 'edgeworkers-examples'...
 ... done.
 % cd edgeworkers-examples/edgekv/examples/hello-world
 ```
-* Update the `edgekv_tokens.js` file in your EdgeWorker code bundle directory. [link to instructions]()
-* Download the latest [edgekv.js](https://github.com/akamai/edgeworkers-examples/edgekv/lib/edgekv.js) library file and copy it to your EdgeWorker bundle directory.
+* Update the `edgekv_tokens.js` file in your EdgeWorker code bundle directory. [link to instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html)
+* Download the latest [edgekv.js](https://github.com/akamai/edgeworkers-examples/blob/master/edgekv/lib/edgekv.js) library file and copy it to your EdgeWorker bundle directory.
 
 ## Getting to work
 
@@ -42,7 +42,7 @@ The key used for each item will be the lower case language code for each greetin
 ### Seeding the KV Store
 You need to add some items to your EdgeKV store before you execute your logic. 
 
-The following are some examples you could use. The full EdgeKV OPENAPI specification can be found [here]().
+The following are some examples you could use. The full EdgeKV OPENAPI specification can be found [here](https://github.com/akamai/edgeworkers-examples/blob/master/edgekv/apis/readme.md).
 
 To add the various language specific greetings to your EdgeKV store, use:
 
@@ -95,9 +95,9 @@ DELETE | /api/v1/namespaces/default/groups/greetings/items/es
 tar czvf ekv_hello_world.tgz bundle.json edgekv.js edgekv_tokens.js main.js
 ```
 
-2. Upload your code bundle and activate your EWID. [link to EdgeWorker instructions]()
+2. Upload your code bundle and activate your EWID. [link to EdgeWorker instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-430E06BE-81C9-4F26-ABB7-C1FD2BAC7497.html)
 
-3. Wait for activation to complete, then proceed to "Try it all out". [link to EdgeWorker instructions]()
+3. Wait for activation to complete, then proceed to "Try it all out". [link to EdgeWorker instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-430E06BE-81C9-4F26-ABB7-C1FD2BAC7497.html)
 
 
 ### Try it all out
@@ -141,7 +141,7 @@ curl -sv -H "Accept-Language: en" http://mysite.com/helloworld
 Note that the `X-EKV-ERROR` response header we added in our example code 
 is indicating that our getText() call returned a 401 due to an invalid token.
 
-For more information on the various EdgeKV errors, see the following [link]().
+For more information on the various EdgeKV errors, see the following [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html).
 
 ## Code Walkthrough
 
@@ -155,7 +155,7 @@ export async function responseProvider(request) {
 ```
 This implements the `Response Provider` EdgeWorker event handler which acts as a surrogate origin. 
 In essence it is dynamically constructing the html response in this example. Note that this is implemented as an async function.
-For more information about the EdgeWorker `Response Provider` event handler and EdgeWorker async support, refer to [link]().
+For more information about the EdgeWorker `Response Provider` event handler and EdgeWorker async support, refer to [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-4CC14D7E-D92D-4F2D-9292-17F8BE6E2DAE.html).
 
 The functionality of our example is implemented in the `hello_world_response()` function which is also declared as async and takes the `request` object as a parameter:
 ```
@@ -200,7 +200,7 @@ The next code snippet is initializing our EdgeKV object by calling the construct
 const edgeKv = new EdgeKV({namespace: "default", group: "greetings"});
 ```
 
-This makes it convenient for us so that when we invoke the various EdgeKV methods, we do not need to repeat the namespace and group parameters. We can always override those in each method invocation though if we wanted. Refer to [edgekv.js readme]() for detailed information about the various EdgeKV library interfaces.
+This makes it convenient for us so that when we invoke the various EdgeKV methods, we do not need to repeat the namespace and group parameters. We can always override those in each method invocation though if we wanted. Refer to [edgekv.js readme](https://github.com/akamai/edgeworkers-examples/blob/master/edgekv/lib/readme.md) for detailed information about the various EdgeKV library interfaces.
 
 The next code block retrieves the item from the EdgeKV store 
 ```
@@ -220,7 +220,7 @@ greeting = await edgeKv.getText({ item: key, default_value: default_greeting });
 ```
 
 This is essentially pending until the item whose key is `key` (i.e. language as seen before) is retrieved from the EdgeKV store.
-This is an asynchronous non-blocking call that utilizes the EdgeWorker asynchronous `httpRequest` capability which is described in details [here]() to retrieve the item from EdgeKV.
+This is an asynchronous non-blocking call that utilizes the EdgeWorker asynchronous `httpRequest` capability which is described in details [here](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-D580F321-9124-4D2F-BB02-D8D81E88A461.html?hl=httprequest) to retrieve the item from EdgeKV.
 
 The execution of our program resumes when the `httpRequest` is fulfilled either successfully or not. Let's first discuss the success case.
 
@@ -255,7 +255,7 @@ The code block after that is constructing the response.
 It sets the status to 200 (as mentioned earlier, for this example we always return a successful greeting regardless of execution status). We also add a couple of response headers to make the response more meaningful to browsers. We also return an `X-EKV-ERROR` which captures the error string we got back in case `getText` threw an exception. We described this in the `Debugging Errors` section before.
 Note that we URI-encode the error message since it may contain characters that are not safe for use in an html header, and we replace some encodings with space to improve readability. We also set the html_body to the one constructed above.
 
-The last code block is the one constructing the response with the aforementioned status, headers and body using the EdgeWorker `createResponse` function described [here]().
+The last code block is the one constructing the response with the aforementioned status, headers and body using the EdgeWorker `createResponse` function described [here](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-554B90F6-FA61-4A0A-9612-B83B39B5B76D.html?hl=createresponse).
 ```
     return createResponse(response.status,
                           response.headers,

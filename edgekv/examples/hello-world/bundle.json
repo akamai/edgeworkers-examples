@@ -1,0 +1,9 @@
+{
+    "edgeworker-version": "1.0.3",
+    "bundle-version" : 5,
+    "api-version" : "1.0",
+    "description" : "Edge Worker for EdgeKV Hello World example.",
+    "misc" : {
+        "author" : "Akamai"
+     }
+}

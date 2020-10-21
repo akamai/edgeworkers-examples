@@ -66,7 +66,19 @@ export class EdgeKV {
 	}
 
 	getNamespaceToken(namespace) {
-		return this.#token_override ? this.#token_override : edgekv_access_tokens["namespace-" + namespace]["value"];
+		if (this.#token_override) {
+			return this.#token_override;
+		}
+		let name = "namespace-" + namespace;
+		if (!(name in edgekv_access_tokens)) {
+			throw {
+				failed: "MISSING ACCESS TOKEN",
+				status: 0,
+				body: "No EdgeKV Access Token defined for namespace '" + namespace + "'.",
+				toString: function () { return JSON.stringify(this); }
+			};
+		}
+		return edgekv_access_tokens[name]["value"];
 	}
 
 	putRequest({ namespace = this.#namespace, group = this.#group, item, value }) {

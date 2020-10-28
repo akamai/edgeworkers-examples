@@ -13,7 +13,7 @@ For more information on EdgeWorkers, please refer to the following resources:
 * **/apis**: EdgeKV administrative API documentation for Tech Preview
 * **/examples**: A set of EdgeWorker examples implementing various EdgeKV use cases
 * **/lib**: EdgeKV JS API helper library documentation and JavaScript code
-
+* **/utils**: EdgeKV helper utilities
 
 ## Reporting Issues
 You are all set, happy coding! If you experience any issues with these examples, please raise them as a github issue. Feel free to create a pull request with the fix, suggestions, or contributions of your own code.

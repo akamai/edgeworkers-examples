@@ -37,7 +37,7 @@ With this example you learn the basics of creating, deploying and debugging an E
 18. Reload the property, select the newly created EdgeWorker
 19. Save the property
 20. Active the property to staging/production 
-21. Use the secret key you created in Step 1 to generate an authentication token using this command in the [EdgeWorkers CLI](https://developer.akamai.com/cli/packages/edgeworkers.html).   
+21. Use the secret key you created in Step 1 to generate an authentication token using this [EdgeWorkers CLI](https://developer.akamai.com/cli/packages/edgeworkers.html) command.   
     ```
     $ akamai edgeworkers auth fef77a483a6dd85b45a6c5092f1c178a6eaf21e56a3b69195e33f53070eec669
       ---------------------------------------------------------------------------------------------------------------------------   

@@ -96,7 +96,7 @@ To create a new namespace:
 `POST /edgekv/v1/networks/{network}/namespaces`
 
 **Content-Type:** `application/json`
-**Request body:** `"name"="{namespace-id}"`
+**Request body:** `{"name":"{namespace-id}"}`
 
 #### Example:
 

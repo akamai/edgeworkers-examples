@@ -42,7 +42,6 @@ async function hello_world_response(request) {
     try {
         greeting = await edgeKv.getText({ item: key, 
                                           default_value: default_greeting });
-        }
     } catch (error) {
         // Catch the error and store the error message to use in a response
         // header for debugging. Use a default greeting as well in this case.

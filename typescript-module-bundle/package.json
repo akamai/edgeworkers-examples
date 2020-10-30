@@ -1,7 +1,7 @@
 {
   "name": "typescript-module-bundle",
   "version": "0.0.0",
-  "description": "Example of bundling EdgeWorker in TypeScript modules",
+  "description": "Example of bundling EdgeWorker with TypeScript modules",
   "license": "MIT",
   "scripts": {
     "start": "rollup -c -w",

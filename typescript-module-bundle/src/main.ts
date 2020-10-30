@@ -17,7 +17,7 @@ export function onClientResponse(
 ) {
   /**
    * Example of using custom modules. "hash" is a ES module in TypeScript and
-   * it consumes a CommonJS module. Rollup is able to bundle both type of
+   * it consumes a npm CommonJS module. Rollup is able to bundle both type of
    * modules into one single file "main.js" and it is ready for the rest of
    * the build process and deployment.
    */

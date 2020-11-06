@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "1.0.0",
+    "description" : "Use EdgeKV to look for an Image and Video Manager transformation. If exists, apply it to all the images in the html file"
+}

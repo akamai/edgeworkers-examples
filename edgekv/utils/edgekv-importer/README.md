@@ -29,13 +29,13 @@ npm uninstall -g
 
 
 
-#### Command Syntax & Help
+## Command Syntax & Help
 Make sure you have set up your virtual environment and execute the following from within the corresponding directory.
 ```shell
 edgekv-importer help
 ```
 
-#### Usage examples
+## Usage examples
 
 Common usage examples:
 
@@ -73,4 +73,3 @@ Common usage examples:
   ```shell
   kv-importer --csv promo-codes.csv --key code  --namespace ecom --group promocodes --generateToken
   ```
-  

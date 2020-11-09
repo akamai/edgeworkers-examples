@@ -41,7 +41,7 @@ Common usage examples:
 
 1. Import data from a CSV file into EdgeKV.  The csv file contains a header row, followed by one row for each item to store in EdgeKV.  The value in EdgeKV will be stored as a JSON object.  The key is defined in the `code` column, as specified by the `--key` option.  The `--namespace` and `--group` options specify that the data should be stored in the `ecom` namespace and the `promocodes` group.
     ```shell
-    edgekv-importer --csv promo-codes.csv --key code  --namespace ecom --group promocodes --generateKey
+    edgekv-importer --csv promo-codes.csv --key code  --namespace ecom --group promocodes
     ```
 
 

@@ -55,4 +55,4 @@ rather than randomly assigning groups for A/B testing.
 A simple [A/B testing example](../a-b-test/README.md) is also available.
 
 ## Resources
-See the repo [README](../README.md#Resources) for additional guidance.
+See the repo [README](../../../../README.md#Resources) for additional guidance.

@@ -61,7 +61,7 @@ yarn start
 
 ## Resources
 
-See the repo [README](../README.md#Resources) for additional guidance.
+See the repo [README](../../../../README.md#Resources) for additional guidance.
 
 To learn more about setting up EdgeWorker with TypeScript, please see: 
 

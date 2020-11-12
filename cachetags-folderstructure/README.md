@@ -17,7 +17,9 @@ p-static|js|external|geo
 p-static|js|external|geo|demo.js
 ```
 Response header added on origin response
-**Edge-Cache-Tag: p-static,p-static|js,p-static|js|external,p-static|js|external|geo,p-static|js|external|geo|demo.js
+```
+Edge-Cache-Tag: p-static,p-static|js,p-static|js|external,p-static|js|external|geo,p-static|js|external|geo|demo.js
+```
 
 ## Configuration options:
 

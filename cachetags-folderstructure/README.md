@@ -1,4 +1,4 @@
-This EdgeWorker dynamically sets Cache-Tags based on the folder structure of the requested object.
+This EdgeWorker dynamically sets [cache tags](https://learn.akamai.com/en-us/webhelp/fast-purge/fast-purge/GUID-64272BAE-BCB0-4F84-BA5A-8A21549A347D.html) based on the folder structure of the requested object.
 
 
 ## Example

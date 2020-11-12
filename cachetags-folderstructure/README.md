@@ -4,14 +4,17 @@ This EdgeWorker dynamically sets Cache-Tags based on the folder structure of the
 ## Example
 
 Requested resource:
-*/static/js/external/geo/demo.js?v=12345
+
+```javascript
+/static/js/external/geo/demo.js?v=12345
 
 Extracted cache tags:
-* p-static
-* p-static|js
-* p-static|js|external
-* p-static|js|external|geo
-* p-static|js|external|geo|demo.js
+```javascript
+p-static
+p-static|js
+p-static|js|external
+p-static|js|external|geo
+p-static|js|external|geo|demo.js
 
 Response header added on origin response
 **Edge-Cache-Tag: p-static,p-static|js,p-static|js|external,p-static|js|external|geo,p-static|js|external|geo|demo.js

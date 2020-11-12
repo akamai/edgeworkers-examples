@@ -10,6 +10,9 @@ const yargs = require('yargs/yargs');
 
 const EdgeGrid = require('edgegrid');
 
+//minimum deleay in milliseconds between upsert calls.
+//this delay avoids exceeding the API quota
+const MIN_UPSERT_DELAY = 75;
 
 //console.log( "Hello!" );
 
@@ -74,14 +77,12 @@ async function createKvNamespace(edgeGrid, namespace, parameters) {
 
 async function generateKvAccessToken(edgeGrid, namespace, parameters) {
   let randomToken = Math.floor(Math.random() * 2**32).toString(16);
-  let tokenName = `kvtoken-${namespace}-${randomToken}`
-  let tokenExpiry = new Date(Date.now()+ 25*60*60*1000).toISOString();
+  let tokenName = `kvtoken-${namespace}-${randomToken}`;
 
   tokenRequestBody = {
     name: tokenName,
     "allow_on_production": true,
     "allow_on_staging": true,
-    expiry: `${tokenExpiry}`,
     "namespace_permissions": {}
   };
   tokenRequestBody["namespace_permissions"][namespace] = ["r", "w", "d"];
@@ -137,7 +138,7 @@ async function upsertDataInEnvironment(upsertLimiter, csvFile, keyField, edgeGri
 }
 
 async function upsertData(csvFile, keyField, edgeGrid, namespace, group, parameters) {
-  const upsertLimiter = new Bottleneck({minTime: 75});
+  const upsertLimiter = new Bottleneck({minTime: MIN_UPSERT_DELAY});
   await upsertDataInEnvironment(upsertLimiter, csvFile, keyField, edgeGrid, "staging", namespace, group, parameters);
   await upsertDataInEnvironment(upsertLimiter, csvFile, keyField, edgeGrid, "production", namespace, group, parameters)
 }

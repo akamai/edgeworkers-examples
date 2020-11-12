@@ -68,7 +68,7 @@ Common usage examples:
     }
     ```
 
-2. You can also generate an access token for use in an EdgeWorkers function by adding the `--generateToken` option
+2. You can also generate an access token for use in an EdgeWorkers function by adding the `--generateToken` option.  This option is helpful on the initial creation of a namespace.  After a token is generated, it can be reused until expiration. 
 
   ```shell
   edgekv-importer --csv promo-codes.csv --key code  --namespace ecom --group promocodes --generateToken

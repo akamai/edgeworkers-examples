@@ -19,5 +19,6 @@ Response header added on origin response
 ## Configuration options:
 
 the sample code allow you to configure a prefix as well as a separator between 2 levels
-* cacheTagPrefix='p--';
-* cacheTagFolderSeparator='|';
+```javascript
+cacheTagPrefix='p--';
+cacheTagFolderSeparator='|';

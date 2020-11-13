@@ -14,9 +14,8 @@ Purpose:
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/a-b-test
 */
 
-import {Cookies, SetCookie} from 'cookies';
-import URLSearchParams from 'url-search-params';
-
+import { Cookies, SetCookie } from 'cookies'
+import URLSearchParams from 'url-search-params'
 
 // ====== Begin Configuration ====== //
 
@@ -26,12 +25,12 @@ const groups = [
     // The chosen variant will be included in both:
     //   * a query string parameter that is sent to the origin a
     //   * a cookie that is sent to the browser
-    testName: "test1",
-    cookieName: "test1",
-    queryParamName: "test1",
-    variants:[
-      {variantName: "1a"},
-      {variantName: "1b"}
+    testName: 'test1',
+    cookieName: 'test1',
+    queryParamName: 'test1',
+    variants: [
+      { variantName: '1a' },
+      { variantName: '1b' }
     ]
   },
   {
@@ -41,51 +40,50 @@ const groups = [
     //  * route to a different origin in variants "2a" and "2b"
     //  * construct a response at the Edge in variant "2c"
     // Custom response actions are used to add a response header in each variant
-    testName: "test2",
-    cookieName: "test2",
-    queryParamName: "test2",
-    variants:[
+    testName: 'test2',
+    cookieName: 'test2',
+    queryParamName: 'test2',
+    variants: [
       {
-        variantName: "2a",
+        variantName: '2a',
         weight: 1,
         requestAction (request) {
-          request.route({origin:'microservice1'});
+          request.route({ origin: 'microservice1' })
         },
         responseAction (request, response) {
-          response.addHeader("X-Variant", "2a");
+          response.addHeader('X-Variant', '2a')
         }
       },
       {
-        variantName: "2b",
+        variantName: '2b',
         weight: 2,
         requestAction (request) {
-          request.route({origin:'microservice2'});
+          request.route({ origin: 'microservice2' })
         },
         responseAction (request, response) {
-          response.addHeader("X-Variant", "2b");
+          response.addHeader('X-Variant', '2b')
         }
       },
       {
-        variantName: "2c",
+        variantName: '2c',
         weight: 2,
         requestAction (request) {
           request.respondWith(
-              200, {'Content-Type': ['application/json']},
-              JSON.stringify({
-                heroImageUrl: "/assets/images/hero2c.jpg",
-                text: "This is variant 2c, generated from an Akamai EdgeWorker"
-              }));
+            200, { 'Content-Type': ['application/json'] },
+            JSON.stringify({
+              heroImageUrl: '/assets/images/hero2c.jpg',
+              text: 'This is variant 2c, generated from an Akamai EdgeWorker'
+            }))
         },
         responseAction (request, response) {
-          response.addHeader("X-Variant", "2c");
+          response.addHeader('X-Variant', '2c')
         }
       }
     ]
-  },
-];
+  }
+]
 
 // ====== End Configuration ====== //
-
 
 /**
  * Process each test group to convert "weights" into a "range".
@@ -94,60 +92,58 @@ const groups = [
 */
 function processGroups () {
   groups.forEach((group) => {
-    let sumOfWeights = group.variants.reduce((currValue, variant) =>
+    const sumOfWeights = group.variants.reduce((currValue, variant) =>
       currValue + (variant.weight || 1),
-      0
-    );
+    0
+    )
 
-    let upperBound = 0;
+    let upperBound = 0
     group.variants.forEach((variant) => {
-      upperBound += (variant.weight || 1) / sumOfWeights;
-      variant.upperBound = upperBound;
-    });
-  });
+      upperBound += (variant.weight || 1) / sumOfWeights
+      variant.upperBound = upperBound
+    })
+  })
 }
 
-processGroups(groups);
+processGroups(groups)
 
-export function onClientRequest(request) {
-	let cookies = new Cookies(request.getHeader('Cookie'));
-  let params = new URLSearchParams(request.query);
+export function onClientRequest (request) {
+  const cookies = new Cookies(request.getHeader('Cookie'))
+  const params = new URLSearchParams(request.query)
 
   groups.forEach((group) => {
-    let cookieName = group.cookieName;
-    let queryParamName = group.queryParamName;
+    const cookieName = group.cookieName
+    const queryParamName = group.queryParamName
 
-    let resultVariant;
+    let resultVariant
 
     // Initialize existing and reult variant value from the request cookie
-    let existingVariantName = cookies.get(cookieName);
-
+    const existingVariantName = cookies.get(cookieName)
 
     // override result variant if forced by query parameter
-    let paramValue = params.get(queryParamName);
+    const paramValue = params.get(queryParamName)
     if (paramValue) {
-      resultVariant = group.variants.find((variant) => variant.variantName == paramValue);
+      resultVariant = group.variants.find((variant) => variant.variantName === paramValue)
     }
 
     // if not overriden by query prameter, locate variant in cookie
     if (existingVariantName && !resultVariant) {
-      resultVariant = group.variants.find((variant) => variant.variantName == existingVariantName);
+      resultVariant = group.variants.find((variant) => variant.variantName === existingVariantName)
     }
 
     // If no variant has been assigned,
     // then randomly choose one based on configured percentage
-  	if (!resultVariant) {
-      let randomNumber = Math.random();
-      resultVariant = group.variants.find((variant) =>variant.upperBound > randomNumber);
-
-  	}
+    if (!resultVariant) {
+      const randomNumber = Math.random()
+      resultVariant = group.variants.find((variant) => variant.upperBound > randomNumber)
+    }
 
     // If variant if different than the existing cookie,
     // then replace the incoming cookie with the new value.
-    if (resultVariant.variantName != existingVariantName) {
-      cookies.delete(cookieName);
-      cookies.add(cookieName, resultVariant.variantName);
-      request.setHeader("Cookie", cookies.toHeader());
+    if (resultVariant.variantName !== existingVariantName) {
+      cookies.delete(cookieName)
+      cookies.add(cookieName, resultVariant.variantName)
+      request.setHeader('Cookie', cookies.toHeader())
     }
 
     // If the group was not already included in the incoming query parameter,
@@ -155,37 +151,32 @@ export function onClientRequest(request) {
     // The query parameter allows the origin to respond with appropriate logic
     // and ensures the A/B group is included in the cache key.
     if (!paramValue) {
-      params.append(queryParamName, resultVariant.variantName);
-      request.route({query: params.toString()});
+      params.append(queryParamName, resultVariant.variantName)
+      request.route({ query: params.toString() })
     }
 
     // Call the requestAction function, if it exists on the variant.
     if (resultVariant.requestAction) {
-      resultVariant.requestAction(request);
+      resultVariant.requestAction(request)
     }
-
-  });
-
-
+  })
 }
 
-export function onClientResponse(request, response) {
-  let cookies = new Cookies(request.getHeader('Cookie'));
+export function onClientResponse (request, response) {
+  const cookies = new Cookies(request.getHeader('Cookie'))
 
   groups.forEach((group) => {
-    let cookieName = group.cookieName;
+    const cookieName = group.cookieName
     // Set a response cookie with the A/B group based on
     // the request cookie  set in the onClientRequest handler.
-  	let cookieValue = cookies.get(cookieName);
-  	let setCookie = new SetCookie({ name: cookieName, value: cookieValue, path:'/' });
-  	response.addHeader('Set-Cookie', setCookie.toHeader());
-
+    const cookieValue = cookies.get(cookieName)
+    const setCookie = new SetCookie({ name: cookieName, value: cookieValue, path: '/' })
+    response.addHeader('Set-Cookie', setCookie.toHeader())
 
     // Call the responseAction function, if it exists on the variant.
-    let variant = group.variants.find((variant) => variant.variantName == cookieValue);
+    const variant = group.variants.find((variant) => variant.variantName == cookieValue)
     if (variant.responseAction) {
-      variant.responseAction(request, response);
+      variant.responseAction(request, response)
     }
-  });
-
+  })
 }

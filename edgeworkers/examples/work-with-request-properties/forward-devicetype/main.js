@@ -6,16 +6,10 @@ Purpose:  Modify forward path based on device type to point to device specific c
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/forward-devicetype
 */
 
-export function onClientRequest(request) {
-
+export function onClientRequest (request) {
   if (request.device.isMobile) {
-
-    request.route({path: "/mobile" + request.path});
-
+    request.route({ path: '/mobile' + request.path })
   } else if (request.device.isTablet) {
-
-    request.route({path: "/tablet" + request.path});
-
+    request.route({ path: '/tablet' + request.path })
   }
-
 }

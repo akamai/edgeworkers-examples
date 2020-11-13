@@ -13,8 +13,8 @@ const endPoint1 = '/api/example/endpoint1'
 const endPoint2 = '/api/example/endpoint2'
 const endPoint3 = '/api/example/endpoint3'
 
-async function getJSON(url) {
-  let response = await httpRequest(`${url}`)
+async function getJSON (url) {
+  const response = await httpRequest(`${url}`)
   if (response.ok) {
     return await response.json()
   } else {
@@ -24,7 +24,7 @@ async function getJSON(url) {
 
 // The responseProvide function generates a response, acting as a "surrogate origin".
 // The response may be cached according to the caching rules configured in the property.
-export async function responseProvider(request) {
+export async function responseProvider (request) {
   const result = {}
 
   // Make all requests in parallel to retrieve content.

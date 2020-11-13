@@ -7,21 +7,19 @@ Repo: https://github.com/akamai/edgeworkers-examples/tree/master/traffic-allow-l
 */
 
 // List of currently US embargoed countries, plus N/A indicating no country data found (rare, if any)
-const embargoedCountries = ['IR', 'KP', 'SY', 'SD', 'CU', 'VE', 'N/A'];
+const embargoedCountries = ['IR', 'KP', 'SY', 'SD', 'CU', 'VE', 'N/A']
 
-export function onClientRequest(request) {
-
+export function onClientRequest (request) {
   // Collect the end user's country based on Akamai EdgeScape data
-  let country = (request.userLocation.country) ? request.userLocation.country : "N/A";
+  const country = (request.userLocation.country) ? request.userLocation.country : 'N/A'
 
   // Check if end user's country is in embargo list
-  let embargoed = embargoedCountries.includes(country);
+  const embargoed = embargoedCountries.includes(country)
 
-  // Provide appropriate messaging based on embargo status 
+  // Provide appropriate messaging based on embargo status
   if (!embargoed) {
-    request.respondWith(200, {'Content-Type': ['text/html;charset=utf-8']  }, '<html><body><h1>Hello '+country+' from Akamai EdgeWorkers!</h1></body></html>');
-  }
-  else {
-    request.respondWith(403, {'Content-Type': ['text/html;charset=utf-8']  }, '<html><body><h1>Sorry, users from '+country+' may not view this content</h1></body></html>', 'EW-embargo');
+    request.respondWith(200, { 'Content-Type': ['text/html;charset=utf-8'] }, '<html><body><h1>Hello ' + country + ' from Akamai EdgeWorkers!</h1></body></html>')
+  } else {
+    request.respondWith(403, { 'Content-Type': ['text/html;charset=utf-8'] }, '<html><body><h1>Sorry, users from ' + country + ' may not view this content</h1></body></html>', 'EW-embargo')
   }
 }

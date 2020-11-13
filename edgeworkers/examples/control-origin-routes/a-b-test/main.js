@@ -11,66 +11,63 @@ Purpose:
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/a-b-test
 */
 
-import {Cookies, SetCookie} from 'cookies';
-import URLSearchParams from 'url-search-params';
-
+import { Cookies, SetCookie } from 'cookies'
+import URLSearchParams from 'url-search-params'
 
 // ====== Begin Configuration ====== //
 // Update constants below to configure A/B logic
 
 /** Probability that a user is added to the "A" group.  0.5 = 50% */
-const probabilityOfA = 0.5;
+const probabilityOfA = 0.5
 
 /** Name of cookie that stores A/B group assignment. */
-const cookieName = "testGroup";
+const cookieName = 'testGroup'
 
 /**
  * Name of query parameter that contains A/B group assignment
  * This query parameter will be added to the outgoing onClientRequest.
  * The query parameter can be added to the incoming request to force A/B group assignment.
  */
-const queryParamName = "testGroup";
+const queryParamName = 'testGroup'
 
 /** Cookie and query string value to use for users in the "A" group. */
-const groupAValue = "A";
+const groupAValue = 'A'
 
 /** Cookie and query string value to use for users in the "B" group. */
-const groupBValue = "B";
-
+const groupBValue = 'B'
 
 // ====== End Configuration ====== //
 
-export function onClientRequest(request) {
-	let cookies = new Cookies(request.getHeader('Cookie'));
-  let params = new URLSearchParams(request.query);
+export function onClientRequest (request) {
+  const cookies = new Cookies(request.getHeader('Cookie'))
+  const params = new URLSearchParams(request.query)
 
   // Initialize existing and reult group value from the request cookie
-  let existingGroupValue = cookies.get(cookieName);
-  let resultGroupValue = existingGroupValue;
-
+  const existingGroupValue = cookies.get(cookieName)
+  let resultGroupValue = existingGroupValue
 
   // override result group value if forced by query parameter
-  let paramValue = params.get(queryParamName);
+  const paramValue = params.get(queryParamName)
   if (paramValue) {
-    resultGroupValue = paramValue;
+    resultGroupValue = paramValue
   }
 
   // If no group value has been assigned,
   // then randomly choose one based on configured percentage
-	if (!resultGroupValue) {
-		if (Math.random() <= probabilityOfA) {
-			resultGroupValue = groupAValue;
-		} else {
-			resultGroupValue = groupBValue;
-		}
-	}
+  if (!resultGroupValue) {
+    if (Math.random() <= probabilityOfA) {
+      resultGroupValue = groupAValue
+    } else {
+      resultGroupValue = groupBValue
+    }
+  }
 
   // If group value if different than the existing cookie,
   // then replace the incoming cookie with the new value.
   if (resultGroupValue != existingGroupValue) {
-    cookies.delete(cookieName);
-    cookies.add(cookieName, resultGroupValue);
-    request.setHeader("Cookie", cookies.toHeader());
+    cookies.delete(cookieName)
+    cookies.add(cookieName, resultGroupValue)
+    request.setHeader('Cookie', cookies.toHeader())
   }
 
   // If the group was not already included in the incoming query parameter,
@@ -78,16 +75,16 @@ export function onClientRequest(request) {
   // The query parameter allows the origin to respond with appropriate logic
   // and ensures the A/B group is included in the cache key.
   if (!paramValue) {
-    params.append(queryParamName, resultGroupValue);
-    request.route({query: params.toString()});
+    params.append(queryParamName, resultGroupValue)
+    request.route({ query: params.toString() })
   }
 }
 
-export function onClientResponse(request, response) {
+export function onClientResponse (request, response) {
   // Set a response cookie with the A/B group based on
   // the request cookie  set in the onClientRequest handler.
-	let cookies = new Cookies(request.getHeader('Cookie'));
-	let cookieValue = cookies.get(cookieName);
-	let setCookie = new SetCookie({ name: cookieName, value: cookieValue });
-	response.setHeader('Set-Cookie', setCookie.toHeader());
+  const cookies = new Cookies(request.getHeader('Cookie'))
+  const cookieValue = cookies.get(cookieName)
+  const setCookie = new SetCookie({ name: cookieName, value: cookieValue })
+  response.setHeader('Set-Cookie', setCookie.toHeader())
 }

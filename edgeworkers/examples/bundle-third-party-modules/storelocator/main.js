@@ -32,7 +32,7 @@ export function onClientRequest (request) {
     request.respondWith(
       400,
       { 'Content-Type': ['application/json;charset=utf-8'] },
-      JSON.stringify({ error: 'Error locating nearby locations. lat:${lat}, lon:${lon}' })
+      JSON.stringify({ error: `Error locating nearby locations. lat:${lat}, lon:${lon}` })
     )
     return
   }

@@ -78,11 +78,13 @@ async function createKvNamespace(edgeGrid, namespace, parameters) {
 async function generateKvAccessToken(edgeGrid, namespace, parameters) {
   let randomToken = Math.floor(Math.random() * 2**32).toString(16);
   let tokenName = `kvtoken-${namespace}-${randomToken}`;
+  let tokenExpiry = new Date(Date.now()+ 24*30*6*60*60*1000).toISOString();
 
   tokenRequestBody = {
     name: tokenName,
     "allow_on_production": true,
     "allow_on_staging": true,
+    expiry: `${tokenExpiry}`,
     "namespace_permissions": {}
   };
   tokenRequestBody["namespace_permissions"][namespace] = ["r", "w", "d"];

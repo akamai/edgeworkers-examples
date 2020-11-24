@@ -7,11 +7,11 @@ Repo: https://github.com/akamai/edgeworkers-examples/tree/master/cachekey-device
 */
 
 export function onClientRequest (request) {
-  request.setVariable('PMUSER_DEVICETYPE', 'Desktop')
+  request.setVariable('PMUSER_DEVICETYPE', 'Desktop');
   if (request.device.isMobile) {
-    request.setVariable('PMUSER_DEVICETYPE', 'Mobile')
+    request.setVariable('PMUSER_DEVICETYPE', 'Mobile');
   } else if (request.device.isTablet) {
-    request.setVariable('PMUSER_DEVICETYPE', 'Tablet')
+    request.setVariable('PMUSER_DEVICETYPE', 'Tablet');
   }
-  request.cachekey.includeVariable('PMUSER_DEVICETYPE')
+  request.cachekey.includeVariable('PMUSER_DEVICETYPE');
 }

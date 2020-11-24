@@ -15,16 +15,16 @@ const staticFileExtensions = [
   'pdf', 'png', 'ppt', 'pptx', 'rar', 'rtf', 'svg', 'svgz', 'swf', 'tar',
   'tbz', 'tgz', 'ttf', 'txt', 'txz', 'wav', 'webm', 'webp', 'woff', 'woff2',
   'xls', 'xlsx', 'xml', 'xz', 'zip'
-]
+];
 
 // remove inbound cookies from static files
 export function onClientRequest (request) {
   const extension = request.path.match(/\./)
     ? request.path.match(/\.(\w{2,5})(?:$|\?)/)[1]
-    : undefined
+    : undefined;
 
   if (staticFileExtensions.indexOf(extension) > -1) {
-    request.removeHeader('Cookie')
+    request.removeHeader('Cookie');
   }
 }
 
@@ -32,9 +32,9 @@ export function onClientRequest (request) {
 export function onClientResponse (request, response) {
   const extension = request.path.match(/\./)
     ? request.path.match(/\.(\w{2,5})(?:$|\?)/)[1]
-    : undefined
+    : undefined;
 
   if (staticFileExtensions.indexOf(extension) > -1) {
-    response.removeHeader('Set-Cookie')
+    response.removeHeader('Set-Cookie');
   }
 }

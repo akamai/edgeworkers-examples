@@ -8,36 +8,36 @@ Purpose:  Accrue a relevant folder name in the path in a 'visited' cookie as eac
 // These cookies can control layout at origin or in client-side HTML/JS.
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/cookie-accrual
 */
-import { Cookies, SetCookie } from 'cookies'
+import { Cookies, SetCookie } from 'cookies';
 
-const folderPosition = 2 // in /blah/foo/bar position 1 is blah, 2 is foo, 3 is bar, etc
-const trackLastNumSections = 50
-const showPromoAfterNumSections = 6
-const visitedCookieSecs = 24 * 60 * 60
-const promoCookieSecs = 900
+const folderPosition = 2; // in /blah/foo/bar position 1 is blah, 2 is foo, 3 is bar, etc
+const trackLastNumSections = 50;
+const showPromoAfterNumSections = 6;
+const visitedCookieSecs = 24 * 60 * 60;
+const promoCookieSecs = 900;
 
 export function onClientResponse (request, response) {
-  const matched = request.path.match(/^\/([\w-]+)\//) // path is at least /folder/...
+  const matched = request.path.match(/^\/([\w-]+)\//); // path is at least /folder/...
   if (matched) {
-    const section = request.path.split('/')[folderPosition]
+    const section = request.path.split('/')[folderPosition];
 
-    const cookies = new Cookies(request.getHeader('Cookie') || '')
-    let visited = (cookies.get('visited') || '').split(',')
-    if (section && visited.indexOf(section) === -1) // if section does not appear in cookie
-    { visited.push(section) }
-    if (visited.length > trackLastNumSections) // enforce max section names in cookie
-    { visited = visited.slice(-trackLastNumSections) }
+    const cookies = new Cookies(request.getHeader('Cookie') || '');
+    let visited = (cookies.get('visited') || '').split(',');
+    // if section does not appear in cookie
+    if (section && visited.indexOf(section) === -1) { visited.push(section); }
+    // enforce max section names in cookie
+    if (visited.length > trackLastNumSections) { visited = visited.slice(-trackLastNumSections); }
 
-    var setCookieHeaders = [] // will hold updated visited cookie, maybe a promo cookie
+    var setCookieHeaders = []; // will hold updated visited cookie, maybe a promo cookie
 
-    var setCookieVisited = new SetCookie({ name: 'visited', value: visited.join(','), path: '/', maxAge: visitedCookieSecs })
-    setCookieHeaders.push(setCookieVisited.toHeader())
+    var setCookieVisited = new SetCookie({ name: 'visited', value: visited.join(','), path: '/', maxAge: visitedCookieSecs });
+    setCookieHeaders.push(setCookieVisited.toHeader());
 
     if (visited.length >= showPromoAfterNumSections) {
-      var setCookiePromo = new SetCookie({ name: 'promo', value: 'true', path: '/', maxAge: promoCookieSecs })
-      setCookieHeaders.push(setCookiePromo.toHeader())
+      var setCookiePromo = new SetCookie({ name: 'promo', value: 'true', path: '/', maxAge: promoCookieSecs });
+      setCookieHeaders.push(setCookiePromo.toHeader());
     }
 
-    response.setHeader('Set-Cookie', setCookieHeaders)
+    response.setHeader('Set-Cookie', setCookieHeaders);
   }
 }

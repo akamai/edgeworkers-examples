@@ -10,31 +10,31 @@ const tldMap = {
   CA: '.ca',
   GB: '.co.uk',
   US: '.com'
-}
+};
 
 export function onClientRequest (request) {
   // Break out sub domain from host
-  const subDomain = request.host.split('.')[0]
+  const subDomain = request.host.split('.')[0];
 
   // Break out domain from host
-  const domain = request.host.split('.')[1]
+  const domain = request.host.split('.')[1];
 
   // determine top level domain based on request origin country
-  let tld = tldMap[request.userLocation.country]
+  let tld = tldMap[request.userLocation.country];
 
   // if top level domain is supported default to .com
   if (tld === undefined) {
-    tld = '.com'
+    tld = '.com';
   }
 
   // built up new domain
-  const redirectDomain = subDomain + '.' + domain + tld
+  const redirectDomain = subDomain + '.' + domain + tld;
 
   // check incoming host different against built up host
   if (request.host !== redirectDomain) {
     // redirect to new host
     request.respondWith(302, {
       Location: [request.scheme + '://' + redirectDomain + request.url]
-    }, '')
+    }, '');
   }
 }

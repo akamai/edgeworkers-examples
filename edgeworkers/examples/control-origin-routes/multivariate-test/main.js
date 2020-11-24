@@ -14,8 +14,8 @@ Purpose:
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/a-b-test
 */
 
-import { Cookies, SetCookie } from 'cookies'
-import URLSearchParams from 'url-search-params'
+import { Cookies, SetCookie } from 'cookies';
+import URLSearchParams from 'url-search-params';
 
 // ====== Begin Configuration ====== //
 
@@ -48,20 +48,20 @@ const groups = [
         variantName: '2a',
         weight: 1,
         requestAction (request) {
-          request.route({ origin: 'microservice1' })
+          request.route({ origin: 'microservice1' });
         },
         responseAction (request, response) {
-          response.addHeader('X-Variant', '2a')
+          response.addHeader('X-Variant', '2a');
         }
       },
       {
         variantName: '2b',
         weight: 2,
         requestAction (request) {
-          request.route({ origin: 'microservice2' })
+          request.route({ origin: 'microservice2' });
         },
         responseAction (request, response) {
-          response.addHeader('X-Variant', '2b')
+          response.addHeader('X-Variant', '2b');
         }
       },
       {
@@ -73,15 +73,15 @@ const groups = [
             JSON.stringify({
               heroImageUrl: '/assets/images/hero2c.jpg',
               text: 'This is variant 2c, generated from an Akamai EdgeWorker'
-            }))
+            }));
         },
         responseAction (request, response) {
-          response.addHeader('X-Variant', '2c')
+          response.addHeader('X-Variant', '2c');
         }
       }
     ]
   }
-]
+];
 
 // ====== End Configuration ====== //
 
@@ -95,55 +95,55 @@ function processGroups () {
     const sumOfWeights = group.variants.reduce((currValue, variant) =>
       currValue + (variant.weight || 1),
     0
-    )
+    );
 
-    let upperBound = 0
+    let upperBound = 0;
     group.variants.forEach((variant) => {
-      upperBound += (variant.weight || 1) / sumOfWeights
-      variant.upperBound = upperBound
-    })
-  })
+      upperBound += (variant.weight || 1) / sumOfWeights;
+      variant.upperBound = upperBound;
+    });
+  });
 }
 
-processGroups(groups)
+processGroups(groups);
 
 export function onClientRequest (request) {
-  const cookies = new Cookies(request.getHeader('Cookie'))
-  const params = new URLSearchParams(request.query)
+  const cookies = new Cookies(request.getHeader('Cookie'));
+  const params = new URLSearchParams(request.query);
 
   groups.forEach((group) => {
-    const cookieName = group.cookieName
-    const queryParamName = group.queryParamName
+    const cookieName = group.cookieName;
+    const queryParamName = group.queryParamName;
 
-    let resultVariant
+    let resultVariant;
 
     // Initialize existing and reult variant value from the request cookie
-    const existingVariantName = cookies.get(cookieName)
+    const existingVariantName = cookies.get(cookieName);
 
     // override result variant if forced by query parameter
-    const paramValue = params.get(queryParamName)
+    const paramValue = params.get(queryParamName);
     if (paramValue) {
-      resultVariant = group.variants.find((variant) => variant.variantName === paramValue)
+      resultVariant = group.variants.find((variant) => variant.variantName === paramValue);
     }
 
     // if not overriden by query prameter, locate variant in cookie
     if (existingVariantName && !resultVariant) {
-      resultVariant = group.variants.find((variant) => variant.variantName === existingVariantName)
+      resultVariant = group.variants.find((variant) => variant.variantName === existingVariantName);
     }
 
     // If no variant has been assigned,
     // then randomly choose one based on configured percentage
     if (!resultVariant) {
-      const randomNumber = Math.random()
-      resultVariant = group.variants.find((variant) => variant.upperBound > randomNumber)
+      const randomNumber = Math.random();
+      resultVariant = group.variants.find((variant) => variant.upperBound > randomNumber);
     }
 
     // If variant if different than the existing cookie,
     // then replace the incoming cookie with the new value.
     if (resultVariant.variantName !== existingVariantName) {
-      cookies.delete(cookieName)
-      cookies.add(cookieName, resultVariant.variantName)
-      request.setHeader('Cookie', cookies.toHeader())
+      cookies.delete(cookieName);
+      cookies.add(cookieName, resultVariant.variantName);
+      request.setHeader('Cookie', cookies.toHeader());
     }
 
     // If the group was not already included in the incoming query parameter,
@@ -151,32 +151,32 @@ export function onClientRequest (request) {
     // The query parameter allows the origin to respond with appropriate logic
     // and ensures the A/B group is included in the cache key.
     if (!paramValue) {
-      params.append(queryParamName, resultVariant.variantName)
-      request.route({ query: params.toString() })
+      params.append(queryParamName, resultVariant.variantName);
+      request.route({ query: params.toString() });
     }
 
     // Call the requestAction function, if it exists on the variant.
     if (resultVariant.requestAction) {
-      resultVariant.requestAction(request)
+      resultVariant.requestAction(request);
     }
-  })
+  });
 }
 
 export function onClientResponse (request, response) {
-  const cookies = new Cookies(request.getHeader('Cookie'))
+  const cookies = new Cookies(request.getHeader('Cookie'));
 
   groups.forEach((group) => {
-    const cookieName = group.cookieName
+    const cookieName = group.cookieName;
     // Set a response cookie with the A/B group based on
     // the request cookie  set in the onClientRequest handler.
-    const cookieValue = cookies.get(cookieName)
-    const setCookie = new SetCookie({ name: cookieName, value: cookieValue, path: '/' })
-    response.addHeader('Set-Cookie', setCookie.toHeader())
+    const cookieValue = cookies.get(cookieName);
+    const setCookie = new SetCookie({ name: cookieName, value: cookieValue, path: '/' });
+    response.addHeader('Set-Cookie', setCookie.toHeader());
 
     // Call the responseAction function, if it exists on the variant.
-    const variant = group.variants.find((variant) => variant.variantName == cookieValue)
+    const variant = group.variants.find((variant) => variant.variantName == cookieValue);
     if (variant.responseAction) {
-      variant.responseAction(request, response)
+      variant.responseAction(request, response);
     }
-  })
+  });
 }

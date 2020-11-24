@@ -6,15 +6,13 @@ Purpose:  Respond with empty JSON if cart cookie not part of request.
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/empty-cart
 */
 
-import {Cookies, SetCookie} from 'cookies';
+import { Cookies, SetCookie } from 'cookies';
 
-export function onClientRequest(request) {
-
-  let cookies = new Cookies(request.getHeader('Cookie'));
+export function onClientRequest (request) {
+  const cookies = new Cookies(request.getHeader('Cookie'));
   var cartCookie = cookies.get('cart');
 
   if (!cartCookie) {
-    request.respondWith(200, {'Content-Type': ['application/json; charset=utf-8']}, '{}');
+    request.respondWith(200, { 'Content-Type': ['application/json; charset=utf-8'] }, '{}');
   }
-
 }

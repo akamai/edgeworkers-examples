@@ -8,8 +8,8 @@ Repo: https://github.com/akamai/edgeworkers-examples/tree/master/forward-devicet
 
 export function onClientRequest (request) {
   if (request.device.isMobile) {
-    request.route({ path: '/mobile' + request.path })
+    request.route({ path: '/mobile' + request.path });
   } else if (request.device.isTablet) {
-    request.route({ path: '/tablet' + request.path })
+    request.route({ path: '/tablet' + request.path });
   }
 }

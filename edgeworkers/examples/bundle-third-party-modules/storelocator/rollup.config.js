@@ -24,7 +24,7 @@ export default {
     // Copy bundle.json to the output directory
     copy({
       assets: [
-        'bundle.json'
+        './bundle.json'
       ]
     }),
     // Package json data as an ES6 module

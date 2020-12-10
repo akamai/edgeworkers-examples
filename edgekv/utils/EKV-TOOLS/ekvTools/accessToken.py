@@ -264,7 +264,7 @@ def parse_token_file(fpath, debug):
     for namespace_id, token in token_dict.items():
         token_name = token['name']
         token_value = token['value']
-        namespace = namespace_id.split('-')[1]
+        namespace = '-'.join(namespace_id.split('-')[1:])
         success = update_a_token(tokens, token_name, token_value, [namespace], debug=debug)
         #print(token_name, success)
         if not success:

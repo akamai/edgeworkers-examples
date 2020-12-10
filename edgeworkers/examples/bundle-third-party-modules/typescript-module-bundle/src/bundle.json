@@ -1,0 +1,4 @@
+{
+  "edgeworker-version": "0.1",
+  "description": "Respond hello world markup with a hashed response header"
+}

@@ -139,7 +139,7 @@ def find_namespaces(parsed_token):
     namespaces = []
     for k in parsed_token.keys():
         if k.startswith('namespace-'):
-            namespaces.append(k.split('-')[1])
+            namespaces.append('-'.join(k.split('-')[1:]))
     return namespaces
 
 def show_token(token_name, parsed_token, debug):

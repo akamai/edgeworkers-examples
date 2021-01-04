@@ -15,12 +15,12 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 ## Documentation
 ### Constructor
 	/**
-	 * Constructor to allow setting default namespace and group.
-	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations.
-	 * @param {string} [namespace] the default namespace to use for all GET, PUT, and DELETE operations.
-	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -.
-	 * @param {string} [group] the default group to use for all GET, PUT, and DELETE operations.
-	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -.
+	 * Constructor to allow setting default namespace and group
+	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations
+	 * @param {string} [namespace] the default namespace to use for all GET, PUT, and DELETE operations
+	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -
+	 * @param {string} [group] the default group to use for all GET, PUT, and DELETE operations
+	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
 	 */
 	new EdgeKV(namespace = "default", group = "default")
 ### getText

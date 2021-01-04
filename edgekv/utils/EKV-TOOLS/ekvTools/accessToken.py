@@ -119,7 +119,7 @@ def parse_token(token_value, debug):
     """
     token = None
     try:
-        token = jwt.decode(str(token_value).rstrip(), verify=False)
+        token = jwt.decode(str(token_value).rstrip(), options={"verify_signature": False})
     except jwt.exceptions.DecodeError as errMsg:
         err_print("Invalid Access Token!")
         dbg_print(errMsg, debug=debug)

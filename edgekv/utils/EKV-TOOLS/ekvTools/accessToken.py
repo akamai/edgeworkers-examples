@@ -168,9 +168,20 @@ def show_token(token_name, parsed_token, debug):
         dbg_print("Invalid EdgeKV Access Token!", debug=debug)
         err_print("Missing claim!")
         return False
+    now = time.time()
+    expiry_warning_days = 30
+    expiry_warning_period = 60*60*24*expiry_warning_days # in seconds
+    expired = exp < now
+    expires_soon = not expired and exp-now < expiry_warning_period
+    expiry_warning = "***WARNING: Access Token already EXPIRED!***"
+    expire_soon_warning = "***WARNING: Access Token will EXPIRE in less than %s days!***"  % expiry_warning_days
     print("Token name:            %s" % token_name)
     print("Issue time:            %s" % issue_time)
     print("Expiry time:           %s" % expiry_time)
+    if expired:
+        print("             %s" % expiry_warning)
+    if expires_soon:
+        print("             %s" % expire_soon_warning)
     print("Valid for EWIDs:       %s" % ewids)
     print("Valid on Production:   %s" % prod)
     print("Valid on Staging:      %s" % stag)

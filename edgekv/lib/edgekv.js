@@ -21,12 +21,12 @@ export class EdgeKV {
 	#token_override;
 
 	/**
-	 * Constructor to allow setting default namespace and group.
-	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations.
-	 * @param {string} [namespace] the default namespace to use for all GET, PUT, and DELETE operations.
-	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -.
-	 * @param {string} [group] the default group to use for all GET, PUT, and DELETE operations.
-	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -.
+	 * Constructor to allow setting default namespace and group
+	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations
+	 * @param {string} [namespace] the default namespace to use for all GET, PUT, and DELETE operations
+	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -
+	 * @param {string} [group] the default group to use for all GET, PUT, and DELETE operations
+	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
 	 */
 	constructor(namespace = "default", group = "default") {
 		if (typeof namespace === "object") {
@@ -82,13 +82,13 @@ export class EdgeKV {
 
 	validate({ namespace = null, group = null, item = null }) {
 		if (namespace && !/^[A-Za-z0-9_-]{1,32}$/.test(namespace)) {
-			throw "Namespace is not valid. Must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -.";
+			throw "Namespace is not valid. Must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -";
 		}
 		if (group && !/^[A-Za-z0-9_-]{1,128}$/.test(group)) {
-			throw "Group is not valid. Must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -.";
+			throw "Group is not valid. Must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -";
 		}
 		if (item && !/^[A-Za-z0-9_-]{1,512}$/.test(item)) {
-			throw "Item is not valid. Must be 512 characters or less, consisting of A-Z a-z 0-9 _ or -.";
+			throw "Item is not valid. Must be 512 characters or less, consisting of A-Z a-z 0-9 _ or -";
 		}
 	}
 

@@ -2,7 +2,7 @@
 
 #============================================================================
 # (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-# Version: 0.1
+# Version: 0.2
 # Purpose:
 #   Enable A/B testing.
 #   Randomly assign new users to an A/B testing group.

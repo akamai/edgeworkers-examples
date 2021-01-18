@@ -369,7 +369,7 @@ EdgeKV API makes use of standard HTTP response codes such as
 * 200 Success
 * 201 Created
 * 400 Bad Request
-* 403 Unauthorized
+* 401 Unauthorized
 * 404 Not Found
 * 429 Too Many Requests
 * 500 Internal Error

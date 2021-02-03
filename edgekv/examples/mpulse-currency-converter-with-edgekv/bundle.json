@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "1.0",
+    "description" : "Convert multiple currencies to one to support mPulse with the help of EdgeKV."
+}

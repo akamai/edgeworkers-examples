@@ -15,10 +15,11 @@ async function getCurrency(request){
     let params = new URLSearchParams(request.query);
     let currencyCode   = params.get('currency'); 
     let default_value  = 1;
-    
+    let currencyValue  = 1;
+	
     try {
-      const edgeKv = new EdgeKV({namespace: "namespace-name", group: "group-name"});
-      var currencyValue = await edgeKv.getText({item: currencyCode, default_value: default_value});
+      const edgeKv = new EdgeKV({namespace: "name", group: "name"}); //replace name and name with your own values
+      currencyValue = await edgeKv.getText({item: currencyCode, default_value: default_value});
         
     } catch (error) {
         return error.toString();

@@ -11,7 +11,7 @@ The EdgeWorker takes the order value and currency symbol, fetches the conversion
 ## Working POC
 - [mPulse currency converter](http://poc.klasen.se/projects/ew/mpulse-currency-normalizer.php)
  
-The POC actually utilizez two EdgeWorkers, one with the EdgeKV but also a variant where the conversion value is fetched from an external service with httpRequest. The only difference in the EdgeWorker codes is in the getCurrency function:
+The POC actually utilizes two EdgeWorkers, one with the EdgeKV but also a variant where the conversion value is fetched from an external service with httpRequest. The only difference in the EdgeWorker codes is in the getCurrency function:
 
 ```javascript
 async function getCurrency(request){

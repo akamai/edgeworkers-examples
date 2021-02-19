@@ -56,7 +56,8 @@ export class FindAndReplaceStream {
                           
                           replacements += 1;
                             //we enqueue the text until the index where it was found, and add the replacement string.
-                            readController.enqueue(text.substring(0, where) + newtext)
+                            readController.enqueue(text.substring(0, where));
+                            readController.enqueue(newtext);
 
                             //we reduce the chunk and remove the former string from the beginning
                             text = text.substring(where + toreplace.length);

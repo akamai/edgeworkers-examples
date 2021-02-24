@@ -269,8 +269,8 @@ Item was upserted in KV store with database 123456, namespace marketing, group c
 
 Yet another example using a string value
 ```
-$ echo "English" | http --print=hbHB --auth-type edgegrid -a default: PUT :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US Content-Type:text/plain
-PUT /edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US
+$ echo "English" | http --print=hbHB --auth-type edgegrid -a default: PUT :/edgekv/v1/networks/staging/namespaces/marketing/groups/languages/items/US Content-Type:text/plain
+PUT /edgekv/v1/networks/staging/namespaces/marketing/groups/languages/items/US
 Content-Type: text/plain
 
 English
@@ -281,7 +281,7 @@ Response:
 ```
 HTTP/1.1 200 OK
 
-Item was upserted in KV store with database 123456, namespace languages, group countries, and key US.
+Item was upserted in KV store with database 123456, namespace languages, group languages, and key US.
 
 ```
 

@@ -68,7 +68,7 @@ Once EdgeKV is provisioned, a default namespace is created in both `staging` and
 
 Request:
 ```
-$ http --auth-type edgegrid GET :/edgekv/v1/networks/staging/namespaces
+$ http --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces
 ```
 
 Response:
@@ -269,8 +269,8 @@ Item was upserted in KV store with database 123456, namespace marketing, group c
 
 Yet another example using a string value
 ```
-$ echo "English" | http --print=hbHB --auth-type edgegrid -a default: PUT :/edgekv/v1/networks/staging/namespaces/marketing/groups/languages/items/US Content-Type:text/plain
-PUT /edgekv/v1/networks/staging/namespaces/marketing/groups/languages/items/US
+$ echo "English" | http --print=hbHB --auth-type edgegrid -a default: PUT :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US Content-Type:text/plain
+PUT /edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US
 Content-Type: text/plain
 
 English
@@ -324,14 +324,14 @@ To delete an item:
 
 
 ```
-$ http --print=hbHB --auth-type edgegrid -a default: DELETE :/edgekv/v1/networks/staging/namespaces/marketing/groups/languages/items/US
-DELETE /edgekv/v1/networks/staging/namespaces/marketing/groups/languages/items/US
+$ http --print=hbHB --auth-type edgegrid -a default: DELETE :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US
+DELETE /edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US
 ```
 Response:
 ```
 HTTP/1.1 200 OK
 
-Item was delete in KV store with database 123456 namespace default group languages key US.
+Item was delete in KV store with database 123456 namespace default group countries key US.
 ```
 
 ### 9.  List items within a group
@@ -374,6 +374,7 @@ EdgeKV API makes use of standard HTTP response codes such as
 * 404 Not Found
 * 429 Too Many Requests
 * 500 Internal Error
+* 501 Not Implemented
 * 504 Gateway Timeout
 
 > **_NOTE:_** You may get back `404 Not Found` when reading an item that has been written to EdgeKV, but that may not always be treated as an error due to the eventual consistency property of EdgeKV. You can read more about EdgeKV's eventual consistency model in the [EdgeKV Getting Started Guide](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html).

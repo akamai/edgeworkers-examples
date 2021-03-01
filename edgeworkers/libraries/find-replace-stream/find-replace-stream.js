@@ -31,6 +31,7 @@ export class FindAndReplaceStream {
       }
     });
 
+    //Function called once for every chunk we process
     async function processStream(text, done) {
       let lookInChunk = true;
 
@@ -56,15 +57,17 @@ export class FindAndReplaceStream {
                           
                           replacements += 1;
                             //we enqueue the text until the index where it was found, and add the replacement string.
-                            readController.enqueue(text.substring(0, where));
-                            readController.enqueue(newtext);
-
+                            readController.enqueue(text.substring(0, where))
+                            readController.enqueue(newtext)
                             //we reduce the chunk and remove the former string from the beginning
                             text = text.substring(where + toreplace.length);
 
                             //if we have matched the amount of times to replace, we won't be looking further after this.
                             if (replacements === howmanytimes){
                               lookInChunk = false;
+                              const backtrackPosition =  text.length - toreplace.length + 1;
+                              last = text.substring(backtrackPosition);
+                              readController.enqueue(text.substring(0, backtrackPosition));
                             }
 
                         // If the string is not found in this chunk, and the chunk is smaller than the length of the searched string, we use the remainder of the

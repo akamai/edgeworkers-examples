@@ -6,7 +6,10 @@
 
 This example demonstrates how a response body can be manipulated with input from EdgeKV. The use case is currency conversion on an order confirmation page.
 If an e-commerce site lets users purchase their items in multiple currencies you typically want the order value normalized to one currency to monitor conversion and revenue metrics.
+
 The EdgeWorker takes the order value and currency symbol, fetches the conversion value from EdgeKV and finally injects a javascript that performs the normaliziation in the end-user browser.
+
+Please include edgekv.js manually from the parent repository. https://github.com/akamai/edgeworkers-examples/blob/master/edgekv/lib/edgekv.js
 
 ## Working POC
 - [mPulse currency converter](http://poc.klasen.se/projects/ew/mpulse-currency-normalizer.php)

@@ -161,6 +161,7 @@ To generate a new EdgeKV Access Token for a specific namespace:
 `POST /edgekv/v1/tokens`
 
 **Content-Type:** `application/json`
+
 **Request body:** 
 ```
 {
@@ -233,10 +234,9 @@ Content-Type: application/json
 You can list access tokens created for EdgeKV.
 
 
-
 #### Endpoint:
 
-To generate a new EdgeKV Access Token for a specific namespace:
+To list EdgeKV Access Tokens:
 `GET /edgekv/v1/tokens`
 
 

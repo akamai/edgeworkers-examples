@@ -2,13 +2,9 @@
 
 #============================================================================
 # (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-# Version: 0.2
+# Version: 0.3
 # Purpose:
-#   Enable A/B testing.
-#   Randomly assign new users to an A/B testing group.
-#   Include the A/B group in a query parameter sent to the origin.
-#   Include the A/B group in a cookie to the browser.
-#   Allow overriding the group with a query string parameter for easy testing.
+#   Display EdgeKV access token and/or update the 'edgekv_tokens.js' file.
 # Repo: https://github.com/akamai/edgeworkers-examples/tree/master/edgeKV/EKV-TOOLS/ekvTools
 #============================================================================
 
@@ -155,9 +151,9 @@ def show_token(token_name, parsed_token, debug):
     #pprint.pprint(parsed_token)
     try:
         iat = parsed_token['iat']
-        issue_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime(iat))
+        issue_date = time.strftime("%a, %d %b %Y", time.localtime(iat))
         exp = parsed_token['exp']
-        expiry_time = time.strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime(exp))
+        expiry_date = time.strftime("%a, %d %b %Y", time.localtime(exp))
         ewids = parsed_token['ewids']
         env = parsed_token['env']
         prod = 'p' in env
@@ -176,8 +172,8 @@ def show_token(token_name, parsed_token, debug):
     expiry_warning = "***WARNING: Access Token already EXPIRED!***"
     expire_soon_warning = "***WARNING: Access Token will EXPIRE in less than %s days!***"  % expiry_warning_days
     print("Token name:            %s" % token_name)
-    print("Issue time:            %s" % issue_time)
-    print("Expiry time:           %s" % expiry_time)
+    print("Issue date:            %s" % issue_date)
+    print("Expiry date:           %s" % expiry_date)
     if expired:
         print("             %s" % expiry_warning)
     if expires_soon:

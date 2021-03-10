@@ -1,4 +1,4 @@
-# EdgeKV API Tech Preview
+# EdgeKV API Beta
 
 ## Before you start
 

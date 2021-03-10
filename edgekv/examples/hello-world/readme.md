@@ -131,6 +131,8 @@ tar czvf ekv_hello_world.tgz bundle.json edgekv.js edgekv_tokens.js main.js
 Let's assume you added a behavior containing the EWID associated with this example to 
 your Akamai property under a match condition for path `http://mysite.com/helloworld`.
 
+Note: mysite.com is not an actual site used for this example. Please replace with your own site domain.
+
 You can test this out using the following curl command:
 
 ```

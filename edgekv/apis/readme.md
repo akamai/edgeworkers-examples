@@ -168,7 +168,7 @@ To generate a new EdgeKV Access Token for a specific namespace:
     "name": "<token_name>",
     "allow_on_production": "true" | "false",
     "allow_on_staging": "true" | "false",
-    "expiry": "<expiry_datetime>",
+    "expiry": "<expiry_date>",
     "namespace_permissions": {
         "<namespace-id>": [
             "r",

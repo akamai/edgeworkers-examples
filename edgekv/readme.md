@@ -1,6 +1,10 @@
 # Akamai EdgeKV Examples
 Akamai Edge Key-Value (EdgeKV) is a low-latency, distributed key-value store built to compliment EdgeWorkers. EdgeKV enables you to build data-driven JavaScript applications that require fast, frequent reads and infrequent writes. The code snippets in this repository are a great way to start learning about EdgeKV, and how it integrates with EdgeWorkers.
 
+> :warning: **Warning!**
+> Customers are responsible for maintaining control over the data hosted on this service and for appropriately using the data returned by EdgeKV. EdgeKV does not support storage of sensitive information where the consequence of an unauthorized disclosure would be a serious business or compliance issue. Customers should not use sensitive information when creating namespaces, groups, keys, or values.
+
+
 ## Resources
 For more information on EdgeWorkers, please refer to the following resources:
 * [EdgeKV Getting Started Guide](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html)

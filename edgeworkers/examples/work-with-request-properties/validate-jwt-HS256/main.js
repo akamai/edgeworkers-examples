@@ -7,7 +7,7 @@ Purpose:  Validate JSON Web Tokens on client request to determine an enhanced ex
 
 import JWT from './jwt.js';
 
-/* RS256 uses symmetric key encryption. This key should be stored in a secret variable in the property */
+/* HS256 uses symmetric key encryption. This key should be stored in a secret variable in the property */
 const secretKey = "qwertyuiopasdfghjklzxcvbnm123456";
 
 /*

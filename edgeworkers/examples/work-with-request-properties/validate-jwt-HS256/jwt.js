@@ -1,5 +1,4 @@
 import CryptoJS from './crypto-js_custom.min.js';
-import b64toJSON from './utils.js';
 
 /**
  * Class representing a JSON Web Token Object
@@ -14,8 +13,8 @@ class JWT {
         this.key = secretKey;
         this.jwt = jwtString;
         this.jwtArray = jwtString.split(".");
-        this.head = b64toJSON(this.jwtArray[0]);
-        this.body = b64toJSON(this.jwtArray[1]);
+        this.head = JSON.parse(CryptoJS.enc.Base64.parse(this.jwtArray[0]).toString(CryptoJS.enc.Utf8));
+        this.body = JSON.parse(CryptoJS.enc.Base64.parse(this.jwtArray[1]).toString(CryptoJS.enc.Utf8));
         this.signature = this.jwtArray[2];
     }
     /**

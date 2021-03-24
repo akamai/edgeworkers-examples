@@ -3,7 +3,7 @@
 *Keyword(s):* JWT, json web token, auth<br>
 *[Since](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-14077BCA-0D9F-422C-8273-2F3E37339D5B.html):* 1.0
 
-This example implements JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) validation against an incoming request with an HS256-signed jwt, then sets an outgoing request header determined by the contents and validity of the JWT.
+This example implements JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) validation against an incoming request with an HS256 (HMAC with SHA256) signed jwt, then sets an outgoing request header determined by the contents and validity of the JWT.
 
 ## Requirements
 

@@ -203,8 +203,6 @@ Content-Type: application/json
 You can retrieve an EdgeKV access token. To retrieve a token you need the token name used when it was created. 
 An EdgeKV-specific access token is required to access each namespace in your data model from EdgeWorkers. Refer to [Generate an EdgeKV access token instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html) for information about EdgeKV Access Token.
 
-> **_NOTE:_** You cannot retrieve tokens created during the Tech Preview Period.
-
 #### Endpoint:
 
 To retrieve an EdgeKV Access Token:

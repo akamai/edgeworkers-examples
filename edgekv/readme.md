@@ -13,7 +13,7 @@ For more information on EdgeWorkers, please refer to the following resources:
 * [EdgeWorkers API Guide](https://developer.akamai.com/api/web_performance/edgeworkers/v1.html)
 
 ## Subfolder organization
-* **/apis**: EdgeKV administrative API documentation for Tech Preview
+* **/apis**: EdgeKV administrative API documentation
 * **/examples**: EdgeWorker examples implementing various EdgeKV use cases
 * **/lib**: EdgeKV JS API helper library and documentation 
 * **/utils**: EdgeKV helper utilities

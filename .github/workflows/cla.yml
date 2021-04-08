@@ -16,7 +16,7 @@ jobs:
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
         # Beta Release
         uses: cla-assistant/github-action@v2.1.2-beta
-        env:"
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # the below token should have repo scope and must be manually added by you in the repository's secret
           PERSONAL_ACCESS_TOKEN : "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"

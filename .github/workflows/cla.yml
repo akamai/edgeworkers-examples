@@ -3,11 +3,11 @@ on:
   issue_comment:
     types: [created]
     paths:
-    - './customerexamples'
+    - './customerexamples/**'
   pull_request_target:
     types: [opened,closed,synchronize]
     paths:
-    - './customerexamples'
+    - './customerexamples/**'
 
 jobs:
   CLAssistant:

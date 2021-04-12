@@ -2,9 +2,6 @@ name: "CLA Assistant"
 on:
   issue_comment:
     types: [created]
-    paths-ignore:
-    - 'edgekv/**'
-
     paths:
     - 'customerexamples/**'
     - '!edgekv/**'

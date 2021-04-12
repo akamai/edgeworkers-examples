@@ -4,24 +4,15 @@ on:
     types: [created]
     paths:
     - 'customerexamples/**'
-    - '!edgekv/**'
-    - '!edgeworkers/**'
-    - '!README.mad'
   pull_request_target:
     types: [opened,closed,synchronize]
     paths:
     - 'customerexamples/**'
 
-defaults:
-  run:
-    working-directory: ./customerexamples
-
 jobs:
   CLAssistant:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./customerexamples
+
     steps:
       - name: "CLA Assistant"
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
@@ -43,7 +34,7 @@ jobs:
           #remote-repository-name:  enter the  remote repository name where the signatures should be stored (Default is storing the signatures in the same repository)
           #create-file-commit-message: 'For example: Creating file for storing CLA Signatures'
           #signed-commit-message: 'For example: $contributorName has signed the CLA in #$pullRequestNo'
-          #custom-notsigned-prcomment: 'pull request comment with Introductory message to ask new contributors to sign'
+          custom-notsigned-prcomment: 'Thank you for your submission, we really appreciate it. Like many open-source projects, we ask that you agree to our [Contributor License Agreement](https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md) before we can accept your contribution. You can sign the CLA by posting a comment in this PR matching the text below:'
           #custom-pr-sign-comment: 'The signature to be committed in order to sign the CLA'
           #custom-allsigned-prcomment: 'pull request comment when all contributors has signed, defaults to **CLA Assistant Lite bot** All Contributors have signed the CLA.'
           #lock-pullrequest-aftermerge: false - if you don't want this bot to automatically lock the pull request after merging (default - true)

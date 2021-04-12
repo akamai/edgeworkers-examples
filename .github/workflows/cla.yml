@@ -8,7 +8,6 @@ on:
 jobs:
   CLAssistant:
     runs-on: ubuntu-latest
-
     steps:
       - name: "CLA Assistant"
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
@@ -23,14 +22,15 @@ jobs:
           path-to-document: 'https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
           # branch should not be protected
           branch: 'master'
-          allowlist: sscian,mryakan,joshjohnson,dctheobald,moritzsteiner,tvereecke,gabrioakamai,kayoub-akamai,rcalendi,cosjef,javiergarza,swathimr,bot*
+          allowlist: user1,bot*
+          # allowlist: sscian,mryakan,joshjohnson,dctheobald,moritzsteiner,tvereecke,gabrioakamai,kayoub-akamai,rcalendi,cosjef,javiergarza,swathimr,bot*
 
          #below are the optional inputs - If the optional inputs are not given, then default values will be taken
           #remote-organization-name: enter the remote organization name where the signatures should be stored (Default is storing the signatures in the same repository)
           #remote-repository-name:  enter the  remote repository name where the signatures should be stored (Default is storing the signatures in the same repository)
           #create-file-commit-message: 'For example: Creating file for storing CLA Signatures'
           #signed-commit-message: 'For example: $contributorName has signed the CLA in #$pullRequestNo'
-          custom-notsigned-prcomment: 'Thank you for your submission, we really appreciate it. Like many open-source projects, we ask that you agree to our [Contributor License Agreement](https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md) before we can accept your contribution. You can sign the CLA by posting a comment in this PR matching the text below:'
+          #custom-notsigned-prcomment: 'Thank you for your submission, we really appreciate it. Like many open-source projects, we ask that you agree to our [Contributor License Agreement](https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md) before we can accept your contribution. You can sign the CLA by posting a comment in this PR matching the text below:'
           #custom-pr-sign-comment: 'The signature to be committed in order to sign the CLA'
           #custom-allsigned-prcomment: 'pull request comment when all contributors has signed, defaults to **CLA Assistant Lite bot** All Contributors have signed the CLA.'
           #lock-pullrequest-aftermerge: false - if you don't want this bot to automatically lock the pull request after merging (default - true)

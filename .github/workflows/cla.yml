@@ -2,8 +2,14 @@ name: "CLA Assistant"
 on:
   issue_comment:
     types: [created]
+    paths-ignore:
+    - 'edgekv/**'
+
     paths:
     - 'customerexamples/**'
+    - '!edgekv/**'
+    - '!edgeworkers/**'
+    - '!README.mad'
   pull_request_target:
     types: [opened,closed,synchronize]
     paths:

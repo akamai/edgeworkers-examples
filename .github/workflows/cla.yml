@@ -31,7 +31,7 @@ jobs:
 
          #below are the optional inputs - If the optional inputs are not given, then default values will be taken
           remote-organization-name: swathimr
-          remote-repository-name: clatestrepo
+          remote-repository-name: cla
           #create-file-commit-message: 'For example: Creating file for storing CLA Signatures'
           #signed-commit-message: 'For example: $contributorName has signed the CLA in #$pullRequestNo'
           #custom-notsigned-prcomment: 'Thank you for your submission, we really appreciate it. Like many open-source projects, we ask that you agree to our [Contributor License Agreement](https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md) before we can accept your contribution. You can sign the CLA by posting a comment in this PR matching the text below:'

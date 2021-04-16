@@ -22,7 +22,7 @@ jobs:
           # the below token should have repo scope and must be manually added by you in the repository's secret
           PERSONAL_ACCESS_TOKEN : ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
-          path-to-signatures: 'https://github.com/swathimr/clatestrepo/signatures/version1/cla.json'
+          path-to-signatures: 'signatures/version1/cla.json'
           path-to-document: 'https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
           # branch should not be protected
           branch: 'master'
@@ -30,7 +30,7 @@ jobs:
           allowlist: bot*
 
          #below are the optional inputs - If the optional inputs are not given, then default values will be taken
-          remote-organization-name: akamai
+          remote-organization-name: swathimr
           remote-repository-name: clatestrepo
           #create-file-commit-message: 'For example: Creating file for storing CLA Signatures'
           #signed-commit-message: 'For example: $contributorName has signed the CLA in #$pullRequestNo'

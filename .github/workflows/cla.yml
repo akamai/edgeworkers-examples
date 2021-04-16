@@ -22,16 +22,14 @@ jobs:
           # the below token should have repo scope and must be manually added by you in the repository's secret
           PERSONAL_ACCESS_TOKEN : ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
-          path-to-signatures: 'signatures/version1/cla.json'
-          path-to-document: 'https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
-          # branch should not be protected
+          path-to-signatures: 'signatures/cla.json'
           branch: 'master'
-#         # allowlist: user1,bot*
+          remote-organization-name: swathimr
+          remote-repository-name: cla
+          path-to-document: 'https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
           allowlist: bot*
 
          #below are the optional inputs - If the optional inputs are not given, then default values will be taken
-          remote-organization-name: swathimr
-          remote-repository-name: cla
           #create-file-commit-message: 'For example: Creating file for storing CLA Signatures'
           #signed-commit-message: 'For example: $contributorName has signed the CLA in #$pullRequestNo'
           #custom-notsigned-prcomment: 'Thank you for your submission, we really appreciate it. Like many open-source projects, we ask that you agree to our [Contributor License Agreement](https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md) before we can accept your contribution. You can sign the CLA by posting a comment in this PR matching the text below:'

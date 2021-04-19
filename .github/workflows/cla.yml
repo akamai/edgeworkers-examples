@@ -27,7 +27,7 @@ jobs:
           remote-organization-name: swathimr
           remote-repository-name: cla
           path-to-document: 'https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
-          allowlist: swathimr,bot*
+          allowlist: bot*
 
          #below are the optional inputs - If the optional inputs are not given, then default values will be taken
           #create-file-commit-message: 'For example: Creating file for storing CLA Signatures'

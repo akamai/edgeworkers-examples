@@ -24,7 +24,7 @@ jobs:
         with:
           path-to-signatures: 'signatures/cla.json'
           branch: 'master'
-          remote-organization-name: swathimr
+          remote-organization-name: akamai
           remote-repository-name: cla
           path-to-document: 'https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
           allowlist: bot*

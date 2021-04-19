@@ -1,6 +1,6 @@
 # Contributor License Agreement ("CLA")
 
-This Contributor License Agreement ("CLA") allows for the contribution of code to this project, i.e. edgeworkers-examples (the "Project") and is intended to establish that each Contribution is subject to the licenses specified below. Specifically, this Agreement allows an individual to submit Contributions to the Project – or an entity (a "Corporation") to submit Contributions to the Project or to authorize Contributions submitted by its designated employees – and to grant copyright and patent licenses thereto.
+This Contributor License Agreement ("CLA") allows for the contribution of code to this project, i.e. akamai/edgeworkers-examples (the "Project") and is intended to establish that each Contribution is subject to the licenses specified below. Specifically, this Agreement allows an individual to submit Contributions to the Project – or an entity (a "Corporation") to submit Contributions to the Project or to authorize Contributions submitted by its designated employees – and to grant copyright and patent licenses thereto.
 
 You accept and agree to the following terms and conditions for Your present and future Contributions submitted to the Project. Except for the license granted herein, You reserve all right, title, and interest in and to Your Contributions.
 

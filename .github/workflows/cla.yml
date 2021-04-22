@@ -3,11 +3,11 @@ on:
   issue_comment:
     types: [created]
     paths:
-    - 'publicexamples/**'
+    - 'public-examples/**'
   pull_request_target:
     types: [opened,closed,synchronize]
     paths:
-    - 'publicexamples/**'
+    - 'public-examples/**'
 
 jobs:
   CLAssistant:
@@ -26,5 +26,5 @@ jobs:
           branch: 'master'
           remote-organization-name: akamai
           remote-repository-name: cla-sign
-          path-to-document: 'https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
-          allowlist: sscian,mryakan,joshjohnson,dctheobald,moritzsteiner,tvereecke,gabrioakamai,kayoub-akamai,rcalendi,cosjef,javiergarza,DawChihLiou,bot*
+          path-to-document: 'https://github.com/akamai/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
+          allowlist: sscian,mryakan,joshjohnson,dctheobald,moritzsteiner,tvereecke,gabrioakamai,kayoub-akamai,rcalendi,cosjef,javiergarza,DawChihLiou,ananner,bot*

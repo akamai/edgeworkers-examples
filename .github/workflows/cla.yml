@@ -1,0 +1,30 @@
+name: "CLA Assistant"
+on:
+  issue_comment:
+    types: [created]
+    paths:
+    - 'public_examples/**'
+  pull_request_target:
+    types: [opened,closed,synchronize]
+    paths:
+    - 'public_examples/**'
+
+jobs:
+  CLAssistant:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "CLA Assistant"
+        if: (github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
+        # Beta Release
+        uses: cla-assistant/github-action@v2.1.2-beta
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # the below token should have repo scope and must be manually added by you in the repository's secret
+          PERSONAL_ACCESS_TOKEN : ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        with:
+          path-to-signatures: 'signatures/cla.json'
+          branch: 'master'
+          remote-organization-name: akamai
+          remote-repository-name: cla-sign
+          path-to-document: 'https://github.com/akamai/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
+          allowlist: sscian,mryakan,joshjohnson,dctheobald,tvereecke,gabrioakamai,kayoub-akamai,rcalendi,cosjef,javiergarza,DawChihLiou,ananner

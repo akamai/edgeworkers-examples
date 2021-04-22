@@ -3,11 +3,11 @@ on:
   issue_comment:
     types: [created]
     paths:
-    - 'customerexamples/**'
+    - 'publicexamples/**'
   pull_request_target:
     types: [opened,closed,synchronize]
     paths:
-    - 'customerexamples/**'
+    - 'publicexamples/**'
 
 jobs:
   CLAssistant:
@@ -27,13 +27,4 @@ jobs:
           remote-organization-name: akamai
           remote-repository-name: cla-sign
           path-to-document: 'https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md' # e.g. a CLA or a DCO document
-          allowlist: swathimr,bot*
-
-         #below are the optional inputs - If the optional inputs are not given, then default values will be taken
-          #create-file-commit-message: 'For example: Creating file for storing CLA Signatures'
-          #signed-commit-message: 'For example: $contributorName has signed the CLA in #$pullRequestNo'
-          #custom-notsigned-prcomment: 'Thank you for your submission, we really appreciate it. Like many open-source projects, we ask that you agree to our [Contributor License Agreement](https://github.com/swathimr/edgeworkers-examples/blob/master/cla.md) before we can accept your contribution. You can sign the CLA by posting a comment in this PR matching the text below:'
-          #custom-pr-sign-comment: 'The signature to be committed in order to sign the CLA'
-          #custom-allsigned-prcomment: 'pull request comment when all contributors has signed, defaults to **CLA Assistant Lite bot** All Contributors have signed the CLA.'
-          #lock-pullrequest-aftermerge: false - if you don't want this bot to automatically lock the pull request after merging (default - true)
-          #use-dco-flag: true - If you are using DCO instead of CLA
+          allowlist: sscian,mryakan,joshjohnson,dctheobald,moritzsteiner,tvereecke,gabrioakamai,kayoub-akamai,rcalendi,cosjef,javiergarza,DawChihLiou,bot*

@@ -10,8 +10,8 @@ These code samples are offered as-is, and are working code samples within the Ed
 When contributing to the repository please describe the change or examples in detail in the pull request.
 
 ### contributing examples
-- create a pull request against the `publicexamples` folder.
-- Once the pull request is created, If the contributing user has not previously signed a Contributor License Agreement (CLA), they must complete the CLA signing steps as indicated in the pull request. The CLI signature will be stored in a separate and private repository named cla-sign.
+- Create a pull request against the `public_examples` folder.
+- Once the pull request is created, If the contributing user has not previously signed a Contributor License Agreement (CLA), they must complete the CLA signing steps as indicated in the pull request. The CLA signature will be stored in an Akamai private repository in Github.
 - A static analysis tool will be applied on the code, and this scan must successfully pass. This static analysis will be checking for certain types of coding errors.
 - The code will be scanned for open-source license vulnerabilities, and this scan must successfully pass without any vulnerabilities being detected.
 - A code review will be performed by multiple Akamai members of the edgeworkers-examples repository. The code review must receive at least 2 approvals.

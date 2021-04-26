@@ -98,7 +98,7 @@ export class FindAndReplaceTransformer {
       }
   }
 
-  // Transforms each chunk of the incoming stream, finding and replacing text as the chuunk is processed
+  // Transforms each chunk of the incoming stream, finding and replacing text as the chunk is processed
   transform(text, controller) {
       if (this.done) {
           // if we have already found the maximum number of occurrences, pass the original text through

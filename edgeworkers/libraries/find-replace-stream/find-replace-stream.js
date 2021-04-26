@@ -1,122 +1,168 @@
 /*
 (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-
 FindAndReplaceStream can be used to parse through a ReadableStream and replace a string throughout the entire body.
+Algorithm adapted from [Knuth-Morris-Pratt](https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm)
 
 It takes a minimum of two arguments:
 -A string to be replaced (searched for).
 -A string to use as replacement.
 -A maximum number of times to perform the replacement (OPTIONAL), defaults to all.
-
-v1.2
+v2.0
 */
 
-import { ReadableStream, WritableStream } from 'streams';
 
-export class FindAndReplaceStream {
-  constructor (toreplace, newtext, timesToReplace) {
-    let readController = null;
-    var howmanytimes = -1;
-    var replacements = 0;
-    var last = '';
-    var chunknolast = '';
+import { TransformStream } from 'streams';
 
-    if (timesToReplace && (timesToReplace > 0)) {
-      howmanytimes = timesToReplace;
-    }
-
-    this.readable = new ReadableStream({
-      start (controller) {
-        readController = controller;
+export class FindAndReplaceTransformer {
+  //Build KMP table to allow fast searching with KMP algorithm at chunk boundaries
+  _buildKmpTable(input) {
+      var kmpTable = Array(input.length + 1);
+      kmpTable[0] = -1;
+      let pos = 1;
+      let cnd = 0;
+      while (pos < input.length) {
+          if (input[pos] == input[cnd]) {
+              kmpTable[pos] = kmpTable[cnd];
+          } else {
+              kmpTable[pos] = cnd;
+              while (cnd >= 0 && input[pos] != input[cnd]) {
+                  cnd = kmpTable[cnd];
+              }
+          }
+          pos++;
+          cnd++;
       }
-    });
+      kmpTable[pos] = cnd;
+      return kmpTable;
+  }
 
-    //Function called once for every chunk we process
-    async function processStream(text, done) {
-      let lookInChunk = true;
+  // Create FindAndReplaceTransformer object
+  // toreplace: a string to be replaced by newtext
+  // newtext: a string that replaces the found text 
+  // timesToReplace: (optional) number of occurrences of toreplace to search for.  If not provided, replace all occurences  
+  constructor(toreplace, newtext, timesToReplace) {
+      this.toreplace = toreplace;
+      this.newtext = newtext;
 
-            // If the number of replacements reaches the maximum amount of times we want to replace, then stop replacing. 
-            // (when unlimited, it will never match) since unlimited is -1
-            if (replacements === howmanytimes){
-              lookInChunk = false;
-            }
+      this.alreadyProcessed = 0;
+
+      this.unenqueuedPos = 0;
+      this.prevUnenqueuedText = "";
+
+      if (timesToReplace === 0) {
+          //nothing to do.  Exit early
+          this.done = true;
+          return;
+      }
 
 
-            if (!done) {
-              
-              // We append last (initially blank) to the start of the chunk. This is used to persist a carryover string between chunks
-              // in order to prevent our searched string to hide split between chunks
-              text = last + text
 
-              if (lookInChunk){
-                while (lookInChunk) {
-                  let where = text.indexOf(toreplace)
+      if (timesToReplace && (timesToReplace > 0)) {
+          this.howmanytimes = timesToReplace;
+      } else {
+          this.howmanytimes = null;
+      }
 
-                      //We search for our string. If found:
-                        if ((where != -1) && text.length >= toreplace.length) { //positive means we found our string in the middle of two chunks
-                          
-                          replacements += 1;
-                            //we enqueue the text until the index where it was found, and add the replacement string.
-                            readController.enqueue(text.substring(0, where))
-                            readController.enqueue(newtext)
-                            //we reduce the chunk and remove the former string from the beginning
-                            text = text.substring(where + toreplace.length);
+      this.done = false;
+      this.kmpTable = this._buildKmpTable(toreplace);
+      this.streamSearchPos = 0;
+      this.findTextSearchPos = 0;
+      this.timesFound = 0;
+  }
 
-                            //if we have matched the amount of times to replace, we won't be looking further after this.
-                            if (replacements === howmanytimes){
-                              lookInChunk = false;
-                              const backtrackPosition =  text.length - toreplace.length + 1;
-                              last = text.substring(backtrackPosition);
-                              readController.enqueue(text.substring(0, backtrackPosition));
-                            }
+  // helper to avoid enqueueing empty strings
+  enqueue(controller, text) {
+      if (text.length > 0) {
+          controller.enqueue(text);
+      }
+  }
 
-                        // If the string is not found in this chunk, and the chunk is smaller than the length of the searched string, we use the remainder of the
-                        // chunk as our temp string to carry over to start the next chunk with.
-                      } else if (where == -1 && text.length <= toreplace.length) {
-                        lookInChunk = false;
-                        last = text;
+  flushPrevUnenqueuedText(controller) {
+      this.enqueue(controller, this.prevUnenqueuedText);
+      this.prevUnenqueuedText = "";
+  }
 
-                        // If the string is not found in this chunk anymore, we write as much as we can to the queue, and leave a small chunk at the end
-                        // as our temp string to carry over to start the next chunk with.
-                      } else  { 
-                        lookInChunk = false;
+  onTextFound(text, controller) {
+      this.enqueue(controller, this.prevUnenqueuedText.substring(0, this.prevUnenqueuedText.length - this.toreplace.length + this.streamSearchPos - this.alreadyProcessed));
+      this.prevUnenqueuedText = "";
+      if (this.streamSearchPos - this.toreplace.length > 0) {
+          this.enqueue(controller, text.substring(this.unenqueuedPos - this.alreadyProcessed, this.streamSearchPos - this.alreadyProcessed - this.toreplace.length));
+      }
+      this.enqueue(controller, this.newtext);
+      this.unenqueuedPos = this.streamSearchPos;
+      this.prevUnenqueuedText = "";
+      this.timesFound++;
+      if (this.howmanytimes && this.timesFound >= this.howmanytimes) {
+          this.done = true;
+          this.enqueue(controller, text.substring(this.streamSearchPos - this.alreadyProcessed));
+      }
+  }
 
-                            // find a position to backtrack to. ideally, total chunk length - length of the searched string +1, because the search string 
-                            // is potentially incomplete by 1 char in the middle of chunks
-                            const backtrackPosition =  text.length - toreplace.length + 1;
-                            last = text.substring(backtrackPosition);
-                            readController.enqueue(text.substring(0, backtrackPosition));
-                          }
-                        }
-                      }else{
-                    //if we aren't going to look into a chunk (probably because this is the last bit after we didn't find any matches)
-                    // find a position to backtrack to. ideally, total chunk length - length of the searched string +1, because the search string 
-                    // is potentially incomplete by 1 char in the middle of chunks
-                    const backtrackPosition =  text.length - toreplace.length + 1;
-                    last = text.substring(backtrackPosition);
-                    readController.enqueue(text.substring(0, backtrackPosition));
+  // Transforms each chunk of the incoming stream, finding and replacing text as the chunk is processed
+  transform(text, controller) {
+      if (this.done) {
+          // if we have already found the maximum number of occurrences, pass the original text through
+          this.enqueue(controller, text);
+      } else {
+          while (!this.done && this.streamSearchPos - this.alreadyProcessed < text.length) {
+              //indexOf is more efficient, but can only be used if there is no partial match at the end of the previous chunk which remains to be processed
+              // * the text to match is contained entirely in the current chunk
+              if (this.streamSearchPos - this.alreadyProcessed <= text.length - this.toreplace.length && this.prevUnenqueuedText.length == 0) {
+                  let foundPos = text.indexOf(this.toreplace, this.streamSearchPos - this.alreadyProcessed);
+                  if (foundPos == -1) {
+                      // If not found with indexOf, move search position to look for partial match near end of chunk
+                      this.streamSearchPos = this.alreadyProcessed + text.length - this.toreplace.length + 1;
+                  } else {
+                      // If found with indexOf, move search position to after match and enqueue replacement
+                      this.streamSearchPos = this.alreadyProcessed + foundPos + this.toreplace.length;
+                      this.onTextFound(text, controller);
                   }
-
-
-                } else {
-              // readController.close() is about to be called. Means there are no more chunks, so we append the last mini chunk we had saved
-              // before readController closes and we're done.
-              readController.enqueue(last)
-            }
-            
-
+              } else {
+                  // If near the end of chunk boundary, switch to KMP to look for partial match
+                  if (this.toreplace[this.findTextSearchPos] == text[this.streamSearchPos - this.alreadyProcessed]) {
+                      this.streamSearchPos++;
+                      this.findTextSearchPos++;
+                      if (this.findTextSearchPos == this.toreplace.length) {
+                          this.onTextFound(text, controller);
+                      }
+                  } else {
+                      this.findTextSearchPos = this.kmpTable[this.findTextSearchPos];
+                      if (this.findTextSearchPos < 0) {
+                          this.streamSearchPos++;
+                          this.findTextSearchPos++;
+                          this.flushPrevUnenqueuedText(controller);
+                      }
+                  }
+              }
           }
 
-          let completeProcessing = Promise.resolve();
+          if (!this.done) {
+              // We hit the end of the chunk boundary, but have not yet found the maximum number of items to replace.
 
-          this.writable = new WritableStream({
-            write (text) {
-              completeProcessing = processStream(text, false);
-            },
-            close (controller) {
-              processStream('', true);
-              completeProcessing.then(() => readController.close());
-            }
-          });
-        }
+              if (this.prevUnenqueuedText) {
+                  // handle text that has not been enqueued from previous chunk
+                  this.enqueue(controller, this.prevUnenqueuedText.substring(0, this.prevUnenqueuedText.length + text.length - this.findTextSearchPos));
+                  this.prevUnenqueuedText = this.prevUnenqueuedText.substring(this.prevUnenqueuedText.length + text.length - this.findTextSearchPos);
+              }
+
+              if (this.findTextSearchPos < this.toreplace.length) {
+                  // If we have a partial match at the end of the chunk, enqueue everything before the match and store the partial match in prevUnenqueuedText
+                  this.enqueue(controller, text.substring(this.unenqueuedPos - this.alreadyProcessed, text.length - this.findTextSearchPos));
+                  this.prevUnenqueuedText += text.substring(text.length - this.findTextSearchPos);
+              }
+              this.alreadyProcessed += text.length;
+          }
       }
+  }
+
+  // End of stream.  Flush any unenqueued text, in case there was a partial match at the end of the stream.
+  flush(controller) {
+      this.flushPrevUnenqueuedText(controller);
+  }
+}
+
+export class FindAndReplaceStream extends TransformStream {
+  constructor(toreplace, newtext, timesToReplace, writableStrategy, readableStrategy) {
+      super(new FindAndReplaceTransformer(toreplace, newtext, timesToReplace), writableStrategy, readableStrategy);
+  }
+}

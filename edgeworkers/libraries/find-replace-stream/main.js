@@ -6,7 +6,6 @@ Purpose:  Modify an HTML streamed response by replacing a text string two times 
 
 */
 
-import { ReadableStream, WritableStream } from 'streams';
 import { httpRequest } from 'http-request';
 import { createResponse } from 'create-response';
 import { TextEncoderStream, TextDecoderStream } from 'text-encode-transform';
@@ -22,8 +21,11 @@ export function responseProvider (request) {
   return httpRequest(`${request.scheme}://${request.host}${request.url}`).then(response => {
     return createResponse(
       response.status,
-      response.headers,
-      response.body.pipeThrough(new TextDecoderStream()).pipeThrough(new FindAndReplaceStream(tosearchfor, newtext, howManyReplacements)).pipeThrough(new TextEncoderStream())
+      response.getHeaders(),
+      response.body
+          .pipeThrough(new TextDecoderStream())
+          .pipeThrough(new FindAndReplaceStream(tosearchfor, newtext, howManyReplacements))
+          .pipeThrough(new TextEncoderStream())
     );
   });
 }

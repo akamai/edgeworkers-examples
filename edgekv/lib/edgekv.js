@@ -1,6 +1,6 @@
 /*
 (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-Version: 0.2
+Version: 0.3
 Purpose:  Provide a helper class to simplify the interaction with EdgeKV in an EdgeWorker.
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/lib
 */
@@ -42,11 +42,11 @@ export class EdgeKV {
 		}
 	}
 
-	throwError(message, status, text) {
+	throwError(failed_reason, status, body) {
 		throw {
-			failed: message,
+			failed: failed_reason,
 			status: status,
-			body: text,
+			body: body,
 			toString: function () { return JSON.stringify(this); }
 		};
 	}
@@ -66,28 +66,29 @@ export class EdgeKV {
 				case 404:
 					return default_value;
 				default:
-					let text = "";
+					let content = "";
 					try {
-						text = await response.text();
+						content = await response.text();
+						content = JSON.parse(content);
 					} catch (error) { }
-
-					this.throwError(error_text,
-						response.status,
-						text);
+					throw { status: response.status, body: content };
 			}
 		} catch (error) {
+			if (error.hasOwnProperty('status')) {
+				this.throwError(error_text + " FAILED", error.status, error.body);
+			}
 			this.throwError(error_text + " FAILED", 0, error.toString());
 		}
 	}
 
 	validate({ namespace = null, group = null, item = null }) {
-		if (namespace && !/^[A-Za-z0-9_-]{1,32}$/.test(namespace)) {
+		if (!namespace || !/^[A-Za-z0-9_-]{1,32}$/.test(namespace)) {
 			throw "Namespace is not valid. Must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -";
 		}
-		if (group && !/^[A-Za-z0-9_-]{1,128}$/.test(group)) {
+		if (!group || !/^[A-Za-z0-9_-]{1,128}$/.test(group)) {
 			throw "Group is not valid. Must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -";
 		}
-		if (item && !/^[A-Za-z0-9_-]{1,512}$/.test(item)) {
+		if (!item || !/^[A-Za-z0-9_-]{1,512}$/.test(item)) {
 			throw "Item is not valid. Must be 512 characters or less, consisting of A-Z a-z 0-9 _ or -";
 		}
 	}
@@ -104,8 +105,8 @@ export class EdgeKV {
 	}
 
 	addTimeout(options, timeout) {
-		if (timeout && (typeof timeout !== 'number' || !isFinite(timeout) || timeout <= 0)) {
-			throw "Timeout is not valid. Must be a number greater than 0.";
+		if (timeout && (typeof timeout !== 'number' || !isFinite(timeout) || timeout <= 0 || timeout > 1000)) {
+			throw "Timeout is not valid. Must be a number greater than 0 and less than 1000.";
 		}
 		if (timeout) {
 			options.timeout = timeout;
@@ -125,7 +126,7 @@ export class EdgeKV {
 		return result;
 	}
 
-	putRequest({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
+	putRequest({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(uri, this.addTimeout({
@@ -141,12 +142,12 @@ export class EdgeKV {
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {string} $0.value text value to put into the EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
+	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
 	 * @returns {string} if the operation was successful, the response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async putText({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
+	async putText({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
 		return this.requestHandlerTemplate(
 			() => this.putRequest({ namespace: namespace, group: group, item: item, value: value, timeout: timeout }),
 			(response) => response.text(),
@@ -162,12 +163,12 @@ export class EdgeKV {
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {object} $0.value json value to put into the EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
+	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
 	 * @returns {string} if the operation was successful, the response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async putJson({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
+	async putJson({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
 		return this.requestHandlerTemplate(
 			() => this.putRequest({ namespace: namespace, group: group, item: item, value: JSON.stringify(value), timeout: timeout }),
 			(response) => response.text(),
@@ -177,7 +178,7 @@ export class EdgeKV {
 		);
 	}
 
-	getRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null }) {
+	getRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(uri, this.addTimeout({
@@ -192,12 +193,12 @@ export class EdgeKV {
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to get from the EdgeKV
 	 * @param {string} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
+	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
 	 * @returns {string} if the operation was successful, the text response from the EdgeKV or the default_value on 404
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null }) {
+	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null } = {}) {
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.text(),
@@ -213,12 +214,12 @@ export class EdgeKV {
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to get from the EdgeKV
 	 * @param {object} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
+	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
 	 * @returns {object} if the operation was successful, the json response from the EdgeKV or the default_value on 404
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null }) {
+	async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null } = {}) {
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.json(),
@@ -228,7 +229,7 @@ export class EdgeKV {
 		);
 	}
 
-	deleteRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null }) {
+	deleteRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(uri, this.addTimeout({
@@ -242,12 +243,12 @@ export class EdgeKV {
 	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to delete from the EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
+	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
 	 * @returns {string} if the operation was successful, the text response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async delete({ namespace = this.#namespace, group = this.#group, item, timeout = null }) {
+	async delete({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
 		return this.requestHandlerTemplate(
 			() => this.deleteRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.text(),

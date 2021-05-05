@@ -20,11 +20,14 @@ This example expects a working EdgeKV instance with these settings:
 
 - Namespace: default
 - Group: abpath
-
+- Keys: BuckeNames
 This example expects data to be populated:
-- Key: BucketNames *(A or B)*
-- Value: Path *(ekv_experience/experiment-A or ekv_experience/experiment-B)*
+- Key: The BucketName *(e.g. A or B)* Please note that keys are case sensitive
+- Value: The Path *(e.g. ekv_experience/experiment-A or ekv_experience/experiment-B)*
 
 ### Origin
 This example rewrites URL's before sending them to the origin, make the endpoint of your rewrite actually exists. If not you will see 404 response codes.
+This example assumes the EW is configured using the relative path "/edgekv/abtest", please update function *getRedirect()* accordingly.
+
+
 

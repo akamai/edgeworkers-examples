@@ -9,3 +9,6 @@ This EdgeWorker randomly places a user into one of two buckets (A or B). The buc
 - The bucket-to-path mapping will be stored in an EdgeKV database
 - Client bucket selection will be persisted via a cookie value to ensure a client is locked to the same URL on subsequent visits. 
 - The test will be implemented by redirecting a user accessing a website with a URI path of /edgekv/abtest. 
+
+## Property Manager Variables
+This EdgeWorker requires a PMUSER variable to be defined in Property Manager: PMUSER_EKV_ABTEST_EW

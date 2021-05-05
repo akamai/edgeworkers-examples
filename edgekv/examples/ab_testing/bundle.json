@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "1.00",
+    "description" : "This EdgeWorker randomly places a user into one of two buckets (A or B). The bucket defines if the request is forwarded to either an experimental or control URL."
+}

@@ -1,4 +1,4 @@
-# AB Testing
+# A/B Test with EdgeWorkers and EdgeKV
 
 ## Copyright Notice
 (c) Copyright 2021 Akamai Technologies, Inc. Licensed under Apache 2 license.

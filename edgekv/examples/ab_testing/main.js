@@ -2,8 +2,6 @@ import { Cookies, SetCookie } from 'cookies';
 import { logger } from 'log';
 import { EdgeKV } from './edgekv.js';
 const default_path = "ekv_experience/default";
-const bucketPathMap = new Map([["A", "ekv_experience/experiment-A"], 
-                               ["B", "ekv_experience/experiment-B"]]);
 const edgeKv_abpath = new EdgeKV({namespace: "default", group: "abpath"});
 
 export async function onClientRequest(request) {

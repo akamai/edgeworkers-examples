@@ -19,7 +19,11 @@ If you are new to EdgeKV first check the [Hello World Example](https://github.co
 This EdgeWorker requires a PMUSER variable to be defined in Property Manager: PMUSER_EKV_ABTEST_EW
 
 ### EdgeKV
-EdgeKV *(namespace: default, group: abpath)* contains the required data to rewrite the incoming request in group.
+This example expects a working EdgeKV:
+- Namespace: default
+- Group: abpath
+
+Data:
 - Key: BucketName *(A or B)*
 - Value: Path *(ekv_experience/experiment-A or ekv_experience/experiment-A)*
 

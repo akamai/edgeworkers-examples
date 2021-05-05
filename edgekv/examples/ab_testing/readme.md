@@ -15,9 +15,6 @@ If you are new to EdgeKV first check the [Hello World Example](https://github.co
 
 ## Setup
 
-### Property Manager Variables
-This EdgeWorker requires a PMUSER variable to be defined in Property Manager: PMUSER_EKV_ABTEST_EW
-
 ### EdgeKV
 This example expects a working EdgeKV instance with these settings:
 
@@ -30,7 +27,4 @@ This example expects data to be populated:
 
 ### Origin
 This example rewrites URL's before sending them to the origin, make the endpoint of your rewrite actually exists. If not you will see 404 response codes.
-
-## A step by Step Guide
-{{fill in}}
 

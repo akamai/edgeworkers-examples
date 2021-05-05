@@ -13,7 +13,7 @@ This EdgeWorker randomly places a user into one of two buckets (A or B). The buc
 ## Property Manager Variables
 This EdgeWorker requires a PMUSER variable to be defined in Property Manager: PMUSER_EKV_ABTEST_EW
 
-## EKV
+## EdgeKV
 EdgeKV *(namespace: default, group: abpath)* contains the required data to rewrite the incoming request in group.
 - Key: BucketName *(A or B)*
 - Value: Path *(ekv_experience/experiment-A or ekv_experience/experiment-A)*

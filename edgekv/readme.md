@@ -1,6 +1,9 @@
 # Akamai EdgeKV Examples
-Akamai Edge Key-Value (EdgeKV) is a low-latency, distributed key-value store built to compliment EdgeWorkers. EdgeKV enables you to build data-driven JavaScript applications that require fast, frequent reads and infrequent writes. The code snippets in this repository represent a jumping-off point to help you learn about EdgeKV, and how it integrates with EdgeWorkers.
-These code samples are offered as-is, and are working code samples. Feel free to use, modify and extend what you find here!
+Akamai Edge Key-Value (EdgeKV) is a low-latency, distributed key-value store built to compliment EdgeWorkers. EdgeKV enables you to build data-driven JavaScript applications that require fast, frequent reads and infrequent writes. The code snippets in this repository are a great way to start learning about EdgeKV, and how it integrates with EdgeWorkers.
+
+> :warning: **Warning!**
+> Customers are responsible for maintaining control over the data hosted on this service and for appropriately using the data returned by EdgeKV. EdgeKV does not support storage of sensitive information where the consequence of an unauthorized disclosure would be a serious business or compliance issue. Customers should not use sensitive information when creating namespaces, groups, keys, or values.
+
 
 ## Resources
 For more information on EdgeWorkers, please refer to the following resources:
@@ -11,9 +14,9 @@ For more information on EdgeWorkers, please refer to the following resources:
 
 ## Subfolder organization
 * **/apis**: EdgeKV administrative API documentation for Tech Preview
-* **/examples**: A set of EdgeWorker examples implementing various EdgeKV use cases
-* **/lib**: EdgeKV JS API helper library documentation and JavaScript code
+* **/examples**: EdgeWorker examples implementing various EdgeKV use cases
+* **/lib**: EdgeKV JS API helper library and documentation 
 * **/utils**: EdgeKV helper utilities
 
 ## Reporting Issues
-You are all set, happy coding! If you experience any issues with these examples, please raise them as a github issue. Feel free to create a pull request with the fix, suggestions, or contributions of your own code.
+These are working code samples that you may use, modify and extend at your discretion. If you experience any problems, please raise a Github issue or create a pull request with fixes, suggestions, or code contributions.

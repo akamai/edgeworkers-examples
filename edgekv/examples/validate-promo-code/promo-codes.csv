@@ -1,0 +1,5 @@
+code,valid_from,valid_to,minimum_purchase,discount_amount,discount_percent,description
+SAVE10PCT,1577836800,1893456000,0,0,10,Save 10% on any purchase
+BUY100SAVE10,1577836800,1893456000,100,10,0,Save $10 off a $100 purchase
+EXPIRED,1546300800,1577836800,100,10,0,Example of an expired promo code
+NOTYETACTIVE,1893456000,2208988800,100,10,0,Example of a promo code which is not yet active

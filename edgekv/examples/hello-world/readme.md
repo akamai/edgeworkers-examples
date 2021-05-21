@@ -20,7 +20,9 @@ Please ensure you fulfill the following pre-requisites before you execute this e
 * Get familiar with the EdgeKV data model (namespace, group, item). [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html)
 * Create an EdgeWorker ID (EWID) and add it to your site's config in property manager. [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-F11192E1-0BFB-415F-88FA-5878C30B7D2A.html)
 * Initialize your EdgeKV store [link to instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html). This step also creates the default namespace used in this example.
-* Generate your OPENAPI client credentials. [link](https://developer.akamai.com/api/getting-started)
+* Generate your management API/CLI client credentials. [link](https://developer.akamai.com/api/getting-started)
+* If you intend to use the EdgeKV management API, refer to the latest instructions [here](https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/apis)
+* If you intend to use the EdgeKV Command Line Interface (CLI), make sure you have the latest version installed. [link to instructions](https://github.com/akamai/cli-edgeworkers/blob/master/docs/edgekv_cli.md)
 * Generate EdgeKV Access Token for the default namespace. [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html)
 * Download the following sample code. This constitutes the core of your EdgeWorker code bundle for this example.
 ```
@@ -44,7 +46,7 @@ You need to add some items to your EdgeKV store before you execute your logic.
 
 The following are some examples you could use. The full EdgeKV OPENAPI specification can be found [here](https://github.com/akamai/edgeworkers-examples/blob/master/edgekv/apis/readme.md).
 
-To add the various language specific greetings to your EdgeKV store, use:
+To add the various language specific greetings to your EdgeKV store via the management API, use:
 
 ```
 METHOD | ENDPOINT                                             | Data
@@ -55,12 +57,20 @@ PUT    | /api/v1/namespaces/default/groups/greetings/items/es | "Hola Mundo"
 
 ```
 
+or via the CLI:
+
+```
+% akamai edgekv write text staging default greetings en "Hello World" 
+% akamai edgekv write text staging default greetings fr "Bonjour le Monde" 
+% akamai edgekv write text staging default greetings es "Hola Mundo"
+```
+
     Note: Due to the eventual consistency properties of the EdgeKV store, 
           your data update may take up to 10 seconds to be reflected in the response of a subsequent GET request.
 
 ### Verifying data in your EdgeKV store
 
-To retrieve the various language specific greetings from your EdgeKV store, use:
+To retrieve the various language specific greetings from your EdgeKV store via the management API, use:
 
 ```
 METHOD | ENDPOINT                                             
@@ -71,9 +81,17 @@ GET    | /api/v1/namespaces/default/groups/greetings/items/es
 
 ```
 
+or via the CLI:
+
+```
+% akamai edgekv read item staging default greetings en
+% akamai edgekv read item staging default greetings fr
+% akamai edgekv read item staging default greetings es
+```
+
 ### Delete data in your KV Store
 
-To delete the various language specific greetings from your kv store, use:
+To delete the various language specific greetings from your kv store via the management API, use:
 
 ```
 METHOD | ENDPOINT                                             
@@ -82,6 +100,14 @@ DELETE | /api/v1/namespaces/default/groups/greetings/items/en
 DELETE | /api/v1/namespaces/default/groups/greetings/items/fr
 DELETE | /api/v1/namespaces/default/groups/greetings/items/es
 
+```
+
+or via the CLI:
+
+```
+% akamai edgekv delete item staging default greetings en
+% akamai edgekv delete item staging default greetings fr
+% akamai edgekv delete item staging default greetings es
 ```
 
     Note: Due to the eventual consistency properties of the EdgeKV store, 
@@ -104,6 +130,8 @@ tar czvf ekv_hello_world.tgz bundle.json edgekv.js edgekv_tokens.js main.js
 
 Let's assume you added a behavior containing the EWID associated with this example to 
 your Akamai property under a match condition for path `http://mysite.com/helloworld`.
+
+Note: mysite.com is not an actual site used for this example. Please replace with your own site domain.
 
 You can test this out using the following curl command:
 

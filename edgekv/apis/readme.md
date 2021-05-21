@@ -1,4 +1,4 @@
-# EdgeKV API Tech Preview
+# EdgeKV API
 
 ## Before you start
 
@@ -68,7 +68,7 @@ Once EdgeKV is provisioned, a default namespace is created in both `staging` and
 
 Request:
 ```
-$ http --auth-type edgegrid GET :/edgekv/v1/networks/staging/namespaces
+$ http --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces
 ```
 
 Response:
@@ -153,7 +153,7 @@ The retention period returned is in seconds.
 ### 5. Generate an EdgeKV Access Token
 An EdgeKV-specific access token is required to access each namespace in your data model from EdgeWorkers. Refer to [Generate an EdgeKV access token instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html) for information about EdgeKV Access Token.
 
-> **_NOTE:_** It is recommended that you generate exactly one token per namespace.
+> **_NOTE:_** Token name needs to be unique within your account. You cannot use the name of an existing token.
 
 #### Endpoint:
 
@@ -161,13 +161,14 @@ To generate a new EdgeKV Access Token for a specific namespace:
 `POST /edgekv/v1/tokens`
 
 **Content-Type:** `application/json`
+
 **Request body:** 
 ```
 {
     "name": "<token_name>",
     "allow_on_production": "true" | "false",
     "allow_on_staging": "true" | "false",
-    "expiry": "<expiry_datetime>",
+    "expiry": "<expiry_date>",
     "namespace_permissions": {
         "<namespace-id>": [
             "r",
@@ -182,23 +183,89 @@ To generate a new EdgeKV Access Token for a specific namespace:
 Request:
 
 ```
-$ http --print=b --auth-type edgegrid -a default: POST :/edgekv/v1/tokens name=my_token allow_on_staging=true allow_on_production=true expiry=2020-12-31T01:00:00-00:00 namespace_permissions:='{"default":["r","w", "d"]}'
+$ http --print=b --auth-type edgegrid -a default: POST :/edgekv/v1/tokens name=my_token allow_on_staging=true allow_on_production=true expiry=2020-12-31 namespace_permissions:='{"default":["r","w", "d"]}'
 ```
 Response:
 ```
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-    "expiry": "2020-12-31T01:00:00-00:00",
+    "expiry": "2020-12-31",
     "name": "my_token",
     "uuid": "fa3a7ae0-1b0c-45c7-adc3-f0638c6b7466",
     "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 }
 ```
-> **_NOTE:_** Please securely store the output of this command. You will need it to update the `edgekv_tokens.js` file.
+> **_NOTE:_** You can use the output of this command to update the `edgekv_tokens.js` file.
 
 
-### 6.  Write an item to an EdgeKV namespace
+### 6. Retrieve an EdgeKV Access Token
+You can retrieve an EdgeKV access token. To retrieve a token you need the token name used when it was created. 
+An EdgeKV-specific access token is required to access each namespace in your data model from EdgeWorkers. Refer to [Generate an EdgeKV access token instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html) for information about EdgeKV Access Token.
+
+> **_NOTE:_** You cannot retrieve tokens created during the Tech Preview Period.
+
+#### Endpoint:
+
+To retrieve an EdgeKV Access Token:
+`GET /edgekv/v1/tokens/{tokenName}`
+
+#### Example
+Request:
+
+```
+$ http --print=hbHB --auth-type edgegrid GET :/edgekv/v1/tokens/token1
+```
+Response:
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{     
+    "expiry": "2021-06-30",     
+    "name": "token2",     
+    "uuid": "2f8e59c9-43ab-5f9c-b498-56ab0253dc9a",     
+    "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
+}
+```
+> **_NOTE:_** You can use the output of this command to update the `edgekv_tokens.js` file.
+
+
+### 7. List EdgeKV Access Tokens
+You can list access tokens created for EdgeKV.
+
+
+#### Endpoint:
+
+To list EdgeKV Access Tokens:
+`GET /edgekv/v1/tokens`
+
+
+#### Example
+Request:
+
+```
+$ http --print=b --auth-type edgegrid -a default: GET :/edgekv/v1/tokens
+```
+Response:
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "tokens": [
+        {
+            "expiry": "2021-06-30",
+            "name": "token1",
+            "uuid": "12886ccf-7662-5f19-b039-766740ce227f"
+        },
+        {
+            "expiry": "2021-06-30",
+            "name": "default_token",
+            "uuid": "a600dfaa-3b7a-5d2a-bae3-b0c0d0e88e4a"
+        }
+    ]
+}
+```
+### 8.  Write an item to an EdgeKV namespace
 You can use the following API to create or update an item in EdgeKV. You need to specify the `namespace` and `group` this item belongs to. The `namespace` must have been already created, while the `group` will be automatically created for you if it does not exist.
 
 #### Endpoint:
@@ -281,12 +348,12 @@ Response:
 ```
 HTTP/1.1 200 OK
 
-Item was upserted in KV store with database 123456, namespace languages, group countries, and key US.
+Item was upserted in KV store with database 123456, namespace languages, group languages, and key US.
 
 ```
 
 
-### 7.  Read an item from an EdgeKV namespace
+### 9.  Read an item from an EdgeKV namespace
 You can use the following API to read an item from EdgeKV. You need to specify the `namespace` and `group` this item belongs to. 
 
 > **_NOTE:_** It can take up to 10 seconds or longer to read an item that has been recently written to EdgeKV. A `404 Not Found` response status code may be returned during that period. This is normal behavior for EdgeKV which is an eventually consistent database.
@@ -312,7 +379,7 @@ Content-Type: text/plain;charset=utf-8
     "name": "Germany"
 }
 ```
-### 8.  Delete an item from an EdgeKV namespace
+### 10.  Delete an item from an EdgeKV namespace
 You can use the following API to delete an item from EdgeKV. You need to specify the `namespace` and `group` this item belongs to. 
 
 #### Endpoint:
@@ -324,17 +391,17 @@ To delete an item:
 
 
 ```
-$ http --print=hbHB --auth-type edgegrid -a default: DELETE :/edgekv/v1/networks/staging/namespaces/marketing/groups/languages/items/US
-DELETE /edgekv/v1/networks/staging/namespaces/marketing/groups/languages/items/US
+$ http --print=hbHB --auth-type edgegrid -a default: DELETE :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US
+DELETE /edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US
 ```
 Response:
 ```
 HTTP/1.1 200 OK
 
-Item was delete in KV store with database 123456 namespace default group languages key US.
+Item was delete in KV store with database 123456 namespace default group countries key US.
 ```
 
-### 9.  List items within a group
+### 11.  List items within a group
 You can list items in a group.
 
 > **_NOTE:_** A maximum of 100 items can be returned.
@@ -366,13 +433,18 @@ Content-Type: application/json;charset=utf-8
 
 EdgeKV API makes use of standard HTTP response codes such as
 
+* 102 Processing
 * 200 Success
 * 201 Created
 * 400 Bad Request
-* 403 Unauthorized
+* 401 Unauthorized
+* 403 Forbidden
 * 404 Not Found
+* 409 Conflict
+* 413 Payload Too Large
 * 429 Too Many Requests
 * 500 Internal Error
+* 501 Not Implemented
 * 504 Gateway Timeout
 
 > **_NOTE:_** You may get back `404 Not Found` when reading an item that has been written to EdgeKV, but that may not always be treated as an error due to the eventual consistency property of EdgeKV. You can read more about EdgeKV's eventual consistency model in the [EdgeKV Getting Started Guide](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html).

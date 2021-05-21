@@ -15,12 +15,12 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 ## Documentation
 ### Constructor
 	/**
-	 * Constructor to allow setting default namespace and group.
-	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations.
-	 * @param {string} [namespace] the default namespace to use for all GET, PUT, and DELETE operations.
-	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -.
-	 * @param {string} [group] the default group to use for all GET, PUT, and DELETE operations.
-	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -.
+	 * Constructor to allow setting default namespace and group
+	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations
+	 * @param {string} [namespace] the default namespace to use for all GET, PUT, and DELETE operations
+	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -
+	 * @param {string} [group] the default group to use for all GET, PUT, and DELETE operations
+	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
 	 */
 	new EdgeKV(namespace = "default", group = "default")
 ### getText
@@ -30,11 +30,12 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to get from the EdgeKV
 	 * @param {string} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
+	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
 	 * @returns {string} if the operation was successful, the text response from the EdgeKV or the default_value on 404
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null })
+	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null })
 ### getJson
 	/**
 	 * async GET json from an item in the EdgeKV.
@@ -42,11 +43,12 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to get from the EdgeKV
 	 * @param {object} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
+	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
 	 * @returns {object} if the operation was successful, the json response from the EdgeKV or the default_value on 404
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	 async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null })
+	async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null })
 ### putText
 	/**
 	 * async PUT text into an item in the EdgeKV.
@@ -54,11 +56,12 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {string} $0.value text value to put into the EdgeKV
+	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
 	 * @returns {string} if the operation was successful, the response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	 async putText({ namespace = this.#namespace, group = this.#group, item, value })
+	async putText({ namespace = this.#namespace, group = this.#group, item, value, timeout = null })
 ### putJson
 	/**
 	 * async PUT json into an item in the EdgeKV.
@@ -66,22 +69,31 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {object} $0.value json value to put into the EdgeKV
+	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
 	 * @returns {string} if the operation was successful, the response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	 async putJson({ namespace = this.#namespace, group = this.#group, item, value })
+	async putJson({ namespace = this.#namespace, group = this.#group, item, value, timeout = null })
 ### delete
 	/**
 	 * async DELETE an item in the EdgeKV.
 	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to delete from the EdgeKV
+	 * @param {number} [$0.timeout=null] the maximum time, in milliseconds, to wait for the response
 	 * @returns {string} if the operation was successful, the text response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async delete({ namespace = this.#namespace, group = this.#group, item })
+	async delete({ namespace = this.#namespace, group = this.#group, item, timeout = null })
+### Errors
+	All errors coming from the use of the EdgeKV class will be in the following format:
+	{
+		"failed": "whatFailed",
+		"status": responseStatusCode,
+		"body": "descriptionOfFailure"
+	}
 
 ## Usage Examples
 ### Get Product Sale Price

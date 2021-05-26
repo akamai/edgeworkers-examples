@@ -7,7 +7,7 @@
 This example demonstrates how an EdgeWorker can be used to wrap JSON response with dynamic unique callback function leveraging Response Provider and Stream API for efficient content transformation.
 
 The EW should be enabled on JSON requests containing `callback` query parameter. This can easily be accomplished with match on file extension and query parameter match in Property Manager.  
-When such request comes in, EW removes the `callback` query param and makes a sub-request to fetch the JSON data. The data is served in stream manner. EW code adds prefix with callback function name captured from the query param, and suffix. Both - JSON data and transformed data - can be cached and this can be achieved with standard Caching behavior in Property Manager (if caching is allowed in your use-case).
+When such request comes in, this EW removes the `callback` query param and makes a sub-request to fetch the JSON data, serving it as a stream. EW code adds prefix with callback function name captured from the query param and suffix. Both JSON data and transformed data can be cached and this can be achieved with standard "Caching" behavior in Property Manager (if caching is allowed in your use-case).
 
 ## More details on EdgeWorkers
 - [Akamai EdgeWorkers](https://developer.akamai.com/akamai-edgeworkers-overview)

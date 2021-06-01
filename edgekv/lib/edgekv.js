@@ -1,6 +1,6 @@
 /*
 (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-Version: 0.4
+Version: 0.4.1
 Purpose:  Provide a helper class to simplify the interaction with EdgeKV in an EdgeWorker.
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/lib
 */
@@ -122,8 +122,12 @@ export class EdgeKV {
 				write(chunk) {
 					result += chunk;
 				}
-			}));
+			}), { preventAbort: true });
 		return result;
+	}
+
+	async streamJson(response_body) {
+		return JSON.parse(await this.streamText(response_body));
 	}
 
 	putRequest({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
@@ -257,7 +261,7 @@ export class EdgeKV {
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.json(),
-			(response) => JSON.parse(this.streamText(response.body)),
+			(response) => this.streamJson(response.body),
 			"GET JSON",
 			default_value
 		);

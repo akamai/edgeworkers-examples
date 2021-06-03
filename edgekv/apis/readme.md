@@ -46,10 +46,10 @@ HTTP/1.1 201 Created
 Content-Type: application/json
 
 {
-    "account_status": "INITIALIZED",
+    "accountStatus": "INITIALIZED",
     "cpcode": "123456",
-    "production_status": "INITIALIZED",
-    "staging_status": "INITIALIZED"
+    "productionStatus": "INITIALIZED",
+    "stagingStatus": "INITIALIZED"
 }
 ```
 
@@ -59,16 +59,17 @@ Once EdgeKV is provisioned, a default namespace is created in both `staging` and
 
 #### Endpoint:
 
-`GET /edgekv/v1/networks/{network}/namespaces`
+`GET /edgekv/v1/networks/{network}/namespaces?details=on`
 
 {network} - Can be either `staging` or `production`
 
+`details=on` (optional) whether to return all namespace attributes or only names.
 
 #### Example:
 
 Request:
 ```
-$ http --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces
+$ http --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces?details=true
 ```
 
 Response:
@@ -78,10 +79,20 @@ Content-Type: application/json
 
 {
     "namespaces": [
-        "default"
+        {
+            "geoLocation": "US",
+            "namespace": "default",
+            "retentionInSeconds": 15724800
+        }
+        {
+            "geoLocation": "US",
+            "namespace": "test1",
+            "retentionInSeconds": 15724800
+        }
     ]
 }
 ```
+> Note: `geoLocation` defaults to "US".
 
 ### 3. Create an EdgeKV namespace
 You may optionally create additional namespaces. You have to specify the network in which the namespace will be created, which can be either `staging` or `production`. 
@@ -96,20 +107,24 @@ To create a new namespace:
 `POST /edgekv/v1/networks/{network}/namespaces`
 
 **Content-Type:** `application/json`
-**Request body:** `{"name":"{namespace-id}"}`
+
+**Request body parameters**
+`namespace` - Namespace name
+`retentionInSeconds` - Specify the retention period for data in this namespace in seconds, or 0 for indefinite.
 
 #### Example:
 
 Request:
 
 ```
-$ http --print=hbHB --auth-type edgegrid -a default: POST :/edgekv/v1/networks/staging/namespaces name=marketing 
+$ http --print=hbHB --auth-type edgegrid -a default: POST :/edgekv/v1/networks/staging/namespaces namespace=marketing retentionInSeconds=0
 
 POST /edgekv/v1/networks/staging/namespaces HTTP/1.1
 
 Content-Type: application/json
 {
-    "name": "marketing"
+    "namespace": "marketing",
+    "retentionInSeconds": 0
 }
 
 ```
@@ -120,7 +135,9 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "retention_period": "15724800"
+    "geoLocation": "US",
+    "namespace": "marketing",
+    "retentionInSeconds": 0
 }
 ```
 
@@ -145,10 +162,11 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "retention_period": "15724800"
+    "geoLocation": "US",
+    "namespace": "marketing",
+    "retentionInSeconds": 0
 }
 ```
-The retention period returned is in seconds.
 
 ### 5. Generate an EdgeKV Access Token
 An EdgeKV-specific access token is required to access each namespace in your data model from EdgeWorkers. Refer to [Generate an EdgeKV access token instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html) for information about EdgeKV Access Token.
@@ -165,12 +183,12 @@ To generate a new EdgeKV Access Token for a specific namespace:
 **Request body:** 
 ```
 {
-    "name": "<token_name>",
-    "allow_on_production": "true" | "false",
-    "allow_on_staging": "true" | "false",
-    "expiry": "<expiry_date>",
-    "namespace_permissions": {
-        "<namespace-id>": [
+    "allowOnProduction": "true | false",
+    "allowOnStaging": "true | false",
+    "expiry": "<expiry date in ISO format>",
+    "name": "<token name>",
+    "namespacePermissions": {
+        "default": [
             "r",
             "w",
             "d"
@@ -183,14 +201,14 @@ To generate a new EdgeKV Access Token for a specific namespace:
 Request:
 
 ```
-$ http --print=b --auth-type edgegrid -a default: POST :/edgekv/v1/tokens name=my_token allow_on_staging=true allow_on_production=true expiry=2020-12-31 namespace_permissions:='{"default":["r","w", "d"]}'
+$ http --print=hbHB --auth-type edgegrid -a default: POST :/edgekv/v1/tokens name=my_token6 allowOnStaging=true allowOnProduction=true expiry="2021-06-30" namespacePermissions:='{"default":["r","w", "d"]}' 
 ```
 Response:
 ```
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-    "expiry": "2020-12-31",
+    "expiry": "2021-06-30",
     "name": "my_token",
     "uuid": "fa3a7ae0-1b0c-45c7-adc3-f0638c6b7466",
     "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -214,7 +232,7 @@ To retrieve an EdgeKV Access Token:
 Request:
 
 ```
-$ http --print=hbHB --auth-type edgegrid GET :/edgekv/v1/tokens/token1
+$ http --print=hbHB --auth-type edgegrid -a default GET :/edgekv/v1/tokens/token1
 ```
 Response:
 ```
@@ -237,8 +255,9 @@ You can list access tokens created for EdgeKV.
 #### Endpoint:
 
 To list EdgeKV Access Tokens:
-`GET /edgekv/v1/tokens`
+`GET /edgekv/v1/tokens?includeExpired=true|false`
 
+`includeExpired` (Optional) if 'true', include expired tokens in the response.
 
 #### Example
 Request:
@@ -478,4 +497,3 @@ Content-Type: application/problem+json
 
 ## Getting Help
 Refer to [EdgeKV Getting Started Guide](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html) for information on how to get help.
-

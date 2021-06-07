@@ -69,7 +69,7 @@ Once EdgeKV is provisioned, a default namespace is created in both `staging` and
 
 Request:
 ```
-$ http --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces?details=true
+$ http --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces?details=on
 ```
 
 Response:

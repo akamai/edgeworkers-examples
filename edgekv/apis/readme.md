@@ -201,7 +201,7 @@ To generate a new EdgeKV Access Token for a specific namespace:
 Request:
 
 ```
-$ http --print=hbHB --auth-type edgegrid -a default: POST :/edgekv/v1/tokens name=my_token6 allowOnStaging=true allowOnProduction=true expiry="2021-06-30" namespacePermissions:='{"default":["r","w", "d"]}' 
+$ http --print=hbHB --auth-type edgegrid -a default: POST :/edgekv/v1/tokens name=my_token allowOnStaging=true allowOnProduction=true expiry="2021-06-30" namespacePermissions:='{"default":["r","w", "d"]}' 
 ```
 Response:
 ```
@@ -240,7 +240,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 {     
     "expiry": "2021-06-30",     
-    "name": "token2",     
+    "name": "token1",     
     "uuid": "2f8e59c9-43ab-5f9c-b498-56ab0253dc9a",     
     "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
 }
@@ -278,7 +278,7 @@ Content-Type: application/json
         },
         {
             "expiry": "2021-06-30",
-            "name": "default_token",
+            "name": "my_token",
             "uuid": "a600dfaa-3b7a-5d2a-bae3-b0c0d0e88e4a"
         }
     ]

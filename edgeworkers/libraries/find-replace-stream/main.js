@@ -19,9 +19,18 @@ export function responseProvider (request) {
   const howManyReplacements = 3;
 
   return httpRequest(`${request.scheme}://${request.host}${request.url}`).then(response => {
+    // Get headers from response
+    let headers = response.getHeaders();
+    // Remove content-encoding header.  The response stream from EdgeWorkers is not encoded.
+    // If original response contains `Content-Encoding: gzip`, then the Content-Encoding header does not match the actual encoding. 
+    delete headers["content-encoding"];
+    // Remove `Content-Length` header.  Find/replace is likely to change the content length.
+    // Leaving the Length of the original content would be incorrect.
+    delete headers["content-length"];
+    
     return createResponse(
       response.status,
-      response.getHeaders(),
+      headers,
       response.body
           .pipeThrough(new TextDecoderStream())
           .pipeThrough(new FindAndReplaceStream(tosearchfor, newtext, howManyReplacements))

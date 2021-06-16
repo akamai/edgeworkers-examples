@@ -148,7 +148,7 @@ You can query the attributes for existing namespaces.
 
 To read the attributes of a namespace:
 
-`GET /edgekv/v1/networks/{network}/namespaces/{namespace-id}`
+`GET /edgekv/v1/networks/{network}/namespaces/{namespace}`
 
 #### Example
 Request:
@@ -290,12 +290,12 @@ You can use the following API to create or update an item in EdgeKV. You need to
 #### Endpoint:
 
 To write an item:
-`PUT /edgekv/v1/networks/{network}/namespaces/{namespace-id}/groups/{group-id}/items/{item-id}`
+`PUT /edgekv/v1/networks/{network}/namespaces/{namespace}/groups/{group}/items/{item}`
 
 **Content-Type:** `application/json` or `application/text`
 **Request body:** JSON or String value.
 
-> **_NOTE:_** The `item-id` is also know as the `key`. 
+> **_NOTE:_** The `item` is also know as the `key`. 
 
 #### Example
 
@@ -380,7 +380,7 @@ You can use the following API to read an item from EdgeKV. You need to specify t
 #### Endpoint:
 
 To read an item:
-`GET /edgekv/v1/networks/{network}/namespaces/{namespace-id}/groups/{group-id}/items/{item-id}`
+`GET /edgekv/v1/networks/{network}/namespaces/{namespace}/groups/{group}/items/{item}`
 
 #### Example
 
@@ -404,7 +404,7 @@ You can use the following API to delete an item from EdgeKV. You need to specify
 #### Endpoint:
 
 To delete an item:
-`DELETE /edgekv/v1/networks/{network}/namespaces/{namespace-id}/groups/{group-id}/items/{item-id}`
+`DELETE /edgekv/v1/networks/{network}/namespaces/{namespace}/groups/{group}/items/{item}`
 
 #### Example
 
@@ -428,7 +428,7 @@ You can list items in a group.
 #### Endpoint:
 
 To list items in a group:
-`GET /edgekv/v1/networks/{network}/namespaces/{namespace-id}/groups/{group-id}`
+`GET /edgekv/v1/networks/{network}/namespaces/{namespace}/groups/{group}`
 
 #### Example
 

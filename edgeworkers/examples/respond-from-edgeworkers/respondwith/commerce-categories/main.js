@@ -46,7 +46,7 @@ export function onClientRequest (request) {
     const search = params.get('search');
     if (search) {
       const re = new RegExp(search, 'i');
-      var data = categories.filter(el => el.title.match(re) || el.desc.match(re) || el.id === search);
+      var data = categories.filter(el => el.title.match(re) || el.desc.match(re) || el.id === parseInt(search));
       request.respondWith(200, { 'Content-Type': ['application/json'] }, JSON.stringify(data));
     }
   }

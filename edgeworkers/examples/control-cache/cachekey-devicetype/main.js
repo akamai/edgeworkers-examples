@@ -13,5 +13,5 @@ export function onClientRequest (request) {
   } else if (request.device.isTablet) {
     request.setVariable('PMUSER_DEVICETYPE', 'Tablet');
   }
-  request.cachekey.includeVariable('PMUSER_DEVICETYPE');
+  request.cacheKey.includeVariable('PMUSER_DEVICETYPE');
 }

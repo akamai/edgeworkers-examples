@@ -25,7 +25,8 @@ export function responseProvider(request) {
             controller.enqueue(str2uint8arr(")"));
         }
     });
-  
+    
+    const options = { 'headers': {'Accept': 'application/json'} };
     return httpRequest(`${request.scheme}://${request.host}${request.path}?${params.toString()}`, options).then((response) => {
         return createResponse(
             response.status,

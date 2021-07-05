@@ -83,7 +83,7 @@ Content-Type: application/json
             "geoLocation": "US",
             "namespace": "default",
             "retentionInSeconds": 15724800
-        }
+        },
         {
             "geoLocation": "US",
             "namespace": "test1",

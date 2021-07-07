@@ -2,7 +2,7 @@
 
 #============================================================================
 # (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-# Version: 0.3
+# Version: 0.4
 # Purpose:
 #   Display EdgeKV access token and/or update the 'edgekv_tokens.js' file.
 # Repo: https://github.com/akamai/edgeworkers-examples/tree/master/edgeKV/EKV-TOOLS/ekvTools
@@ -262,8 +262,11 @@ def parse_token_file(fpath, debug):
         keywords[-2] = keywords[-2].replace(',', '')
     #print(keywords)
     # Create the tokens dictionary
+    keywords = ['"name":' if k == 'name:' else k for k in keywords]
+    keywords = ['"value":' if k == 'value:' else k for k in keywords]
+    keywords = [k.replace("'", '"') for k in keywords]
     try:
-        token_dict = json.loads(' '.join(keywords))
+        token_dict = json.loads(' '.join(keywords).replace(";", ""))
     except json.decoder.JSONDecodeError as errMsg:
         err_print("Invalid EdgeKV Access Token file format")
         dbg_print("%s" % errMsg, debug=debug)

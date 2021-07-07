@@ -6,7 +6,7 @@ setup(
     url='https://github.com/akamai/edgeworkers-examples/tree/master/edgeKV/EKV-TOOLS',
     packages=find_packages(),
     install_requires=['PyJWT'],
-    version='0.3',
+    version='0.4',
     license='Apache-2.0',
     description='A set of utilities for the EdgeKV product',
     # We will also need a readme eventually (there will be a warning)

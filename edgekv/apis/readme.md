@@ -109,7 +109,9 @@ To create a new namespace:
 **Content-Type:** `application/json`
 
 **Request body parameters**
+
 `namespace` - Namespace name
+
 `retentionInSeconds` - Specify the retention period for data in this namespace in seconds, or 0 for indefinite.
 
 #### Example:
@@ -140,7 +142,6 @@ Content-Type: application/json
     "retentionInSeconds": 0
 }
 ```
-
 ### 4. Read EdgeKV namespace details
 You can query the attributes for existing namespaces.
 
@@ -167,8 +168,54 @@ Content-Type: application/json
     "retentionInSeconds": 0
 }
 ```
+### 5. Update an EdgeKV namespace
+You can update the retention period for an existing namespace other than the `default` namespace. 
 
-### 5. Generate an EdgeKV Access Token
+You can simply copy the json response from the POST or GET operations above and change the `retentionInSeconds` value to specify the desired new retention period.
+
+> **_NOTE:_** It may take up to 5 minutes for the new retention policy to be applied. The newly specified retention period only applies to data added or updated in the namespace after this operation. The retention period of unmodified data remains unchanged and cannot be queried after this operation is performed.
+#### Endpoint:
+
+To update an existing namespace (other than `default`):
+
+`PUT /edgekv/v1/networks/{network}/namespaces/{namespaceId}`
+
+**Content-Type:** `application/json`
+
+**Request body parameters**
+
+`namespace` - Namespace name (MUST be the same as the `{namespaceId}` in the endpoint)
+
+`retentionInSeconds` - Specify the new retention period for data in this namespace in seconds, or 0 for indefinite.
+
+#### Example:
+
+Request:
+
+```
+$ http --print=hbHB --auth-type edgegrid -a default: PUT :/edgekv/v1/networks/staging/namespaces/marketing namespace=marketing retentionInSeconds=2592000
+
+PUT /edgekv/v1/networks/staging/namespaces/marketing
+
+{
+    "namespace": "marketing",
+    "retentionInSeconds": "2592000"
+}
+```
+
+Response:
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "geoLocation": "US",
+    "namespace": "marketing",
+    "retentionInSeconds": 2592000
+}
+```
+
+### 6. Generate an EdgeKV Access Token
 An EdgeKV-specific access token is required to access each namespace in your data model from EdgeWorkers. Refer to [Generate an EdgeKV access token instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html) for information about EdgeKV Access Token.
 
 > **_NOTE:_** Token name needs to be unique within your account. You cannot use the name of an existing token.
@@ -217,7 +264,7 @@ Content-Type: application/json
 > **_NOTE:_** You can use the output of this command to update the `edgekv_tokens.js` file.
 
 
-### 6. Retrieve an EdgeKV Access Token
+### 7. Retrieve an EdgeKV Access Token
 You can retrieve an EdgeKV access token. To retrieve a token you need the token name used when it was created. 
 An EdgeKV-specific access token is required to access each namespace in your data model from EdgeWorkers. Refer to [Generate an EdgeKV access token instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html) for information about EdgeKV Access Token.
 
@@ -248,7 +295,7 @@ Content-Type: application/json
 > **_NOTE:_** You can use the output of this command to update the `edgekv_tokens.js` file.
 
 
-### 7. List EdgeKV Access Tokens
+### 8. List EdgeKV Access Tokens
 You can list access tokens created for EdgeKV.
 
 
@@ -284,7 +331,7 @@ Content-Type: application/json
     ]
 }
 ```
-### 8.  Write an item to an EdgeKV namespace
+### 9.  Write an item to an EdgeKV namespace
 You can use the following API to create or update an item in EdgeKV. You need to specify the `namespace` and `group` this item belongs to. The `namespace` must have been already created, while the `group` will be automatically created for you if it does not exist.
 
 #### Endpoint:
@@ -372,7 +419,7 @@ Item was upserted in KV store with database 123456, namespace languages, group l
 ```
 
 
-### 9.  Read an item from an EdgeKV namespace
+### 10.  Read an item from an EdgeKV namespace
 You can use the following API to read an item from EdgeKV. You need to specify the `namespace` and `group` this item belongs to. 
 
 > **_NOTE:_** It can take up to 10 seconds or longer to read an item that has been recently written to EdgeKV. A `404 Not Found` response status code may be returned during that period. This is normal behavior for EdgeKV which is an eventually consistent database.
@@ -398,7 +445,7 @@ Content-Type: text/plain;charset=utf-8
     "name": "Germany"
 }
 ```
-### 10.  Delete an item from an EdgeKV namespace
+### 11.  Delete an item from an EdgeKV namespace
 You can use the following API to delete an item from EdgeKV. You need to specify the `namespace` and `group` this item belongs to. 
 
 #### Endpoint:
@@ -420,7 +467,7 @@ HTTP/1.1 200 OK
 Item was delete in KV store with database 123456 namespace default group countries key US.
 ```
 
-### 11.  List items within a group
+### 12.  List items within a group
 You can list items in a group.
 
 > **_NOTE:_** A maximum of 100 items can be returned.

@@ -12,7 +12,6 @@ import { httpRequest } from 'http-request';
 import { createResponse } from 'create-response';
 import URLSearchParams from 'url-search-params';
 
-// const headersToSanitize = ['content-encoding'];
 
 /* 
 Construct entire response body to include request and response headers

@@ -88,7 +88,7 @@ export function responseProvider (request) {
 	options.headers = request.getHeaders();
 	delete options.headers["pragma"];
 	delete options.headers["accept-encoding"];
-	//delete options.headers['pragma']
+	
 	const reqUrl = request.scheme + '://' + request.host + request.url;
 	let hdrs = request.getHeaders();
 	return httpRequest(`${reqUrl}`, options).then(response => {

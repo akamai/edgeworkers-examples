@@ -7,7 +7,6 @@ Repo:
 Notes: If query param: getForwardHeaders=body exists, it will output all the headers as the response body instead
 of the original body. Else it outputs them as response headers with a prefix: x-fwd-
 */
-// import { logger } from 'log'; // Import the logger module
 import { httpRequest } from 'http-request';
 import { createResponse } from 'create-response';
 import URLSearchParams from 'url-search-params';

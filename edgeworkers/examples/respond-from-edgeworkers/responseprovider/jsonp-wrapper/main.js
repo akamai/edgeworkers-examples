@@ -30,7 +30,7 @@ export function responseProvider(request) {
     return httpRequest(`${request.scheme}://${request.host}${request.path}?${params.toString()}`, options).then((response) => {
         return createResponse(
             response.status,
-            response.headers,
+            response.getHeaders(),
             response.body.pipeThrough(jsonpTransformer)
         );
     });

@@ -52,7 +52,7 @@ export function responseProvider (request) {
   return httpRequest(`${request.scheme}://${request.host}${request.url}`).then(response => {
     return createResponse(
       response.status,
-      response.headers,
+      response.getHeaders(),
       response.body.pipeThrough(new TextDecoderStream()).pipeThrough(new HTMLStream()).pipeThrough(new TextEncoderStream())
     );
   });

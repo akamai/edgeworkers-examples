@@ -71,7 +71,7 @@ async function hello_world_response(request) {
     
     // Send Response
     return createResponse(response.status,
-                          response.headers,
+                          response.getHeaders(),
                           response.body);
 }
 

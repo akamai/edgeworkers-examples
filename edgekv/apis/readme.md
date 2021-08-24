@@ -110,9 +110,9 @@ To create a new namespace:
 
 **Request body parameters**
 
-`namespace` - Namespace name
+`namespace` - (mandatory) Namespace name 
 
-`retentionInSeconds` - Specify the retention period for data in this namespace in seconds, or 0 for indefinite.
+`retentionInSeconds` - (mandatory) Specify the retention period for data in this namespace in seconds, or 0 for indefinite.
 
 #### Example:
 
@@ -184,9 +184,9 @@ To update an existing namespace (other than `default`):
 
 **Request body parameters**
 
-`namespace` - Namespace name (MUST be the same as the `{namespaceId}` in the endpoint)
+`namespace` - (mandatory) Namespace name (MUST be the same as the `{namespaceId}` in the endpoint)
 
-`retentionInSeconds` - Specify the new retention period for data in this namespace in seconds, or 0 for indefinite.
+`retentionInSeconds` - (mandatory) Specify the new retention period for data in this namespace in seconds, or 0 for indefinite.
 
 #### Example:
 
@@ -521,24 +521,19 @@ Example (trying to request a namespace that does not exist):
 
 ```
 $ http --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces/bad_namespace
-HTTP/1.1 404 Not Found
+HTTP/1.1 400 Bad Request
 Content-Type: application/problem+json
 
 {
     "additionalDetail": {
-        "detail": "Namespace is not found: bad_namespace",
-        "instance": "/service/v1/
-        
-        s/5192145/namespaces/bad_namespace",
-        "requestId": "5d424b9289ab9b43",
-        "status": 404,
-        "title": "NOT_FOUND"
+        "requestId": "d0c361252e107666"
     },
-    "detail": "Unable to perform operation.",
-    "instance": "2c82be29-f909-4d42-b775-de404e264fd9",
-    "status": 404,
-    "title": "Operation failed",
-    "type": "https://problems.luna.akamaiapis.net/edgedb-api/operationFailed"
+    "detail": "The requested namespace does not exist.",
+    "errorCode": "EKV_9000",
+    "instance": "/edgeKV/error-instances/af839313-4763-4053-b7ef-87fa0514e2ac",
+    "status": 400,
+    "title": "Bad Request",
+    "type": "https://learn.akamai.com"
 }
 ```
 

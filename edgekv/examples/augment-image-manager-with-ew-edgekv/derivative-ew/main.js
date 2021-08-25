@@ -1,4 +1,4 @@
-import {EdgeKV} from './edgekv.js';
+import {EdgeKV} from './edgekv.js'; //include this file from the parent repository. https://github.com/akamai/edgeworkers-examples/blob/master/edgekv/lib/edgekv.js
 import {logger} from 'log';
 export async function onClientRequest(request) {
 	var edgeKv = new EdgeKV({namespace: "im", group: "pristine"});

@@ -361,7 +361,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 {     
     "name": "token1",     
-    "uuid": "2f8e59c9-43ab-5f9c-b498-56ab0253dc9a",     
+    "uuid": "2f8e59c9-43ab-5f9c-b498-56ab0253dc9a"   
 }
 ```
 

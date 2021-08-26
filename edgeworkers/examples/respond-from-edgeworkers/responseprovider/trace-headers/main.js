@@ -93,7 +93,7 @@ export function responseProvider (request) {
 		if (returnInBody(request)){
 			return createResponse(
 				response.status,
-				response.getHeaders(),
+				{},
 				constructResponseBody(request, response)
 				);
 		}else{

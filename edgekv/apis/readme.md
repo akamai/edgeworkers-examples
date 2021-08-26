@@ -222,7 +222,7 @@ An EdgeKV-specific access token is required to access each namespace in your dat
 
 #### Endpoint:
 
-To generate a new EdgeKV Access Token for a specific namespace:
+To generate a new EdgeKV access token for a specific namespace:
 `POST /edgekv/v1/tokens`
 
 **Content-Type:** `application/json`
@@ -272,14 +272,14 @@ An EdgeKV-specific access token is required to access each namespace in your dat
 
 #### Endpoint:
 
-To retrieve an EdgeKV Access Token:
+To retrieve an EdgeKV access token:
 `GET /edgekv/v1/tokens/{tokenName}`
 
 #### Example
 Request:
 
 ```
-$ http --print=hbHB --auth-type edgegrid -a default GET :/edgekv/v1/tokens/token1
+$ http --print=hbHB --auth-type edgegrid -a default: GET :/edgekv/v1/tokens/token1
 ```
 Response:
 ```
@@ -301,7 +301,7 @@ You can list access tokens created for EdgeKV.
 
 #### Endpoint:
 
-To list EdgeKV Access Tokens:
+To list EdgeKV access tokens:
 `GET /edgekv/v1/tokens?includeExpired=true|false`
 
 `includeExpired` (Optional) if 'true', include expired tokens in the response.
@@ -331,7 +331,41 @@ Content-Type: application/json
     ]
 }
 ```
-### 9.  Write an item to an EdgeKV namespace
+
+### 9. Revoke an EdgeKV Access Token
+You can revoke an EdgeKV access token to prevent it from being used from an EdgeWorkers function. 
+
+Any requests from an EdgeWorkers function using a revoked token will result in a 401 error.
+
+> **_NOTE:_** Revoking an access token is an irreversible operation. Once you revoke a token, you need to update all the deployed EdgeWorkers code bundles with a new token.   
+
+#### Endpoint:
+
+To revoke an EdgeKV access token:
+
+#### Endpoint:
+
+To Revoke an EdgeKV Access Tokens:
+
+`DELETE /edgekv/v1/tokens/{tokenName}`
+
+#### Example
+Request:
+
+```
+$ http --print=hbHB --auth-type edgegrid -a default: DELETE :/edgekv/v1/tokens/token1
+```
+Response:
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+{     
+    "name": "token1",     
+    "uuid": "2f8e59c9-43ab-5f9c-b498-56ab0253dc9a",     
+}
+```
+
+### 10.  Write an item to an EdgeKV namespace
 You can use the following API to create or update an item in EdgeKV. You need to specify the `namespace` and `group` this item belongs to. The `namespace` must have been already created, while the `group` will be automatically created for you if it does not exist.
 
 #### Endpoint:
@@ -419,7 +453,7 @@ Item was upserted in KV store with database 123456, namespace languages, group l
 ```
 
 
-### 10.  Read an item from an EdgeKV namespace
+### 11.  Read an item from an EdgeKV namespace
 You can use the following API to read an item from EdgeKV. You need to specify the `namespace` and `group` this item belongs to. 
 
 > **_NOTE:_** It can take up to 10 seconds or longer to read an item that has been recently written to EdgeKV. A `404 Not Found` response status code may be returned during that period. This is normal behavior for EdgeKV which is an eventually consistent database.
@@ -445,7 +479,7 @@ Content-Type: text/plain;charset=utf-8
     "name": "Germany"
 }
 ```
-### 11.  Delete an item from an EdgeKV namespace
+### 12.  Delete an item from an EdgeKV namespace
 You can use the following API to delete an item from EdgeKV. You need to specify the `namespace` and `group` this item belongs to. 
 
 #### Endpoint:
@@ -467,7 +501,7 @@ HTTP/1.1 200 OK
 Item was delete in KV store with database 123456 namespace default group countries key US.
 ```
 
-### 12.  List items within a group
+### 13.  List items within a group
 You can list items in a group.
 
 > **_NOTE:_** A maximum of 100 items can be returned.

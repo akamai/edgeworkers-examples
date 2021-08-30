@@ -333,7 +333,7 @@ Content-Type: application/json
 ```
 
 ### 9. Revoke an EdgeKV Access Token
-You can revoke an EdgeKV access token to prevent it from being used from in an EdgeWorkers code bundle to gain access to EdgeKV. 
+You can revoke an EdgeKV access token to prevent it from being used in an EdgeWorkers code bundle to gain access to EdgeKV. 
 
 Any requests from an EdgeWorkers code bundle using a revoked token will result in a 401 error.
 

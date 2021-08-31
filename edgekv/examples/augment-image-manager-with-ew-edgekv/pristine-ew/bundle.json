@@ -1,0 +1,5 @@
+{
+    "edgeworker-version": "1.0",
+    "description" : "This EdgeWorker saves the value of the Content-Length header from the origin response in EdgeKV."
+    "author" :"fklasen@akamai.com"
+}

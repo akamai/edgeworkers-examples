@@ -1,5 +1,5 @@
 var edgekv_access_tokens = {
-        "namespace-name": {
+        "namespace-currencies": {
             "name": "my_token",
             "value": "my_value"
         }

@@ -9,7 +9,7 @@ The two EdgeWorkers within this repository execute in conjunction with the prist
 - The pristine EdgeWorker saves the incoming Content-Length header value from the origin response in EdgeKV with a SHA1 hash of the URL as key.
 - The derivative EdgeWorker fetch this value on subsequent requests as input for instructing Image Manager to transform the image based on the pristine image size.
 
-The high level data flow looks like follows:
+For detailed implementation steps, please see the accompanying [use case description](https://techdocs.akamai.com/edgekv/docs/augment-image-and-video-manager-with-edge-compute). The high level data flow looks like follows:
 
 <img width="1384" alt="ew-flow" src="https://user-images.githubusercontent.com/51907605/130851026-dfdff808-567b-42a8-9feb-efbe55cb019f.png">
 
@@ -27,7 +27,7 @@ Not covered in the diagram above, the user triggering this initial image request
 
 
 ## Prerequisites
-On top of your normal delivery configuration, you would need an Image Manager configuration. If you are not yet a user of Image Manager you may add a trial version through [the Marketplace](https://control.akamai.com/apps/marketplace-ui/#/home). For detailed implementation steps, please reach out to your Akamai contact.
+On top of your normal delivery configuration, you would need an Image Manager configuration. If you are not yet a user of Image Manager you may add a trial version through [the Marketplace](https://control.akamai.com/apps/marketplace-ui/#/home).
 
 ## EdgeWorkers, EdgeKV and Image Manager
 Links to resources around starting with EdgeWorkers can be found in the [examples root](https://github.com/akamai/edgeworkers-examples). 

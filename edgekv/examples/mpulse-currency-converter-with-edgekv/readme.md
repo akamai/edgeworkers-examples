@@ -14,19 +14,7 @@ Please include edgekv.js manually from the parent repository. https://github.com
 ## Working POC
 - [mPulse currency converter](http://poc.klasen.se/projects/ew/mpulse-currency-normalizer.php)
  
-The POC actually utilizes two EdgeWorkers, one with the EdgeKV but also a variant where the conversion value is fetched from an external service with httpRequest. The only difference in the EdgeWorker codes is in the getCurrency function:
-
-```javascript
-async function getCurrency(request){
-      let params = new URLSearchParams(request.query);
-      let currencyCode = params.get('currency');
-      let currencyValue = 1;
-      var url=`${request.scheme}://${request.host}/projects/ew/currency-lookup.php?currency=${currencyCode}`;
-      currencyValue = await httpRequest(url,{headers: {"Accept-Encoding": "identity"}});
-      var resultJson = await currencyValue.json();
-      return resultJson;   
-}
-```
+The POC actually utilizes two EdgeWorkers, one with the EdgeKV but also a variant where the conversion value is fetched from an external service with httpRequest. 
  
 ## More details on EdgeWorkers
 - [Akamai EdgeWorkers](https://developer.akamai.com/akamai-edgeworkers-overview)

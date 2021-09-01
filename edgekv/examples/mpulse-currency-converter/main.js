@@ -27,8 +27,9 @@ async function getCurrency(request) {
 }
 
 export async function responseProvider(request) {
+  var finalCurrency = {value:1};
   try {
-    var finalCurrency = await getCurrency(request);
+    finalCurrency = await getCurrency(request);
   } catch (error) {
     return error.toString();
   }

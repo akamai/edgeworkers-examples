@@ -16,10 +16,9 @@ async function getCurrency(request) {
   //in this example the currency code from the purchase order is pulled from a query parameter
   let params = new URLSearchParams(request.query);
   let currencyCode = params.get("currency");
-  let default_value = 1;
-  let currencyValue = 1;
+  let default_value = {value:1};
 
-  currencyValue = await edgeKv.getJson({
+  let currencyValue = await edgeKv.getJson({
     item: currencyCode,
     default_value: default_value,
   });
@@ -28,7 +27,6 @@ async function getCurrency(request) {
 }
 
 export async function responseProvider(request) {
-  this.request = request;
   try {
     var finalCurrency = await getCurrency(request);
   } catch (error) {

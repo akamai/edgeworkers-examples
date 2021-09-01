@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "1.0",
+    "description" : "Send messages to Slack channel"
+}

@@ -27,6 +27,9 @@ export function responseProvider (request) {
     // Remove `Content-Length` header.  Find/replace is likely to change the content length.
     // Leaving the Length of the original content would be incorrect.
     delete headers["content-length"];
+    // Remove transfer-encoding response header, the origin response might be different than what is sent to the client  
+    delete headers["transfer-encoding"];
+
     
     return createResponse(
       response.status,

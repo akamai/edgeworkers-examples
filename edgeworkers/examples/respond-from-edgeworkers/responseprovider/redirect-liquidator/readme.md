@@ -19,12 +19,12 @@ Instead of serving a response with a `301/302` redirect we directly serve the ac
   ![Redirect Liquidation in action](redirect-liquidation.jpg)
 
 
-This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the History API. The History API is well supported with an adoption rate of 96%+.
+This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState). The History API is well supported with an adoption rate of 96%+.
 
 ## What about bots?
 
 This feature should not be enabled for bots (eg. Google Crawler). When a bot crawls an outdated link they must receive the original 301/302 response.
-This can be done based on User Agent matching or more correctly using Botman and the technique (described here)[https://developer.akamai.com/blog/2020/02/25/improve-performance-and-seo-tuning-crawlers].
+This can be done based on User Agent matching or more correctly using Botman and the technique [described here](https://developer.akamai.com/blog/2020/02/25/improve-performance-and-seo-tuning-crawlers).
   
   
   

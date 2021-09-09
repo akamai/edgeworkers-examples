@@ -1,10 +1,5 @@
 # RedirectLiquidator
-The RedirectLiquidator silently chases `301/302` redirects to transform them into a single `200` response at the Edge.
-
-From a high level perspective the EgdeWorkers does 3 steps:
-* Manages super fast redirects at the Edge and chases redirects from the origin
-* Injects `<history.replaceState>` in the response body 
-* Sends a 200 response to the end-user
+Silently chase `301/302` redirects and transform them into a single `200` response at the Edge.
 
 The benifits of this approach are
 * No redirect
@@ -16,12 +11,19 @@ Instead of serving a response with a `301/302` redirect we directly serve the ac
 
 `<script>history.replaceState(null, "","/new/url.html");</script>`
   
-  ![Redirect Liquidation in action](redirect-liquidation.jpg)
-
 
 This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState). The History API is well supported with an adoption rate of 96%+.
   
+    ![Redirect Liquidation in action](redirect-liquidation.jpg)
+
+  
+  
 ## Implementation
+  
+From a high level perspective the EgdeWorkers does 3 steps:
+* Manages super fast redirects at the Edge and chases redirects from the origin
+* Injects `<history.replaceState>` in the response body 
+* Sends a 200 response to the end-user
   
 ### find-replace-stream.js Library
 We build on top of the ready to use [find-replace-stream library](https://github.com/akamai/edgeworkers-examples/tree/master/edgeworkers/libraries/find-replace-stream) available on Github. This allows us to search for a tag (eg. </title>)  and append it with the history.replaceState() JavaScript method.

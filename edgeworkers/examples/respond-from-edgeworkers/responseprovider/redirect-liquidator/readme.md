@@ -13,7 +13,7 @@ Instead of serving a response with a 301/302 redirect we directly serve the actu
 
 `<script>history.replaceState(null, "","/new/url.html");</script>`
 
-This JS snippet updates the URL without triggering a redirect. This is done using the history.replaceState method from the History API. The History API is well supported with an adoption rate of 96%+.
+This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the History API. The History API is well supported with an adoption rate of 96%+.
 
 ## What about bots?
 

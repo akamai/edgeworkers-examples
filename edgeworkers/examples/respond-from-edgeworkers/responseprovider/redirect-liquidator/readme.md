@@ -30,6 +30,9 @@ We build on top of the ready to use [find-replace-stream library](https://github
 `import { FindAndReplaceStream } from 'find-replace-stream.js';`
 
 Make sure the find-replace-stream.js is part of your bundle.
+  
+### bundle-redirect-liquidation.tgz
+A [ready to use code bundle](bundle-redirect-liquidation.tgz) can be imported via the CLI or the UI 
 
 ### Configuration Options
   

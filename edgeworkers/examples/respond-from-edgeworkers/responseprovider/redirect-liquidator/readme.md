@@ -58,9 +58,9 @@ Redirect chasing is great, however the result is a `200` on the original URL. Wh
 **What is the difference with a forward rewrite?**
 Forward rewrites are a perfect use case to serve content over a different URL. A forward rewrite returns a `200` but does not change the original URL seen by the enduser.
 
-**Could you do this at the origin**
-Yes, this technique is nothing specific to Akamai EdgeWorkers. However depending on your CMS/Framework this might be too complex or not even possible at  all.
+**Could you do this at the origin?**
+Yes, this technique is not specific to Akamai EdgeWorkers. However depending on your CMS/Framework this might be too complex or not even possible at all.
 
-**What happens when multiple redirects are sent
+**What happens when multiple redirects are sent**
 Multiple redirects are recursively chased and and combined into a single `200` pointing to the latest URL.
 

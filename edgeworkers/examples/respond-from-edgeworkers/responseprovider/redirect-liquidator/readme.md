@@ -1,5 +1,5 @@
 # RedirectLiquidator
-Silently chase `301/302` redirects and transform them into a single `200` response at the Edge.
+A performance focussed EdgeWorker. Silently chase `301/302` redirects and transform them into a single `200` response at the Edge.
 
 The benifits of this approach are
 * No redirect
@@ -70,4 +70,5 @@ Yes, this technique is not specific to Akamai EdgeWorkers. However depending on 
 
 **What happens when multiple redirects are sent**
 Multiple redirects are recursively chased and and combined into a single `200` pointing to the latest URL.
+
 

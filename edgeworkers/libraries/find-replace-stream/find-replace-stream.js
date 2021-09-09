@@ -166,18 +166,3 @@ export class FindAndReplaceStream extends TransformStream {
       super(new FindAndReplaceTransformer(toreplace, newtext, timesToReplace), writableStrategy, readableStrategy);
   }
 }
-
-const UNSAFE_RESPONSE_HEADERS=['content-length', 'transfer-encoding', 'connection', 'vary',
-'accept-encoding', 'content-encoding', 'connection', 'keep-alive',
-'proxy-authenticate', 'proxy-authorization', 'te', 'trailers',
-'transfer-encoding', 'upgrade'];
-
-// Find and replace stream changes the original content, some origin response headers are therefore no longer valid and should be removed
-export function getSafeResponseHeaders(headers){
-    for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS){
-        if(unsafeResponseHeader in headers){
-            delete headers[unsafeResponseHeader]
-        }
-    }
-    return headers;
-}

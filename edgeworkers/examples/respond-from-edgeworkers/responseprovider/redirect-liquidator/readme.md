@@ -6,7 +6,7 @@ The benifits of this approach are
 * New content
 * Updated URL
 
-![Redirect Liquidation in action[(redirect-liquidation.jpg)
+![Redirect Liquidation in action](redirect-liquidation.jpg)
 
 From a high level perspective the EgdeWorkers does 3 steps:
 * Manages super fast redirects at the Edge

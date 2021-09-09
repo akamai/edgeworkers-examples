@@ -36,7 +36,10 @@ Make sure the find-replace-stream.js is part of your bundle.
 * `REDIRECT_CODES;`: Configure for which response codes you enable Redirect Liquidation. _Default value is `[301,302,303,307,308]`_
 * `INJECT_AFTER_TAG`: Configure where in the HTML the JS snippet is injected. _Default value is `</title>`_
 
-### What about bots?
+## getRedirectLocationFromEdge()
+This optional method allows you to manage redirects at the Edge. It is up to you to implement this logic inside your bundle, by loading redirect instructions from an API call or from EdgeKV.
+
+### Disqable for bots
 
 This feature should not be enabled for bots (eg. Google Crawler). When a bot crawls an outdated link they must receive the original 301/302 response.
 This can be done based on User Agent matching or more correctly using Botman and the technique [described here](https://developer.akamai.com/blog/2020/02/25/improve-performance-and-seo-tuning-crawlers).

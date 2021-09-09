@@ -52,6 +52,11 @@ Use Property Manager criteria (UI or API) to limit this EdgeWorker to only run o
 This mPulse RUM graph shows the amount of pages having a redirect penalty over time. In the last 4 days a significant drop is visilbe. This is when the above solution rolled out entirely.
 
 ![mPulse RUM showing a decrease in requests having a redirect overhead](redirect-liquidation-rum.jpg)
+
+This screenshot from WebPageTest (4G Connection) shows the result when for multiple chained redirects.
+![WebPageTest showing the difference ](redirect-liquidation-wpt.png)
+
+
   
 ## Q&A
 **Isn’t this the same as redirect chasing available in Property Manager?**

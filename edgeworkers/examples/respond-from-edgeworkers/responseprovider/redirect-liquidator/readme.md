@@ -70,5 +70,3 @@ Yes, this technique is not specific to Akamai EdgeWorkers. However depending on 
 
 **What happens when multiple redirects are sent**
 Multiple redirects are recursively chased and and combined into a single `200` pointing to the latest URL.
-
-

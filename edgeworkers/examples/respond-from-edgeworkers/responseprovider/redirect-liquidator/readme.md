@@ -36,7 +36,7 @@ Make sure the find-replace-stream.js is part of your bundle.
 * `REDIRECT_CODES;`: Configure for which response codes you enable Redirect Liquidation. _Default value is `[301,302,303,307,308]`_
 * `INJECT_AFTER_TAG`: Configure where in the HTML the JS snippet is injected. _Default value is `</title>`_
 
-## getRedirectLocationFromEdge()
+### getRedirectLocationFromEdge()
 This optional method allows you to manage redirects at the Edge. It is up to you to implement this logic inside your bundle, by loading redirect instructions from an API call or from EdgeKV.
 
 ### Disqable for bots

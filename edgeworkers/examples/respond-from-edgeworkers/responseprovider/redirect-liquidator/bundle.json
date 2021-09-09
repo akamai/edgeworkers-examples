@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "1.16",
+    "description" : "A performance focussed EdgeWorker. Silently chase 301/302 redirects and transform them into a single 200 response at the Edge.    "
+}

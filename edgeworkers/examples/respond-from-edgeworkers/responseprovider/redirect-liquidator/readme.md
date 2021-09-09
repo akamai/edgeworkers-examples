@@ -37,7 +37,7 @@ Make sure the find-replace-stream.js is part of your bundle.
 * `INJECT_AFTER_TAG`: Configure where in the HTML the JS snippet is injected. _Default value is `</title>`_
 
 ### getRedirectLocationFromEdge()
-This optional method allows you to manage redirects at the Edge. It is up to you to implement this logic inside your bundle, by loading redirect instructions from an API call or from EdgeKV.
+A hook to implement redirect logic at the Edge. This optional method allows you to manage redirect logic at the Edge. It is up to you to implement this logic inside your bundle, by loading redirect instructions from an API call or from EdgeKV.
 
 ### Disqable for bots
 
@@ -47,7 +47,6 @@ This can be done based on User Agent matching or more correctly using Botman and
 ### Scoping?
 Use Property Manager criteria (UI or API) to limit this EdgeWorker to only run on HTML pages.
 
-  
 ## Result
   
 This mPulse RUM graph shows the amount of pages having a redirect penalty over time. In the last 4 days a significant drop is visilbe. This is when the above solution rolled out entirely.

@@ -1,15 +1,15 @@
 # RedirectLiquidator
-The RedirectLiquidator EdgeWorker silently transforms `301/302` into a `200` response.
+The RedirectLiquidator silently chases `301/302` redirects to transform them into a single `200` response at the Edge.
+
+From a high level perspective the EgdeWorkers does 3 steps:
+* Manages super fast redirects at the Edge and chases redirects from the origin
+* Injects `<history.replaceState>` in the response body 
+* Sends a 200 response to the end-user
 
 The benifits of this approach are
 * No redirect
 * New content
 * Updated URL
-
-From a high level perspective the EgdeWorkers does 3 steps:
-* Manages super fast redirects at the Edge
-* Chases redirects from the origin
-* Injects `<history.replaceState>` in the response body of the `200` response
 
 ## What is Redirect Liquidation
 Instead of serving a response with a `301/302` redirect we directly serve the actual content (`200`) and inject 1 extra line of JavaScript in the <head> section. 

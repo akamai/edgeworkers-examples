@@ -8,8 +8,10 @@ Chases redirects from the origin
 Optionally manage redirects at the Edge
 Injects <history.replaceState> in the response body of the 200 response
 
-## How it works
+## What is Redirect Liquidation
 Instead of serving a response with a 301/302 redirect we directly serve the actual content (200) and inject 1 extra line of JavaScript in the <head> section. 
+
+`<script>history.replaceState(null, "","/new/url.html");</script>`
 
 This JS snippet updates the URL without triggering a redirect. This is done using the history.replaceState method from the History API. The History API is well supported with an adoption rate of 96%+.
 
@@ -28,5 +30,5 @@ Redirect chasing is great, however the result is a 200 on the original URL. Whil
 Forward rewrites are a perfect use case to serve content over a different URL. A forward rewrite returns a 200 but does not change the original URL seen by the enduser.
 
 **Could you do this at the origin**
-Yes, this technique is nothing specific to Akamai. However depending on the CMS/Framework  of the customer this might be too complex or not even possible at  all.
+Yes, this technique is nothing specific to Akamai EdgeWorkers. However depending on your CMS/Framework this might be too complex or not even possible at  all.
 

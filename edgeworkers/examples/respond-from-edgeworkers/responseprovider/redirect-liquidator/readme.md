@@ -21,15 +21,29 @@ Instead of serving a response with a `301/302` redirect we directly serve the ac
 
 This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState). The History API is well supported with an adoption rate of 96%+.
   
-## Configuration Options
+## Implementation
+  
+### find-replace-stream.js Library
+We build on top of the ready to use [find-replace-stream library](https://github.com/akamai/edgeworkers-examples/tree/master/edgeworkers/libraries/find-replace-stream) available on Github. This allows us to search for a tag (eg. </title>)  and append it with the history.replaceState() JavaScript method.
+
+import { FindAndReplaceStream } from 'find-replace-stream.js';
+
+Make sure the find-replace-stream.js is part of your bundle.
+
+
+### Configuration Options
   
 * `REDIRECT_CODES;`: Configure for which response codes you enable Redirect Liquidation. _Default value is `[301,302,303,307,308]`_
 * `INJECT_AFTER_TAG`: Configure where in the HTML the JS snippet is injected. _Default value is `</title>`_
 
-## What about bots?
+### What about bots?
 
 This feature should not be enabled for bots (eg. Google Crawler). When a bot crawls an outdated link they must receive the original 301/302 response.
 This can be done based on User Agent matching or more correctly using Botman and the technique [described here](https://developer.akamai.com/blog/2020/02/25/improve-performance-and-seo-tuning-crawlers).
+
+### Scoping?
+Use Property Manager criteria (UI or API) to limit this EdgeWorker to only run on HTML pages.
+
   
 ## Result
   

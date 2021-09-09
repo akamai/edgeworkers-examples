@@ -6,8 +6,6 @@ The benifits of this approach are
 * New content
 * Updated URL
 
-![Redirect Liquidation in action](redirect-liquidation.jpg)
-
 From a high level perspective the EgdeWorkers does 3 steps:
 * Manages super fast redirects at the Edge
 * Chases redirects from the origin
@@ -17,6 +15,9 @@ From a high level perspective the EgdeWorkers does 3 steps:
 Instead of serving a response with a `301/302` redirect we directly serve the actual content (`200`) and inject 1 extra line of JavaScript in the <head> section. 
 
 `<script>history.replaceState(null, "","/new/url.html");</script>`
+  
+  ![Redirect Liquidation in action](redirect-liquidation.jpg)
+
 
 This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the History API. The History API is well supported with an adoption rate of 96%+.
 

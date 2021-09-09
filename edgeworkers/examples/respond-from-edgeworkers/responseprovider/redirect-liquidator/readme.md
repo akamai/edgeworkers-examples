@@ -54,7 +54,7 @@ This mPulse RUM graph shows the amount of pages having a redirect penalty over t
 ![mPulse RUM showing a decrease in requests having a redirect overhead](redirect-liquidation-rum.jpg)
 
 This screenshot from WebPageTest (4G Connection) shows the result when for multiple chained redirects.
-![WebPageTest showing the difference ](redirect-liquidation-wpt.png)
+![WebPageTest showing the difference ](redirect-liquidation-chained-wpt.jpg)
 
 
   

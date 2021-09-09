@@ -26,7 +26,11 @@ This JS snippet updates the original URL without triggering a redirect. This is 
 This feature should not be enabled for bots (eg. Google Crawler). When a bot crawls an outdated link they must receive the original 301/302 response.
 This can be done based on User Agent matching or more correctly using Botman and the technique [described here](https://developer.akamai.com/blog/2020/02/25/improve-performance-and-seo-tuning-crawlers).
   
+## Result
   
+This mPulse RUM graph shows the amount of pages having a redirect penalty over time. In the last 4 days a significant drop is visilbe. This is when the above solution rolled out entirely.
+
+![mPulse RUM showing a decrease in requests having a redirect overhead](redirect-liquidation-rum.jpg)
   
 ## Q&A
 **Isn’t this the same as redirect chasing available in Property Manager?**

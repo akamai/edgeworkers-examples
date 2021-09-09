@@ -23,8 +23,8 @@ This JS snippet updates the original URL without triggering a redirect. This is 
   
 ## Configuration Options
   
-* `const REDIRECT_CODES=[301,302,303,307,308];`: REDIRECT_CODES allows to configure for which response codes you want to enable Redirect Liquidation
-* `const INJECT_AFTER_TAG = '</title>';`: INJECT_AFTER_TAG allows you to configure where in the HTML the JS snippet is injected.
+* `REDIRECT_CODES;`: REDIRECT_CODES allows to configure for which response codes you want to enable Redirect Liquidation. Default value is `[301,302,303,307,308]`
+* `INJECT_AFTER_TAG`: INJECT_AFTER_TAG allows you to configure where in the HTML the JS snippet is injected. Default value is `'</title>'`
 
 ## What about bots?
 

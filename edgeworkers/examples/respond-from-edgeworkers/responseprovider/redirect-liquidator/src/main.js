@@ -68,7 +68,7 @@ function sendOriginResponseAsIs(response){
       );
 }
 
-//A hook to implement redirect logic at the Edge.
+//A hook to implement redirect logic at the Edge. Either hardcoded or better via an API or EKV lookup.
 function getRedirectLocationFromEdge(request){
     if(request.path.startsWith('/faq.php')){
         return request.url.replace('/faq.php','/faq.html');

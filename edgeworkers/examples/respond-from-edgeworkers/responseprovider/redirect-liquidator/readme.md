@@ -14,9 +14,8 @@ Instead of serving a response with a `301/302` redirect we directly serve the ac
 
 This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState). The History API is well supported with an adoption rate of 96%+.
   
-    ![Redirect Liquidation in action](redirect-liquidation.jpg)
+![Redirect Liquidation in action](redirect-liquidation.jpg)
 
-  
   
 ## Implementation
   
@@ -28,10 +27,9 @@ From a high level perspective the EgdeWorkers does 3 steps:
 ### find-replace-stream.js Library
 We build on top of the ready to use [find-replace-stream library](https://github.com/akamai/edgeworkers-examples/tree/master/edgeworkers/libraries/find-replace-stream) available on Github. This allows us to search for a tag (eg. </title>)  and append it with the history.replaceState() JavaScript method.
 
-import { FindAndReplaceStream } from 'find-replace-stream.js';
+`import { FindAndReplaceStream } from 'find-replace-stream.js';`
 
 Make sure the find-replace-stream.js is part of your bundle.
-
 
 ### Configuration Options
   

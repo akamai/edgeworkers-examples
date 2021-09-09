@@ -20,6 +20,11 @@ Instead of serving a response with a `301/302` redirect we directly serve the ac
 
 
 This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState). The History API is well supported with an adoption rate of 96%+.
+  
+## Configuration Options
+  
+`const REDIRECT_CODES=[301,302,303,307,308];`: REDIRECT_CODES allows to configure for which response codes you want to enable Redirect Liquidation
+`const INJECT_AFTER_TAG = '</title>';`: INJECT_AFTER_TAG allows you to configure where in the HTML the JS snippet is injected.
 
 ## What about bots?
 

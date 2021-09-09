@@ -53,11 +53,14 @@ This mPulse RUM graph shows the amount of pages having a redirect penalty over t
   
 ## Q&A
 **Isn’t this the same as redirect chasing available in Property Manager?**
-Redirect chasing is great, however the result is a `200` on the original URL. While Redirect Liquidation also covers updating the URL in the browser.
+Redirect chasing is great, however the result is a `200` on the original URL. While this Redirect Liquidator also covers updating the URL in the browser.
 
 **What is the difference with a forward rewrite?**
 Forward rewrites are a perfect use case to serve content over a different URL. A forward rewrite returns a `200` but does not change the original URL seen by the enduser.
 
 **Could you do this at the origin**
 Yes, this technique is nothing specific to Akamai EdgeWorkers. However depending on your CMS/Framework this might be too complex or not even possible at  all.
+
+**What happens when multiple redirects are sent
+Multiple redirects are recursively chased and and combined into a single `200` pointing to the latest URL.
 

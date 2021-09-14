@@ -15,5 +15,3 @@ To be able to run subrequests against 3rd party domains, you need to proxy the t
 
 ## EdgeWorkers, EdgeKV
 Links to resources around starting with EdgeWorkers can be found in the [examples root](https://github.com/akamai/edgeworkers-examples). 
-
-If you are new to EdgeKV first check the [Hello World Example](https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/examples/hello-world) with tips and best best practices to get started.

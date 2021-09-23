@@ -1,0 +1,3 @@
+urllib3==1.25.8
+requests==2.22.0
+akamai-edgeauth==0.3.2

@@ -137,7 +137,7 @@ logger.addHandler(ch)
 current_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
 today = datetime.datetime.now().strftime("%Y-%m-%d")
 logger.info("Started Processing at: %s" %(current_time))
-logger.info("*** Getting current KV tokens")
+logger.info("Getting current KV tokens")
 info = getKVTokens()
 tokens = info['tokens']
 expiring_tokens = []

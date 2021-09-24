@@ -75,8 +75,14 @@ def getKVTokens():
    payload = {'includeExpired':'true' }
    status = submit_request(urljoin(baseurl,requestURL),payload,"GET",headers)
    logger.debug (status[0])
-   jsonList = json.loads(status[1].text)
-   return(jsonList)
+   if status[0] != 200:
+      logger.info("Request to fetch token info failed, please review below errors")
+      logger.error(status[0])
+      logger.error(status[1])
+      exit(1)
+   else:
+      jsonList = json.loads(status[1].text)
+      return(jsonList)
 
 
 def days_between(d1, d2):
@@ -90,7 +96,6 @@ client_secret = os.environ['AKAMAI_CLIENT_SECRET']
 access_token = os.environ['AKAMAI_ACCESS_TOKEN']
 client_token = os.environ['AKAMAI_CLIENT_TOKEN']
 if isinstance(os.environ['LEAD_TIME'], str):
-   print("FOUND STRING")
    duration = int(os.environ['LEAD_TIME'])
 else:
    duration = os.environ['LEAD_TIME']

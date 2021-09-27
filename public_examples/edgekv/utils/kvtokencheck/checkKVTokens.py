@@ -1,5 +1,6 @@
 """ This script allows user to get notification on expiring tokens"""
-import  os, datetime
+import  os
+import  datetime
 import json
 import logging
 from urllib.parse import urljoin
@@ -12,12 +13,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def submit_request(testurl,payload,method,headers):
     """ Function to submit Akamai API """
-    logger.debug("Requesting Method: %s URL %s with payload: %s with Headers %s" %(method, testurl, payload, headers))
+    logger.debug("Requesting Method: %s URL %s with payload: %s with Headers %s", \
+    method, testurl, payload, headers)
     my_headers = headers
     logger.debug(my_headers)
-    s = requests.Session()
-    s.trust_env = False
-    s.auth = EdgeGridAuth(
+    req_session = requests.Session()
+    req_session.trust_env = False
+    req_session.auth = EdgeGridAuth(
         client_secret = client_secret,
         access_token = access_token,
         client_token = client_token
@@ -25,51 +27,55 @@ def submit_request(testurl,payload,method,headers):
     try:
         if method == "GET":
             if len(payload) > 0:
-                response = s.get(testurl,params=payload, headers=my_headers, allow_redirects=False, verify=False)
+                response = req_session.get(testurl,params=payload, headers=my_headers, \
+                           allow_redirects=False, verify=False)
             else:
-                response = s.get(testurl, headers=my_headers, allow_redirects=False, verify=False)
+                response = req_session.get(testurl, headers=my_headers, \
+                           allow_redirects=False, verify=False)
         elif method == "POST":
             if len(payload) > 0:
                 logger.debug("Using Post with Payload")
-                response = s.post(testurl,data=json.dumps(payload), headers=my_headers, allow_redirects=False, verify=False)
+                response = req_session.post(testurl,data=json.dumps(payload), headers=my_headers, \
+                           allow_redirects=False, verify=False)
             else:
                 logger.debug("Using Post without Payload")
-                response = s.post(testurl, headers=my_headers, allow_redirects=False, verify=False)
+                response = req_session.post(testurl, headers=my_headers, \
+                           allow_redirects=False, verify=False)
                 logger.debug(response.url)
                 logger.debug(response.headers)
         return (response.status_code,response)
     except requests.exceptions.HTTPError as errh:
-        logger.critical ("Http Error:",errh)
+        logger.critical ("Http Error: %s",errh)
         return_message = "Failure"
         return (response.status_code,return_message,errh)
     except requests.exceptions.ConnectionError as errc:
-        logger.critical ("Error Connecting:",errc)
+        logger.critical ("Error Connecting: %s",errc)
         return_status = 500
         return_message = "Failure"
         return (return_status,return_message,errc)
     except requests.exceptions.Timeout as errt:
-        logger.critical ("Timeout Error:",errt)
+        logger.critical ("Timeout Error:%s ",errt)
         return_status = 500
         return_message = "Failure"
         return (return_status,return_message,errt)
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException as eree:
         ## catastrophic error. bail.
-        logger.critical("Your Request had an error: ",  e)
+        logger.critical("Your Request had an error:%s ",  eree)
         logger.critical ("Check parameters")
-        logger.critical("Your Request had an error with Status %s" %(response.status_code))
+        logger.critical("Your Request had an error with Status %s", response.status_code)
         return_status = 500
         return_message = "Failure"
-        return (response.status_code,return_message,e)
+        return (response.status_code,return_message,eree)
 
 
-def getKVTokens():
+def get_kv_tokens():
     """ Function to get the tokens """
     host = os.environ['AKAMAI_API_HOST']
     baseurl = 'https://%s' % host
     headers =  {}
-    requestURL = '/edgekv/v1/tokens'
+    request_url = '/edgekv/v1/tokens'
     payload = {'includeExpired':'true' }
-    status = submit_request(urljoin(baseurl,requestURL),payload,"GET",headers)
+    status = submit_request(urljoin(baseurl,request_url),payload,"GET",headers)
     logger.debug (status[0])
     if status[0] != 200:
         logger.info("Request to fetch token info failed, please review below errors")
@@ -77,8 +83,8 @@ def getKVTokens():
         logger.error(status[1])
         exit(1)
     else:
-        jsonList = json.loads(status[1].text)
-        return(jsonList)
+        json_list = json.loads(status[1].text)
+        return(json_list)
 
 
 def days_between(date1, date2):
@@ -97,10 +103,6 @@ if isinstance(os.environ['LEAD_TIME'], str):
 else:
     duration = os.environ['LEAD_TIME']
 
-if 'DEBUG' in os.environ:
-    debug_level = True
-else:
-    debug_level = False
 
 ## Initialize logger
 logger = logging.getLogger('getAkamaiLocationInfo')
@@ -112,7 +114,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 
 ch.setFormatter(formatter)
 
-if debug_level:
+if os.environ.get("DEBUG", False):
     ## Create log file handle
     log_file = os.path.basename(__file__).split(".")[0] + ".log"
     fh = logging.FileHandler(log_file,'w+')
@@ -134,9 +136,9 @@ logger.addHandler(ch)
 
 current_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
 today = datetime.datetime.now().strftime("%Y-%m-%d")
-logger.info("Started Processing at: %s" %(current_time))
+logger.info("Started Processing at: %s", current_time)
 logger.info("Getting current KV tokens")
-info = getKVTokens()
+info = get_kv_tokens()
 tokens = info['tokens']
 expiring_tokens = []
 block_data = []
@@ -144,10 +146,13 @@ block_header = { "type": "header", "text": { "type": "plain_text", "text": "Expi
 block_header_copy = block_header.copy()
 block_data.append(block_header_copy)
 for token in tokens:
-    logger.debug("Token : %s expires on %s -- Will expire in %s days" %(token['name'], token['expiry'], days_between(today, token['expiry'])))
+    logger.debug("Token : %s expires on %s -- Will expire in %s days", token['name'], \
+                 token['expiry'],days_between(today, token['expiry']))
     if days_between(today, token['expiry']) < duration:
-        logger.info("Token: %s will expire on  %s" %(token['name'], token['expiry']))
-        temp_data = { "type": "section", "fields": [ { "type": "mrkdwn", "text": "*Name:*\n" + token['name'] }, { "type": "mrkdwn", "text": "*expiry Date:*\n" + token['expiry']  } ] }
+        logger.info("Token: %s will expire on  %s", token['name'], token['expiry'])
+        temp_data = { "type": "section", "fields": [ { "type": "mrkdwn", "text": "*Name:*\n" \
+                    + token['name'] }, { "type": "mrkdwn", "text": "*expiry Date:*\n" \
+                    + token['expiry']  } ] }
         temp_data_copy = temp_data.copy()
         block_data.append(temp_data_copy)
         expiring_tokens.append(token)
@@ -155,7 +160,8 @@ for token in tokens:
 #Send all to slack
 slack_payload = {}
 slack_payload['blocks']= block_data
-slack_response = requests.post( slack_webhook, data=json.dumps(slack_payload), headers={'Content-Type': 'application/json'})
+slack_response = requests.post( slack_webhook, data=json.dumps(slack_payload), \
+                 headers={'Content-Type': 'application/json'})
 if slack_response.status_code != 200:
     raise ValueError(
         'Request to slack returned an error %s, the response is:\n%s'

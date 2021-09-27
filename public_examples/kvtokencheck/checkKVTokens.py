@@ -122,9 +122,9 @@ if debug_level:
     def httpclient_log(*args):
         """ function to get http debug """
         logger.debug(" ".join(args))
-        http.client.print = httpclient_log
-        http.client.HTTPConnection.debuglevel = 1
-        logger.addHandler(fh)
+    http.client.print = httpclient_log
+    http.client.HTTPConnection.debuglevel = 1
+    logger.addHandler(fh)
 else:
     ch.setLevel(logging.INFO)
 

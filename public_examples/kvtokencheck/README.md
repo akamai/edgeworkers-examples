@@ -36,6 +36,10 @@ Edit the file checkKVTokens.sh  and update the values of the following variables
 sh ./checkKVTokens.sh
 ```
 
+### Enable Debugging
+To enable debugging add following environment variable to the checkKVTokens.sh file before the python command. This will log debug message in checkKVTokens.log file.
+export DEBUG="True"
+
 ### Schedule the job using Jenkins
 The python script can be invoked as a Jenkins job with the necessary parameters and secret texts. A regular schedule jpb will allow one to have slack notification sent when a token is coming up for expiration.
 

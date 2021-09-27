@@ -1,18 +1,18 @@
-import time, sys, os, datetime, tzlocal
+""" This script allows user to get notification on expiring tokens"""
+import  os, datetime
 import json
 import logging
 from urllib.parse import urljoin
-import requests
 import http.client
-import ssl
 import urllib3
-from akamai.edgegrid import EdgeGridAuth, EdgeRc
-import urllib3
+import requests
+from akamai.edgegrid import EdgeGridAuth
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def submit_request(testurl,payload,method,headers):
-    logger.debug("Requesting Method: %s URL %s with payload: %s with Headers %s" %(method, testurl,payload,headers))
+    """ Function to submit Akamai API """
+    logger.debug("Requesting Method: %s URL %s with payload: %s with Headers %s" %(method, testurl, payload, headers))
     my_headers = headers
     logger.debug(my_headers)
     s = requests.Session()
@@ -24,22 +24,20 @@ def submit_request(testurl,payload,method,headers):
     )
     try:
         if method == "GET":
-           if len(payload) > 0 :
-              response = s.get(testurl,params=payload, headers=my_headers, allow_redirects=False, verify=False)
-           else:
-              response = s.get(testurl, headers=my_headers, allow_redirects=False, verify=False)
+            if len(payload) > 0:
+                response = s.get(testurl,params=payload, headers=my_headers, allow_redirects=False, verify=False)
+            else:
+                response = s.get(testurl, headers=my_headers, allow_redirects=False, verify=False)
         elif method == "POST":
-           if len(payload) > 0 :
-              logger.debug("Using Post with Payload")
-              response = s.post(testurl,data=json.dumps(payload), headers=my_headers, allow_redirects=False, verify=False)
-           else:
-              logger.debug("Using Post without Payload")
-              response = s.post(testurl, headers=my_headers, allow_redirects=False, verify=False)
-        logger.debug(response.url)
-        logger.debug(response.headers)
+            if len(payload) > 0:
+                logger.debug("Using Post with Payload")
+                response = s.post(testurl,data=json.dumps(payload), headers=my_headers, allow_redirects=False, verify=False)
+            else:
+                logger.debug("Using Post without Payload")
+                response = s.post(testurl, headers=my_headers, allow_redirects=False, verify=False)
+                logger.debug(response.url)
+                logger.debug(response.headers)
         return (response.status_code,response)
-
-
     except requests.exceptions.HTTPError as errh:
         logger.critical ("Http Error:",errh)
         return_message = "Failure"
@@ -65,30 +63,29 @@ def submit_request(testurl,payload,method,headers):
 
 
 def getKVTokens():
-   host = os.environ['AKAMAI_API_HOST']
-   baseurl = 'https://%s' % host 
-   #headers = {
-   #      'content-type': 'application/json',
-   #}
-   headers =  {}
-   requestURL = '/edgekv/v1/tokens'
-   payload = {'includeExpired':'true' }
-   status = submit_request(urljoin(baseurl,requestURL),payload,"GET",headers)
-   logger.debug (status[0])
-   if status[0] != 200:
-      logger.info("Request to fetch token info failed, please review below errors")
-      logger.error(status[0])
-      logger.error(status[1])
-      exit(1)
-   else:
-      jsonList = json.loads(status[1].text)
-      return(jsonList)
+    """ Function to get the tokens """
+    host = os.environ['AKAMAI_API_HOST']
+    baseurl = 'https://%s' % host
+    headers =  {}
+    requestURL = '/edgekv/v1/tokens'
+    payload = {'includeExpired':'true' }
+    status = submit_request(urljoin(baseurl,requestURL),payload,"GET",headers)
+    logger.debug (status[0])
+    if status[0] != 200:
+        logger.info("Request to fetch token info failed, please review below errors")
+        logger.error(status[0])
+        logger.error(status[1])
+        exit(1)
+    else:
+        jsonList = json.loads(status[1].text)
+        return(jsonList)
 
 
-def days_between(d1, d2):
-    d1 = datetime.datetime.strptime(d1, "%Y-%m-%d")
-    d2 = datetime.datetime.strptime(d2, "%Y-%m-%d")
-    return abs((d2 - d1).days)
+def days_between(date1, date2):
+    """ function to get difference between two dates """
+    date1 = datetime.datetime.strptime(date1, "%Y-%m-%d")
+    date2 = datetime.datetime.strptime(date2, "%Y-%m-%d")
+    return abs((date2 - date1).days)
 
 ### Start Processing
 slack_webhook = os.environ['SLACK_WEB_HOOK']
@@ -96,14 +93,14 @@ client_secret = os.environ['AKAMAI_CLIENT_SECRET']
 access_token = os.environ['AKAMAI_ACCESS_TOKEN']
 client_token = os.environ['AKAMAI_CLIENT_TOKEN']
 if isinstance(os.environ['LEAD_TIME'], str):
-   duration = int(os.environ['LEAD_TIME'])
+    duration = int(os.environ['LEAD_TIME'])
 else:
-   duration = os.environ['LEAD_TIME']
+    duration = os.environ['LEAD_TIME']
 
 if 'DEBUG' in os.environ:
-   debug_level = True
+    debug_level = True
 else:
-   debug_level = False
+    debug_level = False
 
 ## Initialize logger
 logger = logging.getLogger('getAkamaiLocationInfo')
@@ -116,19 +113,20 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 
 if debug_level:
-   ## Create log file handle
-   log_file = os.path.basename(__file__).split(".")[0] + ".log"
-   fh = logging.FileHandler(log_file,'w+')
-   fh.setFormatter(formatter)
-   fh.setLevel(logging.DEBUG)
-   ch.setLevel(logging.INFO)
-   def httpclient_log(*args):
+    ## Create log file handle
+    log_file = os.path.basename(__file__).split(".")[0] + ".log"
+    fh = logging.FileHandler(log_file,'w+')
+    fh.setFormatter(formatter)
+    fh.setLevel(logging.DEBUG)
+    ch.setLevel(logging.INFO)
+    def httpclient_log(*args):
+        """ function to get http debug """
         logger.debug(" ".join(args))
-   http.client.print = httpclient_log
-   http.client.HTTPConnection.debuglevel = 1
-   logger.addHandler(fh)
+        http.client.print = httpclient_log
+        http.client.HTTPConnection.debuglevel = 1
+        logger.addHandler(fh)
 else:
-   ch.setLevel(logging.INFO)
+    ch.setLevel(logging.INFO)
 
 
 # add the handlers to the logger
@@ -146,21 +144,20 @@ block_header = { "type": "header", "text": { "type": "plain_text", "text": "Expi
 block_header_copy = block_header.copy()
 block_data.append(block_header_copy)
 for token in tokens:
-   logger.debug("Token : %s expires on %s -- Will expire in %s days" %(token['name'], token['expiry'], days_between(today, token['expiry'])))
-   if days_between(today, token['expiry']) < duration:
-      logger.info("Token: %s will expire on  %s" %(token['name'], token['expiry']))
-      temp_data = { "type": "section", "fields": [ { "type": "mrkdwn", "text": "*Name:*\n" + token['name'] }, { "type": "mrkdwn", "text": "*expiry Date:*\n" + token['expiry']  } ] }
-      temp_data_copy = temp_data.copy()
-      block_data.append(temp_data_copy)
-      expiring_tokens.append(token)
+    logger.debug("Token : %s expires on %s -- Will expire in %s days" %(token['name'], token['expiry'], days_between(today, token['expiry'])))
+    if days_between(today, token['expiry']) < duration:
+        logger.info("Token: %s will expire on  %s" %(token['name'], token['expiry']))
+        temp_data = { "type": "section", "fields": [ { "type": "mrkdwn", "text": "*Name:*\n" + token['name'] }, { "type": "mrkdwn", "text": "*expiry Date:*\n" + token['expiry']  } ] }
+        temp_data_copy = temp_data.copy()
+        block_data.append(temp_data_copy)
+        expiring_tokens.append(token)
 
 #Send all to slack
 slack_payload = {}
 slack_payload['blocks']= block_data
-response = requests.post( slack_webhook, data=json.dumps(slack_payload), headers={'Content-Type': 'application/json'})
-if response.status_code != 200:
+slack_response = requests.post( slack_webhook, data=json.dumps(slack_payload), headers={'Content-Type': 'application/json'})
+if slack_response.status_code != 200:
     raise ValueError(
         'Request to slack returned an error %s, the response is:\n%s'
-       % (response.status_code, response.text)
-)
-
+        % (slack_response.status_code, slack_response.text)
+    )

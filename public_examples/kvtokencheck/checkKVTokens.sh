@@ -9,4 +9,4 @@ export AKAMAI_CLIENT_TOKEN=""
 export SLACK_WEB_HOOK=""
 ### Lead time for expiry
 export LEAD_TIME=30
-python ./checkKVTokens.py
+/usr/local/bin/python3.9 ./checkKVTokens.py

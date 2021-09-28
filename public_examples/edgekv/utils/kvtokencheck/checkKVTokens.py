@@ -1,6 +1,7 @@
 """ This script allows user to get notification on expiring tokens"""
-import  os
-import  datetime
+import os
+import sys
+import datetime
 import json
 import logging
 from urllib.parse import urljoin
@@ -44,34 +45,35 @@ def submit_request(testurl,payload,method,headers):
                 logger.debug(response.url)
                 logger.debug(response.headers)
         return (response.status_code,response)
-    except requests.exceptions.HTTPError as errh:
-        logger.critical ("Http Error: %s",errh)
+    except requests.exceptions.HTTPError as my_errh:
+        logger.critical ("Http Error: %s",my_errh)
         return_message = "Failure"
-        return (response.status_code,return_message,errh)
-    except requests.exceptions.ConnectionError as errc:
-        logger.critical ("Error Connecting: %s",errc)
+        return (response.status_code,return_message,my_errh)
+    except requests.exceptions.ConnectionError as my_errc:
+        logger.critical ("Error Connecting: %s",my_errc)
         return_status = 500
         return_message = "Failure"
-        return (return_status,return_message,errc)
-    except requests.exceptions.Timeout as errt:
-        logger.critical ("Timeout Error:%s ",errt)
+        return (return_status,return_message,my_errc)
+    except requests.exceptions.Timeout as my_errt:
+        logger.critical ("Timeout Error:%s ",my_errt)
         return_status = 500
         return_message = "Failure"
-        return (return_status,return_message,errt)
-    except requests.exceptions.RequestException as eree:
+        return (return_status,return_message,my_errt)
+    except requests.exceptions.RequestException as my_eree:
         ## catastrophic error. bail.
-        logger.critical("Your Request had an error:%s ",  eree)
+        logger.critical("Your Request had an error:%s ",  my_eree)
         logger.critical ("Check parameters")
         logger.critical("Your Request had an error with Status %s", response.status_code)
         return_status = 500
         return_message = "Failure"
-        return (response.status_code,return_message,eree)
+        return (response.status_code,return_message,my_eree)
 
 
 def get_kv_tokens():
     """ Function to get the tokens """
     host = os.environ['AKAMAI_API_HOST']
-    baseurl = 'https://%s' % host
+    #baseurl = 'https://%s' % host
+    baseurl = (f"https://{host}")
     headers =  {}
     request_url = '/edgekv/v1/tokens'
     payload = {'includeExpired':'true' }
@@ -81,10 +83,10 @@ def get_kv_tokens():
         logger.info("Request to fetch token info failed, please review below errors")
         logger.error(status[0])
         logger.error(status[1])
-        exit(1)
+        sys.exit(1)
     else:
         json_list = json.loads(status[1].text)
-        return(json_list)
+        return json_list
 
 
 def days_between(date1, date2):
@@ -160,10 +162,9 @@ for token in tokens:
 #Send all to slack
 slack_payload = {}
 slack_payload['blocks']= block_data
-slack_response = requests.post( slack_webhook, data=json.dumps(slack_payload), \
-                 headers={'Content-Type': 'application/json'})
-if slack_response.status_code != 200:
-    raise ValueError(
-        'Request to slack returned an error %s, the response is:\n%s'
-        % (slack_response.status_code, slack_response.text)
-    )
+try:
+    slack_response = requests.post( slack_webhook, data=json.dumps(slack_payload), \
+    headers={'Content-Type': 'application/json'})
+    slack_response.raise_for_status()
+except requests.exceptions.HTTPError as errh:
+    logger.error("Error Code: %s with Message: %s", slack_response.status_code, errh)

@@ -366,7 +366,7 @@ Content-Type: application/json
 ```
 
 ### 10.  Write an item to an EdgeKV namespace
-You can use the following API to create or update an item in EdgeKV. You need to specify the `namespace` and `group` this item belongs to. The `namespace` must have been already created, while the `group` will be automatically created for you if it does not exist.
+You can use the following API to create or update an item in EdgeKV. Data in a namespace is contained inside a logical container called a group. When adding a new item, you must specify the destination namespace and group that the item belongs to. The namespace must already exist, but a group (if it does not already exist), may be created "on-the-fly" when creating the item. 
 
 #### Endpoint:
 

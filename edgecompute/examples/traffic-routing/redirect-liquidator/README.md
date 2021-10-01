@@ -14,7 +14,7 @@ Instead of serving a response with a `301/302` redirect we directly serve the ac
 
 This JS snippet updates the original URL without triggering a redirect. This is done using the `history.replaceState` method from the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState). The History API is well supported with an adoption rate of 96%+.
   
-![Redirect Liquidation in action](redirect-liquidation.jpg)
+![Redirect Liquidation in action](edgeworkers-examples/edgecompute/examples/_traffic-routing/redirect-liquidator/redirect-liquidation.jpg)
 
   
 ## Implementation
@@ -32,7 +32,7 @@ We build on top of the ready to use [find-replace-stream library](https://github
 Make sure the find-replace-stream.js is part of your bundle.
   
 ### bundle-redirect-liquidation.tgz
-A [ready to use code bundle](bundle-redirect-liquidation.tgz) can be imported via the CLI or the UI 
+A [ready to use code bundle](edgeworkers-examples/edgecompute/examples/_traffic-routing/redirect-liquidator/bundle-redirect-liquidation.tgz) can be imported via the CLI or the UI 
 
 ### Configuration Options
   
@@ -54,10 +54,10 @@ Use Property Manager criteria (UI or API) to limit this EdgeWorker to only run o
   
 This mPulse RUM graph shows the amount of pages having a redirect penalty over time. In the last 4 days a significant drop is visilbe. This is when the above solution rolled out entirely.
 
-![mPulse RUM showing a decrease in requests having a redirect overhead](redirect-liquidation-rum.jpg)
+![mPulse RUM showing a decrease in requests having a redirect overhead](edgeworkers-examples/edgecompute/examples/_traffic-routing/redirect-liquidator/redirect-liquidation-rum.jpg)
 
 This screenshot from WebPageTest (4G Connection) shows the result when for multiple chained redirects.
-![WebPageTest showing the difference ](redirect-liquidation-chained-wpt.jpg)
+![WebPageTest showing the difference ](edgeworkers-examples/edgecompute/examples/_traffic-routing/redirect-liquidator/redirect-liquidation-chained-wpt.jpg)
 
 
   

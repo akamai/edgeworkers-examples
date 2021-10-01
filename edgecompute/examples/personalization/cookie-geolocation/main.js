@@ -6,7 +6,7 @@ Repo: https://github.com/akamai/edgeworkers-examples/tree/master/cookie-geolocat
 
 // Import cookies library to provide helper functions
 import { SetCookie } from 'cookies';
-import { salesRegions } from 'data.js';
+import { salesRegions } from './data';
 
 // Helper function to find a sales region by state.
 function findRegionByState (state) {

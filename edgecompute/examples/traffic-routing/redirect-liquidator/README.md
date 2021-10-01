@@ -25,7 +25,7 @@ From a high level perspective the EgdeWorkers does 3 steps:
 * Sends a 200 response to the end-user
   
 ### find-replace-stream.js Library
-We build on top of the ready to use [find-replace-stream library](https://github.com/akamai/edgecompute/examples/stream/find-replace-stream) available on Github. This allows us to search for a tag (eg. </title>)  and append it with the history.replaceState() JavaScript method.
+We build on top of the ready to use [find-replace-stream library](edgeworkers-examples/edgecompute/examples/stream/find-replace-stream) available on Github. This allows us to search for a tag (eg. </title>)  and append it with the history.replaceState() JavaScript method.
 
 `import { FindAndReplaceStream } from 'find-replace-stream.js';`
 

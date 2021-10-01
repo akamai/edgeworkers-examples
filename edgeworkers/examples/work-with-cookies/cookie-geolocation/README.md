@@ -21,7 +21,7 @@ Set-Cookie: salesRegion=Midwest%3A68329004; Max-Age=86400; Path=/
 ````
 ## Similar Uses
 
-Geolocation can be also be performed in a separate service call, as in the [microservice-geolocation](../microservice-geolocation/) example.
+Geolocation can be also be performed in a separate service call, as in the [microservice-geolocation](../../respond-from-edgeworkers/respondwith/microservice-geolocation/) example.
 
 ## Resources
 See the repo [README](https://github.com/akamai/edgeworkers-examples#Resources) for additional guidance.

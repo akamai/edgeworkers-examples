@@ -620,6 +620,7 @@
 					"script": {
 						"exec": [
 							"pm.environment.set(\"tokenName\", \"my_token\");",
+							"pm.environment.set(\"tokenExpiry\", \"2022-06-30\");",							
 							""
 						],
 						"type": "text/javascript"
@@ -635,6 +636,7 @@
 							"",
 							"let response_data = pm.response.json();",
 							"let tokenName = pm.environment.get(\"tokenName\")",
+							"let tokenExpiry = pm.environment.get(\"tokenExpiry\")",							
 							"",
 							"pm.test(\"Token Name is correct\", () => {",
 							"    pm.expect(response_data.name).equals(tokenName)",
@@ -654,7 +656,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"allowOnProduction\": \"true\",\n    \"allowOnStaging\": \"true\",\n    \"expiry\": \"2022-06-30\",\n    \"name\": \"my_token_name\",\n    \"namespacePermissions\": {\n        \"default\": [\n            \"r\",\n            \"w\",\n            \"d\"\n        ]\n    }\n}",
+					"raw": "{\n    \"allowOnProduction\": \"true\",\n    \"allowOnStaging\": \"true\",\n    \"expiry\": \"{{tokenExpiry}}\",\n    \"name\": \"{{tokenName}}\",\n    \"namespacePermissions\": {\n        \"default\": [\n            \"r\",\n            \"w\",\n            \"d\"\n        ]\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1035,7 +1037,7 @@
 					"script": {
 						"exec": [
 							"pm.environment.set(\"namespaceId\", \"marketing\");",
-							"pm.environment.set(\"ewGroupId\", \"countries\");",
+							"pm.environment.set(\"ekvGroupId\", \"countries\");",
 							"pm.environment.set(\"itemId\", \"DE\");",
 							""
 						],
@@ -1056,7 +1058,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ekvGroupId}}/items/{{itemId}}",
 					"protocol": "https",
 					"host": [
 						"{{host}}"
@@ -1069,7 +1071,7 @@
 						"namespaces",
 						"{{namespaceId}}",
 						"groups",
-						"{{ewGroupId}}",
+						"{{ekvGroupId}}",
 						"items",
 						"{{itemId}}"
 					]
@@ -1149,7 +1151,7 @@
 					"script": {
 						"exec": [
 							"pm.environment.set(\"namespaceId\", \"marketing\");",
-							"pm.environment.set(\"ewGroupId\", \"countries\");",
+							"pm.environment.set(\"ekvGroupId\", \"countries\");",
 							"pm.environment.set(\"itemId\", \"DE\");",
 							""
 						],
@@ -1161,7 +1163,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ekvGroupId}}/items/{{itemId}}",
 					"protocol": "https",
 					"host": [
 						"{{host}}"
@@ -1174,7 +1176,7 @@
 						"namespaces",
 						"{{namespaceId}}",
 						"groups",
-						"{{ewGroupId}}",
+						"{{ekvGroupId}}",
 						"items",
 						"{{itemId}}"
 					]
@@ -1244,7 +1246,7 @@
 					"script": {
 						"exec": [
 							"pm.environment.set(\"namespaceId\", \"marketing\");",
-							"pm.environment.set(\"ewGroupId\", \"countries\");",
+							"pm.environment.set(\"ekvGroupId\", \"countries\");",
 							"pm.environment.set(\"itemId\", \"DE\");"
 						],
 						"type": "text/javascript"
@@ -1255,7 +1257,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ekvGroupId}}/items/{{itemId}}",
 					"protocol": "https",
 					"host": [
 						"{{host}}"
@@ -1268,7 +1270,7 @@
 						"namespaces",
 						"{{namespaceId}}",
 						"groups",
-						"{{ewGroupId}}",
+						"{{ekvGroupId}}",
 						"items",
 						"{{itemId}}"
 					]
@@ -1339,7 +1341,7 @@
 					"script": {
 						"exec": [
 							"pm.environment.set(\"namespaceId\", \"marketing\");",
-							"pm.environment.set(\"ewGroupId\", \"countries\");",
+							"pm.environment.set(\"ekvGroupId\", \"countries\");",
 							""
 						],
 						"type": "text/javascript"
@@ -1350,7 +1352,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}",
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ekvGroupId}}",
 					"protocol": "https",
 					"host": [
 						"{{host}}"
@@ -1363,7 +1365,7 @@
 						"namespaces",
 						"{{namespaceId}}",
 						"groups",
-						"{{ewGroupId}}"
+						"{{ekvGroupId}}"
 					]
 				},
 				"description": "You can list items in a group.\n\n>> NOTE: A maximum of 100 items can be returned.\n\nexample httpie request\n```\n $ http --print=hbHB --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries \n```"

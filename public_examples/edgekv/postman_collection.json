@@ -1,0 +1,1432 @@
+{
+	"info": {
+		"_postman_id": "d1343152-4681-46e2-b3c5-7310a732ed14",
+		"name": "Akamai | EdgeKV",
+		"description": "Response Codes and Errors\nEdgeKV API makes use of standard HTTP response codes such as\n\n- 102 Processing\n- 200 Success\n- 201 Created\n- 400 Bad Request\n- 401 Unauthorized\n- 403 Forbidden\n- 404 Not Found\n- 409 Conflict\n- 413 Payload Too Large\n- 429 Too Many Requests\n- 500 Internal Error\n- 501 Not Implemented\n- 504 Gateway Timeout\n\n>> NOTE: You may get back 404 Not Found when reading an item that has been written to EdgeKV, but that may not always be treated as an error due to the eventual consistency property of EdgeKV. You can read more about EdgeKV's eventual consistency model in the [Edge KV Getting Start Guide](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgekv-getting-started-guide/index.html).\n\nMore details about a given error is provided in the response body JSON.\n\nExample (trying to request a namespace that does not exist):\n\n```json\n$ http --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces/bad_namespace\nHTTP/1.1 400 Bad Request\nContent-Type: application/problem+json\n\n{\n    \"additionalDetail\": {\n        \"requestId\": \"d0c361252e107666\"\n    },\n    \"detail\": \"The requested namespace does not exist.\",\n    \"errorCode\": \"EKV_9000\",\n    \"instance\": \"/edgeKV/error-instances/af839313-4763-4053-b7ef-87fa0514e2ac\",\n    \"status\": 400,\n    \"title\": \"Bad Request\",\n    \"type\": \"https://learn.akamai.com\"\n}\n```",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Initialise Database - one time only",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 - Database Initialised Ok\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"let response_data = pm.response.json();",
+							"",
+							"pm.test(\"Production Status is initialised\", () => {",
+							"    pm.expect(response_data.productionStatus).equals(\"INITIALIZED\")",
+							"})",
+							"",
+							"pm.test(\"Staging Status is initialised\", () => {",
+							"    pm.expect(response_data.stagingStatus).equals(\"INITIALIZED\")",
+							"})",
+							"",
+							"//Save the CP Code value as a Collection variable",
+							"pm.environment.set(\"cpcode\", response_data.cpcode);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/initialize",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"initialize"
+					]
+				},
+				"description": "This is only required once, to initialize your EdgeKV database and provision the default EdgeKV namespace on Akamai's Staging and Production networks. It also creates a new dedicated CP code used to track your EdgeKV usage.\n\nSample response\n```json\n{\n    \"accountStatus\": \"INITIALIZED\",\n    \"cpcode\": \"123456\",\n    \"productionStatus\": \"INITIALIZED\",\n    \"stagingStatus\": \"INITIALIZED\"\n}\n```"
+			},
+			"response": [
+				{
+					"name": "Initialise Database - one time only",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/initialize",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"initialize"
+							]
+						}
+					},
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accountStatus\": \"INITIALIZED\",\n    \"cpcode\": \"123456\",\n    \"productionStatus\": \"INITIALIZED\",\n    \"stagingStatus\": \"INITIALIZED\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get status of initialise",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Database Status fetched\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let response_data = pm.response.json();",
+							"",
+							"pm.test(\"Production Status is initialised\", () => {",
+							"    pm.expect(response_data.productionStatus).equals(\"INITIALIZED\")",
+							"})",
+							"",
+							"pm.test(\"Staging Status is initialised\", () => {",
+							"    pm.expect(response_data.stagingStatus).equals(\"INITIALIZED\")",
+							"})",
+							"",
+							"//Save the CP Code value as a Collection variable",
+							"pm.environment.set(\"cpcode\", response_data.cpcode);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/initialize",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"initialize"
+					]
+				},
+				"description": "GET can also be used to check on the current initialization status:"
+			},
+			"response": [
+				{
+					"name": "Get status of initialise",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/initialize",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"initialize"
+							]
+						}
+					},
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accountStatus\": \"INITIALIZED\",\n    \"cpcode\": \"123456\",\n    \"productionStatus\": \"INITIALIZED\",\n    \"stagingStatus\": \"INITIALIZED\"\n}"
+				}
+			]
+		},
+		{
+			"name": "List EdgeKV namespaces",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Namespaces found\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let response_data = pm.response.json();",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces?details=on",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"networks",
+						"{{network}}",
+						"namespaces"
+					],
+					"query": [
+						{
+							"key": "details",
+							"value": "on"
+						}
+					]
+				},
+				"description": "Once EdgeKV is provisioned, a default namespace is created in both `staging` and `production` environments. This can be confirmed by calling the namespaces endpoint to retrieve the list of available namespaces in EdgeKV.\n\n`{network}` - Can be either staging or production\n\n`details=on` (optional) whether to return all namespace attributes or only names.\n\n```json\n{\n    \"namespaces\": [\n        {\n            \"geoLocation\": \"US\",\n            \"namespace\": \"default\",\n            \"retentionInSeconds\": 15724800\n        },\n        {\n            \"geoLocation\": \"US\",\n            \"namespace\": \"test1\",\n            \"retentionInSeconds\": 15724800\n        }\n    ]\n}\n```\n> Note: geoLocation defaults to \"US\"."
+			},
+			"response": [
+				{
+					"name": "List EdgeKV namespaces",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces?details=on",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"networks",
+								"{{network}}",
+								"namespaces"
+							],
+							"query": [
+								{
+									"key": "details",
+									"value": "on"
+								}
+							]
+						}
+					},
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"namespaces\": [\n        {\n            \"geoLocation\": \"US\",\n            \"namespace\": \"default\",\n            \"retentionInSeconds\": 15724800\n        },\n        {\n            \"geoLocation\": \"US\",\n            \"namespace\": \"test1\",\n            \"retentionInSeconds\": 15724800\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Create an EdgeKV namespace",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Namespace created ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let response_data = pm.response.json();",
+							"let retentionInSeconds = pm.environment.get(\"retentionInSeconds\")",
+							"let namespaceId = pm.environment.get(\"namespaceId\")",
+							"",
+							"pm.test(\"Retention Time is correct\", () => {",
+							"    pm.expect(response_data.retentionInSeconds).equals(retentionInSeconds)",
+							"})",
+							"",
+							"pm.test(\"Namespace is correct\", () => {",
+							"    pm.expect(response_data.namespace).equals(namespaceId)",
+							"})",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"namespaceId\", \"fill me in\");",
+							"pm.environment.set(\"retentionInSeconds\", 0);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"namespace\": \"{{namespaceId}}\",\n    \"retentionInSeconds\": {{retentionInSeconds}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"networks",
+						"{{network}}",
+						"namespaces"
+					]
+				},
+				"description": "You may optionally create additional namespaces. You have to specify the network in which the namespace will be created, which can be either staging or production.\n\n>> It is recommended that you create namespaces in both staging and production so that you can seamlessly test your EdgeWorker code in both environments.\n\nRequest body parameters\n\n- `namespace` - (mandatory) Namespace name\n\n- `retentionInSeconds` - (mandatory) Specify the retention period for data in this namespace in seconds, or 0 for indefinite."
+			},
+			"response": [
+				{
+					"name": "Create an EdgeKV namespace",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"namespace\": \"{{namespaceId}}\",\n    \"retentionInSeconds\": {{retentionInSeconds}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"networks",
+								"{{network}}",
+								"namespaces"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"namespace\": \"fill me in\",\n    \"retentionInSeconds\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Read EdgeKV namespace details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Namespace read ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let response_data = pm.response.json();",
+							"let retentionInSeconds = pm.environment.get(\"retentionInSeconds\")",
+							"let namespaceId = pm.environment.get(\"namespaceId\")",
+							"",
+							"pm.test(\"Retention Time is correct\", () => {",
+							"    pm.expect(response_data.retentionInSeconds).equals(retentionInSeconds)",
+							"})",
+							"",
+							"pm.test(\"Namespace is an array\", () => {",
+							"    pm.expect(response_data.namespaces).to.be.an('array')",
+							"})",
+							"",
+							"pm.test('The `namespaces` array contains the correct namespace', () => {",
+							"    let result = response_data.namespaces.find(a => a.namespace === namespaceId)",
+							"    pm.expect(result.namespace).to.eql(namespaceId)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"namespaceId\", \"fill me in\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"networks",
+						"{{network}}",
+						"namespaces",
+						"{{namespaceId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Read EdgeKV namespace details",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"networks",
+								"{{network}}",
+								"namespaces",
+								"{{namespaceId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"namespaces\": [\n        {\n            \"geoLocation\": \"US\",\n            \"namespace\": \"default\",\n            \"retentionInSeconds\": 15724800\n        },\n        {\n            \"geoLocation\": \"US\",\n            \"namespace\": \"fill me in\",\n            \"retentionInSeconds\": 15724800\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Update an EdgeKV namespace",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"namespaceId\", \"fill me in2\");",
+							"pm.environment.set(\"retentionInSeconds\", 2592000);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Namespace updated ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let response_data = pm.response.json();",
+							"let retentionInSeconds = pm.environment.get(\"retentionInSeconds\")",
+							"let namespaceId = pm.environment.get(\"namespaceId\")",
+							"",
+							"pm.test(\"Retention Time is correct\", () => {",
+							"    pm.expect(response_data.retentionInSeconds).equals(retentionInSeconds)",
+							"})",
+							"",
+							"pm.test(\"Namespace is correct\", () => {",
+							"    pm.expect(response_data.namespace).equals(namespaceId)",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"namespace\": \"{{namespaceId}}\",\n    \"retentionInSeconds\": {{retentionInSeconds}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"networks",
+						"{{network}}",
+						"namespaces",
+						"{{namespaceId}}"
+					]
+				},
+				"description": "You can update the retention period for an existing namespace other than the default namespace.\n\nYou can simply copy the json response from the POST or GET operations above and change the retentionInSeconds value to specify the desired new retention period.\n\n>> NOTE: It may take up to 5 minutes for the new retention policy to be applied. The newly specified retention period only applies to data added or updated in the namespace after this operation. The retention period of unmodified data remains unchanged and cannot be queried after this operation is performed.\n\nRequest body parameters\n\n- `namespace` - (mandatory) Namespace name (MUST be the same as the {namespaceId} in the endpoint)\n\n- `retentionInSeconds` - (mandatory) Specify the new retention period for data in this namespace in seconds, or 0 for indefinite."
+			},
+			"response": [
+				{
+					"name": "Update an EdgeKV namespace",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"namespace\": \"{{namespaceId}}\",\n    \"retentionInSeconds\": {{retentionInSeconds}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"networks",
+								"{{network}}",
+								"namespaces",
+								"{{namespaceId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"geoLocation\": \"US\",\n    \"namespace\": \"fill me in2\",\n    \"retentionInSeconds\": 2592000\n}"
+				}
+			]
+		},
+		{
+			"name": "Generate an EdgeKV Access Token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"tokenName\", \"my_token\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Token generated ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let response_data = pm.response.json();",
+							"let tokenName = pm.environment.get(\"tokenName\")",
+							"",
+							"pm.test(\"Token Name is correct\", () => {",
+							"    pm.expect(response_data.name).equals(tokenName)",
+							"})",
+							"",
+							"pm.environment.set(\"tokenExpiry\", response_data.expiry);",
+							"pm.environment.set(\"tokenUuid\", response_data.uuid);",
+							"pm.environment.set(\"tokenValue\", response_data.value);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"allowOnProduction\": \"true\",\n    \"allowOnStaging\": \"true\",\n    \"expiry\": \"2022-06-30\",\n    \"name\": \"my_token_name\",\n    \"namespacePermissions\": {\n        \"default\": [\n            \"r\",\n            \"w\",\n            \"d\"\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/tokens",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"tokens"
+					]
+				},
+				"description": "An EdgeKV-specific access token is required to access each namespace in your data model from EdgeWorkers. Refer to Generate an EdgeKV access token instructions for information about EdgeKV Access Token.\n\n>> NOTE: Token name needs to be unique within your account. You cannot use the name of an existing token.\n\n>> NOTE: You can use the output of this command to update the edgekv_tokens.js file.\n\nexample httpie \n```\n$ http --print=hbHB --auth-type edgegrid -a default: POST :/edgekv/v1/tokens name=my_token allowOnStaging=true allowOnProduction=true expiry=\"2021-06-30\" namespacePermissions:='{\"default\":[\"r\",\"w\", \"d\"]}' \n\n```"
+			},
+			"response": [
+				{
+					"name": "Generate an EdgeKV Access Token",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"allowOnProduction\": \"true | false\",\n    \"allowOnStaging\": \"true | false\",\n    \"expiry\": \"<expiry date in ISO format>\",\n    \"name\": \"<token name>\",\n    \"namespacePermissions\": {\n        \"default\": [\n            \"r\",\n            \"w\",\n            \"d\"\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/tokens",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"tokens"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"expiry\": \"2022-06-30\",\n    \"name\": \"my_token\",\n    \"uuid\": \"fa3a7ae0-1b0c-45c7-adc3-f0638c6b7466\",\n    \"value\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Retrieve an EdgeKV Access Token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"tokenName\", \"my_token\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Token retrieved ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let response_data = pm.response.json();",
+							"let tokenName = pm.environment.get(\"tokenName\")",
+							"",
+							"pm.test(\"Token Name is correct\", () => {",
+							"    pm.expect(response_data.name).equals(tokenName)",
+							"})",
+							"",
+							"pm.environment.set(\"tokenExpiry\", response_data.expiry);",
+							"pm.environment.set(\"tokenUuid\", response_data.uuid);",
+							"pm.environment.set(\"tokenValue\", response_data.value);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/tokens/{{tokenName}}",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"tokens",
+						"{{tokenName}}"
+					]
+				},
+				"description": "You can retrieve an EdgeKV access token. To retrieve a token you need the token name used when it was created. An EdgeKV-specific access token is required to access each namespace in your data model from EdgeWorkers. Refer to Generate an EdgeKV access token instructions for information about EdgeKV Access Token.\n\n```\nhttp --print=hbHB --auth-type edgegrid -a default: GET :/edgekv/v1/tokens/token1\n```\n\nexample response\n```json\n{     \n    \"expiry\": \"2021-06-30\",     \n    \"name\": \"token1\",     \n    \"uuid\": \"2f8e59c9-43ab-5f9c-b498-56ab0253dc9a\",     \n    \"value\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxx\" \n}\n```\n>> NOTE: You can use the output of this command to update the edgekv_tokens.js file."
+			},
+			"response": [
+				{
+					"name": "Retrieve an EdgeKV Access Token",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/tokens/{{tokenName}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"tokens",
+								"{{tokenName}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"expiry\": \"2022-06-30\",\n    \"name\": \"my_token\",\n    \"uuid\": \"2f8e59c9-43ab-5f9c-b498-56ab0253dc9a\",\n    \"value\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxx\"\n}"
+				}
+			]
+		},
+		{
+			"name": "List EdgeKV Access Tokens",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Token list read ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/tokens?includeExpired=true",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"tokens"
+					],
+					"query": [
+						{
+							"key": "includeExpired",
+							"value": "true"
+						}
+					]
+				},
+				"description": "You can list access tokens created for EdgeKV.\n\n- `includeExpired` (Optional) if 'true', include expired tokens in the response. Or 'false'.\n\nexample httpie call\n```\nhttp --print=b --auth-type edgegrid -a default: GET :/edgekv/v1/tokens\n```\n\nexample response\n```json\n{\n    \"tokens\": [\n        {\n            \"expiry\": \"2021-06-30\",\n            \"name\": \"token1\",\n            \"uuid\": \"12886ccf-7662-5f19-b039-766740ce227f\"\n        },\n        {\n            \"expiry\": \"2021-06-30\",\n            \"name\": \"my_token\",\n            \"uuid\": \"a600dfaa-3b7a-5d2a-bae3-b0c0d0e88e4a\"\n        }\n    ]\n}\n```"
+			},
+			"response": [
+				{
+					"name": "List EdgeKV Access Tokens",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/tokens?includeExpired=true",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"tokens\": [\n        {\n            \"expiry\": \"2021-06-30\",\n            \"name\": \"token1\",\n            \"uuid\": \"12886ccf-7662-5f19-b039-766740ce227f\"\n        },\n        {\n            \"expiry\": \"2021-06-30\",\n            \"name\": \"my_token\",\n            \"uuid\": \"a600dfaa-3b7a-5d2a-bae3-b0c0d0e88e4a\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "List EdgeKV Access No Tokens",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/tokens?includeExpired=true",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"tokens"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"tokens\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "Revoke an EdgeKV Access Token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"tokenName\", \"my_token\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Token revoked ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"let response_data = pm.response.json();",
+							"let tokenName = pm.environment.get(\"tokenName\")",
+							"",
+							"pm.test(\"Token Name is correct\", () => {",
+							"    pm.expect(response_data.name).equals(tokenName)",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/tokens/{{tokenName}}",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"tokens",
+						"{{tokenName}}"
+					]
+				},
+				"description": "You can revoke an EdgeKV access token to prevent it from being used in an EdgeWorkers code bundle to gain access to EdgeKV.\n\nAny requests from an EdgeWorkers code bundle using a revoked token will result in a 401 error.\n\nNOTE: Revoking an access token is an irreversible operation. Once you revoke a token, you need to update all the deployed EdgeWorkers code bundles with a new token.\n\nexample httpie request\n```\nhttp --print=hbHB --auth-type edgegrid -a default: DELETE :/edgekv/v1/tokens/token1\n```\n\nexample response\n```json\n{     \n    \"name\": \"token1\",     \n    \"uuid\": \"2f8e59c9-43ab-5f9c-b498-56ab0253dc9a\"   \n}\n```"
+			},
+			"response": [
+				{
+					"name": "Revoke an EdgeKV Access Token",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/tokens/{{tokenName}}",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"tokens",
+								"{{tokenName}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"name\": \"my_token\",\n    \"uuid\": \"2f8e59c9-43ab-5f9c-b498-56ab0253dc9a\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Write an item to an EdgeKV namespace",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Item upserted ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"let response_data = pm.response.text;",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"namespaceId\", \"marketing\");",
+							"pm.environment.set(\"ewGroupId\", \"countries\");",
+							"pm.environment.set(\"itemId\", \"DE\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"currency\": \"€\",\n    \"flag\": \"/germany.png\",\n    \"name\": \"Germany\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"networks",
+						"{{network}}",
+						"namespaces",
+						"{{namespaceId}}",
+						"groups",
+						"{{ewGroupId}}",
+						"items",
+						"{{itemId}}"
+					]
+				},
+				"description": "You can use the following API to create or update an item in EdgeKV. Data in a namespace is contained inside a logical container called a group. When adding or updating an item, you must specify the destination namespace and group that the item belongs to. The namespace must already exist, but a group (if it does not already exist), will automatically be created when creating the item.\n\nContent-Type: `application/json` or `application/text` Request body: JSON or String value.\n\n>> NOTE: The itemId is also know as the key.\n\nexample httpie request\n```\n$ http --print=hbHB --auth-type edgegrid -a default: PUT :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/DE name='Germany' flag='/germany.png' currency='€'\n\nPUT /edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/DE HTTP/1.1\nContent-Type: application/json\n\n{\n    \"currency\": \"€\",\n    \"flag\": \"/germany.png\",\n    \"name\": \"Germany\"\n}\n\n```"
+			},
+			"response": [
+				{
+					"name": "Write an item to an EdgeKV namespace",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/marketing/groups/countries/items/DE",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"networks",
+								"{{network}}",
+								"namespaces",
+								"marketing",
+								"groups",
+								"countries",
+								"items",
+								"DE"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=utf-8",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "Item was upserted in KV store with database 123456, namespace marketing, group countries, and key DE."
+				}
+			]
+		},
+		{
+			"name": "Read an item from an EdgeKV namespace",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Item read ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"let response_data = pm.response.json();"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"namespaceId\", \"marketing\");",
+							"pm.environment.set(\"ewGroupId\", \"countries\");",
+							"pm.environment.set(\"itemId\", \"DE\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"networks",
+						"{{network}}",
+						"namespaces",
+						"{{namespaceId}}",
+						"groups",
+						"{{ewGroupId}}",
+						"items",
+						"{{itemId}}"
+					]
+				},
+				"description": "You can use the following API to read an item from EdgeKV. You need to specify the namespace and group this item belongs to.\n\nNOTE: It can take up to 10 seconds or longer to read an item that has been recently written to EdgeKV. A 404 Not Found response status code may be returned during that period. This is normal behavior for EdgeKV which is an eventually consistent database.\n\n\nexample httpie request\n```\n$ http --print=hbHB --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/DE \n\n```"
+			},
+			"response": [
+				{
+					"name": "Read an item from an EdgeKV namespace",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/marketing/groups/countries/items/DE",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"networks",
+								"{{network}}",
+								"namespaces",
+								"marketing",
+								"groups",
+								"countries",
+								"items",
+								"DE"
+							]
+						}
+					},
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"currency\": \"€\",\n    \"flag\": \"/germany.png\",\n    \"name\": \"Germany\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete an item from an EdgeKV namespace",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Item deleted ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"let response_data = pm.response.text"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"namespaceId\", \"marketing\");",
+							"pm.environment.set(\"ewGroupId\", \"countries\");",
+							"pm.environment.set(\"itemId\", \"DE\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"networks",
+						"{{network}}",
+						"namespaces",
+						"{{namespaceId}}",
+						"groups",
+						"{{ewGroupId}}",
+						"items",
+						"{{itemId}}"
+					]
+				},
+				"description": "You can use the following API to delete an item from EdgeKV. You need to specify the namespace and group this item belongs to.\n\nexample httpie request\n```\n$ http --print=hbHB --auth-type edgegrid -a default: DELETE :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries/items/US\n\n```"
+			},
+			"response": [
+				{
+					"name": "Delete an item from an EdgeKV namespace",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/marketing/groups/countries/items/DE",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"networks",
+								"{{network}}",
+								"namespaces",
+								"marketing",
+								"groups",
+								"countries",
+								"items",
+								"DE"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "Item was delete in KV store with database 123456 namespace default group countries key US."
+				}
+			]
+		},
+		{
+			"name": "List items within a group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 - Items listed ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"let response_data = pm.response.json();"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"namespaceId\", \"marketing\");",
+							"pm.environment.set(\"ewGroupId\", \"countries\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"edgekv",
+						"v1",
+						"networks",
+						"{{network}}",
+						"namespaces",
+						"{{namespaceId}}",
+						"groups",
+						"{{ewGroupId}}"
+					]
+				},
+				"description": "You can list items in a group.\n\n>> NOTE: A maximum of 100 items can be returned.\n\nexample httpie request\n```\n $ http --print=hbHB --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries \n```"
+			},
+			"response": [
+				{
+					"name": "List items within a group",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/marketing/groups/countries",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"edgekv",
+								"v1",
+								"networks",
+								"{{network}}",
+								"namespaces",
+								"marketing",
+								"groups",
+								"countries"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    \"US\",\n    \"DE\"\n]"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

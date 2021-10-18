@@ -2,7 +2,7 @@
 Akamai EdgeKV API PostMan collection
 
 
-Based on the EdgeKV API found here - https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/apis#edgekv-api
+Based on the EdgeKV API (based on the EdgeKV v1 API) found here - https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/apis#edgekv-api
 
 A PostMan API collection and skeleton environment.
 
@@ -28,6 +28,14 @@ Clone the repo to your local drive, then import the collection and environment i
   - The host is set on each request; note make sure the host value in the Environment variable does not contain `https://`
 ![image](https://user-images.githubusercontent.com/11668707/136386973-4aa95431-7f70-4912-87ab-d7fad467013e.png)
 
+## Pre-Request Scripts
+Pre-Request scripts are defined for most requests, these allow you to set various parameters required by their requests.
+These scripts then set Collection level variables prior to executing the request, and are read by the the post-processing test to validate the response is as expected. Check the Pre-Request script first, before executing each request.
 
-Some tests are written for each request.
+Some variables will be required to be defined by yourself in the Collection variables; such as
+- `network` - either `STAGING` or `PRODUCTION`
+
+
+## Post-Processing Tests
+Tests are written for each request
 

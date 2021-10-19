@@ -18,7 +18,7 @@ Please ensure you fulfill the following pre-requisites before you execute this e
 * Generate your OPENAPI client credentials. [link](https://developer.akamai.com/api/getting-started)
 * Use the [EdgeKV Importer example](/edgekv/utils/edgekv-importer) to
   * Initialize your EdgeKV store
-  * Import the [promo codes CSV file](edgeworkers-examples/edgeworkers/examples/personalization/validate-promo-code%20(EKV)/promo-codes.csv) into EdgeKV
+  * Import the [promo codes CSV file](promo-codes.csv) into EdgeKV
   * Generate an EdgeKV Access Token
 * Download the following sample code. This constitutes the core of your EdgeWorker code bundle for this example.
 ```

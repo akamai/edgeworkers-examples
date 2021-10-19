@@ -620,8 +620,7 @@
 					"script": {
 						"exec": [
 							"pm.environment.set(\"tokenName\", \"my_token\");",
-							"pm.environment.set(\"tokenExpiry\", \"2022-06-30\");",							
-							""
+							"pm.environment.set(\"tokenExpiry\", \"2022-06-30\");"
 						],
 						"type": "text/javascript"
 					}
@@ -636,7 +635,6 @@
 							"",
 							"let response_data = pm.response.json();",
 							"let tokenName = pm.environment.get(\"tokenName\")",
-							"let tokenExpiry = pm.environment.get(\"tokenExpiry\")",							
 							"",
 							"pm.test(\"Token Name is correct\", () => {",
 							"    pm.expect(response_data.name).equals(tokenName)",
@@ -685,7 +683,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"allowOnProduction\": \"true | false\",\n    \"allowOnStaging\": \"true | false\",\n    \"expiry\": \"<expiry date in ISO format>\",\n    \"name\": \"<token name>\",\n    \"namespacePermissions\": {\n        \"default\": [\n            \"r\",\n            \"w\",\n            \"d\"\n        ]\n    }\n}",
+							"raw": "{\n    \"allowOnProduction\": \"true\",\n    \"allowOnStaging\": \"true\",\n    \"expiry\": \"{{retentionInSeconds}}\",\n    \"name\": \"{{tokenName}}\",\n    \"namespacePermissions\": {\n        \"default\": [\n            \"r\",\n            \"w\",\n            \"d\"\n        ]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1058,7 +1056,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ekvGroupId}}/items/{{itemId}}",
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
 					"protocol": "https",
 					"host": [
 						"{{host}}"
@@ -1071,7 +1069,7 @@
 						"namespaces",
 						"{{namespaceId}}",
 						"groups",
-						"{{ekvGroupId}}",
+						"{{ewGroupId}}",
 						"items",
 						"{{itemId}}"
 					]
@@ -1163,7 +1161,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ekvGroupId}}/items/{{itemId}}",
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
 					"protocol": "https",
 					"host": [
 						"{{host}}"
@@ -1176,7 +1174,7 @@
 						"namespaces",
 						"{{namespaceId}}",
 						"groups",
-						"{{ekvGroupId}}",
+						"{{ewGroupId}}",
 						"items",
 						"{{itemId}}"
 					]
@@ -1257,7 +1255,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ekvGroupId}}/items/{{itemId}}",
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}/items/{{itemId}}",
 					"protocol": "https",
 					"host": [
 						"{{host}}"
@@ -1270,7 +1268,7 @@
 						"namespaces",
 						"{{namespaceId}}",
 						"groups",
-						"{{ekvGroupId}}",
+						"{{ewGroupId}}",
 						"items",
 						"{{itemId}}"
 					]
@@ -1352,7 +1350,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ekvGroupId}}",
+					"raw": "https://{{host}}/edgekv/v1/networks/{{network}}/namespaces/{{namespaceId}}/groups/{{ewGroupId}}",
 					"protocol": "https",
 					"host": [
 						"{{host}}"
@@ -1365,7 +1363,7 @@
 						"namespaces",
 						"{{namespaceId}}",
 						"groups",
-						"{{ekvGroupId}}"
+						"{{ewGroupId}}"
 					]
 				},
 				"description": "You can list items in a group.\n\n>> NOTE: A maximum of 100 items can be returned.\n\nexample httpie request\n```\n $ http --print=hbHB --auth-type edgegrid -a default: GET :/edgekv/v1/networks/staging/namespaces/marketing/groups/countries \n```"
@@ -1411,6 +1409,26 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "edgegrid",
+		"edgegrid": [
+			{
+				"key": "clientSecret",
+				"value": "{{client_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "clientToken",
+				"value": "{{client_token}}",
+				"type": "string"
+			},
+			{
+				"key": "accessToken",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",

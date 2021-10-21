@@ -40,7 +40,7 @@ export function responseProvider(request) {
 
         return createResponse(
             response.status,
-            headers,
+            response.headers,
             response.body.pipeThrough(jsonpTransformer)
         );
     });

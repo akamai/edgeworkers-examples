@@ -14,7 +14,7 @@ const endPoint2 = '/api/example/endpoint2';
 const endPoint3 = '/api/example/endpoint3';
 
 async function getJSON (url) {
-   const response = await httpRequest(`${url}`);
+  const response = await httpRequest(`${url}`);
   if (response.ok) {
     return await response.json();
   } else {

@@ -14,9 +14,7 @@ const endPoint2 = '/api/example/endpoint2';
 const endPoint3 = '/api/example/endpoint3';
 
 async function getJSON (url) {
-  request.host --> origin break the request.
-  headers = request.getHeaders()
-  const response = await httpRequest(`${url}`, headers: headers);
+   const response = await httpRequest(`${url}`);
   if (response.ok) {
     return await response.json();
   } else {

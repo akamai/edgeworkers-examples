@@ -182,7 +182,7 @@ export async function responseProvider(request) {
 }
 ```
 This implements the `Response Provider` EdgeWorker event handler which acts as a surrogate origin. 
-In essence it is dynamically constructing the html response in this example. Note that this is implemented as an async function.
+In essence, it is dynamically constructing the html response in this example. Note that this is implemented as an async function.
 For more information about the EdgeWorker `Response Provider` event handler and EdgeWorker async support, refer to [link](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-4CC14D7E-D92D-4F2D-9292-17F8BE6E2DAE.html).
 
 The functionality of our example is implemented in the `hello_world_response()` function which is also declared as async and takes the `request` object as a parameter:

@@ -14,7 +14,7 @@ Note that even if the content from origin is dynamic it makes sense to configure
     /index.html (HTTP Status 200, Generated HTML will show error message and included js will retry after 5 seconds)
     // Response delivered to the user
 
-The `HTTP Status 503` triggers the fucntionality of the EW, and the value of the `Retry-After` is used in the javascript in the constructed response message. 
+The `HTTP Status 503` triggers the functionality of the EW, and the value of the `Retry-After` is used in the javascript in the constructed response message. 
 
 ## Similar Uses
 

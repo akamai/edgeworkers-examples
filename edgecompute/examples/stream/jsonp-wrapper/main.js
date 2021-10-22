@@ -1,10 +1,10 @@
 import { TransformStream } from "streams";
 import { httpRequest } from "http-request";
 import { createResponse } from "create-response";
-import URLSearchParams from "url-search-params";  
+import URLSearchParams from "url-search-params";
 
 function str2uint8arr(s) {
-  return Uint8Array.from(Array.from(s, (x) => x.charCodeAt(0)))
+    return Uint8Array.from(Array.from(s, (x) => x.charCodeAt(0)))
 }
 
 export function responseProvider(request) {
@@ -25,7 +25,7 @@ export function responseProvider(request) {
             controller.enqueue(str2uint8arr(")"));
         }
     });
-    
+
     const options = { 'headers': {'Accept': 'application/json'} };
     return httpRequest(`${request.scheme}://${request.host}${request.path}?${params.toString()}`, options).then((response) => {
 
@@ -39,9 +39,9 @@ export function responseProvider(request) {
         delete headers["content-length"];
 
         return createResponse(
-            response.status,
-            headers,
-            response.body.pipeThrough(jsonpTransformer)
+          response.status,
+          headers,
+          response.body.pipeThrough(jsonpTransformer)
         );
     });
 }

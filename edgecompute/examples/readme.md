@@ -1,9 +1,9 @@
-The directories in this section contain code samples for EdgeWorkers and EdgeKV to help you get started. Examples using EdgeKV are denoted by (EKV) in the same of the directory.
+The directories in this section contain code samples for EdgeWorkers and EdgeKV to help you get started. Examples using EdgeKV are denoted by (EKV) in the name of the directory.
 ## Subfolder organization
-* **/origin overload**: Present a friendly HTML page when origin server overloaded
-* **/getting started**: "Hello World" examples using EdgeWorkers standalone and a combination of EdgeWorkers and EdgeKV
+* **/origin overload**: Present a friendly HTML page when origin server is overloaded
+* **/getting started**: "Hello World" examples using EdgeWorkers standalone, and a combination of EdgeWorkers and EdgeKV
 * **/API orchestration**: Merge multiple API requests into a single response
-* **/personalization**: Multiple examples of using EdgeWorkers and EdgeKV to personalize user experience
+* **/personalization**: Multiple examples of using EdgeWorkers and EdgeKV to personalize user experiences
 * **/product-augmentation**: Code to enhance existing Akamai products, such as Image Manager and mPulse
 * **/search**: Serve responses for popular search terms using EdgeWorkers
 * **/stream**: Examples that demonstrate how an EdgeWorker can be used to modify HTTP response streams

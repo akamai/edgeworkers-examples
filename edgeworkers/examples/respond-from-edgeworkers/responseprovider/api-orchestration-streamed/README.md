@@ -1,10 +1,10 @@
-# api-orchestration-buffered
+# api-orchestration-streamed
 
-*Keyword(s):* response-provider, api-orchestration<br>
+*Keyword(s):* response-provider, api-orchestration, streams<br>
 
 *[Since](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-14077BCA-0D9F-422C-8273-2F3E37339D5B.html):* 1.0
 
-This example demonstrates how EdgeWorkers can be used to merge multiple internal APIs into a single API response from a user experience perspective. 
+This example demonstrates how EdgeWorkers can be used to merge multiple internal APIs into a single API response from a user experience perspective, using streams. 
 
 ## Similar Uses
 

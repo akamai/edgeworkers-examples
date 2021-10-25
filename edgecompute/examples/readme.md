@@ -12,4 +12,4 @@ The directories in this section contain code samples for EdgeWorkers and EdgeKV 
 * **/traffic-filtering**: Security-focused examples of using EW to filter inbound traffic depending on user characteristic
 * **/traffic-routing**: Code examples to control request flow, including A/B testing, redirects, and multivariate testing
 * **/typescript**: Demonstrates how to build an EdgeWorker written in Microsoft TypeScript
-* * **/third-party**: Integrate EdgeWorkers and EdgeKV with third-party software
+* **/third-party**: Integrate EdgeWorkers and EdgeKV with third-party software

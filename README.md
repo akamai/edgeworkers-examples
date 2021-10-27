@@ -8,8 +8,6 @@ Akamai EdgeWorkers helps deliver superior web experiences by enabling developers
 * **/edgekv**: EdgeKV JS API helper library, API documentation, and utilities
 * **/public_examples**: Customer contributed code to enhanced the ecosystem
 
-## Resources
-=======
 ## EdgeWorker and EdgeKV Resources
 
 For more information on EdgeWorkers and EdgeKV, refer to the following resources:

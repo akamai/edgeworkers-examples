@@ -10,7 +10,7 @@ Clone the repo to your local drive, then import the collection and environment i
 - Each request has an example response that can be called from the corresponding request, with the request setting some example values in the requests pre-request script
 
 ## To use
-- Get your friendly Akamai Engineering Admin person to create Akamai IAM user credentials, or ideally a Service Account API.
+- Get your friendly Akamai administrator to create Akamai IAM user credentials for you, or ideally a Service Account API. To learn about how to setup Akamai IAM user credentials, click [here](https://developer.akamai.com/api/getting-started#authsetup).
 
 - You should be provided with a set of EdgeRC tokens (two tokens, one secret, and one host)
 

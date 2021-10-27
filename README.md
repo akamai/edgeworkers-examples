@@ -5,11 +5,8 @@ Akamai EdgeWorkers helps deliver superior web experiences by enabling developers
 
 These code samples are offered as-is, and are working code samples within the EdgeWorkers and EdgeKV products.  Feel free to use, modify and extend what you find here!
 
-## Contributing 
+## Contributing examples
 
-When contributing to the repository please describe the change or examples in detail in the pull request.
-
-### contributing examples
 - Create a pull request against the `public_examples` folder.
 - Once the pull request is created, If the contributing user has not previously signed a Contributor License Agreement (CLA), they must complete the CLA signing steps as indicated in the pull request. The CLA signature will be stored in an Akamai private repository in Github.
 - A static analysis tool will be applied on the code, and this scan must successfully pass. This static analysis will be checking for certain types of coding errors.

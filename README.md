@@ -5,7 +5,7 @@ Akamai EdgeWorkers helps deliver superior web experiences by enabling developers
 
 ## Subfolder organization
 * **/examples**: EdgeWorker and EdgeKV code samples, organized by use-case
-* **/edgekv**: EdgeKV JS API helper library, API documentation, and utilities
+* **/edgekv**: EdgeKV helper library, API documentation, and utilities
 * **/public_examples**: Customer-contributed code to enhance the EdgeWorker ecosystem
 
 ## EdgeWorker and EdgeKV Resources

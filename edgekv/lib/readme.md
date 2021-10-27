@@ -1,15 +1,15 @@
-# edgekv-helper-class
+# EdgeKV Helper Library
 
-This helper class can be used to simplify the interaction with EdgeKV in an EdgeWorker.
+This helper class can be used to simplify the interaction with EdgeKV in EdgeWorker code. It abstracts away the complexity into a few lines of code.
 
 
 ## Files
-* edgekv.js is the helper class you import in your main.js. This file will provide a new class you can create an instance of with helper methods to interact with EdgeKV.
-* main.js is an example main class for a bundle. It includes performing GET, PUT, and DELETE operations on an EdgeKV `default` namespace.
+* edgekv.js is the helper class you import in your main.js file. This file provides a new class you can create an instance of with helper methods to interact with EdgeKV.
+* main.js is an example main class for a code bundle. It can include performing GET, PUT, and DELETE operations on an EdgeKV namespaces.
 
 
 ## Setup
-The edgekv.js file must be included alongside `edgekv_tokens.js` which includes the EdgeKV authorization tokens for each namespace you wish to interact with using the EdgeKV helper class. Please refer to the getting started [guide](https://github.com/akamai/edgeworkers-examples/tree/master/edgekv) for how to work with EdgeKV in EdgeWorkers.
+The edgekv.js file must be included alongside `edgekv_tokens.js` which includes the EdgeKV authorization tokens for each namespace you wish to interact with using this EdgeKV helper class. Please refer to the getting started [guide](https://techdocs.akamai.com/edgekv/docs/create-an-edgekv-enabled-edgeworkers-function) for how to work with EdgeKV from within EdgeWorkers.
 
 
 ## Documentation
@@ -147,4 +147,4 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 
 
 ## Resources
-See the [edgekv samples](https://github.com/akamai/edgeworkers-examples/tree/master/edgekv) for examples using edgekv helper class.
+Please see the examples tagged "EKV" [here](https://github.com/akamai/edgeworkers-examples/tree/master/edgecompute/examples) for example usage of this helper library.

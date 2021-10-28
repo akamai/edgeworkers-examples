@@ -1,2 +1,2 @@
 ## Description
-Future
+Placeholder for future event.

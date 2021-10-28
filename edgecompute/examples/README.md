@@ -2,7 +2,7 @@ The directories in this section contain code samples for EdgeWorkers and EdgeKV 
 ## Subfolder organization
 * **/origin overload**: Present a friendly HTML page when origin server is overloaded
 * **/getting started**: "Hello World" examples using EdgeWorkers standalone, and a combination of EdgeWorkers and EdgeKV
-* **/API orchestration**: Merge multiple API requests into a single response
+* **/orchestration**: Merge multiple API requests into a single response
 * **/personalization**: Multiple examples of using EdgeWorkers and EdgeKV to personalize user experiences
 * **/product-augmentation**: Code to enhance existing Akamai products, such as Image Manager and mPulse
 * **/search**: Serve responses for popular search terms using EdgeWorkers

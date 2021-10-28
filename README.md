@@ -1,4 +1,4 @@
-# Akamai EdgeWorkers 
+# Akamai EdgeWorkers and EdgeKV
 
 Akamai EdgeWorkers helps deliver superior web experiences by enabling developers to run JavaScript at the Edge. EdgeKV provides a global, low-latency key-value data store to complement EdgeWorkers. The code and tools in this repository provide a starting point to help you build applications that solve business problems with Akamai EdgeWorkers and EdgeKV.
 
@@ -8,7 +8,7 @@ Akamai EdgeWorkers helps deliver superior web experiences by enabling developers
 * **/edgekv**: EdgeKV helper library, API documentation, and utilities
 * **/public_examples**: Customer-contributed code to enhance the EdgeWorker ecosystem
 
-## EdgeWorker and EdgeKV Resources
+## Resources
 
 For more information on EdgeWorkers and EdgeKV, refer to the following resources:
 * [EdgeWorkers Developer Page](https://developer.akamai.com/edgeworkers)

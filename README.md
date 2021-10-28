@@ -11,11 +11,11 @@ Akamai EdgeWorkers helps deliver superior web experiences by enabling developers
 ## Resources
 
 For more information on EdgeWorkers and EdgeKV, refer to the following resources:
-* [EdgeWorkers Developer Page](https://developer.akamai.com/edgeworkers)
+* [EdgeKV Documentation](https://techdocs.akamai.com/edgekv/docs)
 * [EdgeWorkers Documentation](https://techdocs.akamai.com/edgeworkers/docs)
 * [EdgeWorkers API Reference](https://techdocs.akamai.com/edgeworkers/reference/api)
-* [Akamai CLI for EdgeWorkers](https://developer.akamai.com/legacy/cli/packages/edgeworkers.html)
-* [EdgeKV Documentation](https://techdocs.akamai.com/edgekv/docs)
+* [Akamai CLI for EdgeWorkers/EKV](https://developer.akamai.com/legacy/cli/packages/edgeworkers.html)
+* [EdgeWorkers Developer Page](https://developer.akamai.com/edgeworkers)
 
 
 ## Reporting Issues

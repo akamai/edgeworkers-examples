@@ -3,7 +3,7 @@
 *Keyword(s):* microservice, geo-location, cookies<br>
 *[Since](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-14077BCA-0D9F-422C-8273-2F3E37339D5B.html):* 1.0
 
-This example implements an EdgeWorker to add a geoloation data to a cookie in the HTTP response.  This cookie returns location information about the client where the request originates, including a lookup from custom data.
+This example implements an EdgeWorker to add a geolocation data to a cookie in the HTTP response.  This cookie returns location information about the client where the request originates, including a lookup from custom data.
 
 ## Usage Examples
 

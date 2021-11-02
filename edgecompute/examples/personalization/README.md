@@ -1,5 +1,5 @@
 ## Description
-The examples in this section detail how to use EdgeWorkers and EdgeKV to perform traffic routing operations. This includes redirects and A/B testing.
+The examples in this section detail how to use EdgeWorkers and EdgeKV to perform personalization of web content.
 
 ## Subfolder organization
 * **/cachekey-devicetype**: Add client device type into cache key to enable device-specific content caching without changing URL

@@ -15,7 +15,7 @@ export function responseProvider (request) {
   // Get text to be searched for and new replacement text from Property Manager variables in the request object.
   const tosearchfor = request.getVariable('PMUSER_EWSEARCH');
   const newtext = request.getVariable('PMUSER_EWNEWTEXT');
-  // Set to 0 to replace all, otherwise a number larger than 0 to limit replacements
+  // Must have a number larger than 0 to allow and limit replacements counts
   const howManyReplacements = 3;
 
   return httpRequest(`${request.scheme}://${request.host}${request.url}`).then(response => {

@@ -117,6 +117,8 @@ To create a new namespace:
 `geoLocation` - (optional)  Specify the storage location for data in this namespace based on the location of all or most of your users. Defaults to the US (United States). The available geoLocations also include EU (Europe) and JP(Japan) for the production network.\
 The geoLocation parameter defaults to US on the staging network. Setting it to a different geoLocation is not supported on the staging network.
 
+> Note: Once set, the namespace geoLocation cannot be changed. To change the geoLocation on the production network you need to create a new namespace with the new geoLocation and copy the data to the new namespace.
+
 #### Example:
 
 Request:

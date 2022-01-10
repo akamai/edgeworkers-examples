@@ -108,25 +108,29 @@ To create a new namespace:
 
 **Content-Type:** `application/json`
 
-**Request body parameters**
+**Request body parameters (case sensitive)**
 
 `namespace` - (mandatory) Namespace name 
 
 `retentionInSeconds` - (mandatory) Specify the retention period for data in this namespace in seconds, or 0 for indefinite.
+
+`geoLocation` - (optional)  Specify the storage location for data in this namespace based on the location of all or most of your users. Defaults to the US (United States). The available geoLocations also include EU (Europe) and JP(Japan) for the production network.\
+The geoLocation parameter defaults to US on the staging network. Setting it to a different geoLocation is not supported on the staging network.
 
 #### Example:
 
 Request:
 
 ```
-$ http --print=hbHB --auth-type edgegrid -a default: POST :/edgekv/v1/networks/staging/namespaces namespace=marketing retentionInSeconds=0
+$ http --print=hbHB --auth-type edgegrid -a default: POST :/edgekv/v1/networks/production/namespaces namespace=marketing retentionInSeconds=0 geoLocation=EU
 
-POST /edgekv/v1/networks/staging/namespaces HTTP/1.1
+POST /edgekv/v1/networks/production/namespaces HTTP/1.1
 
 Content-Type: application/json
 {
+    "geoLocation": "EU",
     "namespace": "marketing",
-    "retentionInSeconds": 0
+    "retentionInSeconds": 0,
 }
 
 ```
@@ -137,7 +141,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "geoLocation": "US",
+    "geoLocation": "EU",
     "namespace": "marketing",
     "retentionInSeconds": 0
 }
@@ -182,7 +186,7 @@ To update an existing namespace (other than `default`):
 
 **Content-Type:** `application/json`
 
-**Request body parameters**
+**Request body parameters (case sensitive)**
 
 `namespace` - (mandatory) Namespace name (MUST be the same as the `{namespaceId}` in the endpoint)
 
@@ -209,7 +213,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "geoLocation": "US",
+    "geoLocation": "EU",
     "namespace": "marketing",
     "retentionInSeconds": 2592000
 }

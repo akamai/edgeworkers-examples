@@ -130,7 +130,7 @@ Content-Type: application/json
 {
     "geoLocation": "EU",
     "namespace": "marketing",
-    "retentionInSeconds": 0,
+    "retentionInSeconds": 0
 }
 
 ```

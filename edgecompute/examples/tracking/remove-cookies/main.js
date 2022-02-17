@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Remove unwanted Cookies from being sent to the Origin
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/remove-cookies
+
 */
 
 // import the Cookies helper module

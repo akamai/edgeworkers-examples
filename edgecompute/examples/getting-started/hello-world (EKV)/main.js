@@ -10,8 +10,6 @@ Purpose:
   For simplicity, the 1st Accept-Language header encountered is used as key
   to retrieve the corresponding language specific greeting from EdgeKV.
   
-Repo: https://github.com/akamai/edgeworkers-examples/edgekv/examples/hello-world
-*/
 
 import { createResponse } from 'create-response';
 import { EdgeKV } from './edgekv.js';

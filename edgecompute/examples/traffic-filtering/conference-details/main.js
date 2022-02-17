@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Respond with protected details if the correct code is given as a GET param
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/conference-details
+
 */
 import URLSearchParams from 'url-search-params';
 

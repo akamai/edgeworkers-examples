@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Respond with allow or deny message depending on country of end user.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/traffic-allow-list
+
 */
 
 // List of currently US embargoed countries, plus N/A indicating no country data found (rare, if any)

@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Using EdgeScape geo data, redirect user to country specific content
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/redirect-geo
+
 */
 // define country top level domain mapping
 const tldMap = {

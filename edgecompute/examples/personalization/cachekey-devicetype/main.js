@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Include devcie type in cachekey, allows caching of device specific content without changing the url.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/cachekey-devicetype
+
 */
 
 export function onClientRequest (request) {

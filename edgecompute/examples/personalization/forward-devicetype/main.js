@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Modify forward path based on device type to point to device specific content.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/forward-devicetype
+
 */
 
 export function onClientRequest (request) {

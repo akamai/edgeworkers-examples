@@ -4,7 +4,7 @@
 Version: 0.1
 Purpose:  Remove inbound/outbound cookies from static files based on extensions
 Repo:
-https://github.com/akamai/edgeworkers-examples/tree/master/remove-cookies-static-files
+
 */
 
 // define list of static file extensions that should not have cookies

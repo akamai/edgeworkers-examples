@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Respond with JSON formatted geographical location information.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/microservice-geolocation
+
 */
 
 export function onClientRequest (request) {

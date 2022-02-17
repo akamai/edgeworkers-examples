@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Redirect to login page if request unauthenticated.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/redirect-unauthenticated
+
 */
 
 // import the Cookies helper module

@@ -5,14 +5,14 @@ Akamai Edge Key-Value (EdgeKV) is a low-latency, distributed key-value store bui
 > Akamai customers are responsible for maintaining control over the data hosted on this service and for appropriately using the data returned by EdgeKV. EdgeKV does not support storage of sensitive information where the consequence of an unauthorized disclosure would be a serious business or compliance issue. Do not use sensitive information when creating namespaces, groups, keys, or values.
 
 ## Subfolder organization
-* **/apis**: EdgeKV administrative API documentation for Tech Preview
+* **/apis**: Link to EdgeKV API documentation
 * **/lib**: EdgeKV JS API helper library and documentation 
 * **/utils**: EdgeKV helper utilities
 
 ## Resources
 For more information on EdgeWorkers, please refer to the following resources:
 * [EdgeKV Product Documentation](https://techdocs.akamai.com/edgekv/docs)
-* [EdgeKV API Guide](https://github.com/akamai/edgeworkers-examples/blob/master/edgekv/apis/readme.md)
+* [EdgeKV API Guide](https://techdocs.akamai.com/edgekv/reference/api)
 * [EdgeKV Release Notes](https://techdocs.akamai.com/edgekv/changelog)
 * [EdgeKV Command-Line Interface (CLI)](https://github.com/akamai/cli-edgeworkers/blob/master/docs/edgekv_cli.md)
 * [EdgeKV Recipes](https://techdocs.akamai.com/edgekv/recipes/send-a-constructed-response-to-a-web-page)

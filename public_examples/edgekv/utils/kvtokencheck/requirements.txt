@@ -1,0 +1,14 @@
+akamai-edgeauth==0.3.2
+certifi==2021.5.30
+cffi==1.14.6
+chardet==3.0.4
+cryptography==3.4.8
+edgegrid-python==1.1.1
+idna==2.8
+ndg-httpsclient==0.5.1
+pyasn1==0.4.8
+pycparser==2.20
+pyOpenSSL==20.0.1
+requests==2.22.0
+six==1.16.0
+urllib3==1.26.5

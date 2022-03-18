@@ -1,0 +1,5 @@
+{
+    "edgeworker-version": "1.0",
+    "description" : "This EdgeWorker fetch data from EdgeKV and stores it in a user variable to be used in Property Manager."
+    "author" :"fklasen@akamai.com"
+}

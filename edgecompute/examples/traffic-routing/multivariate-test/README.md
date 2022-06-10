@@ -52,7 +52,7 @@ X-True-Cache-Key: /D/1d/www.example.com/?test1=1b&test2=2c
 Similar logic could be used to "personalize" content for a known group of users,
 rather than randomly assigning groups for A/B testing.
 
-A simple [A/B testing example](edgecompute/examples/traffic-routing/ab-test%20(EW)) is also available.
+A simple [A/B testing example](/akamai/edgeworkers-examples/tree/master/edgecompute/examples/traffic-routing/ab-test%20(EW)) is also available.
 
 ## Resources
 See the repo [README](edgeworkers-examples/README.md#Resources) for additional guidance.

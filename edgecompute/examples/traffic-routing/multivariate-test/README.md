@@ -55,4 +55,4 @@ rather than randomly assigning groups for A/B testing.
 A simple [A/B testing example](/edgecompute/examples/traffic-routing/ab-test%20(EW)) is also available.
 
 ## Resources
-See the repo [README](https://github.com/akamai/edgeworkers-examples) for additional guidance.
+See the repo [README](https://github.com/akamai/edgeworkers-examples#Resources) for additional guidance.

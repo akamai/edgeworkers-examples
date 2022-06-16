@@ -1,6 +1,6 @@
 /*
 (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-Version: 0.5.0
+Version: 0.6.0
 Purpose:  Provide a helper class to simplify the interaction with EdgeKV in an EdgeWorker.
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/lib
 */
@@ -20,15 +20,19 @@ export class EdgeKV {
 	#edgekv_uri;
 	#token_override;
 	#num_retries_on_timeout;
+	#sandbox_id;
+	#sandbox_fallback;
 
 	/**
 	 * Constructor to allow setting default namespace and group
 	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations
-	 * @param {string} [$0.namepsace] the default namespace to use for all GET, PUT, and DELETE operations
+	 * @param {string} [$0.namepsace="default"] the default namespace to use for all GET, PUT, and DELETE operations
 	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -
-	 * @param {string} [$0.group] the default group to use for all GET, PUT, and DELETE operations
+	 * @param {string} [$0.group="default"] the default group to use for all GET, PUT, and DELETE operations
 	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
 	 * @param {number} [$0.num_retries_on_timeout=0] the number of times to retry a GET requests when the sub request times out
+	 * @param {object} [$0.ew_request=null] passes the request object from the EdgeWorkers event handler to enable access to EdgeKV data in sandbox environments
+	 * @param {boolean} [$0.sandbox_fallback=false] whether to fallback to retrieving staging data if the sandbox data does not exist, instead of returning null or the specified default value
 	 */
 	constructor(namespace = "default", group = "default") {
 		if (typeof namespace === "object") {
@@ -37,12 +41,16 @@ export class EdgeKV {
 			this.#edgekv_uri = namespace.edgekv_uri || "https://edgekv.akamai-edge-svcs.net";
 			this.#token_override = namespace.token_override || null;
 			this.#num_retries_on_timeout = namespace.num_retries_on_timeout || 0;
+			this.#sandbox_id = (namespace.ew_request ? (namespace.ew_request.sandboxId || null) : null);
+			this.#sandbox_fallback = namespace.sandbox_fallback || false;
 		} else {
 			this.#namespace = namespace;
 			this.#group = group;
 			this.#edgekv_uri = "https://edgekv.akamai-edge-svcs.net";
 			this.#token_override = null;
 			this.#num_retries_on_timeout = 0;
+			this.#sandbox_id = null;
+			this.#sandbox_fallback = false;
 		}
 	}
 
@@ -121,6 +129,16 @@ export class EdgeKV {
 		return options;
 	}
 
+	addSandboxId(uri) {
+		if (this.#sandbox_id) {
+			uri = uri + "?sandboxId=" + this.#sandbox_id;
+			if (this.#sandbox_fallback) {
+				uri = uri + "&sandboxFallback=true";
+			}
+		}
+		return uri;
+	}
+
 	async streamText(response_body) {
 		let result = "";
 		await response_body
@@ -140,7 +158,7 @@ export class EdgeKV {
 	putRequest({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
-		return httpRequest(uri, this.addTimeout({
+		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "PUT",
 			body: typeof value === "object" ? JSON.stringify(value) : value,
 			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
@@ -228,7 +246,7 @@ export class EdgeKV {
 	getRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
-		return httpRequest(uri, this.addTimeout({
+		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "GET",
 			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
 		}, timeout));
@@ -283,7 +301,7 @@ export class EdgeKV {
 	deleteRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
-		return httpRequest(uri, this.addTimeout({
+		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "DELETE",
 			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
 		}, timeout));

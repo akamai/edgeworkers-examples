@@ -17,11 +17,13 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 	/**
 	 * Constructor to allow setting default namespace and group
 	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations
-	 * @param {string} [$0.namepsace] the default namespace to use for all GET, PUT, and DELETE operations
+	 * @param {string} [$0.namepsace="default"] the default namespace to use for all GET, PUT, and DELETE operations
 	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -
-	 * @param {string} [$0.group] the default group to use for all GET, PUT, and DELETE operations
+	 * @param {string} [$0.group="default"] the default group to use for all GET, PUT, and DELETE operations
 	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
 	 * @param {number} [$0.num_retries_on_timeout=0] the number of times to retry a GET requests when the sub request times out
+	 * @param {object} [$0.ew_request=null] passes the request object from the EdgeWorkers event handler to enable access to EdgeKV data in sandbox environments
+	 * @param {boolean} [$0.sandbox_fallback=false] whether to fallback to retrieving staging data if the sandbox data does not exist, instead of returning null or the specified default value
 	 */
 	new EdgeKV({namespace = "default", group = "default", num_retries_on_timeout = 0})
 ### getText

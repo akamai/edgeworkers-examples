@@ -82,6 +82,7 @@ function getRedirectLocationFromEdge(request){
     }
 }
 
+// Find and replace stream changes the original content, some origin response headers are therefore no longer valid and should be removed
 function getSafeResponseHeaders(headers){
     for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS){
         if(unsafeResponseHeader in headers){

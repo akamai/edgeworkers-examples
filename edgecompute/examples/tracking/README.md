@@ -5,6 +5,7 @@ The examples in this section detail how to use EdgeWorkers to track user behavio
 * **/cookie-accrual**: Accrue user movements through section of a website in a cookie
 * **/remove-cookies-static-files**: Removes cookies from being set/sent on static files
 * **/remove-cookies**: Prevent third-party product cookies from being sent to origin 
+* **/set-secure-cookie**: Add secure attribute of HTTP set-cookie header at edge
 
 ## Related Resources
 - [EdgeWorkers CLI](https://developer.akamai.com/cli/packages/edgeworkers.html)

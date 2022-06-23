@@ -44,7 +44,7 @@ export function responseProvider(request) {
 
 function getSafeResponseHeaders(headers) {
   for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
-      if (unsafeResponseHeader in headers){
+      if (unsafeResponseHeader in headers) {
           delete headers[unsafeResponseHeader]
       }
   }

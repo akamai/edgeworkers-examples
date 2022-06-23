@@ -11,6 +11,12 @@ import { createResponse } from 'create-response';
 import { TextEncoderStream, TextDecoderStream } from 'text-encode-transform';
 import { FindAndReplaceStream } from 'find-replace-stream.js';
 
+// Some headers aren't safe to forward from the origin response through an EdgeWorker on to the client
+// For more information see the tech doc on create-response: https://techdocs.akamai.com/edgeworkers/docs/create-response
+const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+  'accept-encoding', 'content-encoding', 'keep-alive',
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade'];
+
 export function responseProvider (request) {
   // Get text to be searched for and new replacement text from Property Manager variables in the request object.
   const tosearchfor = request.getVariable('PMUSER_EWSEARCH');
@@ -19,18 +25,9 @@ export function responseProvider (request) {
   const howManyReplacements = 3;
 
   return httpRequest(`${request.scheme}://${request.host}${request.url}`).then(response => {
-    // Get headers from response
-    let headers = response.getHeaders();
-    // Remove content-encoding header.  The response stream from EdgeWorkers is not encoded.
-    // If original response contains `Content-Encoding: gzip`, then the Content-Encoding header does not match the actual encoding. 
-    delete headers["content-encoding"];
-    // Remove `Content-Length` header.  Find/replace is likely to change the content length.
-    // Leaving the Length of the original content would be incorrect.
-    delete headers["content-length"];
-    
     return createResponse(
       response.status,
-      headers,
+      getSafeResponseHeaders(response.getHeaders()),
       response.body
           .pipeThrough(new TextDecoderStream())
           .pipeThrough(new FindAndReplaceStream(tosearchfor, newtext, howManyReplacements))
@@ -38,3 +35,14 @@ export function responseProvider (request) {
     );
   });
 }
+
+// Find and replace stream changes the original content, some origin response headers are therefore no longer valid and should be removed
+function getSafeResponseHeaders(headers) {
+  for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
+      if (unsafeResponseHeader in headers){
+          delete headers[unsafeResponseHeader]
+      }
+  }
+  return headers;
+}
+

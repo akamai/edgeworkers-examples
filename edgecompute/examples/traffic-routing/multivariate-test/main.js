@@ -11,7 +11,7 @@ Purpose:
   Include each variant in a cookie to the browser.
   Allow overriding the variant with a query string parameter for easy testing.
   Provide hooks for custom actions to be performed in the request/response of each variant
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/a-b-test
+
 */
 
 import { Cookies, SetCookie } from 'cookies';

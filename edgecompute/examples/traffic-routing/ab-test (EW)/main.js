@@ -8,7 +8,7 @@ Purpose:
   Include the A/B group in a query parameter sent to the origin.
   Include the A/B group in a cookie to the browser.
   Allow overriding the group with a query string parameter for easy testing.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/a-b-test
+
 */
 
 import { Cookies, SetCookie } from 'cookies';

@@ -1,6 +1,6 @@
 /*
 (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-Version: 0.4.1
+Version: 0.6.0
 Purpose:  Provide a helper class to simplify the interaction with EdgeKV in an EdgeWorker.
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/lib
 */
@@ -19,14 +19,20 @@ export class EdgeKV {
 	#group;
 	#edgekv_uri;
 	#token_override;
+	#num_retries_on_timeout;
+	#sandbox_id;
+	#sandbox_fallback;
 
 	/**
 	 * Constructor to allow setting default namespace and group
 	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations
-	 * @param {string} [namespace] the default namespace to use for all GET, PUT, and DELETE operations
+	 * @param {string} [$0.namepsace="default"] the default namespace to use for all GET, PUT, and DELETE operations
 	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -
-	 * @param {string} [group] the default group to use for all GET, PUT, and DELETE operations
+	 * @param {string} [$0.group="default"] the default group to use for all GET, PUT, and DELETE operations
 	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
+	 * @param {number} [$0.num_retries_on_timeout=0] the number of times to retry a GET requests when the sub request times out
+	 * @param {object} [$0.ew_request=null] passes the request object from the EdgeWorkers event handler to enable access to EdgeKV data in sandbox environments
+	 * @param {boolean} [$0.sandbox_fallback=false] whether to fallback to retrieving staging data if the sandbox data does not exist, instead of returning null or the specified default value
 	 */
 	constructor(namespace = "default", group = "default") {
 		if (typeof namespace === "object") {
@@ -34,11 +40,17 @@ export class EdgeKV {
 			this.#group = namespace.group || "default";
 			this.#edgekv_uri = namespace.edgekv_uri || "https://edgekv.akamai-edge-svcs.net";
 			this.#token_override = namespace.token_override || null;
+			this.#num_retries_on_timeout = namespace.num_retries_on_timeout || 0;
+			this.#sandbox_id = (namespace.ew_request ? (namespace.ew_request.sandboxId || null) : null);
+			this.#sandbox_fallback = namespace.sandbox_fallback || false;
 		} else {
 			this.#namespace = namespace;
 			this.#group = group;
 			this.#edgekv_uri = "https://edgekv.akamai-edge-svcs.net";
 			this.#token_override = null;
+			this.#num_retries_on_timeout = 0;
+			this.#sandbox_id = null;
+			this.#sandbox_fallback = false;
 		}
 	}
 
@@ -51,9 +63,9 @@ export class EdgeKV {
 		};
 	}
 
-	async requestHandlerTemplate(response_provider, handler_200, handler_large_200, error_text, default_value) {
+	async requestHandlerTemplate(http_request, handler_200, handler_large_200, error_text, default_value, num_retries_on_timeout) {
 		try {
-			let response = await response_provider();
+			let response = await http_request();
 			switch (response.status) {
 				case 200:
 					// need to handle content length > 128000 bytes differently in EdgeWorkers
@@ -71,9 +83,12 @@ export class EdgeKV {
 						content = await response.text();
 						content = JSON.parse(content);
 					} catch (error) { }
-					throw { status: response.status, body: content };
+					throw { status: response.status, body: content }; // to be caught in surrounding catch block
 			}
 		} catch (error) {
+			if (num_retries_on_timeout > 0 && /^.*subrequest to URL.*timed out.*$/.test(error.toString())) {
+				return this.requestHandlerTemplate(http_request, handler_200, handler_large_200, error_text, default_value, num_retries_on_timeout - 1);
+			}
 			if (error.hasOwnProperty('status')) {
 				this.throwError(error_text + " FAILED", error.status, error.body);
 			}
@@ -114,6 +129,16 @@ export class EdgeKV {
 		return options;
 	}
 
+	addSandboxId(uri) {
+		if (this.#sandbox_id) {
+			uri = uri + "?sandboxId=" + this.#sandbox_id;
+			if (this.#sandbox_fallback) {
+				uri = uri + "&sandboxFallback=true";
+			}
+		}
+		return uri;
+	}
+
 	async streamText(response_body) {
 		let result = "";
 		await response_body
@@ -133,7 +158,7 @@ export class EdgeKV {
 	putRequest({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
-		return httpRequest(uri, this.addTimeout({
+		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "PUT",
 			body: typeof value === "object" ? JSON.stringify(value) : value,
 			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
@@ -147,7 +172,7 @@ export class EdgeKV {
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {string} $0.value text value to put into the EdgeKV
 	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @returns {string} if the operation was successful, the response from the EdgeKV
+	 * @returns {Promise<string>} if the operation was successful, the response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
@@ -157,7 +182,8 @@ export class EdgeKV {
 			(response) => response.text(),
 			(response) => this.streamText(response.body),
 			"PUT",
-			null
+			null,
+			0
 		);
 	}
 
@@ -185,7 +211,7 @@ export class EdgeKV {
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {object} $0.value json value to put into the EdgeKV
 	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @returns {string} if the operation was successful, the response from the EdgeKV
+	 * @returns {Promise<string>} if the operation was successful, the response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
@@ -195,7 +221,8 @@ export class EdgeKV {
 			(response) => response.text(),
 			(response) => this.streamText(response.body),
 			"PUT",
-			null
+			null,
+			0
 		);
 	}
 
@@ -219,7 +246,7 @@ export class EdgeKV {
 	getRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
-		return httpRequest(uri, this.addTimeout({
+		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "GET",
 			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
 		}, timeout));
@@ -232,17 +259,19 @@ export class EdgeKV {
 	 * @param {string} $0.item item key to get from the EdgeKV
 	 * @param {string} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
 	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @returns {string} if the operation was successful, the text response from the EdgeKV or the default_value on 404
+	 * @param {number} [$0.num_retries_on_timeout=null] the number of times to retry a requests when the sub request times out
+	 * @returns {Promise<string>} if the operation was successful, the text response from the EdgeKV or the default_value on 404
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null } = {}) {
+	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null } = {}) {
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.text(),
 			(response) => this.streamText(response.body),
 			"GET TEXT",
-			default_value
+			default_value,
+			num_retries_on_timeout ?? this.#num_retries_on_timeout
 		);
 	}
 
@@ -253,24 +282,26 @@ export class EdgeKV {
 	 * @param {string} $0.item item key to get from the EdgeKV
 	 * @param {object} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
 	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @returns {object} if the operation was successful, the json response from the EdgeKV or the default_value on 404
+	 * @param {number} [$0.num_retries_on_timeout=null] the number of times to retry a requests when the sub request times out
+	 * @returns {Promise<object>} if the operation was successful, the json response from the EdgeKV or the default_value on 404
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null } = {}) {
+	async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null } = {}) {
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.json(),
 			(response) => this.streamJson(response.body),
 			"GET JSON",
-			default_value
+			default_value,
+			num_retries_on_timeout ?? this.#num_retries_on_timeout
 		);
 	}
 
 	deleteRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
-		return httpRequest(uri, this.addTimeout({
+		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "DELETE",
 			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
 		}, timeout));
@@ -282,17 +313,34 @@ export class EdgeKV {
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to delete from the EdgeKV
 	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @returns {string} if the operation was successful, the text response from the EdgeKV
+	 * @returns {Promise<string>} if the operation was successful, the text response from the EdgeKV
 	 * @throws {object} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async delete({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
+	async delete({ namespace = this.#namespace, group = this.#group, item, timeout = null} = {}) {
 		return this.requestHandlerTemplate(
 			() => this.deleteRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.text(),
 			(response) => this.streamText(response.body),
 			"DELETE",
-			null
+			null,
+			0
 		);
+	}
+
+	/**
+	 * DELETE an item in the EdgeKV while only waiting for the request to send and not for the response.
+	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {string} [$0.group=this.#group] specify a group other than the default
+	 * @param {string} $0.item item key to delete from the EdgeKV
+	 * @throws {object} if the operation was not successful at sending the request,
+	 * 		an object describing the error: {failed, status, body}
+	 */
+	deleteNoWait({ namespace = this.#namespace, group = this.#group, item } = {}) {
+		try {
+			this.delete({ namespace: namespace, group: group, item: item });
+		} catch (error) {
+			this.throwError("DELETE FAILED", 0, error.toString());
+		}
 	}
 }

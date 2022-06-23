@@ -1,7 +1,6 @@
 /*
 (c) Copyright 2019 Akamai Technologies, Inc. Licensed under Apache 2 license.
 
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/cookie-geolocation
 */
 
 // Import cookies library to provide helper functions

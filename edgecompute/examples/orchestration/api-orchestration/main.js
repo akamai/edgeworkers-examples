@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Combine 3 api endpoints returning JSON into a single JSON response.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/api-orchestration-buffered
+
 */
 
 import { httpRequest } from 'http-request';

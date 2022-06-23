@@ -80,7 +80,7 @@ out skel qt;
 
 ## Similar Uses
 
-See the [microservice-geolocation](https://github.com/akamai/edgeworkers-examples/tree/master/edgeworkers/examples/respond-from-edgeworkers/respondwith/microservice-geolocation) example to retrieve the latitude and longitude through EdgeWorkers and Akamai EdgeScape.
+See the [microservice-geolocation](https://github.com/akamai/edgeworkers-examples/tree/master/edgecompute/examples/personalization/microservice-geolocation) example to retrieve the latitude and longitude through EdgeWorkers and Akamai EdgeScape.
 
 The use of npm and rollup to include dependencies provides easy reuse of existing JavaScript libraries.
 

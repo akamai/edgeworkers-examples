@@ -8,6 +8,6 @@ This directory contains code that has been submitted by Akamai serverless commun
 - Create a pull request against the `public_examples` folder.
 - Once the pull request is created, If the contributing user has not previously signed a Contributor License Agreement (CLA), they must complete the CLA signing steps as indicated in the pull request. The CLA signature will be stored in an Akamai private repository in Github.
 - A static analysis tool will be applied on the code, and this scan must successfully pass. This static analysis will be checking for certain types of coding errors.
-- The code will be scanned for open-source license vulnerabilities, and this scan must successfully pass without any vulnerabilities being detected.
+- The code will be scanned for known vulnerabilities, and this scan must successfully pass without any vulnerabilities being detected.
 - A code review will be performed by multiple Akamai members of the edgeworkers-examples repository. The code review must receive at least 2 approvals.
 - The pull request will be merged once all of the above criteria have been met.

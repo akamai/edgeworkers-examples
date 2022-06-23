@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Modify an HTML streamed response by adding a script before the closing head tag.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/response-manipulaton-stream
+
 */
 
 import { ReadableStream, WritableStream } from 'streams';

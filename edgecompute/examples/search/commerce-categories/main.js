@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Serve a commerce category API directly from a small set of data
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/commerce-categories
+
 */
 import URLSearchParams from 'url-search-params';
 

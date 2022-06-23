@@ -6,7 +6,7 @@ Purpose:  Accrue a relevant folder name in the path in a 'visited' cookie as eac
 // Keep the visited cookie for a certain number of seconds, and prune over a certain length of names.
 // After hitting a certain number of folders visited, trigger another 'promo' cookie to be 'true'.
 // These cookies can control layout at origin or in client-side HTML/JS.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/cookie-accrual
+
 */
 import { Cookies, SetCookie } from 'cookies';
 

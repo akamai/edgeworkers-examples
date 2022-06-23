@@ -3,7 +3,7 @@
 
 Version: 0.1
 Purpose:  Respond with empty JSON if cart cookie not part of request.
-Repo: https://github.com/akamai/edgeworkers-examples/tree/master/empty-cart
+
 */
 
 import { Cookies, SetCookie } from 'cookies';

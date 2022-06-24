@@ -9,10 +9,23 @@ import { httpRequest } from 'http-request';
 import { createResponse } from 'create-response';
 import { TransformStream } from 'streams';
 
-async function concatSubrequestsToStream(urls, writableStream) {
+const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+  'accept-encoding', 'content-encoding', 'keep-alive',
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade'];
+
+  function getSafeResponseHeaders(headers) {
+  for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
+      if (unsafeResponseHeader in headers) {
+          delete headers[unsafeResponseHeader]
+      }
+  }
+  return headers;
+}
+
+async function concatSubrequestsToStream(urls, requestHeaders, writableStream) {
 
   // Begin requests for all URLs, generating a list of promises
-  const responsePromises = urls.map(url => httpRequest(url));
+  const responsePromises = urls.map(url => httpRequest(url, {headers: requestHeaders}));
 
   // iterate through each promise
   for (let responsePromise of responsePromises) { 
@@ -35,8 +48,12 @@ async function concatSubrequestsToStream(urls, writableStream) {
 export async function responseProvider (request) {
   // List of URLs to concatenate
   const urls = ["/example/url/1.js", "/example/url/2.js"]
+
+  const requestHeaders = getSafeResponseHeaders(request.getHeaders());
+
+
   const outputStream = new TransformStream();
-  concatSubrequestsToStream(urls, outputStream.writable);
+  concatSubrequestsToStream(urls, requestHeaders, outputStream.writable);
     
   return createResponse(
     200,

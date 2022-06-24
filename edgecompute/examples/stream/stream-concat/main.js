@@ -9,9 +9,9 @@ import { httpRequest } from 'http-request';
 import { createResponse } from 'create-response';
 import { TransformStream } from 'streams';
 
-const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+const UNSAFE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
   'accept-encoding', 'content-encoding', 'keep-alive',
-  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade'];
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade', 'host'];
 
   function getSafeResponseHeaders(headers) {
   for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
@@ -37,6 +37,7 @@ async function concatSubrequestsToStream(urls, requestHeaders, writableStream) {
       await response.body.pipeTo(writableStream, {preventClose: true});
     }else{
       // Throw error if we receive an unsuccessful status code to abot processing
+      writableStream.abort(`received ${response.status}`)
       throw `Received ${response.status}`
     }
   }

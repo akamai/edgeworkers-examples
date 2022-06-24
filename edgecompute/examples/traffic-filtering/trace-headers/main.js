@@ -18,36 +18,34 @@ const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connect
   'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade'];
 
 /* 
-Construct entire response body to include request and response headers
-*/
+ * Construct entire response body to include request and response headers
+ */
 function constructResponseBody(request, response) {
   let responseBody = "<html><body><h2>Request Headers:</h2><br>";
 
   // Get Request headers and append to response body
-  Object.keys(request.getHeaders()).forEach((key) => {
-    request.getHeaders()[key].forEach((headerval) => {
+  for (const [key, values] of Object.entries(request.getHeaders())) {
+    values.forEach((headerval) => {
       responseBody += key + ": " + headerval + " <br>";
     });
-  });
+  }
 
   responseBody += "<br><h2>Response Headers:</h2><br>";
 
   // Get Response headers and append to response body
-  Object.keys(response.getHeaders()).forEach((key) => {
-    response.getHeaders()[key].forEach((headerval) => {
+  for (const [key, values] of Object.entries(response.getHeaders())) {
+    values.forEach((headerval) => {
       responseBody += key + ": " + headerval + " <br>";
     });
-  });
+  }
 
   responseBody += "</body></html>";
   return responseBody;
 }
 
-
 /* 
-Construct response headers by adding request headers prepended by x-fwd-
-*/
-
+ * Construct response headers by adding request headers prepended by x-fwd-
+ */
 function constructResponseHeaders(request, response) {
 
   //header array we'll eventually print, plus our own
@@ -60,14 +58,13 @@ function constructResponseHeaders(request, response) {
   finalHeaders = getSafeResponseHeaders(finalHeaders);
   
   //We look at all the request headers, and for each, we prepend x-fwd- and add them to the response headers array
-  Object.keys(request.getHeaders()).forEach((headerName) => {
-    const valuesForHeaderName = request.getHeaders()[headerName];
+  for (const [headerName, valuesForHeaderName] of Object.entries(request.getHeaders())) {
     var newHeaderName = 'x-fwd-' + headerName;
     finalHeaders[newHeaderName] = [];
     valuesForHeaderName.forEach((headerVal) => {
       finalHeaders[newHeaderName].push(headerVal);
     });
-  });
+  }
 
   return finalHeaders;
 }

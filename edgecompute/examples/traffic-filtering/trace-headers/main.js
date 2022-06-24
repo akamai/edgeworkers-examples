@@ -11,6 +11,12 @@ import {httpRequest} from 'http-request';
 import {createResponse} from 'create-response';
 import URLSearchParams from 'url-search-params';
 
+// Some headers aren't safe to forward from the origin response through an EdgeWorker on to the client
+// For more information see the tech doc on create-response: https://techdocs.akamai.com/edgeworkers/docs/create-response
+const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+  'accept-encoding', 'content-encoding', 'keep-alive',
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade'];
+
 /* 
 Construct entire response body to include request and response headers
 */
@@ -44,15 +50,15 @@ Construct response headers by adding request headers prepended by x-fwd-
 
 function constructResponseHeaders(request, response) {
 
-  var finalHeaders = response.getHeaders();//header array we'll eventually print, plus our own
-  // Remove content-encoding header.
-  delete finalHeaders["content-encoding"];
-  // Remove `Content-Length` header.
-  delete finalHeaders["content-length"];
+  //header array we'll eventually print, plus our own
+  let finalHeaders = response.getHeaders();
 
   if (!finalHeaders) {
     finalHeaders = {}
   }
+
+  finalHeaders = getSafeResponseHeaders(finalHeaders);
+  
   //We look at all the request headers, and for each, we prepend x-fwd- and add them to the response headers array
   Object.keys(request.getHeaders()).forEach((headerName) => {
     const valuesForHeaderName = request.getHeaders()[headerName];
@@ -94,21 +100,10 @@ export function responseProvider(request) {
   const reqUrl = request.scheme + '://' + request.host + request.url;
 
   return httpRequest(`${reqUrl}`, options).then(response => {
-
-    // Get headers from response
-    let headers = response.getHeaders();
-    // Remove content-encoding header.  The response stream from EdgeWorkers is not encoded.
-    // If original response contains `Content-Encoding: gzip`, then the Content-Encoding header does not match the actual encoding.
-    delete headers["content-encoding"];
-    // Remove `Content-Length` header.  Modifying HTML is likely to change the content length.
-    // Leaving the Length of the original content would be incorrect.
-    delete headers["content-length"];
-
-
     if (returnInBody(request)) {
       return createResponse(
         response.status,
-        headers,
+        getSafeResponseHeaders(response.getHeaders()),
         constructResponseBody(request, response)
       );
     } else {
@@ -120,4 +115,13 @@ export function responseProvider(request) {
     }
   });
 
+}
+
+function getSafeResponseHeaders(headers) {
+  for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
+      if (unsafeResponseHeader in headers) {
+          delete headers[unsafeResponseHeader]
+      }
+  }
+  return headers;
 }

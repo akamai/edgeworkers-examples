@@ -5,10 +5,11 @@ import { FindAndReplaceStream } from 'find-replace-stream.js';
 
 const REDIRECT_CODES=[301,302,303,307,308];
 const INJECT_AFTER_TAG = '</title>';
-const UNSAFE_RESPONSE_HEADERS=['content-length', 'transfer-encoding', 'connection', 'vary',
-'accept-encoding', 'content-encoding', 'keep-alive',
-'proxy-authenticate', 'proxy-authorization', 'te', 'trailers',
-'transfer-encoding', 'upgrade'];
+// Some headers aren't safe to forward from the origin response through an EdgeWorker on to the client
+// For more information see the tech doc on create-response: https://techdocs.akamai.com/edgeworkers/docs/create-response
+const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+  'accept-encoding', 'content-encoding', 'keep-alive',
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade'];
 
 export function responseProvider (request) {
   //Manage and calculate your Edge redirects without going to the origin. (Optional)

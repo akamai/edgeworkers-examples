@@ -11,3 +11,6 @@ This directory contains code that has been submitted by Akamai serverless commun
 - The code will be scanned for known vulnerabilities, and this scan must successfully pass without any vulnerabilities being detected.
 - A code review will be performed by multiple Akamai members of the edgeworkers-examples repository. The code review must receive at least 2 approvals.
 - The pull request will be merged once all of the above criteria have been met.
+
+
+For information on using EdgeWorkers and EdgeKV, please review Akamai's product policy (https://www.akamai.com/site/en/documents/akamai/2022/edgeworkers-and-edgekv-supplemental-product-policy.pdf)

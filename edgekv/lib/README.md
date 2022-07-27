@@ -163,3 +163,5 @@ The edgekv.js file must be included alongside `edgekv_tokens.js` which includes 
 
 ## Resources
 Please see the examples tagged "EKV" [here](https://github.com/akamai/edgeworkers-examples/tree/master/edgecompute/examples) for example usage of this helper library.
+
+For information on using EdgeWorkers and EdgeKV, please review [Akamai's product policy ](https://www.akamai.com/site/en/documents/akamai/2022/edgeworkers-and-edgekv-supplemental-product-policy.pdf)

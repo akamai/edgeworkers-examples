@@ -13,4 +13,4 @@ This directory contains code that has been submitted by Akamai serverless commun
 - The pull request will be merged once all of the above criteria have been met.
 
 
-For information on using EdgeWorkers and EdgeKV, please review Akamai's product policy (https://www.akamai.com/site/en/documents/akamai/2022/edgeworkers-and-edgekv-supplemental-product-policy.pdf)
+For information on using EdgeWorkers and EdgeKV, please review [Akamai's product policy ](https://www.akamai.com/site/en/documents/akamai/2022/edgeworkers-and-edgekv-supplemental-product-policy.pdf)

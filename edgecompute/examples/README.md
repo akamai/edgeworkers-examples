@@ -13,3 +13,5 @@ The directories in this section contain code samples for EdgeWorkers and EdgeKV 
 * **/traffic-routing**: Code examples to control request flow, including A/B testing, redirects, and multivariate testing
 * **/typescript**: Demonstrates how to build an EdgeWorker written in Microsoft TypeScript
 * **/third-party**: Integrate EdgeWorkers and EdgeKV with third-party software
+
+For information on using EdgeWorkers and EdgeKV, please review [Akamai's product policy ](https://www.akamai.com/site/en/documents/akamai/2022/edgeworkers-and-edgekv-supplemental-product-policy.pdf)

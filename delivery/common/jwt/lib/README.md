@@ -8,7 +8,7 @@ The JWT module can be used to perform operations related to JWT tokens such as J
 
 ## Files
 * **jwt.js** is the main class you import in your main.js file. This file provides helper classes such as JWTValidator for validating JWT tokens.
-* **jwt.d.js** is the typescript declaration file for JWT module.
+* **jwt.d.ts** is the typescript declaration file for JWT module.
 
 ## Documentation
 Please visit this [page](https://) for complete documentation and usage of JWT module.

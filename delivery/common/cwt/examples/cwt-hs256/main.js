@@ -1,5 +1,6 @@
 import { logger } from 'log';
 import { CWTUtil, CWTValidator} from './cwt.js';
+import { base16 } from 'encoding';
 
 //Integer keys mapping for CWT payload. This mapping is application specific, However keys from 1-7 are reserved
 const claimsLabelMap = {
@@ -47,8 +48,8 @@ export async function onClientRequest (request) {
     let cwt = request.getHeader('Authorization');
     if (cwt){
       cwt = cwt[0];
-      const tokenBuf = CWTUtil.hexStringToUint8Array(cwt);
-      const keys = [CWTUtil.hexStringToUint8Array(secretKey)];
+      const tokenBuf = base16.decode(cwt,'Uint8Array');
+      const keys = [base16.decode(secretKey,'Uint8Array')];
       const cwtJSON = await cwtValidator.validate(tokenBuf,keys);
       const claims = CWTUtil.claimsTranslate(Object.fromEntries(new Map(cwtJSON.payload)),claimsLabelMap);
       request.respondWith(200, {}, JSON.stringify(claims));

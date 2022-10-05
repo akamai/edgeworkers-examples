@@ -1,5 +1,7 @@
 import { logger } from 'log';
 import { CWTJSON, CWTUtil, CWTValidator} from './cwt/cwt';
+import { base16 } from 'encoding';
+
 
 const claimsLabelMap = {
 
@@ -38,8 +40,8 @@ export async function onClientRequest (request: EW.ImmutableRequest & EW.HasResp
     const cwts = request.getHeader('Authorization');
     if (cwts){
       const cwt = cwts[0];
-      const tokenBuf = CWTUtil.hexStringToUint8Array(cwt);
-      const keys = [CWTUtil.hexStringToUint8Array(secretKey as string)];
+      const tokenBuf = base16.decode(cwt,'Uint8Array') as Uint8Array;
+      const keys = [base16.decode(secretKey as string,'Uint8Array') as Uint8Array];
       const cwtJSON = await cwtValidator.validate(tokenBuf,keys) as CWTJSON;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const claims = CWTUtil.claimsTranslate(Object.fromEntries(new Map(cwtJSON.payload as any)),claimsLabelMap);

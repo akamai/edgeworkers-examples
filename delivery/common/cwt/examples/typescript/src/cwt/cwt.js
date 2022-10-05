@@ -1,10 +1,27 @@
 import { crypto } from "crypto";
 
-import { atob } from "base64";
-
 const COSE_Mac0 = 17, COSE_Mac = 97, COSE_Sign = 98, COSE_Sign1 = 18, COSE_Encrypt0 = 16, COSE_Encrypt = 96, coseAlgTags = {
     5: "HMAC 256/256"
 }, HeaderLabelToKey_alg = 1, HeaderLabelToKey_crit = 2, claimsLabelToKey_iss = 1, claimsLabelToKey_sub = 2, claimsLabelToKey_aud = 3, claimsLabelToKey_exp = 4, claimsLabelToKey_nbf = 5;
+
+class Mac {
+    static async verifyHMAC(alg, message, signature, keys) {
+        if ("HMAC 256/256" === alg) {
+            let isSignVerified = !1;
+            for (const i in keys) {
+                const iKey = await crypto.subtle.importKey("raw", keys[i].buffer, {
+                    name: "HMAC",
+                    hash: "SHA-256"
+                }, !1, [ "verify" ]);
+                if (isSignVerified = await crypto.subtle.verify({
+                    name: "HMAC"
+                }, iKey, signature, message), isSignVerified) return Promise.resolve(isSignVerified);
+            }
+            return Promise.resolve(isSignVerified);
+        }
+        throw new Error(`Unsupported Algorithm, ${alg}`);
+    }
+}
 
 let decoder, src, srcEnd;
 
@@ -51,7 +68,7 @@ class Decoder {
             for (let [k, v] of Object.entries(this._keyMap)) this._mapKey.set(v, k);
         }
         let res = {};
-        return map.forEach(((v, k) => res[this._mapKey.has(k) ? this._mapKey.get(k) : k] = v)), 
+        return map.forEach(((v, k) => res[safeKey(this._mapKey.has(k) ? this._mapKey.get(k) : k)] = v)), 
         res;
     }
     mapDecode(source, end) {
@@ -129,9 +146,14 @@ function read() {
 
       case 25:
         if (7 == majorType) return function() {
-            let val, byte0 = src[position$1++], byte1 = src[position$1++], half = (byte0 << 8) + byte1, exp = half >> 10 & 31, mant = 1023 & half;
-            val = 0 == exp ? Math.exp(mant, -24) : 31 != exp ? Math.exp(mant + 1024, exp - 25) : 0 == mant ? 1 / 0 : NaN;
-            return 32768 & half ? -val : val;
+            let byte0 = src[position$1++], byte1 = src[position$1++], exponent = (127 & byte0) >> 2;
+            if (31 === exponent) return byte1 || 3 & byte0 ? NaN : 128 & byte0 ? -1 / 0 : 1 / 0;
+            if (0 === exponent) {
+                let abs = ((3 & byte0) << 8 | byte1) / (1 << 24);
+                return 128 & byte0 ? -abs : abs;
+            }
+            return u8Array[3] = 128 & byte0 | 56 + (exponent >> 1), u8Array[2] = (7 & byte0) << 5 | byte1 >> 3, 
+            u8Array[1] = byte1 << 5, u8Array[0] = 0, f32Array[0];
         }();
         token = dataView.getUint16(position$1), position$1 += 2;
         break;
@@ -176,7 +198,7 @@ function read() {
             let key;
             if (currentDecoder.mapsAsObjects) {
                 let object = {};
-                if (currentDecoder.keyMap) for (;(key = read()) != STOP_CODE; ) object[currentDecoder.decodeKey(key)] = read(); else for (;(key = read()) != STOP_CODE; ) object[key] = read();
+                if (currentDecoder.keyMap) for (;(key = read()) != STOP_CODE; ) object[safeKey(currentDecoder.decodeKey(key))] = read(); else for (;(key = read()) != STOP_CODE; ) object[safeKey(key)] = read();
                 return object;
             }
             {
@@ -230,7 +252,7 @@ function read() {
       case 5:
         if (currentDecoder.mapsAsObjects) {
             let object = {};
-            if (currentDecoder.keyMap) for (let i = 0; i < token; i++) object[currentDecoder.decodeKey(read())] = read(); else for (let i = 0; i < token; i++) object[read()] = read();
+            if (currentDecoder.keyMap) for (let i = 0; i < token; i++) object[safeKey(currentDecoder.decodeKey(read()))] = read(); else for (let i = 0; i < token; i++) object[safeKey(read())] = read();
             return object;
         }
         {
@@ -337,14 +359,18 @@ function createStructureReader(structure) {
         }
         if (this.slowReads++ >= 3) {
             let array = this.length == length ? this : this.slice(0, length);
-            return compiledReader = currentDecoder.keyMap ? new Function("r", "return {" + array.map((k => currentDecoder.decodeKey(k))).map((k => validName.test(k) ? k + ":r()" : "[" + JSON.stringify(k) + "]:r()")).join(",") + "}") : new Function("r", "return {" + array.map((key => validName.test(key) ? key + ":r()" : "[" + JSON.stringify(key) + "]:r()")).join(",") + "}"), 
+            return compiledReader = currentDecoder.keyMap ? new Function("r", "return {" + array.map((k => currentDecoder.decodeKey(k))).map((k => validName.test(k) ? safeKey(k) + ":r()" : "[" + JSON.stringify(k) + "]:r()")).join(",") + "}") : new Function("r", "return {" + array.map((key => validName.test(key) ? safeKey(key) + ":r()" : "[" + JSON.stringify(key) + "]:r()")).join(",") + "}"), 
             this.compiledReader && (compiledReader.next = this.compiledReader), compiledReader.propertyCount = length, 
             this.compiledReader = compiledReader, compiledReader(read);
         }
         let object = {};
-        if (currentDecoder.keyMap) for (let i = 0; i < length; i++) object[currentDecoder.decodeKey(this[i])] = read(); else for (let i = 0; i < length; i++) object[this[i]] = read();
+        if (currentDecoder.keyMap) for (let i = 0; i < length; i++) object[safeKey(currentDecoder.decodeKey(this[i]))] = read(); else for (let i = 0; i < length; i++) object[safeKey(this[i])] = read();
         return object;
     };
+}
+
+function safeKey(key) {
+    return "__proto__" === key ? "__proto_" : key;
 }
 
 let readFixedString = readStringJS;
@@ -447,6 +473,8 @@ function shortStringInJS(length) {
     }
 }
 
+let f32Array = new Float32Array(1), u8Array = new Uint8Array(f32Array.buffer, 0, 4);
+
 new Array(4096);
 
 class Tag {
@@ -469,9 +497,9 @@ const recordDefinition = definition => {
     currentStructures[id] = structure, structure.read = createStructureReader(structure);
     let object = {};
     if (currentDecoder.keyMap) for (let i = 2, l = definition.length; i < l; i++) {
-        object[currentDecoder.decodeKey(structure[i - 2])] = definition[i];
+        object[safeKey(currentDecoder.decodeKey(structure[i - 2]))] = definition[i];
     } else for (let i = 2, l = definition.length; i < l; i++) {
-        object[structure[i - 2]] = definition[i];
+        object[safeKey(structure[i - 2])] = definition[i];
     }
     return object;
 };
@@ -611,15 +639,11 @@ const mult10 = new Array(147);
 
 for (let i = 0; i < 256; i++) mult10[i] = +("1e" + Math.floor(45.15 - .30103 * i));
 
-let defaultDecoder = new Decoder({
+let textEncoder, extensions, extensionClasses, defaultDecoder = new Decoder({
     useRecords: !1
 });
 
 defaultDecoder.decode, defaultDecoder.decodeMultiple;
-
-let textEncoder, extensions, extensionClasses, f32Array = new Float32Array(1);
-
-new Uint8Array(f32Array.buffer, 0, 4);
 
 try {
     textEncoder = new TextEncoder;
@@ -1077,32 +1101,10 @@ extensions = [ {
 const REUSE_BUFFER_MODE = 512, RESET_BUFFER_MODE = 1024;
 
 class CWTUtil {
-    static hexStringToUint8Array(hexString) {
-        if ("string" != typeof hexString) throw new Error("Invalid arguments. Expected hex encoded string");
-        if (hexString.length % 2 != 0) throw new Error("Invalid hex string");
-        const numBytes = hexString.length / 2, byteArray = new Uint8Array(numBytes);
-        for (let i = 0; i < numBytes; i++) byteArray[i] = parseInt(hexString.substr(2 * i, 2), 16);
-        return byteArray;
-    }
     static toHexString(byteArray) {
         return Array.prototype.map.call(byteArray, (function(byte) {
             return ("0" + (255 & byte).toString(16)).slice(-2);
         })).join("");
-    }
-    static base64Decode(base64Str) {
-        if ("string" != typeof base64Str) throw new Error("Invalid arguments. Expected base64 url encoded string");
-        const pad = (base64Str = base64Str.replace(/-/g, "+").replace(/_/g, "/")).length % 4;
-        if (pad) {
-            if (1 === pad) throw new Error("Invalid base64 string!");
-            base64Str += new Array(5 - pad).join("=");
-        }
-        try {
-            const binaryString = atob(base64Str), len = binaryString.length, bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
-            return bytes;
-        } catch (error) {
-            throw new Error("Invalid base64 string!");
-        }
     }
     static claimsTranslate(payload, labelsMap, translators) {
         const result = {};
@@ -1147,25 +1149,8 @@ class CWTValidator {
             headerValidation && this.validateHeader(pH, !0);
             let alg = pH !== CWTUtil.EMPTY_BUFFER ? pH.get(HeaderLabelToKey_alg) : uH !== CWTUtil.EMPTY_BUFFER ? u.get(HeaderLabelToKey_alg) : void 0;
             Number.isInteger(alg) && (alg = coseAlgTags[alg]);
-            const MACstructure = [ "MAC0", p, externalAAD, payload ], toBeMACed = globalThis.cborenc.encode(MACstructure), verified = await class {
-                static async verifyHMAC(alg, message, signature, keys) {
-                    if ("HMAC 256/256" === alg) {
-                        let isSignVerified = !1;
-                        for (const i in keys) {
-                            const iKey = await crypto.subtle.importKey("raw", keys[i].buffer, {
-                                name: "HMAC",
-                                hash: "SHA-256"
-                            }, !1, [ "verify" ]);
-                            if (isSignVerified = await crypto.subtle.verify({
-                                name: "HMAC"
-                            }, iKey, signature, message), isSignVerified) return Promise.resolve(isSignVerified);
-                        }
-                        return Promise.resolve(isSignVerified);
-                    }
-                    throw new Error(`Unsupported Algorithm, ${alg}`);
-                }
-            }.verifyHMAC(alg, toBeMACed, tag, keys);
-            if (!verified) throw new Error("Signature verification failed!");
+            const MACstructure = [ "MAC0", p, externalAAD, payload ], toBeMACed = globalThis.cborenc.encode(MACstructure);
+            if (!await Mac.verifyHMAC(alg, toBeMACed, tag, keys)) throw new Error("Signature verification failed!");
             const decodedPayload = globalThis.cbordec.decode(payload);
             return Promise.resolve({
                 header: {

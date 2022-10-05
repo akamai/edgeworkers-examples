@@ -65,29 +65,11 @@ declare type CWTJSON = {
 declare class CWTUtil {
     static EMPTY_BUFFER: Uint8Array;
     /**
-     * Converts hex string to binary (i.e Uint8Array)
-     * @param hexString   Hex encoded string
-     * @returns           Instance of Uint8Array
-     * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} on any validation failure.
-     * @example Error('Invalid arguments. Expected hex encoded string') - If argument passed is not string
-     * @example Error('Invalid hex string') - If argument passed is not a valid hex encoded string
-     */
-    static hexStringToUint8Array(hexString: string): Uint8Array;
-    /**
      * Converts Uint8Array to hex
      * @param byteArray Uint8Array
      * @returns  hex string
      */
     static toHexString(byteArray: Uint8Array): string;
-    /**
-     * Converts base64url encoded string to binary (i.e Uint8Array)
-     * @param base64Str     Base64url encoded string
-     * @returns             Instance of Uint8Array
-     * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} on any validation failure.
-     * @example Error('Invalid arguments. Expected base64 url encoded string') - If argument passed is not string
-     * @example Error('Invalid base64 string') - If argument passed is not a valid base64 encoded string
-     */
-    static base64Decode(base64Str: string): Uint8Array;
     /**
      * Translates integer keys from the payload to the string keys from the labelsMap mapping.
      * The value is passed to the traslator function before assigning to the keys.

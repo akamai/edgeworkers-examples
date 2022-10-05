@@ -1,32 +1,10 @@
-import { atob } from "base64";
-
 import { crypto, pem2ab } from "crypto";
 
-import { TextEncoder } from "encoding";
+import { atob, base16, base64url, TextEncoder } from "encoding";
 
 class JWTUtil {
     static isEmptyString(str) {
         return !str || 0 === str.trim().length;
-    }
-    static base64URLDecode(base64Str) {
-        const pad = (base64Str = base64Str.replace(/-/g, "+").replace(/_/g, "/")).length % 4;
-        if (pad) {
-            if (1 === pad) throw new Error("InvalidLengthError: Input base64url string is the wrong length to determine padding");
-            base64Str += new Array(5 - pad).join("=");
-        }
-        try {
-            const binaryString = atob(base64Str), len = binaryString.length, bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
-            return bytes.buffer;
-        } catch (error) {
-            throw new Error("InvalidLengthError: JWT signature is not correctly encoded");
-        }
-    }
-    static hexToUint8Array(hexString) {
-        if (hexString.length % 2 != 0) throw new Error("Invalid hex string");
-        const numBytes = hexString.length / 2, byteArray = new Uint8Array(numBytes);
-        for (let i = 0; i < numBytes; i++) byteArray[i] = parseInt(hexString.substr(2 * i, 2), 16);
-        return byteArray;
     }
 }
 
@@ -89,20 +67,20 @@ class JWTValidator {
                 }, !1, [ "verify" ]);
                 return await crypto.subtle.verify({
                     name: "RSASSA-PKCS1-v1_5"
-                }, cryptoKey, JWTUtil.base64URLDecode(jwtParts[2]), (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+                }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
             } catch (error) {
                 throw error;
             }
 
           case "HS256":
             try {
-                const iKey = await crypto.subtle.importKey("raw", JWTUtil.hexToUint8Array(key).buffer, {
+                const iKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
                     name: "HMAC",
                     hash: "SHA-256"
                 }, !1, [ "verify" ]);
                 return await crypto.subtle.verify({
                     name: "HMAC"
-                }, iKey, JWTUtil.base64URLDecode(jwtParts[2]), (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+                }, iKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
             } catch (error) {
                 throw error;
             }

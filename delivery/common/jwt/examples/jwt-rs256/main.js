@@ -1,5 +1,6 @@
 import { logger } from 'log';
 import { JWTValidator} from './jwt.js';
+import { crypto, pem2ab } from 'crypto';
 
 //advanced options for jwt validator
 const jwtOption = {
@@ -7,7 +8,7 @@ const jwtOption = {
   ignoreExpiration: false,
   //check token nbf
   ignoreNotBefore: false
-}
+};
 
 const jwtValidator = new JWTValidator(jwtOption);
 
@@ -15,16 +16,24 @@ export async function onClientRequest (request) {
   try {
     // Fetch RSA public key from Propery Manager used for verification of JWT token
     const secretKey = request.getVariable('PMUSER_JWT_RSA_PUBKEY');
+    const iKey = await crypto.subtle.importKey(
+      'spki',
+      pem2ab(secretKey),
+      {
+        name: 'RSASSA-PKCS1-v1_5',
+        hash: 'SHA-256'
+      },
+      false,
+      ['verify']
+    );
     let jwt = request.getHeader('Authorization');
     if (jwt){
       jwt = jwt[0];
-      const jwtJSON = jwtValidator.decode(jwt);
+      const jwtJSON = await jwtValidator.validate(jwt,[iKey]);
       logger.log('jwtJSON %s: ',JSON.stringify(jwtJSON));
-      const verifed = await jwtValidator.validate(jwt,jwtJSON.header.alg,secretKey);
-      logger.log('verifed %s: ',verifed);
       const result = {
         jwt: jwtJSON,
-        verifed: verifed
+        verifed: true
       };
       request.respondWith(200, {}, JSON.stringify(result));
     }

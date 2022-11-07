@@ -1,6 +1,6 @@
-import { crypto, pem2ab } from "crypto";
+import { crypto } from "crypto";
 
-import { atob, base16, base64url, TextEncoder } from "encoding";
+import { atob, base64url, TextEncoder } from "encoding";
 
 class JWTUtil {
     static isEmptyString(str) {
@@ -10,21 +10,18 @@ class JWTUtil {
 
 class JWTValidator {
     constructor(jwtOptions) {
-        this.jwtOptions = jwtOptions || {}, this.jwtOptions.algorithms = [ "RS256", "HS256" ], 
+        this.jwtOptions = jwtOptions || {}, this.algorithms = [ "NONE", "RS256", "RS384", "RS512", "HS256", "HS384", "HS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" ], 
         this.validateOptionTypes();
     }
-    decode(base64JWTToken) {
+    async validate(base64JWTToken, keys) {
         var _a;
-        if ("string" != typeof base64JWTToken) throw new Error("Invalid arguments!");
+        if ("string" != typeof base64JWTToken) throw new Error("Invalid token type, expected string!");
+        if (!keys.every((elem => "CryptoKey" === elem.constructor.name))) throw new Error("Invalid keys type, expected list of CryptoKey!");
         const jwtParts = base64JWTToken.split(".");
-        let jwtHeader, jwtPayload;
-        if (3 !== jwtParts.length || JWTUtil.isEmptyString(jwtParts[0]) || JWTUtil.isEmptyString(jwtParts[1])) throw new Error("JWT malformed: invalid jwt format");
-        try {
-            jwtHeader = JSON.parse(atob(jwtParts[0])), jwtPayload = JSON.parse(atob(jwtParts[1]));
-        } catch (error) {
-            throw new Error("JWT malformed: token not correctly encoded");
-        }
-        if (jwtHeader.alg && "NONE" !== jwtHeader.alg.toUpperCase() && !(null === (_a = this.jwtOptions.algorithms) || void 0 === _a ? void 0 : _a.includes(jwtHeader.alg.toUpperCase()))) throw new Error(`${jwtHeader.alg} is not supported at the moment`);
+        if (jwtParts.length > 3 || jwtParts.length < 2) throw new Error("JWT malformed: Invalid number of parts for JWT token. expected 3 or 2 (unsecured JWT)!");
+        if (JWTUtil.isEmptyString(jwtParts[0])) throw new Error("JWT malformed: jwt header cannot be empty");
+        if (JWTUtil.isEmptyString(jwtParts[1])) throw new Error("JWT malformed: jwt payload cannot be empty");
+        const jwtHBin = atob(jwtParts[0]), jwtPBin = atob(jwtParts[1]), jwtHeader = JSON.parse(jwtHBin), jwtPayload = JSON.parse(jwtPBin);
         if (this.jwtOptions.issuer && jwtPayload.iss && this.jwtOptions.issuer !== jwtPayload.iss) throw new Error(`JWT malformed: invalid iss, expected ${this.jwtOptions.issuer}`);
         if (this.jwtOptions.subject && jwtPayload.sub && this.jwtOptions.subject !== jwtPayload.sub) throw new Error(`JWT malformed: invalid sub, expected ${this.jwtOptions.subject}`);
         if (this.jwtOptions.audience) {
@@ -42,10 +39,19 @@ class JWTValidator {
             if ("number" != typeof jwtPayload.nbf) throw new Error("JWT malformed: nbf must be number");
             if (jwtPayload.nbf && jwtPayload.nbf > clockTimestamp + (this.jwtOptions.clockTolerance || 0)) throw new Error("JWT not active");
         }
-        return {
+        if (!jwtHeader.alg) throw new Error("JWT malformed: expected alg field in JWT header");
+        if ("NONE" === jwtHeader.alg.toUpperCase()) return {
             header: jwtHeader,
             payload: jwtPayload
         };
+        if (!(null === (_a = this.algorithms) || void 0 === _a ? void 0 : _a.includes(jwtHeader.alg.toUpperCase()))) throw new Error(`${jwtHeader.alg} is not supported at the moment`);
+        for (const cryptoKey of keys) {
+            if (await this.validateSignature(jwtParts, jwtHeader.alg.toUpperCase(), cryptoKey)) return {
+                header: jwtHeader,
+                payload: jwtPayload
+            };
+        }
+        throw new Error("JWT token signature verification failed!");
     }
     validateOptionTypes() {
         if (void 0 !== this.jwtOptions.issuer && ("string" != typeof this.jwtOptions.issuer || 0 === this.jwtOptions.issuer.trim().length)) throw new Error("Invalid jwtOptions: issuer must be non empty string");
@@ -55,35 +61,63 @@ class JWTValidator {
         if (void 0 === this.jwtOptions.ignoreNotBefore) this.jwtOptions.ignoreNotBefore = !0; else if ("boolean" != typeof this.jwtOptions.ignoreNotBefore) throw new Error("Invalid jwtOptions: ignoreNotBefore must be boolean");
         if (void 0 === this.jwtOptions.clockTolerance) this.jwtOptions.clockTolerance = 60; else if ("number" != typeof this.jwtOptions.clockTolerance) throw new Error("Invalid jwtOptions: clockTimestamp must be number");
     }
-    async validate(base64JWTToken, alg, key) {
-        if ("string" != typeof base64JWTToken || "string" != typeof alg || "string" != typeof key) throw new Error("Invalid arguments!");
-        const jwtParts = base64JWTToken.split(".");
+    async validateSignature(jwtParts, alg, cryptoKey) {
         switch (alg) {
+          case "RS512":
+          case "RS384":
           case "RS256":
-            try {
-                const cryptoKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                    name: "RSASSA-PKCS1-v1_5",
-                    hash: "SHA-256"
-                }, !1, [ "verify" ]);
-                return await crypto.subtle.verify({
-                    name: "RSASSA-PKCS1-v1_5"
-                }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
-            } catch (error) {
-                throw error;
-            }
+            return await crypto.subtle.verify({
+                name: "RSASSA-PKCS1-v1_5"
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
 
+          case "HS512":
+          case "HS384":
           case "HS256":
-            try {
-                const iKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
-                    name: "HMAC",
-                    hash: "SHA-256"
-                }, !1, [ "verify" ]);
-                return await crypto.subtle.verify({
-                    name: "HMAC"
-                }, iKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
-            } catch (error) {
-                throw error;
-            }
+            return await crypto.subtle.verify({
+                name: "HMAC"
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+
+          case "PS512":
+            return await crypto.subtle.verify({
+                name: "RSA-PSS",
+                saltLength: 64
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+
+          case "PS384":
+            return await crypto.subtle.verify({
+                name: "RSA-PSS",
+                saltLength: 48
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+
+          case "PS256":
+            return await crypto.subtle.verify({
+                name: "RSA-PSS",
+                saltLength: 32
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+
+          case "ES512":
+            return await crypto.subtle.verify({
+                name: "ECDSA",
+                hash: {
+                    name: "SHA-512"
+                }
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+
+          case "ES384":
+            return await crypto.subtle.verify({
+                name: "ECDSA",
+                hash: {
+                    name: "SHA-384"
+                }
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+
+          case "ES256":
+            return await crypto.subtle.verify({
+                name: "ECDSA",
+                hash: {
+                    name: "SHA-256"
+                }
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
 
           default:
             throw new Error(`${alg} is not supported at the moment`);

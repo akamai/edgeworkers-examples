@@ -54,11 +54,6 @@ declare type JWTOptions = {
      * Required to deal with small clock differences among different servers (default = 60 seconds)
      */
     clockTolerance?: number;
-    /**
-     * List of supported algorithms. Defaulted to ["HS256", "RS256", "None"].
-     * For private use only, unavailable for consumers to override
-     */
-    algorithms?: string[];
 };
 
 /**
@@ -68,50 +63,50 @@ declare type JWTOptions = {
  */
 declare class JWTValidator {
     private jwtOptions;
+    private algorithms;
     /**
      * Performs type checks on the field of {@link JWTOptions} and initializes with default values if not present.
      * @param jwtOptions  Advanced options for validating JWT fields. see {@link JWTOptions} for more details.
      * @returns           Instance of {@link JWTValidator}
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error message if type check on {@link JWTOptions} fields fails.
+     * @throws {[DOMException](https://developer.mozilla.org/en-US/docs/Web/API/DOMException) | [TypeError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError)} when trying to use an invalid key data or when the key is not a key for the algorithm or when trying to use an algorithm that is either unknown or isn't suitable for a verify operation.
      * @example Error('Invalid jwtOptions: issuer must be non empty string') - If type check fails for issuer field.
      * @example Error('Invalid jwtOptions: clockTimestamp must be number') - If type check fails for clockTimestamp field.
      */
     constructor(jwtOptions?: JWTOptions);
     /**
-     * Decodes the base64 encoded token and applys JWT default rules
+     * Decodes the base64 url encoded token, applys JWT default rules and perform signature verification using @param keys.
      * Default Rules are:
-     *  - Token should have 3 parts. i.e header, payload, signature in base 64 encoded.
-     *  - If issuer, matches issuer string with iss claim
-     *  - If subject, matches subject string with sub field
-     *  - If audience, matches audience string with aud field
-     *  - If ignoreExpiration is false, validates JWT exp field
-     *  - If ignoreNotBefore  is false, validates JWT nbf field
-     *  - JWT alg field should match in one of supported algorithms specified (Supported algo: RS256, HS256)
-     * @param base64JWTToken Base64 encoded JWT token
-     * @returns              Instance of {@link JWTJson}
+     * - Token should have 2 or 3 parts. i.e header, payload and signature (if JWT is secured) in base64 url encoded.
+     * - If issuer verification enabled, matches issuer string with iss claim
+     * - If subject verification enabled, matches subject string with sub field
+     * - If audience verification enabled, matches audience string with aud field
+     * - If ignoreExpiration is false, validates JWT exp field
+     * - If ignoreNotBefore  is false, validates JWT nbf field
+     * @param base64JWTToken Base64 url encoded JWT token.
+     * @param keys           List of {@link CryptoKey } to be used for signature verification. Token is considered valid if signature is verifiable by any one key.
+     * @returns              Promise of {@link JWTJson}
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error message if rules validation fails.
+     * @throws {[DOMException](https://developer.mozilla.org/en-US/docs/Web/API/DOMException) | [TypeError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError)} when trying to use an invalid key or when the key is not suitable for verify operation.
      * @example Error('Invalid arguments!') - If argument type check fails.
      * @example Error('JWT malformed: invalid jwt format') - If token is not in valid JWT format.
-     * @example Error('JWT malformed: token not correctly encoded') - If tokens header and payload is not a valid base64 encoded string
-     *
+     * @example Error('JWT token signature verification failed!') - If signature verification fails for all keys
      */
-    decode(base64JWTToken: string): JWTJson;
+    validate(base64JWTToken: string, keys: CryptoKey[]): Promise<JWTJson>;
     /**
      * Validates data types for {@link JWTOptions} fields if present, else sets to default.
      */
     private validateOptionTypes;
     /**
-     * Performs signature verification using key and algx
-     * @param base64JWTToken  base54 encoded JWT token
-     * @param alg             Verification algorithm to be used. Obtained from alg header field of JWT token.
-     * @param key             PEM (RSA) / HEX (HMAC) encoded key used for signature verification
+     * Performs signature verification using verifying key
+     * @param jwtParts        Base64 URL encoded parts of JWT token. i.e header, payload and signature respectively
+     * @param alg             Verification algorithm to be used. This is obtained from alg header field of JWT token.
+     * @param cryptoKey       Instance of {@link CryptoKey } used for signature verification
      * @returns               Promise<boolean> indication status of signature verification
-     * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate message if type checks fails for arguments.
-     * @throws {[DOMException](https://developer.mozilla.org/en-US/docs/Web/API/DOMException) | [TypeError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError)} when trying to use an invalid key data or when the key is not a key for the algorithm or when trying to use an algorithm that is either unknown or isn't suitable for a verify operation.
-     * @example Error('Invalid hex string') - If key passed is not in valid hex format.
-     * @example Error('InvalidLengthError: JWT signature is not correctly encoded') - If the JWT signature is not a valid base64url encoded.
+     * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error message if rules validation fails.
+     * @throws {[DOMException](https://developer.mozilla.org/en-US/docs/Web/API/DOMException) | [TypeError](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError)} when trying to use an invalid key or when the key is not suitable for verify operation.
      */
-    validate(base64JWTToken: string, alg: string, key: string): Promise<boolean>;
+    private validateSignature;
 }
 
 export { JWTOptions, JWTValidator };

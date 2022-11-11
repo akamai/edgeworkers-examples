@@ -109,7 +109,7 @@ declare class CWTValidator {
      * Decodes and performs signature validation one the CWT token.
      * It also validates the CWT payload claims and headers if validation is enabled via ${@link cwtOptions}.
      * @param tokenBuf      CWT token in binary format (i.e Uint8Array)
-     * @param keys          List of keys in binary (i.e Uint8Array) used for verifying CWT token. The verification is checked on all keys until one succeeds.
+     * @param keys          List of {@link CryptoKey } to be used for signature verification. Token is considered valid if signature is verifiable by any one key.
      * @param externalAAD   Externally supplied data in binary (i.e Uint8Array) that needs to be authenticated which is not carried as part of the COSE message.
      * @returns             Instance of {@link CWTJSON } containing header and payload
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate message if type checks fails for arguments.
@@ -117,7 +117,7 @@ declare class CWTValidator {
      * @example Error('Invalid arguments!') - If arguments types are invalid.
      * @example Error('CWT malformed: expected CWT CBOR tag for token!') - If cwtOptions.isCWTTagAdded is enabled but CWT token generated does not have CWTTag(61) added.
      */
-    validate(tokenBuf: Uint8Array, keys: Uint8Array[], externalAAD?: Uint8Array): Promise<CWTJSON>;
+    validate(tokenBuf: Uint8Array, keys: CryptoKey[], externalAAD?: Uint8Array): Promise<CWTJSON>;
     /**
      * Process COSE message structure and performs header validation if enabled. see {@link https://datatracker.ietf.org/doc/rfc8152/ } for COSE message spec used to generate CWT tokens.
      * @param coseMessage       Array of cbor encode messages.

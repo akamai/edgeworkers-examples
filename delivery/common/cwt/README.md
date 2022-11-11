@@ -4,7 +4,7 @@ The CWT module can be used to perform operations related to CWT tokens such as C
 
 ## Limitations
 - Currently the module only support API's for verification of CWT tokens that are generated using HS256 algorithm only.
-- Currently the module only support MAC0 cose message structure. Refer this [page](https://datatracker.ietf.org/doc/rfc8152/) for more details on CBOR Object Signing and Encryption (COSE).
+- Currently the module only support MAC0 COSE message structure. Refer this [page](https://datatracker.ietf.org/doc/rfc8152/) for more details on CBOR Object Signing and Encryption (COSE).
 - As of now, EW do not support KMI to manage verification keys, hence these keys are fetched from property manager user defined variable which might not be a secure way. More details on user defined variables can be found [here](https://techdocs.akamai.com/property-mgr/docs/user-defined-vars)
 
 ## Subfolder organization

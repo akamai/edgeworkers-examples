@@ -8,15 +8,9 @@ class Mac {
     static async verifyHMAC(alg, message, signature, keys) {
         if ("HMAC 256/256" === alg) {
             let isSignVerified = !1;
-            for (const i in keys) {
-                const iKey = await crypto.subtle.importKey("raw", keys[i].buffer, {
-                    name: "HMAC",
-                    hash: "SHA-256"
-                }, !1, [ "verify" ]);
-                if (isSignVerified = await crypto.subtle.verify({
-                    name: "HMAC"
-                }, iKey, signature, message), isSignVerified) return Promise.resolve(isSignVerified);
-            }
+            for (const key of keys) if (isSignVerified = await crypto.subtle.verify({
+                name: "HMAC"
+            }, key, signature, message), isSignVerified) return Promise.resolve(isSignVerified);
             return Promise.resolve(isSignVerified);
         }
         throw new Error(`Unsupported Algorithm, ${alg}`);
@@ -121,7 +115,7 @@ function checkedRead() {
                 let error = new Error("Unexpected bundle position");
                 throw error.incomplete = !0, error;
             }
-            position$1 = bundledStrings$1.postBundlePosition;
+            position$1 = bundledStrings$1.postBundlePosition, bundledStrings$1 = null;
         }
         if (position$1 == srcEnd) currentStructures = null, src = null, referenceMap && (referenceMap = null); else {
             if (position$1 > srcEnd) {
@@ -1125,10 +1119,12 @@ class CWTValidator {
         this.cwtOptions = cwtOptions || {}, this.validateOptionTypes();
     }
     async validate(tokenBuf, keys, externalAAD) {
-        if (!(tokenBuf instanceof Uint8Array) || !Array.isArray(keys) || externalAAD && !(externalAAD instanceof Uint8Array)) throw new Error("Invalid arguments!");
+        if (!(tokenBuf instanceof Uint8Array)) throw new Error("Invalid token type, expected Uint8Array!");
+        if (externalAAD && !(externalAAD instanceof Uint8Array)) throw new Error("Invalid externalAAD type, expected Uint8Array!");
+        if (Array.isArray(keys) && !keys.every((elem => "CryptoKey" === elem.constructor.name))) throw new Error("Invalid keys type, expected list of CryptoKey!");
         let coseMessage = globalThis.cbordec.decode(tokenBuf), cwtType = this.cwtOptions.defaultCoseMsgType;
         if (this.cwtOptions.isCWTTagAdded) {
-            if (61 !== coseMessage.tag) throw new Error("CWT malformed: expected CWT CBOR tag for token!");
+            if (61 !== coseMessage.tag) throw new Error("CWT malformed: expected CWT CBOR tag for the token!");
             coseMessage = coseMessage.value;
         }
         if (this.cwtOptions.isCoseCborTagAdded) {
@@ -1141,7 +1137,7 @@ class CWTValidator {
     }
     async verifyCoseMessage(coseMessage, cwtType, keys, headerValidation, externalAAD) {
         if (cwtType === COSE_Mac0) {
-            if (!Array.isArray(coseMessage) || 4 !== coseMessage.length) throw new Error("CWT malformed: invalid COSE message structure for COSE CBOR MAC0Tag");
+            if (!Array.isArray(coseMessage) || 4 !== coseMessage.length) throw new Error("CWT malformed: invalid COSE message structure for COSE CBOR MAC0Tag, expected arry of length 4!");
             const [p, u, payload, tag] = coseMessage;
             let pH = p.length ? globalThis.cbordec.decode(p) : CWTUtil.EMPTY_BUFFER;
             pH = pH.size ? pH : CWTUtil.EMPTY_BUFFER;
@@ -1150,7 +1146,7 @@ class CWTValidator {
             let alg = pH !== CWTUtil.EMPTY_BUFFER ? pH.get(HeaderLabelToKey_alg) : uH !== CWTUtil.EMPTY_BUFFER ? u.get(HeaderLabelToKey_alg) : void 0;
             Number.isInteger(alg) && (alg = coseAlgTags[alg]);
             const MACstructure = [ "MAC0", p, externalAAD, payload ], toBeMACed = globalThis.cborenc.encode(MACstructure);
-            if (!await Mac.verifyHMAC(alg, toBeMACed, tag, keys)) throw new Error("Signature verification failed!");
+            if (!await Mac.verifyHMAC(alg, toBeMACed, tag, keys)) throw new Error("CWT token signature verification failed!");
             const decodedPayload = globalThis.cbordec.decode(payload);
             return Promise.resolve({
                 header: {
@@ -1166,7 +1162,7 @@ class CWTValidator {
         if (headers.size && pheader) {
             const h = headers, crit = h.get(HeaderLabelToKey_crit);
             if (Array.isArray(crit)) {
-                if (0 === crit.length) throw new Error("CWT Malformed: malformed protected header, crit array cant be empty!");
+                if (0 === crit.length) throw new Error("CWT Malformed: malformed protected header, crit array cannot be empty!");
                 for (const e of crit) if (void 0 === h.get(e)) throw new Error("CWT Malformed: malformed protected header, crit labels are not part of protected header");
             }
         }

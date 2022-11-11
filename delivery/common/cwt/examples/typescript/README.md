@@ -1,5 +1,5 @@
 # Example
-This example demonstrate usage of CWT module in typescript project.
+This example demonstrate usage of CWT module in TypeScript project.
 
 ### Usage
 

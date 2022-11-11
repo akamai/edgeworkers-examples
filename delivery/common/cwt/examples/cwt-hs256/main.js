@@ -1,5 +1,6 @@
 import { logger } from 'log';
 import { CWTUtil, CWTValidator} from './cwt.js';
+import { crypto } from 'crypto';
 import { base16 } from 'encoding';
 
 //Integer keys mapping for CWT payload. This mapping is application specific, However keys from 1-7 are reserved
@@ -45,12 +46,21 @@ export async function onClientRequest (request) {
   try {
     // Fetch hmac veification key from Propery Manager
     const secretKey = request.getVariable('PMUSER_CWT_HMAC_KEY');
+    const sKey = await crypto.subtle.importKey(
+      'raw',
+      base16.decode(secretKey, 'Uint8Array').buffer,
+      {
+        name: 'HMAC',
+        hash: 'SHA-256'
+      },
+      false,
+      ['verify']
+    );
     let cwt = request.getHeader('Authorization');
     if (cwt){
       cwt = cwt[0];
       const tokenBuf = base16.decode(cwt,'Uint8Array');
-      const keys = [base16.decode(secretKey,'Uint8Array')];
-      const cwtJSON = await cwtValidator.validate(tokenBuf,keys);
+      const cwtJSON = await cwtValidator.validate(tokenBuf,[sKey]);
       const claims = CWTUtil.claimsTranslate(Object.fromEntries(new Map(cwtJSON.payload)),claimsLabelMap);
       request.respondWith(200, {}, JSON.stringify(claims));
     }

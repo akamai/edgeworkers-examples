@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "0.1",
+    "description" : "Watermarking sample example with both short and long token passed in request URL"
+}

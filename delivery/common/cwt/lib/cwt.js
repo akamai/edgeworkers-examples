@@ -1121,7 +1121,7 @@ class CWTValidator {
     async validate(tokenBuf, keys, externalAAD) {
         if (!(tokenBuf instanceof Uint8Array)) throw new Error("Invalid token type, expected Uint8Array!");
         if (externalAAD && !(externalAAD instanceof Uint8Array)) throw new Error("Invalid externalAAD type, expected Uint8Array!");
-        if (Array.isArray(keys) && !keys.every((elem => "CryptoKey" === elem.constructor.name))) throw new Error("Invalid keys type, expected list of CryptoKey!");
+        if (!Array.isArray(keys) || !keys.every((elem => void 0 !== elem.type || void 0 !== elem.extractable || null != elem.algorithm || null != elem.usages))) throw new Error("Invalid keys type, expected list of CryptoKey!");
         let coseMessage = globalThis.cbordec.decode(tokenBuf), cwtType = this.cwtOptions.defaultCoseMsgType;
         if (this.cwtOptions.isCWTTagAdded) {
             if (61 !== coseMessage.tag) throw new Error("CWT malformed: expected CWT CBOR tag for the token!");

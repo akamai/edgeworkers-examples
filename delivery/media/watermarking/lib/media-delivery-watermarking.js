@@ -1346,7 +1346,7 @@ class CWTValidator {
     async validate(tokenBuf, keys, externalAAD) {
         if (!(tokenBuf instanceof Uint8Array)) throw new Error("Invalid token type, expected Uint8Array!");
         if (externalAAD && !(externalAAD instanceof Uint8Array)) throw new Error("Invalid externalAAD type, expected Uint8Array!");
-        if (Array.isArray(keys) && !keys.every((elem => "CryptoKey" === elem.constructor.name))) throw new Error("Invalid keys type, expected list of CryptoKey!");
+        if (!Array.isArray(keys) || !keys.every((elem => void 0 !== elem.type || void 0 !== elem.extractable || null != elem.algorithm || null != elem.usages))) throw new Error("Invalid keys type, expected list of CryptoKey!");
         let coseMessage = globalThis.cbordec.decode(tokenBuf), cwtType = this.cwtOptions.defaultCoseMsgType;
         if (this.cwtOptions.isCWTTagAdded) {
             if (61 !== coseMessage.tag) throw new Error("CWT malformed: expected CWT CBOR tag for the token!");
@@ -1452,7 +1452,7 @@ class JWTValidator {
     async validate(base64JWTToken, keys) {
         var _a;
         if ("string" != typeof base64JWTToken) throw new Error("Invalid token type, expected string!");
-        if (!keys.every((elem => "CryptoKey" === elem.constructor.name))) throw new Error("Invalid keys type, expected list of CryptoKey!");
+        if (!Array.isArray(keys) || !keys.every((elem => void 0 !== elem.type || void 0 !== elem.extractable || null != elem.algorithm || null != elem.usages))) throw new Error("Invalid keys type, expected list of CryptoKey!");
         const jwtParts = base64JWTToken.split(".");
         if (jwtParts.length > 3 || jwtParts.length < 2) throw new Error("JWT malformed: Invalid number of parts for JWT token. expected 3 or 2 (unsecured JWT)!");
         if (JWTUtil.isEmptyString(jwtParts[0])) throw new Error("JWT malformed: jwt header cannot be empty");

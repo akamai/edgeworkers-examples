@@ -56,13 +56,21 @@ export async function onClientRequest (request) {
       false,
       ['verify']
     );
+    //Fetch the Authorization header from request
     let cwt = request.getHeader('Authorization');
     if (cwt){
       cwt = cwt[0];
+      //replace auth scheme before validating
+      cwt = cwt.replace('Bearer ','');
+      //Assumption: CWT token as passed as hex encoded in authorization header. We decode the hex to get the binary
       const tokenBuf = base16.decode(cwt,'Uint8Array');
       const cwtJSON = await cwtValidator.validate(tokenBuf,[sKey]);
       const claims = CWTUtil.claimsTranslate(Object.fromEntries(new Map(cwtJSON.payload)),claimsLabelMap);
+      logger.log('cwtJSON %s: ',JSON.stringify(claims));
       request.respondWith(200, {}, JSON.stringify(claims));
+    } else {
+      //Return bad request of authorization header is not found
+      request.respondWith(400, {}, 'Authorization header is missing!');
     }
   } catch (error) {
     logger.log(error);

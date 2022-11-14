@@ -5,7 +5,7 @@ const watermarking = new Watermarking( { tokenType: TokenType.CWT});
 
 const variantSubPath: Array<VariantSubPath> = [{ variant: 0, subPath: 'A' }, { variant: 1, subPath: 'B'}];
 
-export async function onClientRequest (request: EW.ImmutableRequest & EW.HasRespondWith & EW.HasRoute) {
+export async function onClientRequest (request: EW.IngressClientRequest) {
   // Outputs a message to the X-Akamai-EdgeWorker-onClientRequest-Log header.
   try {
     const cwtAuthTokenHmacKey = request.getVariable('PMUSER_CWT_HMAC_KEY');

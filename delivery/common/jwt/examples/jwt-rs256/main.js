@@ -26,9 +26,12 @@ export async function onClientRequest (request) {
       false,
       ['verify']
     );
+    //Fetch the Authorization header from request
     let jwt = request.getHeader('Authorization');
     if (jwt){
       jwt = jwt[0];
+      //replace auth scheme before validating
+      jwt = jwt.replace('Bearer ',''); 
       const jwtJSON = await jwtValidator.validate(jwt,[iKey]);
       logger.log('jwtJSON %s: ',JSON.stringify(jwtJSON));
       const result = {
@@ -36,6 +39,9 @@ export async function onClientRequest (request) {
         verifed: true
       };
       request.respondWith(200, {}, JSON.stringify(result));
+    } else {
+      //Return bad request of authorization header is not found
+      request.respondWith(400, {}, 'Authorization header is missing!');
     }
   } catch (error) {
     logger.log(error);

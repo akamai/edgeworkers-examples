@@ -50,6 +50,10 @@ declare type JWTOptions = {
      */
     audience?: string;
     /**
+     * If enabled, Unsecured JWT tokens (i.e alg = NONE) are supported.
+     */
+    allowUnsecuredToken?: boolean;
+    /**
      * Number of seconds to tolerate when checking the nbf and exp claims.
      * Required to deal with small clock differences among different servers (default = 60 seconds)
      */

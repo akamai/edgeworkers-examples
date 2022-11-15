@@ -103,6 +103,7 @@ declare class JWTValidator {
     private validateOptionTypes;
     /**
      * Performs signature verification using verifying key
+     * @param base64JWTToken  Base64 URL encoded JWT token
      * @param jwtParts        Base64 URL encoded parts of JWT token. i.e header, payload and signature respectively
      * @param alg             Verification algorithm to be used. This is obtained from alg header field of JWT token.
      * @param cryptoKey       Instance of {@link CryptoKey } used for signature verification

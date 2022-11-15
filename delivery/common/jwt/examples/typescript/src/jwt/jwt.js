@@ -49,7 +49,7 @@ class JWTValidator {
         }
         if (!(null === (_b = this.algorithms) || void 0 === _b ? void 0 : _b.includes(jwtHeader.alg.toUpperCase()))) throw new Error(`${jwtHeader.alg} is not supported at the moment`);
         for (const cryptoKey of keys) {
-            if (await this.validateSignature(jwtParts, jwtHeader.alg.toUpperCase(), cryptoKey)) return {
+            if (await this.validateSignature(base64JWTToken, jwtParts, jwtHeader.alg.toUpperCase(), cryptoKey)) return {
                 header: jwtHeader,
                 payload: jwtPayload
             };
@@ -65,39 +65,39 @@ class JWTValidator {
         if (void 0 === this.jwtOptions.allowUnsecuredToken) this.jwtOptions.allowUnsecuredToken = !1; else if ("boolean" != typeof this.jwtOptions.allowUnsecuredToken) throw new Error("Invalid jwtOptions: allowUnsecuredToken must be boolean");
         if (void 0 === this.jwtOptions.clockTolerance) this.jwtOptions.clockTolerance = 60; else if ("number" != typeof this.jwtOptions.clockTolerance) throw new Error("Invalid jwtOptions: clockTimestamp must be number");
     }
-    async validateSignature(jwtParts, alg, cryptoKey) {
+    async validateSignature(base64JWTToken, jwtParts, alg, cryptoKey) {
         switch (alg) {
           case "RS512":
           case "RS384":
           case "RS256":
             return await crypto.subtle.verify({
                 name: "RSASSA-PKCS1-v1_5"
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "HS512":
           case "HS384":
           case "HS256":
             return await crypto.subtle.verify({
                 name: "HMAC"
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "PS512":
             return await crypto.subtle.verify({
                 name: "RSA-PSS",
                 saltLength: 64
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "PS384":
             return await crypto.subtle.verify({
                 name: "RSA-PSS",
                 saltLength: 48
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "PS256":
             return await crypto.subtle.verify({
                 name: "RSA-PSS",
                 saltLength: 32
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "ES512":
             return await crypto.subtle.verify({
@@ -105,7 +105,7 @@ class JWTValidator {
                 hash: {
                     name: "SHA-512"
                 }
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "ES384":
             return await crypto.subtle.verify({
@@ -113,7 +113,7 @@ class JWTValidator {
                 hash: {
                     name: "SHA-384"
                 }
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "ES256":
             return await crypto.subtle.verify({
@@ -121,7 +121,7 @@ class JWTValidator {
                 hash: {
                     name: "SHA-256"
                 }
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           default:
             throw new Error(`${alg} is not supported at the moment`);

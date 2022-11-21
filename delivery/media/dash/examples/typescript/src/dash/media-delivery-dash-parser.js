@@ -1,1 +1,2006 @@
-import{logger as t}from"log";const e=new class{constructor(){this.ACCESSIBILITY="Accessibility",this.ADAPTATION_SET="AdaptationSet",this.ASSET_IDENTIFIER="AssetIdentifier",this.AUDIO_CHANNEL_CONFIGURATION="AudioChannelConfiguration",this.BASEURL="BaseURL",this.BITSTREAM_SWITCHING="BitstreamSwitching",this.CONTENT_COMPONENT="ContentComponent",this.CONTENT_POPULARITY_RATE="ContentPopularityRate",this.CONTENT_PROTECTION="ContentProtection",this.COPYRIGHT="Copyright",this.EMPTY_ADAPTATION_SET="EmptyAdaptationSet",this.ESSENTIAL_PROPERTY="EssentialProperty",this.EVENT="Event",this.EVENT_STREAM="EventStream",this.FAILOVER_CONTENT="FailoverContent",this.FCS="FCS",this.FRAME_PACKING="FramePacking",this.GROUP_LABEL="GroupLabel",this.INBAND_EVENT_STREAM="InbandEventStream",this.INITIALIZATION="Initialization",this.INITIALIZATION_GROUP="InitializationGroup",this.INITIALIZATION_PRESENTATION="InitializationPresentation",this.INITIALIZATION_SET="InitializationSet",this.LABEL="Label",this.LATENCY="Latency",this.LEAP_SECOND_INFORMATION="LeapSecondInformation",this.LOCATION="Location",this.METRICS="Metrics",this.MPD="MPD",this.OPERATING_BANDWIDTH="OperatingBandwidth",this.OPERATING_QUALITY="OperatingQuality",this.PERIOD="Period",this.PLAYBACK_RATE="PlaybackRate",this.PR="PR",this.PRESELECTION="Preselection",this.PRODUCER_REFERENCE_TIME="ProducerReferenceTime",this.PROGRAM_INFORMATION="ProgramInformation",this.QUALITY_LATENCY="QualityLatency",this.RANDOM_ACCESS="RandomAccess",this.RANGE="Range",this.RATING="Rating",this.REPORTING="Reporting",this.REPRESENTATION="Representation",this.REPRESENTATION_INDEX="RepresentationIndex",this.ROLE="Role",this.S="S",this.SCOPE="Scope",this.SEGMENT_BASE="SegmentBase",this.SEGMENT_LIST="SegmentList",this.SEGMENT_TEMPLATE="SegmentTemplate",this.SEGMENT_TIMELINE="SegmentTimeline",this.SEGMENTURL="SegmentURL",this.SERVICE_DESCRIPTION="ServiceDescription",this.SOURCE="Source",this.SUB_REPRESENTATION="SubRepresentation",this.SUBSET="Subset",this.SUPPLEMENTAL_PROPERTY="SupplementalProperty",this.SWITCHING="Switching",this.TITLE="Title",this.UTC_TIMING="UTCTiming",this.VIEWPOINT="Viewpoint",this.ATTR_APPLICATION_SCHEME="applicationScheme",this.ATTR_ASSOCIATION_ID="associationId",this.ATTR_ASSOCIATION_TYPE="associationType",this.ATTR_AUDIO_SAMPLING_RATE="audioSamplingRate",this.ATTR_AVAILABILITY_END_TIME="availabilityEndTime",this.ATTR_AVAILABILITY_START_LEAP_OFFSET="availabilityStartLeapOffset",this.ATTR_AVAILABILITY_START_TIME="availabilityStartTime",this.ATTR_AVAILABILITY_TIME_COMPLETE="availabilityTimeComplete",this.ATTR_AVAILABILITY_TIME_OFFSET="availabilityTimeOffset",this.ATTR_BANDWIDTH="bandwidth",this.ATTR_BITSTREAM_SWITCHING="bitstreamSwitching",this.ATTR_BYTE_RANGE="byteRange",this.ATTR_CODECS="codecs",this.ATTR_CODING_DEPENDENCY="codingDependency",this.ATTR_CONTAINS="contains",this.ATTR_CONTENT_COMPONENT="contentComponent",this.ATTR_CONTENT_ENCODING="contentEncoding",this.ATTR_CONTENT_TYPE="contentType",this.ATTR_D="d",this.ATTR_DEPENDENCY_ID="dependencyId",this.ATTR_DEPENDENCY_LEVEL="dependencyLevel",this.ATTR_DURATION="duration",this.ATTR_END_NUMBER="endNumber",this.ATTR_EPT_DELTA="eptDelta",this.ATTR_FRAME_RATE="frameRate",this.ATTR_GROUP="group",this.ATTR_HEIGHT="height",this.ATTR_ID="id",this.ATTR_IN_ALL_PERIODS="inAllPeriods",this.ATTR_INBAND="inband",this.ATTR_INDEX="index",this.ATTR_INDEX_RANGE="indexRange",this.ATTR_INDEX_RANGE_EXACT="indexRangeExact",this.ATTR_INITIALIZATION="initialization",this.ATTR_INITIALIZATION_SET_REF="initializationSetRef",this.ATTR_INTERVAL="interval",this.ATTR_K="k",this.ATTR_LANG="lang",this.ATTR_LEVEL="level",this.ATTR_MAX="max",this.ATTR_MAX_BANDWIDTH="maxBandwidth",this.ATTR_MAX_DIFFERENCE="maxDifference",this.ATTR_MAX_FRAME_RATE="maxFrameRate",this.ATTR_MAX_HEIGHT="maxHeight",this.ATTR_MAXIMUMSAP_PERIOD="maximumSAPPeriod",this.ATTR_MAX_PLAYOUT_RATE="maxPlayoutRate",this.ATTR_MAX_SEGMENT_DURATION="maxSegmentDuration",this.ATTR_MAX_SUBSEGMENT_DURATION="maxSubsegmentDuration",this.ATTR_MAX_WIDTH="maxWidth",this.ATTR_MEDIA="media",this.ATTR_MEDIA_PRESENTATION_DURATION="mediaPresentationDuration",this.ATTR_MEDIA_RANGE="mediaRange",this.ATTR_MEDIA_STREAM_STRUCTURE_ID="mediaStreamStructureId",this.ATTR_MEDIA_TYPE="mediaType",this.ATTR_MESSAGE_DATA="messageData",this.ATTR_METRICS="metrics",this.ATTR_MIME_TYPE="mimeType",this.ATTR_MIN="min",this.ATTR_MIN_BANDWIDTH="minBandwidth",this.ATTR_MIN_BUFFER_TIME="minBufferTime",this.ATTR_MIN_FRAME_RATE="minFrameRate",this.ATTR_MIN_HEIGHT="minHeight",this.ATTR_MINIMUM_UPDATE_PERIOD="minimumUpdatePeriod",this.ATTR_MIN_WIDTH="minWidth",this.ATTR_MORE_INFORMATIONURL="moreInformationURL",this.ATTR_N="n",this.ATTR_NEXT_AVAILABILITY_START_LEAP_OFFSET="nextAvailabilityStartLeapOffset",this.ATTR_NEXT_LEAP_CHANGE_TIME="nextLeapChangeTime",this.ATTR_NULL="null",this.ATTR_ORDER="order",this.ATTR_PAR="par",this.ATTR_POPULARITY_RATE="popularityRate",this.ATTR_PRESELECTION_COMPONENTS="preselectionComponents",this.ATTR_PRESENTATION_DURATION="presentationDuration",this.ATTR_PRESENTATION_TIME="presentationTime",this.ATTR_PRESENTATION_TIME_OFFSET="presentationTimeOffset",this.ATTR_PROFILES="profiles",this.ATTR_PUBLISH_TIME="publishTime",this.ATTR_QUALITY_RANKING="qualityRanking",this.ATTR_R="r",this.ATTR_RANGE="range",this.ATTR_REFERENCE_ID="referenceId",this.ATTR_SAR="sar",this.ATTR_SCAN_TYPE="scanType",this.ATTR_SCHEME_IDURI="schemeIdUri",this.ATTR_SEGMENT_ALIGNMENT="segmentAlignment",this.ATTR_SEGMENT_PROFILES="segmentProfiles",this.ATTR_SELECTION_PRIORITY="selectionPriority",this.ATTR_SERVICE_LOCATION="serviceLocation",this.ATTR_SOURCE="source",this.ATTR_SOURCE_DESCRIPTION="source_description",this.ATTR_SOURCEURL="sourceURL",this.ATTR_START="start",this.ATTR_START_NUMBER="startNumber",this.ATTR_STARTTIME="starttime",this.ATTR_START_WITHSAP="startWithSAP",this.ATTR_SUBSEGMENT_ALIGNMENT="subsegmentAlignment",this.ATTR_SUBSEGMENT_STARTS_WITHSAP="subsegmentStartsWithSAP",this.ATTR_SUGGESTED_PRESENTATION_DELAY="suggestedPresentationDelay",this.ATTR_T="t",this.ATTR_TAG="tag",this.ATTR_TARGET="target",this.ATTR_TIMESCALE="timescale",this.ATTR_TIME_SHIFT_BUFFER_DEPTH="timeShiftBufferDepth",this.ATTR_TYPE="type",this.ATTR_VALID="valid",this.ATTR_VALUE="value",this.ATTR_WALL_CLOCK_TIME="wallClockTime",this.ATTR_WIDTH="width",this.ALWAYS_ARRAY_ELEMENTS=[/\.Accessibility$/,/\.AdaptationSet$/,/\.AudioChannelConfiguration$/,/\.BaseURL$/,/\.ContentComponent$/,/\.ContentPopularityRate$/,/\.ContentProtection$/,/\.EmptyAdaptationSet$/,/\.EssentialProperty$/,/\.Event$/,/\.EventStream$/,/\.FCS$/,/\.FramePacking$/,/\.GroupLabel$/,/\.InbandEventStream$/,/\.InitializationGroup$/,/\.InitializationPresentation$/,/\.InitializationSet$/,/\.Label$/,/\.Latency$/,/\.Location$/,/\.Metrics$/,/\.OperatingBandwidth$/,/\.OperatingQuality$/,/\.Period$/,/\.PlaybackRate$/,/\.PR$/,/\.Preselection$/,/\.ProducerReferenceTime$/,/\.ProgramInformation$/,/\.QualityLatency$/,/\.RandomAccess$/,/\.Range$/,/\.Rating$/,/\.Reporting$/,/\.Representation$/,/\.Role$/,/\.S$/,/\.Scope$/,/\.SegmentURL$/,/\.ServiceDescription$/,/\.SubRepresentation$/,/\.Subset$/,/\.SupplementalProperty$/,/\.Switching$/,/\.UTCTiming$/,/\.Viewpoint$/]}};"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self&&self;var n,r={exports:{}},i={},a={};var o,s={};function u(){if(o)return s;o=1;var t=/[A-Z_a-z\xC0-\xD6\xD8-\xF6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]/,e=new RegExp("[\\-\\.0-9"+t.source.slice(1,-1)+"\\u00B7\\u0300-\\u036F\\u203F-\\u2040]"),n=new RegExp("^"+t.source+e.source+"*(?::"+t.source+e.source+"*)?$");function r(t,e){this.message=t,this.locator=e,Error.captureStackTrace&&Error.captureStackTrace(this,r)}function i(){}function a(t,e){return e.lineNumber=t.lineNumber,e.columnNumber=t.columnNumber,e}function u(t,e,n,r,i,a){function o(t,e,r){t in n.attributeNames&&a.fatalError("Attribute "+t+" redefined"),n.addValue(t,e,r)}for(var s,u=++e,c=0;;){var l=t.charAt(u);switch(l){case"=":if(1===c)s=t.slice(e,u),c=3;else{if(2!==c)throw new Error("attribute equal must after attrName");c=3}break;case"'":case'"':if(3===c||1===c){if(1===c&&(a.warning('attribute value must after "="'),s=t.slice(e,u)),e=u+1,!((u=t.indexOf(l,e))>0))throw new Error("attribute value no end '"+l+"' match");o(s,T=t.slice(e,u).replace(/&#?\w+;/g,i),e-1),c=5}else{if(4!=c)throw new Error('attribute value must after "="');o(s,T=t.slice(e,u).replace(/&#?\w+;/g,i),e),a.warning('attribute "'+s+'" missed start quot('+l+")!!"),e=u+1,c=5}break;case"/":switch(c){case 0:n.setTagName(t.slice(e,u));case 5:case 6:case 7:c=7,n.closed=!0;case 4:case 1:case 2:break;default:throw new Error("attribute invalid close char('/')")}break;case"":return a.error("unexpected end of input"),0==c&&n.setTagName(t.slice(e,u)),u;case">":switch(c){case 0:n.setTagName(t.slice(e,u));case 5:case 6:case 7:break;case 4:case 1:"/"===(T=t.slice(e,u)).slice(-1)&&(n.closed=!0,T=T.slice(0,-1));case 2:2===c&&(T=s),4==c?(a.warning('attribute "'+T+'" missed quot(")!'),o(s,T.replace(/&#?\w+;/g,i),e)):("http://www.w3.org/1999/xhtml"===r[""]&&T.match(/^(?:disabled|checked|selected)$/i)||a.warning('attribute "'+T+'" missed value!! "'+T+'" instead!!'),o(T,T,e));break;case 3:throw new Error("attribute value missed!!")}return u;case"":l=" ";default:if(l<=" ")switch(c){case 0:n.setTagName(t.slice(e,u)),c=6;break;case 1:s=t.slice(e,u),c=2;break;case 4:var T=t.slice(e,u).replace(/&#?\w+;/g,i);a.warning('attribute "'+T+'" missed quot(")!!'),o(s,T,e);case 5:c=6}else switch(c){case 2:n.tagName,"http://www.w3.org/1999/xhtml"===r[""]&&s.match(/^(?:disabled|checked|selected)$/i)||a.warning('attribute "'+s+'" missed value!! "'+s+'" instead2!!'),o(s,s,e),e=u,c=1;break;case 5:a.warning('attribute space is required"'+s+'"!!');case 6:c=1,e=u;break;case 3:c=4,e=u;break;case 7:throw new Error("elements closed character '/' and '>' must be connected to")}}u++}}function c(t,e,n){for(var r=t.tagName,i=null,a=t.length;a--;){var o=t[a],s=o.qName,u=o.value;if((f=s.indexOf(":"))>0)var c=o.prefix=s.slice(0,f),l=s.slice(f+1),T="xmlns"===c&&l;else l=s,c=null,T="xmlns"===s&&"";o.localName=l,!1!==T&&(null==i&&(i={},h(n,n={})),n[T]=i[T]=u,o.uri="http://www.w3.org/2000/xmlns/",e.startPrefixMapping(T,u))}for(a=t.length;a--;){(c=(o=t[a]).prefix)&&("xml"===c&&(o.uri="http://www.w3.org/XML/1998/namespace"),"xmlns"!==c&&(o.uri=n[c||""]))}var f;(f=r.indexOf(":"))>0?(c=t.prefix=r.slice(0,f),l=t.localName=r.slice(f+1)):(c=null,l=t.localName=r);var d=t.uri=n[c||""];if(e.startElement(d,l,r,t),!t.closed)return t.currentNSMap=n,t.localNSMap=i,!0;if(e.endElement(d,l,r),i)for(c in i)e.endPrefixMapping(c)}function l(t,e,n,r,i){if(/^(?:script|textarea)$/i.test(n)){var a=t.indexOf("</"+n+">",e),o=t.substring(e+1,a);if(/[&<]/.test(o))return/^script$/i.test(n)?(i.characters(o,0,o.length),a):(o=o.replace(/&#?\w+;/g,r),i.characters(o,0,o.length),a)}return e+1}function T(t,e,n,r){var i=r[n];return null==i&&((i=t.lastIndexOf("</"+n+">"))<e&&(i=t.lastIndexOf("</"+n)),r[n]=i),i<e}function h(t,e){for(var n in t)e[n]=t[n]}function f(t,e,n,r){if("-"===t.charAt(e+2))return"-"===t.charAt(e+3)?(i=t.indexOf("--\x3e",e+4))>e?(n.comment(t,e+4,i-e-4),i+3):(r.error("Unclosed comment"),-1):-1;if("CDATA["==t.substr(e+3,6)){var i=t.indexOf("]]>",e+9);return n.startCDATA(),n.characters(t,e+9,i-e-9),n.endCDATA(),i+3}var a=function(t,e){var n,r=[],i=/'[^']+'|"[^"]+"|[^\s<>\/=]+=?|(\/?\s*>|<)/g;i.lastIndex=e,i.exec(t);for(;n=i.exec(t);)if(r.push(n),n[1])return r}(t,e),o=a.length;if(o>1&&/!doctype/i.test(a[0][0])){var s=a[1][0],u=!1,c=!1;o>3&&(/^public$/i.test(a[2][0])?(u=a[3][0],c=o>4&&a[4][0]):/^system$/i.test(a[2][0])&&(c=a[3][0]));var l=a[o-1];return n.startDTD(s,u,c),n.endDTD(),l.index+l[0].length}return-1}function d(t,e,n){var r=t.indexOf("?>",e);if(r){var i=t.substring(e,r).match(/^<\?(\S*)\s*([\s\S]*?)\s*$/);return i?(i[0].length,n.processingInstruction(i[1],i[2]),r+2):-1}return-1}function p(){this.attributeNames={}}return r.prototype=new Error,r.prototype.name=r.name,i.prototype={parse:function(t,e,n){var i=this.domBuilder;i.startDocument(),h(e,e={}),function(t,e,n,i,o){function s(t){if(t>65535){var e=55296+((t-=65536)>>10),n=56320+(1023&t);return String.fromCharCode(e,n)}return String.fromCharCode(t)}function h(t){var e=t.slice(1,-1);return e in n?n[e]:"#"===e.charAt(0)?s(parseInt(e.substr(1).replace("x","0x"))):(o.error("entity not found:"+t),t)}function m(e){if(e>v){var n=t.substring(v,e).replace(/&#?\w+;/g,h);g&&E(v),i.characters(n,0,e-v),v=e}}function E(e,n){for(;e>=_&&(n=N.exec(t));)A=n.index,_=A+n[0].length,g.lineNumber++;g.columnNumber=e-A+1}var A=0,_=0,N=/.*(?:\r\n?|\n)|.*$/g,g=i.locator,R=[{currentNSMap:e}],I={},v=0;for(;;){try{var S=t.indexOf("<",v);if(S<0){if(!t.substr(v).match(/^\s*$/)){var y=i.doc,D=y.createTextNode(t.substr(v));y.appendChild(D),i.currentElement=D}return}switch(S>v&&m(S),t.charAt(S+1)){case"/":var w=t.indexOf(">",S+3),O=t.substring(S+2,w),b=R.pop();w<0?(O=t.substring(S+2).replace(/[\s<].*/,""),o.error("end tag name: "+O+" is not complete:"+b.tagName),w=S+1+O.length):O.match(/\s</)&&(O=O.replace(/[\s<].*/,""),o.error("end tag name: "+O+" maybe not complete"),w=S+1+O.length);var P=b.localNSMap,x=b.tagName==O;if(x||b.tagName&&b.tagName.toLowerCase()==O.toLowerCase()){if(i.endElement(b.uri,b.localName,O),P)for(var C in P)i.endPrefixMapping(C);x||o.fatalError("end tag name: "+O+" is not match the current start tagName:"+b.tagName)}else R.push(b);w++;break;case"?":g&&E(S),w=d(t,S,i);break;case"!":g&&E(S),w=f(t,S,i,o);break;default:g&&E(S);var M=new p,L=R[R.length-1].currentNSMap,F=(w=u(t,S,M,L,h,o),M.length);if(!M.closed&&T(t,w,M.tagName,I)&&(M.closed=!0,n.nbsp||o.warning("unclosed xml attribute")),g&&F){for(var B=a(g,{}),U=0;U<F;U++){var V=M[U];E(V.offset),V.locator=a(g,{})}i.locator=B,c(M,i,L)&&R.push(M),i.locator=g}else c(M,i,L)&&R.push(M);"http://www.w3.org/1999/xhtml"!==M.uri||M.closed?w++:w=l(t,w,M.tagName,h,i)}}catch(t){if(t instanceof r)throw t;o.error("element parse error: "+t),w=-1}w>v?v=w:m(Math.max(S,v)+1)}}(t,e,n,i,this.errorHandler),i.endDocument()}},p.prototype={setTagName:function(t){if(!n.test(t))throw new Error("invalid tagName:"+t);this.tagName=t},addValue:function(t,e,r){if(!n.test(t))throw new Error("invalid attribute:"+t);this.attributeNames[t]=this.length,this[this.length++]={qName:t,value:e,offset:r}},length:0,getLocalName:function(t){return this[t].localName},getLocator:function(t){return this[t].locator},getQName:function(t){return this[t].qName},getURI:function(t){return this[t].uri},getValue:function(t){return this[t].value}},s.XMLReader=i,s.ParseError=r,s}var c,l,T={};function h(){if(c)return T;function t(t,e){for(var n in t)e[n]=t[n]}function e(e,n){var r=e.prototype;if(!(r instanceof n)){function i(){}i.prototype=n.prototype,t(r,i=new i),e.prototype=r=i}r.constructor!=e&&("function"!=typeof e&&console.error("unknow Class:"+e),r.constructor=e)}c=1;var n={},r=n.ELEMENT_NODE=1,i=n.ATTRIBUTE_NODE=2,a=n.TEXT_NODE=3,o=n.CDATA_SECTION_NODE=4,s=n.ENTITY_REFERENCE_NODE=5,u=n.ENTITY_NODE=6,l=n.PROCESSING_INSTRUCTION_NODE=7,h=n.COMMENT_NODE=8,f=n.DOCUMENT_NODE=9,d=n.DOCUMENT_TYPE_NODE=10,p=n.DOCUMENT_FRAGMENT_NODE=11,m=n.NOTATION_NODE=12,E={},A={};E.INDEX_SIZE_ERR=(A[1]="Index size error",1),E.DOMSTRING_SIZE_ERR=(A[2]="DOMString size error",2);var _=E.HIERARCHY_REQUEST_ERR=(A[3]="Hierarchy request error",3);E.WRONG_DOCUMENT_ERR=(A[4]="Wrong document",4),E.INVALID_CHARACTER_ERR=(A[5]="Invalid character",5),E.NO_DATA_ALLOWED_ERR=(A[6]="No data allowed",6),E.NO_MODIFICATION_ALLOWED_ERR=(A[7]="No modification allowed",7);var N=E.NOT_FOUND_ERR=(A[8]="Not found",8);E.NOT_SUPPORTED_ERR=(A[9]="Not supported",9);var g=E.INUSE_ATTRIBUTE_ERR=(A[10]="Attribute in use",10);function R(t,e){if(e instanceof Error)var n=e;else n=this,Error.call(this,A[t]),this.message=A[t],Error.captureStackTrace&&Error.captureStackTrace(this,R);return n.code=t,e&&(this.message=this.message+": "+e),n}function I(){}function v(t,e){this._node=t,this._refresh=e,S(this)}function S(e){var n=e._node._inc||e._node.ownerDocument._inc;if(e._inc!=n){var r=e._refresh(e._node);rt(e,"length",r.length),t(r,e),e._inc=n}}function y(){}function D(t,e){for(var n=t.length;n--;)if(t[n]===e)return n}function w(t,e,n,r){if(r?e[D(e,r)]=n:e[e.length++]=n,t){n.ownerElement=t;var i=t.ownerDocument;i&&(r&&L(i,t,r),function(t,e,n){t&&t._inc++,"http://www.w3.org/2000/xmlns/"==n.namespaceURI&&(e._nsMap[n.prefix?n.localName:""]=n.value)}(i,t,n))}}function O(t,e,n){var r=D(e,n);if(!(r>=0))throw R(N,new Error(t.tagName+"@"+n));for(var i=e.length-1;r<i;)e[r]=e[++r];if(e.length=i,t){var a=t.ownerDocument;a&&(L(a,t,n),n.ownerElement=null)}}function b(t){if(this._features={},t)for(var e in t)this._features=t[e]}function P(){}function x(t){return("<"==t?"&lt;":">"==t&&"&gt;")||"&"==t&&"&amp;"||'"'==t&&"&quot;"||"&#"+t.charCodeAt()+";"}function C(t,e){if(e(t))return!0;if(t=t.firstChild)do{if(C(t,e))return!0}while(t=t.nextSibling)}function M(){}function L(t,e,n,r){t&&t._inc++,"http://www.w3.org/2000/xmlns/"==n.namespaceURI&&delete e._nsMap[n.prefix?n.localName:""]}function F(t,e,n){if(t&&t._inc){t._inc++;var r=e.childNodes;if(n)r[r.length++]=n;else{for(var i=e.firstChild,a=0;i;)r[a++]=i,i=i.nextSibling;r.length=a}}}function B(t,e){var n=e.previousSibling,r=e.nextSibling;return n?n.nextSibling=r:t.firstChild=r,r?r.previousSibling=n:t.lastChild=n,F(t.ownerDocument,t),e}function U(t,e,n){var r=e.parentNode;if(r&&r.removeChild(e),e.nodeType===p){var i=e.firstChild;if(null==i)return e;var a=e.lastChild}else i=a=e;var o=n?n.previousSibling:t.lastChild;i.previousSibling=o,a.nextSibling=n,o?o.nextSibling=i:t.firstChild=i,null==n?t.lastChild=a:n.previousSibling=a;do{i.parentNode=t}while(i!==a&&(i=i.nextSibling));return F(t.ownerDocument||t,t),e.nodeType==p&&(e.firstChild=e.lastChild=null),e}function V(){this._nsMap={}}function G(){}function Y(){}function $(){}function H(){}function W(){}function k(){}function j(){}function X(){}function q(){}function z(){}function Q(){}function Z(){}function J(t,e){var n=[],r=9==this.nodeType&&this.documentElement||this,i=r.prefix,a=r.namespaceURI;if(a&&null==i&&null==(i=r.lookupPrefix(a)))var o=[{namespace:a,prefix:null}];return tt(this,n,t,e,o),n.join("")}function K(t,e,n){var r=t.prefix||"",i=t.namespaceURI;if(!r&&!i)return!1;if("xml"===r&&"http://www.w3.org/XML/1998/namespace"===i||"http://www.w3.org/2000/xmlns/"==i)return!1;for(var a=n.length;a--;){var o=n[a];if(o.prefix==r)return o.namespace!=i}return!0}function tt(t,e,n,u,c){if(u){if(!(t=u(t)))return;if("string"==typeof t)return void e.push(t)}switch(t.nodeType){case r:c||(c=[]),c.length;var T=t.attributes,m=T.length,E=t.firstChild,A=t.tagName;n="http://www.w3.org/1999/xhtml"===t.namespaceURI||n,e.push("<",A);for(var _=0;_<m;_++){"xmlns"==(N=T.item(_)).prefix?c.push({prefix:N.localName,namespace:N.value}):"xmlns"==N.nodeName&&c.push({prefix:"",namespace:N.value})}for(_=0;_<m;_++){var N;if(K(N=T.item(_),0,c)){var g=N.prefix||"",R=N.namespaceURI,I=g?" xmlns:"+g:" xmlns";e.push(I,'="',R,'"'),c.push({prefix:g,namespace:R})}tt(N,e,n,u,c)}if(K(t,0,c)){g=t.prefix||"";if(R=t.namespaceURI){I=g?" xmlns:"+g:" xmlns";e.push(I,'="',R,'"'),c.push({prefix:g,namespace:R})}}if(E||n&&!/^(?:meta|link|img|br|hr|input)$/i.test(A)){if(e.push(">"),n&&/^script$/i.test(A))for(;E;)E.data?e.push(E.data):tt(E,e,n,u,c),E=E.nextSibling;else for(;E;)tt(E,e,n,u,c),E=E.nextSibling;e.push("</",A,">")}else e.push("/>");return;case f:case p:for(E=t.firstChild;E;)tt(E,e,n,u,c),E=E.nextSibling;return;case i:return e.push(" ",t.name,'="',t.value.replace(/[<&"]/g,x),'"');case a:return e.push(t.data.replace(/[<&]/g,x).replace(/]]>/g,"]]&gt;"));case o:return e.push("<![CDATA[",t.data,"]]>");case h:return e.push("\x3c!--",t.data,"--\x3e");case d:var v=t.publicId,S=t.systemId;if(e.push("<!DOCTYPE ",t.name),v)e.push(" PUBLIC ",v),S&&"."!=S&&e.push(" ",S),e.push(">");else if(S&&"."!=S)e.push(" SYSTEM ",S,">");else{var y=t.internalSubset;y&&e.push(" [",y,"]"),e.push(">")}return;case l:return e.push("<?",t.target," ",t.data,"?>");case s:return e.push("&",t.nodeName,";");default:e.push("??",t.nodeName)}}function et(t,e,n){var a;switch(e.nodeType){case r:(a=e.cloneNode(!1)).ownerDocument=t;case p:break;case i:n=!0}if(a||(a=e.cloneNode(!1)),a.ownerDocument=t,a.parentNode=null,n)for(var o=e.firstChild;o;)a.appendChild(et(t,o,n)),o=o.nextSibling;return a}function nt(t,e,n){var a=new e.constructor;for(var o in e){var s=e[o];"object"!=typeof s&&s!=a[o]&&(a[o]=s)}switch(e.childNodes&&(a.childNodes=new I),a.ownerDocument=t,a.nodeType){case r:var u=e.attributes,c=a.attributes=new y,l=u.length;c._ownerElement=a;for(var T=0;T<l;T++)a.setAttributeNode(nt(t,u.item(T),!0));break;case i:n=!0}if(n)for(var h=e.firstChild;h;)a.appendChild(nt(t,h,n)),h=h.nextSibling;return a}function rt(t,e,n){t[e]=n}E.INVALID_STATE_ERR=(A[11]="Invalid state",11),E.SYNTAX_ERR=(A[12]="Syntax error",12),E.INVALID_MODIFICATION_ERR=(A[13]="Invalid modification",13),E.NAMESPACE_ERR=(A[14]="Invalid namespace",14),E.INVALID_ACCESS_ERR=(A[15]="Invalid access",15),R.prototype=Error.prototype,t(E,R),I.prototype={length:0,item:function(t){return this[t]||null},toString:function(t,e){for(var n=[],r=0;r<this.length;r++)tt(this[r],n,t,e);return n.join("")}},v.prototype.item=function(t){return S(this),this[t]},e(v,I),y.prototype={length:0,item:I.prototype.item,getNamedItem:function(t){for(var e=this.length;e--;){var n=this[e];if(n.nodeName==t)return n}},setNamedItem:function(t){var e=t.ownerElement;if(e&&e!=this._ownerElement)throw new R(g);var n=this.getNamedItem(t.nodeName);return w(this._ownerElement,this,t,n),n},setNamedItemNS:function(t){var e,n=t.ownerElement;if(n&&n!=this._ownerElement)throw new R(g);return e=this.getNamedItemNS(t.namespaceURI,t.localName),w(this._ownerElement,this,t,e),e},removeNamedItem:function(t){var e=this.getNamedItem(t);return O(this._ownerElement,this,e),e},removeNamedItemNS:function(t,e){var n=this.getNamedItemNS(t,e);return O(this._ownerElement,this,n),n},getNamedItemNS:function(t,e){for(var n=this.length;n--;){var r=this[n];if(r.localName==e&&r.namespaceURI==t)return r}return null}},b.prototype={hasFeature:function(t,e){var n=this._features[t.toLowerCase()];return!(!n||e&&!(e in n))},createDocument:function(t,e,n){var r=new M;if(r.implementation=this,r.childNodes=new I,r.doctype=n,n&&r.appendChild(n),e){var i=r.createElementNS(t,e);r.appendChild(i)}return r},createDocumentType:function(t,e,n){var r=new k;return r.name=t,r.nodeName=t,r.publicId=e,r.systemId=n,r}},P.prototype={firstChild:null,lastChild:null,previousSibling:null,nextSibling:null,attributes:null,parentNode:null,childNodes:null,ownerDocument:null,nodeValue:null,namespaceURI:null,prefix:null,localName:null,insertBefore:function(t,e){return U(this,t,e)},replaceChild:function(t,e){this.insertBefore(t,e),e&&this.removeChild(e)},removeChild:function(t){return B(this,t)},appendChild:function(t){return this.insertBefore(t,null)},hasChildNodes:function(){return null!=this.firstChild},cloneNode:function(t){return nt(this.ownerDocument||this,this,t)},normalize:function(){for(var t=this.firstChild;t;){var e=t.nextSibling;e&&e.nodeType==a&&t.nodeType==a?(this.removeChild(e),t.appendData(e.data)):(t.normalize(),t=e)}},isSupported:function(t,e){return this.ownerDocument.implementation.hasFeature(t,e)},hasAttributes:function(){return this.attributes.length>0},lookupPrefix:function(t){for(var e=this;e;){var n=e._nsMap;if(n)for(var r in n)if(n[r]==t)return r;e=e.nodeType==i?e.ownerDocument:e.parentNode}return null},lookupNamespaceURI:function(t){for(var e=this;e;){var n=e._nsMap;if(n&&t in n)return n[t];e=e.nodeType==i?e.ownerDocument:e.parentNode}return null},isDefaultNamespace:function(t){return null==this.lookupPrefix(t)}},t(n,P),t(n,P.prototype),M.prototype={nodeName:"#document",nodeType:f,doctype:null,documentElement:null,_inc:1,insertBefore:function(t,e){if(t.nodeType==p){for(var n=t.firstChild;n;){var i=n.nextSibling;this.insertBefore(n,e),n=i}return t}return null==this.documentElement&&t.nodeType==r&&(this.documentElement=t),U(this,t,e),t.ownerDocument=this,t},removeChild:function(t){return this.documentElement==t&&(this.documentElement=null),B(this,t)},importNode:function(t,e){return et(this,t,e)},getElementById:function(t){var e=null;return C(this.documentElement,(function(n){if(n.nodeType==r&&n.getAttribute("id")==t)return e=n,!0})),e},getElementsByClassName:function(t){var e=new RegExp("(^|\\s)"+t+"(\\s|$)");return new v(this,(function(t){var n=[];return C(t.documentElement,(function(i){i!==t&&i.nodeType==r&&e.test(i.getAttribute("class"))&&n.push(i)})),n}))},createElement:function(t){var e=new V;return e.ownerDocument=this,e.nodeName=t,e.tagName=t,e.childNodes=new I,(e.attributes=new y)._ownerElement=e,e},createDocumentFragment:function(){var t=new z;return t.ownerDocument=this,t.childNodes=new I,t},createTextNode:function(t){var e=new $;return e.ownerDocument=this,e.appendData(t),e},createComment:function(t){var e=new H;return e.ownerDocument=this,e.appendData(t),e},createCDATASection:function(t){var e=new W;return e.ownerDocument=this,e.appendData(t),e},createProcessingInstruction:function(t,e){var n=new Q;return n.ownerDocument=this,n.tagName=n.target=t,n.nodeValue=n.data=e,n},createAttribute:function(t){var e=new G;return e.ownerDocument=this,e.name=t,e.nodeName=t,e.localName=t,e.specified=!0,e},createEntityReference:function(t){var e=new q;return e.ownerDocument=this,e.nodeName=t,e},createElementNS:function(t,e){var n=new V,r=e.split(":"),i=n.attributes=new y;return n.childNodes=new I,n.ownerDocument=this,n.nodeName=e,n.tagName=e,n.namespaceURI=t,2==r.length?(n.prefix=r[0],n.localName=r[1]):n.localName=e,i._ownerElement=n,n},createAttributeNS:function(t,e){var n=new G,r=e.split(":");return n.ownerDocument=this,n.nodeName=e,n.name=e,n.namespaceURI=t,n.specified=!0,2==r.length?(n.prefix=r[0],n.localName=r[1]):n.localName=e,n}},e(M,P),V.prototype={nodeType:r,hasAttribute:function(t){return null!=this.getAttributeNode(t)},getAttribute:function(t){var e=this.getAttributeNode(t);return e&&e.value||""},getAttributeNode:function(t){return this.attributes.getNamedItem(t)},setAttribute:function(t,e){var n=this.ownerDocument.createAttribute(t);n.value=n.nodeValue=""+e,this.setAttributeNode(n)},removeAttribute:function(t){var e=this.getAttributeNode(t);e&&this.removeAttributeNode(e)},appendChild:function(t){return t.nodeType===p?this.insertBefore(t,null):function(t,e){var n=e.parentNode;if(n){var r=t.lastChild;n.removeChild(e),r=t.lastChild}return r=t.lastChild,e.parentNode=t,e.previousSibling=r,e.nextSibling=null,r?r.nextSibling=e:t.firstChild=e,t.lastChild=e,F(t.ownerDocument,t,e),e}(this,t)},setAttributeNode:function(t){return this.attributes.setNamedItem(t)},setAttributeNodeNS:function(t){return this.attributes.setNamedItemNS(t)},removeAttributeNode:function(t){return this.attributes.removeNamedItem(t.nodeName)},removeAttributeNS:function(t,e){var n=this.getAttributeNodeNS(t,e);n&&this.removeAttributeNode(n)},hasAttributeNS:function(t,e){return null!=this.getAttributeNodeNS(t,e)},getAttributeNS:function(t,e){var n=this.getAttributeNodeNS(t,e);return n&&n.value||""},setAttributeNS:function(t,e,n){var r=this.ownerDocument.createAttributeNS(t,e);r.value=r.nodeValue=""+n,this.setAttributeNode(r)},getAttributeNodeNS:function(t,e){return this.attributes.getNamedItemNS(t,e)},getElementsByTagName:function(t){return new v(this,(function(e){var n=[];return C(e,(function(i){i===e||i.nodeType!=r||"*"!==t&&i.tagName!=t||n.push(i)})),n}))},getElementsByTagNameNS:function(t,e){return new v(this,(function(n){var i=[];return C(n,(function(a){a===n||a.nodeType!==r||"*"!==t&&a.namespaceURI!==t||"*"!==e&&a.localName!=e||i.push(a)})),i}))}},M.prototype.getElementsByTagName=V.prototype.getElementsByTagName,M.prototype.getElementsByTagNameNS=V.prototype.getElementsByTagNameNS,e(V,P),G.prototype.nodeType=i,e(G,P),Y.prototype={data:"",substringData:function(t,e){return this.data.substring(t,t+e)},appendData:function(t){t=this.data+t,this.nodeValue=this.data=t,this.length=t.length},insertData:function(t,e){this.replaceData(t,0,e)},appendChild:function(t){throw new Error(A[_])},deleteData:function(t,e){this.replaceData(t,e,"")},replaceData:function(t,e,n){n=this.data.substring(0,t)+n+this.data.substring(t+e),this.nodeValue=this.data=n,this.length=n.length}},e(Y,P),$.prototype={nodeName:"#text",nodeType:a,splitText:function(t){var e=this.data,n=e.substring(t);e=e.substring(0,t),this.data=this.nodeValue=e,this.length=e.length;var r=this.ownerDocument.createTextNode(n);return this.parentNode&&this.parentNode.insertBefore(r,this.nextSibling),r}},e($,Y),H.prototype={nodeName:"#comment",nodeType:h},e(H,Y),W.prototype={nodeName:"#cdata-section",nodeType:o},e(W,Y),k.prototype.nodeType=d,e(k,P),j.prototype.nodeType=m,e(j,P),X.prototype.nodeType=u,e(X,P),q.prototype.nodeType=s,e(q,P),z.prototype.nodeName="#document-fragment",z.prototype.nodeType=p,e(z,P),Q.prototype.nodeType=l,e(Q,P),Z.prototype.serializeToString=function(t,e,n){return J.call(t,e,n)},P.prototype.toString=J;try{if(Object.defineProperty){function it(t){switch(t.nodeType){case r:case p:var e=[];for(t=t.firstChild;t;)7!==t.nodeType&&8!==t.nodeType&&e.push(it(t)),t=t.nextSibling;return e.join("");default:return t.nodeValue}}Object.defineProperty(v.prototype,"length",{get:function(){return S(this),this.$$length}}),Object.defineProperty(P.prototype,"textContent",{get:function(){return it(this)},set:function(t){switch(this.nodeType){case r:case p:for(;this.firstChild;)this.removeChild(this.firstChild);(t||String(t))&&this.appendChild(this.ownerDocument.createTextNode(t));break;default:this.data=t,this.value=t,this.nodeValue=t}}}),rt=function(t,e,n){t["$$"+e]=n}}}catch(at){}return T.Node=P,T.DOMException=R,T.DOMImplementation=b,T.XMLSerializer=Z,T}function f(){if(l)return i;function t(t){this.options=t||{locator:{}}}function e(){this.cdata=!1}function r(t,e){e.lineNumber=t.lineNumber,e.columnNumber=t.columnNumber}function o(t){if(t)return"\n@"+(t.systemId||"")+"#[line:"+t.lineNumber+",col:"+t.columnNumber+"]"}function s(t,e,n){return"string"==typeof t?t.substr(e,n):t.length>=e+n||e?new java.lang.String(t,e,n)+"":t}function c(t,e){t.currentElement?t.currentElement.appendChild(e):t.doc.appendChild(e)}l=1,t.prototype.parseFromString=function(t,n){var r=this.options,i=new d,a=r.domBuilder||new e,s=r.errorHandler,u=r.locator,c=r.xmlns||{},l=/\/x?html?$/.test(n),h=l?T.entityMap:{lt:"<",gt:">",amp:"&",quot:'"',apos:"'"};return u&&a.setDocumentLocator(u),i.errorHandler=function(t,n,r){if(!t){if(n instanceof e)return n;t=n}var i={},a=t instanceof Function;function s(e){var n=t[e];!n&&a&&(n=2==t.length?function(n){t(e,n)}:t),i[e]=n&&function(t){n("[xmldom "+e+"]\t"+t+o(r))}||function(){}}return r=r||{},s("warning"),s("error"),s("fatalError"),i}(s,a,u),i.domBuilder=r.domBuilder||a,l&&(c[""]="http://www.w3.org/1999/xhtml"),c.xml=c.xml||"http://www.w3.org/XML/1998/namespace",t&&"string"==typeof t?i.parse(t,c,h):i.errorHandler.error("invalid doc source"),a.doc},e.prototype={startDocument:function(){this.doc=(new m).createDocument(null,null,null),this.locator&&(this.doc.documentURI=this.locator.systemId)},startElement:function(t,e,n,i){var a=this.doc,o=a.createElementNS(t,n||e),s=i.length;c(this,o),this.currentElement=o,this.locator&&r(this.locator,o);for(var u=0;u<s;u++){t=i.getURI(u);var l=i.getValue(u),T=(n=i.getQName(u),a.createAttributeNS(t,n));this.locator&&r(i.getLocator(u),T),T.value=T.nodeValue=l,o.setAttributeNode(T)}},endElement:function(t,e,n){var r=this.currentElement;r.tagName,this.currentElement=r.parentNode},startPrefixMapping:function(t,e){},endPrefixMapping:function(t){},processingInstruction:function(t,e){var n=this.doc.createProcessingInstruction(t,e);this.locator&&r(this.locator,n),c(this,n)},ignorableWhitespace:function(t,e,n){},characters:function(t,e,n){if(t=s.apply(this,arguments)){if(this.cdata)var i=this.doc.createCDATASection(t);else i=this.doc.createTextNode(t);this.currentElement?this.currentElement.appendChild(i):/^\s*$/.test(t)&&this.doc.appendChild(i),this.locator&&r(this.locator,i)}},skippedEntity:function(t){},endDocument:function(){this.doc.normalize()},setDocumentLocator:function(t){(this.locator=t)&&(t.lineNumber=0)},comment:function(t,e,n){t=s.apply(this,arguments);var i=this.doc.createComment(t);this.locator&&r(this.locator,i),c(this,i)},startCDATA:function(){this.cdata=!0},endCDATA:function(){this.cdata=!1},startDTD:function(t,e,n){var i=this.doc.implementation;if(i&&i.createDocumentType){var a=i.createDocumentType(t,e,n);this.locator&&r(this.locator,a),c(this,a)}},warning:function(t){console.warn("[xmldom warning]\t"+t,o(this.locator))},error:function(t){console.error("[xmldom error]\t"+t,o(this.locator))},fatalError:function(t){throw new p(t,this.locator)}},"endDTD,startEntity,endEntity,attributeDecl,elementDecl,externalEntityDecl,internalEntityDecl,resolveEntity,getExternalSubset,notationDecl,unparsedEntityDecl".replace(/\w+/g,(function(t){e.prototype[t]=function(){return null}}));var T=(n||(n=1,a.entityMap={lt:"<",gt:">",amp:"&",quot:'"',apos:"'",Agrave:"À",Aacute:"Á",Acirc:"Â",Atilde:"Ã",Auml:"Ä",Aring:"Å",AElig:"Æ",Ccedil:"Ç",Egrave:"È",Eacute:"É",Ecirc:"Ê",Euml:"Ë",Igrave:"Ì",Iacute:"Í",Icirc:"Î",Iuml:"Ï",ETH:"Ð",Ntilde:"Ñ",Ograve:"Ò",Oacute:"Ó",Ocirc:"Ô",Otilde:"Õ",Ouml:"Ö",Oslash:"Ø",Ugrave:"Ù",Uacute:"Ú",Ucirc:"Û",Uuml:"Ü",Yacute:"Ý",THORN:"Þ",szlig:"ß",agrave:"à",aacute:"á",acirc:"â",atilde:"ã",auml:"ä",aring:"å",aelig:"æ",ccedil:"ç",egrave:"è",eacute:"é",ecirc:"ê",euml:"ë",igrave:"ì",iacute:"í",icirc:"î",iuml:"ï",eth:"ð",ntilde:"ñ",ograve:"ò",oacute:"ó",ocirc:"ô",otilde:"õ",ouml:"ö",oslash:"ø",ugrave:"ù",uacute:"ú",ucirc:"û",uuml:"ü",yacute:"ý",thorn:"þ",yuml:"ÿ",nbsp:" ",iexcl:"¡",cent:"¢",pound:"£",curren:"¤",yen:"¥",brvbar:"¦",sect:"§",uml:"¨",copy:"©",ordf:"ª",laquo:"«",not:"¬",shy:"­­",reg:"®",macr:"¯",deg:"°",plusmn:"±",sup2:"²",sup3:"³",acute:"´",micro:"µ",para:"¶",middot:"·",cedil:"¸",sup1:"¹",ordm:"º",raquo:"»",frac14:"¼",frac12:"½",frac34:"¾",iquest:"¿",times:"×",divide:"÷",forall:"∀",part:"∂",exist:"∃",empty:"∅",nabla:"∇",isin:"∈",notin:"∉",ni:"∋",prod:"∏",sum:"∑",minus:"−",lowast:"∗",radic:"√",prop:"∝",infin:"∞",ang:"∠",and:"∧",or:"∨",cap:"∩",cup:"∪",int:"∫",there4:"∴",sim:"∼",cong:"≅",asymp:"≈",ne:"≠",equiv:"≡",le:"≤",ge:"≥",sub:"⊂",sup:"⊃",nsub:"⊄",sube:"⊆",supe:"⊇",oplus:"⊕",otimes:"⊗",perp:"⊥",sdot:"⋅",Alpha:"Α",Beta:"Β",Gamma:"Γ",Delta:"Δ",Epsilon:"Ε",Zeta:"Ζ",Eta:"Η",Theta:"Θ",Iota:"Ι",Kappa:"Κ",Lambda:"Λ",Mu:"Μ",Nu:"Ν",Xi:"Ξ",Omicron:"Ο",Pi:"Π",Rho:"Ρ",Sigma:"Σ",Tau:"Τ",Upsilon:"Υ",Phi:"Φ",Chi:"Χ",Psi:"Ψ",Omega:"Ω",alpha:"α",beta:"β",gamma:"γ",delta:"δ",epsilon:"ε",zeta:"ζ",eta:"η",theta:"θ",iota:"ι",kappa:"κ",lambda:"λ",mu:"μ",nu:"ν",xi:"ξ",omicron:"ο",pi:"π",rho:"ρ",sigmaf:"ς",sigma:"σ",tau:"τ",upsilon:"υ",phi:"φ",chi:"χ",psi:"ψ",omega:"ω",thetasym:"ϑ",upsih:"ϒ",piv:"ϖ",OElig:"Œ",oelig:"œ",Scaron:"Š",scaron:"š",Yuml:"Ÿ",fnof:"ƒ",circ:"ˆ",tilde:"˜",ensp:" ",emsp:" ",thinsp:" ",zwnj:"‌",zwj:"‍",lrm:"‎",rlm:"‏",ndash:"–",mdash:"—",lsquo:"‘",rsquo:"’",sbquo:"‚",ldquo:"“",rdquo:"”",bdquo:"„",dagger:"†",Dagger:"‡",bull:"•",hellip:"…",permil:"‰",prime:"′",Prime:"″",lsaquo:"‹",rsaquo:"›",oline:"‾",euro:"€",trade:"™",larr:"←",uarr:"↑",rarr:"→",darr:"↓",harr:"↔",crarr:"↵",lceil:"⌈",rceil:"⌉",lfloor:"⌊",rfloor:"⌋",loz:"◊",spades:"♠",clubs:"♣",hearts:"♥",diams:"♦"}),a),f=u(),d=f.XMLReader,p=f.ParseError,m=i.DOMImplementation=h().DOMImplementation;return i.XMLSerializer=h().XMLSerializer,i.DOMParser=t,i.__DOMHandler=e,i}var d=r.exports=function(t){var e="1.2.1";t=t||{},i();var n=" ",r="\n";function i(){void 0===t.space&&(t.space=0),void 0===t.escapeMode&&(t.escapeMode=!0),t.attributePrefix=t.attributePrefix||"_",t.arrayAccessForm=t.arrayAccessForm||"none",t.emptyNodeForm=t.emptyNodeForm||"text",void 0===t.enableToStringFunc&&(t.enableToStringFunc=!0),t.arrayAccessFormPaths=t.arrayAccessFormPaths||[],void 0===t.skipEmptyTextNodesForObj&&(t.skipEmptyTextNodesForObj=!0),void 0===t.stripWhitespaces&&(t.stripWhitespaces=!0),t.datetimeAccessFormPaths=t.datetimeAccessFormPaths||[],void 0===t.useDoubleQuotes&&(t.useDoubleQuotes=!1),t.xmlElementsFilter=t.xmlElementsFilter||[],t.jsonPropertiesFilter=t.jsonPropertiesFilter||[],void 0===t.keepCData&&(t.keepCData=!1),null==t.nativeType&&(t.nativeType=!1),null==t.nativeTypeAttributes&&(t.nativeTypeAttributes=!1),null==t.addElementTagForEmptyArray&&(t.addElementTagForEmptyArray=!1)}var a={ELEMENT_NODE:1,TEXT_NODE:3,CDATA_SECTION_NODE:4,COMMENT_NODE:8,DOCUMENT_NODE:9};function o(t){var e=t.localName;return null==e&&(e=t.baseName),null!=e&&""!=e||(e=t.nodeName),e}function s(t){return t.prefix}function u(t){return"string"==typeof t?t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;"):t}function c(t,e,n,r){for(var i=0;i<t.length;i++){var a=t[i];if("string"==typeof a){if(a==r)break}else if(a instanceof RegExp){if(a.test(r))break}else if("function"==typeof a&&a(e,n,r))break}return i!=t.length}function l(e,n,r){"property"===t.arrayAccessForm&&(e[n]instanceof Array?e[n+"_asArray"]=e[n]:e[n+"_asArray"]=[e[n]]),!(e[n]instanceof Array)&&t.arrayAccessFormPaths.length>0&&c(t.arrayAccessFormPaths,e,n,r)&&(e[n]=[e[n]])}function T(t){var e=t.split(/[-T:+Z]/g),n=new Date(e[0],e[1]-1,e[2]),r=e[5].split(".");if(n.setHours(e[3],e[4],r[0]),r.length>1&&n.setMilliseconds(r[1]),e[6]&&e[7]){var i=60*e[6]+Number(e[7]);i=0+("-"==(/\d\d-\d\d:\d\d$/.test(t)?"-":"+")?-1*i:i),n.setMinutes(n.getMinutes()-i-n.getTimezoneOffset())}else-1!==t.indexOf("Z",t.length-1)&&(n=new Date(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate(),n.getHours(),n.getMinutes(),n.getSeconds(),n.getMilliseconds())));return n}function h(e,n,r){if(t.datetimeAccessFormPaths.length>0){var i=r.split(".#")[0];return c(t.datetimeAccessFormPaths,e,n,i)?T(e):e}return e}function d(e,n,r,i){return!(n==a.ELEMENT_NODE&&t.xmlElementsFilter.length>0)||c(t.xmlElementsFilter,e,r,i)}function p(t){var e=Number(t);if(!isNaN(e))return e;var n=t.toLowerCase();return"true"===n||"false"!==n&&t}function m(e,n){if(e.nodeType==a.DOCUMENT_NODE){for(var r=new Object,i=e.childNodes,u=0;u<i.length;u++)(E=i.item(u)).nodeType==a.ELEMENT_NODE&&(r[A=o(E)]=m(E,A));return r}if(e.nodeType==a.ELEMENT_NODE){(r=new Object).__cnt=0,i=e.childNodes;for(var c=0;c<e.attributes.length;c++){var T=e.attributes.item(c);r.__cnt++;var f=T.value;t.nativeTypeAttributes&&(f=p(T.value)),r[t.attributePrefix+T.name]=f}for(u=0;u<i.length;u++){var E,A=o(E=i.item(u));if(E.nodeType!=a.COMMENT_NODE){var _=n+"."+A;d(r,E.nodeType,A,_)&&(r.__cnt++,null==r[A]?(r[A]=m(E,_),l(r,A,_)):(null!=r[A]&&(r[A]instanceof Array||(r[A]=[r[A]],l(r,A,_))),r[A][r[A].length]=m(E,_)))}}var N=s(e);return null!=N&&""!=N&&(r.__cnt++,r.__prefix=N),null!=r["#text"]&&(r.__text=r["#text"],r.__text instanceof Array&&(r.__text=r.__text.join("\n")),t.stripWhitespaces&&(r.__text=r.__text.trim()),delete r["#text"],"property"==t.arrayAccessForm&&delete r["#text_asArray"],r.__text=h(r.__text,A,n+"."+A)),null!=r["#cdata-section"]&&(r.__cdata=r["#cdata-section"],delete r["#cdata-section"],"property"==t.arrayAccessForm&&delete r["#cdata-section_asArray"]),0==r.__cnt&&"text"==t.emptyNodeForm?r="":1==r.__cnt&&null!=r.__text?r=r.__text:1!=r.__cnt||null==r.__cdata||t.keepCData?r.__cnt>1&&null!=r.__text&&t.skipEmptyTextNodesForObj&&(t.stripWhitespaces&&""==r.__text||""==r.__text.trim())&&delete r.__text:r=r.__cdata,delete r.__cnt,!t.enableToStringFunc||null==r.__text&&null==r.__cdata||(r.toString=function(){return(null!=this.__text?this.__text:"")+(null!=this.__cdata?this.__cdata:"")}),r}if(e.nodeType==a.TEXT_NODE||e.nodeType==a.CDATA_SECTION_NODE)return e.nodeValue}function E(e,n,i,a,o="",s=!1){var c=o+"<"+(null!=e&&null!=e.__prefix?e.__prefix+":":"")+n;if(null!=i)for(var l=0;l<i.length;l++){var T=i[l],h=e[T];t.escapeMode&&(h=u(h)),c+=" "+T.substr(t.attributePrefix.length)+"=",t.useDoubleQuotes?c+='"'+h+'"':c+="'"+h+"'"}return c+=a?"/>":">",s&&t.space>0&&(c+=r),c}function A(e,n,i="",a=!1){var o=i+"</"+(null!=e.__prefix?e.__prefix+":":"")+n+">";return a&&t.space>0&&(o+=r),o}function _(t,e){return-1!==t.indexOf(e,t.length-e.length)}function N(e,n){return!!("property"==t.arrayAccessForm&&_(n.toString(),"_asArray")||0==n.toString().indexOf(t.attributePrefix)||0==n.toString().indexOf("__")||e[n]instanceof Function)}function g(t){var e=0;if(t instanceof Object)for(var n in t)N(t,n)||e++;return e}function R(e,n,r){return 0==t.jsonPropertiesFilter.length||""==r||c(t.jsonPropertiesFilter,e,n,r)}function I(e){var r=0;""!=e&&(r=e.split(".").length);var i="";return t.space>0&&(i=n.repeat(r*t.space)),i}function v(e){var n=[];if(e instanceof Object)for(var r in e)-1==r.toString().indexOf("__")&&0==r.toString().indexOf(t.attributePrefix)&&n.push(r);return n}function S(e){var n="";return null!=e.__cdata&&(n+="<![CDATA["+e.__cdata+"]]>"),null!=e.__text&&(t.escapeMode?n+=u(e.__text):n+=e.__text),n}function y(e){var n="";return e instanceof Object?n+=S(e):null!=e&&(t.escapeMode?n+=u(e):n+=e),n}function D(t,e){return""===t?e:t+"."+e}function w(e,n,r,i){var a="",o=I(i);if(0==e.length)t.addElementTagForEmptyArray&&(a+=E(e,n,r,!0));else for(var s=0;s<e.length;s++){var u=e[s],c=g(u);"string"==typeof u?(a+=E(e[s],n,v(e[s]),!1,o,!1),a+=O(e[s],D(i,n)),a+=A(e[s],n,"",!0)):c>0||null!=u.__text||null!=u.__cdata?null!=u.__text?(a+=E(e[s],n,v(e[s]),!1,o,!1),a+=O(e[s],D(i,n)),a+=A(e[s],n,"",!0)):(a+=E(e[s],n,v(e[s]),!1,o,!0),a+=O(e[s],D(i,n)),a+=A(e[s],n,o,!0)):a+=E(e[s],n,v(e[s]),!0,o,!0)}return a}function O(t,e){var n="",r=g(t),i=I(e);if(r>0)for(var a in t)if(!N(t,a)&&(""==e||R(t,a,D(e,a)))){var o=t[a],s=v(o);null==o||null==o?n+=E(o,a,s,!0,i,!0):o instanceof Object?o instanceof Array?n+=w(o,a,s,e):o instanceof Date?(n+=E(o,a,s,!1,i,!1),n+=o.toISOString(),n+=A(o,a,"",!0)):g(o)>0||null!=o.__text||null!=o.__cdata?(n+=E(o,a,s,!1,i,!0),n+=O(o,D(e,a)),n+=A(o,a,i,!0)):n+=E(o,a,s,!0,i,!0):(n+=E(o,a,s,!1,i,!1),n+=y(o),n+=A(o,a,"",!0))}return n+=y(t)}this.parseXmlString=function(t){if(void 0===t)return null;var e;const{DOMParser:n}=f();var r=new n,i=null;try{i=r.parseFromString("INVALID","text/xml").getElementsByTagName("parsererror")[0].namespaceURI}catch(t){i=null}try{e=r.parseFromString(t,"text/xml"),null!=i&&e.getElementsByTagNameNS(i,"parsererror").length>0&&(e=null)}catch(t){e=null}return e},this.asArray=function(t){return void 0===t||null==t?[]:t instanceof Array?t:[t]},this.toXmlDateTime=function(t){return t instanceof Date?t.toISOString():"number"==typeof t?new Date(t).toISOString():null},this.asDateTime=function(t){return"string"==typeof t?T(t):t},this.xml2json=function(t){return m(t)},this.xml_str2json=function(t){var e=this.parseXmlString(t);return null!=e?this.xml2json(e):null},this.json2xml_str=function(t){return O(t,"")},this.json2xml=function(t){var e=this.json2xml_str(t);return this.parseXmlString(e)},this.getVersion=function(){return e}};const p=function(t){return"@"+t};var m=function(t,e){return m=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n])},m(t,e)};var E=function(t){function e(e,n){var r=t.call(this,n)||this;return r.code=e,r.message=n,r}return function(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Class extends value "+String(e)+" is not a constructor or null");function n(){this.constructor=t}m(t,e),t.prototype=null===e?Object.create(e):(n.prototype=e.prototype,new n)}(e,t),e.prototype.toString=function(){return"GenericError(code=".concat(this.code,", message=").concat(this.message)},e}(Error);function A(t){return"@"+t}function _(t,e){if(void 0===e&&(e=10),"number"==typeof t)return t;var n=10===e?Number.parseFloat(t):Number.parseInt(t);return Number.isNaN(n)?0:n}function N(t,e,n){void 0===n&&(n=1e5);var r=!1,i=function(t,e){void 0===e&&(e=1e5);var n=0,r=0;if(t.indexOf("-")>=0){var i=t.split("-"),a=i[0],o=i[1];return""===o?(n=Number(a),r=Number.MAX_VALUE):""===a?(n=0,r=Number(o)):(n=Number(a),r=Number(o)),n>=r&&(n=-1,r=-1),[n,r]}return[n=Number(t)-e,r=Number(t)+e]}(t,n);return i[0]<=e&&e<=i[1]&&(r=!0),r}function g(t){var e=t.split("-");if(!e[0]||!e[1]||!e[0]&&!e[1])throw new E(400,"DashParser: filterVariantsByResolution ,updateVariantAtIndex and updateVariants need resolution in format 'x-y'.");return{width:_(e[0]),height:_(e[1])}}function R(t){return[t[A(e.ATTR_CONTENT_TYPE)]?t[A(e.ATTR_CONTENT_TYPE)]:"",t[A(e.ATTR_MIME_TYPE)]?t[A(e.ATTR_MIME_TYPE)]:""]}var I=new class{constructor(){this.indent=0}parse(t){const n=new d({attributePrefix:"@",useDoubleQuotes:!0,arrayAccessFormPaths:e.ALWAYS_ARRAY_ELEMENTS,nativeTypeAttributes:!0});this.mpd=n.xml_str2json(t)}getJSON(){return this.mpd}setJSON(t){this.mpd=t}getMPD(){return new d({attributePrefix:"@",useDoubleQuotes:!0,space:this.indent}).json2xml_str(this.mpd)}setIndent(t){this.indent=t}attr(t){return"@"+t}filterVideoRenditionByBandwidth(t){function n(n){let r=!1;return t.forEach((t=>{t[0]<=n[p(e.ATTR_BANDWIDTH)]&&n[p(e.ATTR_BANDWIDTH)]<=t[1]&&(r=!0)})),r}function r(n){if(!(n[p(e.ATTR_MIME_TYPE)]?n[p(e.ATTR_MIME_TYPE)]:"").startsWith("video/"))return!0;let r=!1;return t.forEach((t=>{t[0]<=n[p(e.ATTR_BANDWIDTH)]&&n[p(e.ATTR_BANDWIDTH)]<=t[1]&&(r=!0)})),r}this.mpd[e.MPD][e.PERIOD].forEach((t=>{t[e.ADAPTATION_SET].forEach((t=>{const i=t[this.attr(e.ATTR_CONTENT_TYPE)]?t[this.attr(e.ATTR_CONTENT_TYPE)]:"",a=t[this.attr(e.ATTR_MIME_TYPE)]?t[this.attr(e.ATTR_MIME_TYPE)]:"";if("video"==i||a.startsWith("video/")){let r=t[e.REPRESENTATION].filter(n);t[e.REPRESENTATION]=r}else if(""===i&&""===a){let n=t[e.REPRESENTATION].filter(r);t[e.REPRESENTATION]=n}}))}))}},v=function(t){return"@"+t},S="".concat("video","/"),y="".concat("audio","/"),D="".concat("application","/"),w=function(){function n(){}var r;return n.attr=function(t){return"@"+t},n.parseMPD=function(t){try{I.parse(t)}catch(t){throw new E(400,"DashParser: failed to parseMPD due to ".concat(t.message))}},n.getJSON=function(){return I.getJSON()},n.setJSON=function(t){I.setJSON(t)},n.stringifyMPD=function(){try{return I.getMPD()}catch(t){throw new E(400,"DashParser: failed to parseMPD due to ".concat(t.message))}},r=n,n.filterVariantsByBandwidth=function(n,r,i){if(void 0===i&&(i=1e5),!n||!r)throw new Error("Invalid arguments!");if(!Array.isArray(r))throw new Error("Invalid arguments!");if(!r.every((function(t){return"string"==typeof t})))throw new Error("Invalid arguments!");var a=function(n){return function(a){var o,s={};if(!n){var u=a[v(e.ATTR_MIME_TYPE)]?a[v(e.ATTR_MIME_TYPE)]:"",c=a[v(e.ATTR_CONTENT_TYPE)]?a[v(e.ATTR_CONTENT_TYPE)]:"";if(t.log("filterVariantsByBandwidth filterFnForVideoAdaptationSet mimetype : %s",u),t.log("filterVariantsByBandwidth filterFnForVideoAdaptationSet contenttype : %s",c),u&&!u.startsWith(S)||c&&"video"!=c)return!0}return r.forEach((function(t){if(t){var n=N(t,a[v(e.ATTR_BANDWIDTH)],i);s[t]=n}})),o=Object.values(s).includes(!0),t.log("bws object values",Object.values(s)),o}};try{n[e.MPD][e.PERIOD].forEach((function(n){n[e.ADAPTATION_SET].forEach((function(n){var r=R(n),i=r[0],o=r[1],s=[];"video"==i||o.startsWith(S)?(s=s.concat(n[e.REPRESENTATION].filter(a(!0))),t.log("filterVariantsByBandwidth video representations",s),n[e.REPRESENTATION]=s):""===i&&""===o&&(s=n[e.REPRESENTATION].filter(a(!1)),n[e.REPRESENTATION]=s)}))}))}catch(t){throw new E(400,"DashParser: failed to filterVariantsByBandwidth due to ".concat(t.message))}},n.filterVariantsByResolution=function(n,i){if(!n||!i)throw new Error("Invalid arguments!");if("string"!=typeof i)throw new Error("Invalid arguments!");var a=g(i),o=function(n){return function(r){if(!n){var i=r[v(e.ATTR_MIME_TYPE)]?r[v(e.ATTR_MIME_TYPE)]:"";if(!i.startsWith(S))return!0;t.log("filterVariantsByResolution filterFnForVideoResolution mimetype : %s",i)}var o=r[v(e.ATTR_WIDTH)]?r[v(e.ATTR_WIDTH)]:0,s=r[v(e.ATTR_HEIGHT)]?r[v(e.ATTR_HEIGHT)]:0;return o<=a.width&&s<=a.height}};try{n[e.MPD][e.PERIOD].forEach((function(n){n[e.ADAPTATION_SET].forEach((function(n){var i=n[r.attr(e.ATTR_CONTENT_TYPE)]?n[r.attr(e.ATTR_CONTENT_TYPE)]:"",a=n[r.attr(e.ATTR_MIME_TYPE)]?n[r.attr(e.ATTR_MIME_TYPE)]:"";if(t.log("filterVariantsByResolution mimetype : %s",a),t.log("filterVariantsByResolution contenttype : %s",i),"video"==i||a.startsWith(S)){t.log("representation",n[e.REPRESENTATION]);var s=n[e.REPRESENTATION].filter(o(!0));n[e.REPRESENTATION]=s}else if(""===i&&""===a){s=n[e.REPRESENTATION].filter(o(!1));n[e.REPRESENTATION]=s}}))}))}catch(t){throw new E(400,"DashParser: failed to filterVariantsByResolution due to ".concat(t.message))}},n.updateVariantAtIndex=function(n,r,i){if(t.log(r,i),t.log(typeof r,typeof i),!n||!r||null==i)throw new Error("Invalid arguments!");if("string"!=typeof r||"number"!=typeof i||i<0)throw new Error("Invalid arguments!");try{n[e.MPD][e.PERIOD].forEach((function(n){n[e.ADAPTATION_SET].forEach((function(n){var a=R(n),o=a[0],s=a[1];("video"==o||s.startsWith(S))&&function(n){var a=!1;if(i>=n.length)return a;for(var o=0,s=g(r);o<n.length;)if(n[o][v(e.ATTR_WIDTH)]&&n[o][v(e.ATTR_HEIGHT)]&&n[o][v(e.ATTR_WIDTH)]===s.width&&n[o][v(e.ATTR_HEIGHT)]===s.height){if(o==i)return;var u=n.splice(o,1)[0];n.splice(i,0,u),a=!0,t.log("updateVariantAtIndex variant updated at index %s",i),t.log("updateVariantAtIndex variant updated at index %s",i),t.log("updateVariantAtIndex element spliced %s",u),o++}else o++}(n[e.REPRESENTATION])}))}))}catch(t){throw new E(400,"DashParser: failed to updateVariantAtIndex due to ".concat(t.message))}},n.updateVariants=function(n,r,i){if(void 0===i&&(i=0),!n||!r)throw new Error("Invalid arguments!");if(!Array.isArray(r)||"number"!=typeof i||i<0)throw new Error("Invalid arguments!");if(!r.every((function(t){return"string"==typeof t})))throw new Error("Invalid arguments!");try{n[e.MPD][e.PERIOD].forEach((function(n){n[e.ADAPTATION_SET].forEach((function(n){var a=R(n),o=a[0],s=a[1];("video"==o||s.startsWith(S))&&function(n){var a=!1;i=0;for(var o=r.length,s=0;s<o;s++)for(var u=0,c=g(r[s]);u<n.length;)if(n[u][v(e.ATTR_WIDTH)]&&n[u][v(e.ATTR_HEIGHT)]&&n[u][v(e.ATTR_WIDTH)]===c.width&&n[u][v(e.ATTR_HEIGHT)]===c.height){if(u!=i){var l=n.splice(u,1)[0];n.splice(i,0,l),t.log("updateVariants variant updated at index %s",i),t.log("updateVariants currVariantIndex %s",u),t.log("updateVariants element spliced %s",l),i++,a=!0,u++}}else u++}(n[e.REPRESENTATION])}))}))}catch(t){throw new E(400,"DashParser: failed to updateVariants due to ".concat(t.message))}},n.filterVariantsByAudioLanguage=function(n,i){if(!n||!i)throw new Error("Invalid arguments!");if(!Array.isArray(i))throw new Error("Invalid arguments!");if(!i.every((function(t){return"string"==typeof t})))throw new Error("Invalid arguments!");try{n[e.MPD][e.PERIOD].forEach((function(n){var a=n[e.ADAPTATION_SET].filter((function(n){var r,a=R(n),o=a[0],s=a[1];if(t.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet _contentType %s",o),t.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet _mimeType %s",s),!s&&!o)return!0;if(s&&!s.startsWith(y)||o&&"audio"!=o)return!0;var u=n[v(e.ATTR_LANG)]?n[v(e.ATTR_LANG)]:"";return r=i.includes(u),t.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet language matches %s",i.includes(u)),r}));n[e.ADAPTATION_SET]=a,a.forEach((function(n){var a=n[r.attr(e.ATTR_LANG)]?n[r.attr(e.ATTR_LANG)]:"",o=n[e.REPRESENTATION].filter(function(n){return function(r){var a,o=r[v(e.ATTR_MIME_TYPE)]?r[v(e.ATTR_MIME_TYPE)]:"",s=r[v(e.ATTR_CONTENT_TYPE)]?r[v(e.ATTR_CONTENT_TYPE)]:"";if(!o.startsWith(y)||"audio"!=s)return!0;var u=r[v(e.ATTR_LANG)]?r[v(e.ATTR_LANG)]:n;return a=i.includes(u),t.log("filterVariantsByAudioLanguage filterFnForAudioRepresentation language matches %s",i.includes(u)),a}}(a));n[e.REPRESENTATION]=o}))}))}catch(t){throw new E(400,"DashParser: failed to filterVariantsByAudioLanguage due to ".concat(t.message))}},n.filterVariantsBySubtitlesLanguage=function(n,i){if(!n||!i)throw new Error("Invalid arguments!");if(!Array.isArray(i))throw new Error("Invalid arguments!");if(!i.every((function(t){return"string"==typeof t})))throw new Error("Invalid arguments!");try{n[e.MPD][e.PERIOD].forEach((function(n){var a=n[e.ADAPTATION_SET].filter((function(n){var r,a=R(n),o=a[0],s=a[1];if(t.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _contentType %s",o),t.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _mimeType %s",s),s&&!s.startsWith(D)||o&&"text"!=o)return!0;var u=n[v(e.ATTR_LANG)]?n[v(e.ATTR_LANG)]:"";return r=i.includes(u),t.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet language matches %s",i.includes(u)),r}));n[e.ADAPTATION_SET]=a,a.forEach((function(n){var a=n[r.attr(e.ATTR_LANG)]?n[r.attr(e.ATTR_LANG)]:"",o=n[e.REPRESENTATION].filter(function(n){return function(r){var a,o=r[v(e.ATTR_MIME_TYPE)]?r[v(e.ATTR_MIME_TYPE)]:"",s=r[v(e.ATTR_CONTENT_TYPE)]?r[v(e.ATTR_CONTENT_TYPE)]:"";if(!o.startsWith(D)||"text"!=s)return!0;var u=r[v(e.ATTR_LANG)]?r[v(e.ATTR_LANG)]:n;return a=i.includes(u),t.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleRepresentation language matches %s",i.includes(u)),a}}(a));n[e.REPRESENTATION]=o}))}))}catch(t){throw new E(400,"DashParser: failed to filterVariantsBySubtitlesLanguage due to ".concat(t.message))}},n}();export{w as DashParser,y as MIME_TYPE_AUDIO_PREFIX,D as MIME_TYPE_TEXT_PREFIX,S as MIME_TYPE_VIDEO_PREFIX};
+import { logger } from "log";
+
+const DashConstants = new class {
+    constructor() {
+        this.ACCESSIBILITY = "Accessibility", this.ADAPTATION_SET = "AdaptationSet", this.ASSET_IDENTIFIER = "AssetIdentifier", 
+        this.AUDIO_CHANNEL_CONFIGURATION = "AudioChannelConfiguration", this.BASEURL = "BaseURL", 
+        this.BITSTREAM_SWITCHING = "BitstreamSwitching", this.CONTENT_COMPONENT = "ContentComponent", 
+        this.CONTENT_POPULARITY_RATE = "ContentPopularityRate", this.CONTENT_PROTECTION = "ContentProtection", 
+        this.COPYRIGHT = "Copyright", this.EMPTY_ADAPTATION_SET = "EmptyAdaptationSet", 
+        this.ESSENTIAL_PROPERTY = "EssentialProperty", this.EVENT = "Event", this.EVENT_STREAM = "EventStream", 
+        this.FAILOVER_CONTENT = "FailoverContent", this.FCS = "FCS", this.FRAME_PACKING = "FramePacking", 
+        this.GROUP_LABEL = "GroupLabel", this.INBAND_EVENT_STREAM = "InbandEventStream", 
+        this.INITIALIZATION = "Initialization", this.INITIALIZATION_GROUP = "InitializationGroup", 
+        this.INITIALIZATION_PRESENTATION = "InitializationPresentation", this.INITIALIZATION_SET = "InitializationSet", 
+        this.LABEL = "Label", this.LATENCY = "Latency", this.LEAP_SECOND_INFORMATION = "LeapSecondInformation", 
+        this.LOCATION = "Location", this.METRICS = "Metrics", this.MPD = "MPD", this.OPERATING_BANDWIDTH = "OperatingBandwidth", 
+        this.OPERATING_QUALITY = "OperatingQuality", this.PERIOD = "Period", this.PLAYBACK_RATE = "PlaybackRate", 
+        this.PR = "PR", this.PRESELECTION = "Preselection", this.PRODUCER_REFERENCE_TIME = "ProducerReferenceTime", 
+        this.PROGRAM_INFORMATION = "ProgramInformation", this.QUALITY_LATENCY = "QualityLatency", 
+        this.RANDOM_ACCESS = "RandomAccess", this.RANGE = "Range", this.RATING = "Rating", 
+        this.REPORTING = "Reporting", this.REPRESENTATION = "Representation", this.REPRESENTATION_INDEX = "RepresentationIndex", 
+        this.ROLE = "Role", this.S = "S", this.SCOPE = "Scope", this.SEGMENT_BASE = "SegmentBase", 
+        this.SEGMENT_LIST = "SegmentList", this.SEGMENT_TEMPLATE = "SegmentTemplate", this.SEGMENT_TIMELINE = "SegmentTimeline", 
+        this.SEGMENTURL = "SegmentURL", this.SERVICE_DESCRIPTION = "ServiceDescription", 
+        this.SOURCE = "Source", this.SUB_REPRESENTATION = "SubRepresentation", this.SUBSET = "Subset", 
+        this.SUPPLEMENTAL_PROPERTY = "SupplementalProperty", this.SWITCHING = "Switching", 
+        this.TITLE = "Title", this.UTC_TIMING = "UTCTiming", this.VIEWPOINT = "Viewpoint", 
+        this.ATTR_APPLICATION_SCHEME = "applicationScheme", this.ATTR_ASSOCIATION_ID = "associationId", 
+        this.ATTR_ASSOCIATION_TYPE = "associationType", this.ATTR_AUDIO_SAMPLING_RATE = "audioSamplingRate", 
+        this.ATTR_AVAILABILITY_END_TIME = "availabilityEndTime", this.ATTR_AVAILABILITY_START_LEAP_OFFSET = "availabilityStartLeapOffset", 
+        this.ATTR_AVAILABILITY_START_TIME = "availabilityStartTime", this.ATTR_AVAILABILITY_TIME_COMPLETE = "availabilityTimeComplete", 
+        this.ATTR_AVAILABILITY_TIME_OFFSET = "availabilityTimeOffset", this.ATTR_BANDWIDTH = "bandwidth", 
+        this.ATTR_BITSTREAM_SWITCHING = "bitstreamSwitching", this.ATTR_BYTE_RANGE = "byteRange", 
+        this.ATTR_CODECS = "codecs", this.ATTR_CODING_DEPENDENCY = "codingDependency", this.ATTR_CONTAINS = "contains", 
+        this.ATTR_CONTENT_COMPONENT = "contentComponent", this.ATTR_CONTENT_ENCODING = "contentEncoding", 
+        this.ATTR_CONTENT_TYPE = "contentType", this.ATTR_D = "d", this.ATTR_DEPENDENCY_ID = "dependencyId", 
+        this.ATTR_DEPENDENCY_LEVEL = "dependencyLevel", this.ATTR_DURATION = "duration", 
+        this.ATTR_END_NUMBER = "endNumber", this.ATTR_EPT_DELTA = "eptDelta", this.ATTR_FRAME_RATE = "frameRate", 
+        this.ATTR_GROUP = "group", this.ATTR_HEIGHT = "height", this.ATTR_ID = "id", this.ATTR_IN_ALL_PERIODS = "inAllPeriods", 
+        this.ATTR_INBAND = "inband", this.ATTR_INDEX = "index", this.ATTR_INDEX_RANGE = "indexRange", 
+        this.ATTR_INDEX_RANGE_EXACT = "indexRangeExact", this.ATTR_INITIALIZATION = "initialization", 
+        this.ATTR_INITIALIZATION_SET_REF = "initializationSetRef", this.ATTR_INTERVAL = "interval", 
+        this.ATTR_K = "k", this.ATTR_LANG = "lang", this.ATTR_LEVEL = "level", this.ATTR_MAX = "max", 
+        this.ATTR_MAX_BANDWIDTH = "maxBandwidth", this.ATTR_MAX_DIFFERENCE = "maxDifference", 
+        this.ATTR_MAX_FRAME_RATE = "maxFrameRate", this.ATTR_MAX_HEIGHT = "maxHeight", this.ATTR_MAXIMUMSAP_PERIOD = "maximumSAPPeriod", 
+        this.ATTR_MAX_PLAYOUT_RATE = "maxPlayoutRate", this.ATTR_MAX_SEGMENT_DURATION = "maxSegmentDuration", 
+        this.ATTR_MAX_SUBSEGMENT_DURATION = "maxSubsegmentDuration", this.ATTR_MAX_WIDTH = "maxWidth", 
+        this.ATTR_MEDIA = "media", this.ATTR_MEDIA_PRESENTATION_DURATION = "mediaPresentationDuration", 
+        this.ATTR_MEDIA_RANGE = "mediaRange", this.ATTR_MEDIA_STREAM_STRUCTURE_ID = "mediaStreamStructureId", 
+        this.ATTR_MEDIA_TYPE = "mediaType", this.ATTR_MESSAGE_DATA = "messageData", this.ATTR_METRICS = "metrics", 
+        this.ATTR_MIME_TYPE = "mimeType", this.ATTR_MIN = "min", this.ATTR_MIN_BANDWIDTH = "minBandwidth", 
+        this.ATTR_MIN_BUFFER_TIME = "minBufferTime", this.ATTR_MIN_FRAME_RATE = "minFrameRate", 
+        this.ATTR_MIN_HEIGHT = "minHeight", this.ATTR_MINIMUM_UPDATE_PERIOD = "minimumUpdatePeriod", 
+        this.ATTR_MIN_WIDTH = "minWidth", this.ATTR_MORE_INFORMATIONURL = "moreInformationURL", 
+        this.ATTR_N = "n", this.ATTR_NEXT_AVAILABILITY_START_LEAP_OFFSET = "nextAvailabilityStartLeapOffset", 
+        this.ATTR_NEXT_LEAP_CHANGE_TIME = "nextLeapChangeTime", this.ATTR_NULL = "null", 
+        this.ATTR_ORDER = "order", this.ATTR_PAR = "par", this.ATTR_POPULARITY_RATE = "popularityRate", 
+        this.ATTR_PRESELECTION_COMPONENTS = "preselectionComponents", this.ATTR_PRESENTATION_DURATION = "presentationDuration", 
+        this.ATTR_PRESENTATION_TIME = "presentationTime", this.ATTR_PRESENTATION_TIME_OFFSET = "presentationTimeOffset", 
+        this.ATTR_PROFILES = "profiles", this.ATTR_PUBLISH_TIME = "publishTime", this.ATTR_QUALITY_RANKING = "qualityRanking", 
+        this.ATTR_R = "r", this.ATTR_RANGE = "range", this.ATTR_REFERENCE_ID = "referenceId", 
+        this.ATTR_SAR = "sar", this.ATTR_SCAN_TYPE = "scanType", this.ATTR_SCHEME_IDURI = "schemeIdUri", 
+        this.ATTR_SEGMENT_ALIGNMENT = "segmentAlignment", this.ATTR_SEGMENT_PROFILES = "segmentProfiles", 
+        this.ATTR_SELECTION_PRIORITY = "selectionPriority", this.ATTR_SERVICE_LOCATION = "serviceLocation", 
+        this.ATTR_SOURCE = "source", this.ATTR_SOURCE_DESCRIPTION = "source_description", 
+        this.ATTR_SOURCEURL = "sourceURL", this.ATTR_START = "start", this.ATTR_START_NUMBER = "startNumber", 
+        this.ATTR_STARTTIME = "starttime", this.ATTR_START_WITHSAP = "startWithSAP", this.ATTR_SUBSEGMENT_ALIGNMENT = "subsegmentAlignment", 
+        this.ATTR_SUBSEGMENT_STARTS_WITHSAP = "subsegmentStartsWithSAP", this.ATTR_SUGGESTED_PRESENTATION_DELAY = "suggestedPresentationDelay", 
+        this.ATTR_T = "t", this.ATTR_TAG = "tag", this.ATTR_TARGET = "target", this.ATTR_TIMESCALE = "timescale", 
+        this.ATTR_TIME_SHIFT_BUFFER_DEPTH = "timeShiftBufferDepth", this.ATTR_TYPE = "type", 
+        this.ATTR_VALID = "valid", this.ATTR_VALUE = "value", this.ATTR_WALL_CLOCK_TIME = "wallClockTime", 
+        this.ATTR_WIDTH = "width", this.ALWAYS_ARRAY_ELEMENTS = [ /\.Accessibility$/, /\.AdaptationSet$/, /\.AudioChannelConfiguration$/, /\.BaseURL$/, /\.ContentComponent$/, /\.ContentPopularityRate$/, /\.ContentProtection$/, /\.EmptyAdaptationSet$/, /\.EssentialProperty$/, /\.Event$/, /\.EventStream$/, /\.FCS$/, /\.FramePacking$/, /\.GroupLabel$/, /\.InbandEventStream$/, /\.InitializationGroup$/, /\.InitializationPresentation$/, /\.InitializationSet$/, /\.Label$/, /\.Latency$/, /\.Location$/, /\.Metrics$/, /\.OperatingBandwidth$/, /\.OperatingQuality$/, /\.Period$/, /\.PlaybackRate$/, /\.PR$/, /\.Preselection$/, /\.ProducerReferenceTime$/, /\.ProgramInformation$/, /\.QualityLatency$/, /\.RandomAccess$/, /\.Range$/, /\.Rating$/, /\.Reporting$/, /\.Representation$/, /\.Role$/, /\.S$/, /\.Scope$/, /\.SegmentURL$/, /\.ServiceDescription$/, /\.SubRepresentation$/, /\.Subset$/, /\.SupplementalProperty$/, /\.Switching$/, /\.UTCTiming$/, /\.Viewpoint$/ ];
+    }
+};
+
+"undefined" != typeof globalThis ? globalThis : "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self && self;
+
+var hasRequiredEntities, X2JS$1 = {
+    exports: {}
+}, domParser = {}, entities = {};
+
+var hasRequiredSax, sax = {};
+
+function requireSax() {
+    if (hasRequiredSax) return sax;
+    hasRequiredSax = 1;
+    var nameStartChar = /[A-Z_a-z\xC0-\xD6\xD8-\xF6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]/, nameChar = new RegExp("[\\-\\.0-9" + nameStartChar.source.slice(1, -1) + "\\u00B7\\u0300-\\u036F\\u203F-\\u2040]"), tagNamePattern = new RegExp("^" + nameStartChar.source + nameChar.source + "*(?::" + nameStartChar.source + nameChar.source + "*)?$");
+    function ParseError(message, locator) {
+        this.message = message, this.locator = locator, Error.captureStackTrace && Error.captureStackTrace(this, ParseError);
+    }
+    function XMLReader() {}
+    function copyLocator(f, t) {
+        return t.lineNumber = f.lineNumber, t.columnNumber = f.columnNumber, t;
+    }
+    function parseElementStartPart(source, start, el, currentNSMap, entityReplacer, errorHandler) {
+        function addAttribute(qname, value, startIndex) {
+            qname in el.attributeNames && errorHandler.fatalError("Attribute " + qname + " redefined"), 
+            el.addValue(qname, value, startIndex);
+        }
+        for (var attrName, p = ++start, s = 0; ;) {
+            var c = source.charAt(p);
+            switch (c) {
+              case "=":
+                if (1 === s) attrName = source.slice(start, p), s = 3; else {
+                    if (2 !== s) throw new Error("attribute equal must after attrName");
+                    s = 3;
+                }
+                break;
+
+              case "'":
+              case '"':
+                if (3 === s || 1 === s) {
+                    if (1 === s && (errorHandler.warning('attribute value must after "="'), attrName = source.slice(start, p)), 
+                    start = p + 1, !((p = source.indexOf(c, start)) > 0)) throw new Error("attribute value no end '" + c + "' match");
+                    addAttribute(attrName, value = source.slice(start, p).replace(/&#?\w+;/g, entityReplacer), start - 1), 
+                    s = 5;
+                } else {
+                    if (4 != s) throw new Error('attribute value must after "="');
+                    addAttribute(attrName, value = source.slice(start, p).replace(/&#?\w+;/g, entityReplacer), start), 
+                    errorHandler.warning('attribute "' + attrName + '" missed start quot(' + c + ")!!"), 
+                    start = p + 1, s = 5;
+                }
+                break;
+
+              case "/":
+                switch (s) {
+                  case 0:
+                    el.setTagName(source.slice(start, p));
+
+                  case 5:
+                  case 6:
+                  case 7:
+                    s = 7, el.closed = !0;
+
+                  case 4:
+                  case 1:
+                  case 2:
+                    break;
+
+                  default:
+                    throw new Error("attribute invalid close char('/')");
+                }
+                break;
+
+              case "":
+                return errorHandler.error("unexpected end of input"), 0 == s && el.setTagName(source.slice(start, p)), 
+                p;
+
+              case ">":
+                switch (s) {
+                  case 0:
+                    el.setTagName(source.slice(start, p));
+
+                  case 5:
+                  case 6:
+                  case 7:
+                    break;
+
+                  case 4:
+                  case 1:
+                    "/" === (value = source.slice(start, p)).slice(-1) && (el.closed = !0, value = value.slice(0, -1));
+
+                  case 2:
+                    2 === s && (value = attrName), 4 == s ? (errorHandler.warning('attribute "' + value + '" missed quot(")!'), 
+                    addAttribute(attrName, value.replace(/&#?\w+;/g, entityReplacer), start)) : ("http://www.w3.org/1999/xhtml" === currentNSMap[""] && value.match(/^(?:disabled|checked|selected)$/i) || errorHandler.warning('attribute "' + value + '" missed value!! "' + value + '" instead!!'), 
+                    addAttribute(value, value, start));
+                    break;
+
+                  case 3:
+                    throw new Error("attribute value missed!!");
+                }
+                return p;
+
+              case "":
+                c = " ";
+
+              default:
+                if (c <= " ") switch (s) {
+                  case 0:
+                    el.setTagName(source.slice(start, p)), s = 6;
+                    break;
+
+                  case 1:
+                    attrName = source.slice(start, p), s = 2;
+                    break;
+
+                  case 4:
+                    var value = source.slice(start, p).replace(/&#?\w+;/g, entityReplacer);
+                    errorHandler.warning('attribute "' + value + '" missed quot(")!!'), addAttribute(attrName, value, start);
+
+                  case 5:
+                    s = 6;
+                } else switch (s) {
+                  case 2:
+                    el.tagName, "http://www.w3.org/1999/xhtml" === currentNSMap[""] && attrName.match(/^(?:disabled|checked|selected)$/i) || errorHandler.warning('attribute "' + attrName + '" missed value!! "' + attrName + '" instead2!!'), 
+                    addAttribute(attrName, attrName, start), start = p, s = 1;
+                    break;
+
+                  case 5:
+                    errorHandler.warning('attribute space is required"' + attrName + '"!!');
+
+                  case 6:
+                    s = 1, start = p;
+                    break;
+
+                  case 3:
+                    s = 4, start = p;
+                    break;
+
+                  case 7:
+                    throw new Error("elements closed character '/' and '>' must be connected to");
+                }
+            }
+            p++;
+        }
+    }
+    function appendElement(el, domBuilder, currentNSMap) {
+        for (var tagName = el.tagName, localNSMap = null, i = el.length; i--; ) {
+            var a = el[i], qName = a.qName, value = a.value;
+            if ((nsp = qName.indexOf(":")) > 0) var prefix = a.prefix = qName.slice(0, nsp), localName = qName.slice(nsp + 1), nsPrefix = "xmlns" === prefix && localName; else localName = qName, 
+            prefix = null, nsPrefix = "xmlns" === qName && "";
+            a.localName = localName, !1 !== nsPrefix && (null == localNSMap && (localNSMap = {}, 
+            _copy(currentNSMap, currentNSMap = {})), currentNSMap[nsPrefix] = localNSMap[nsPrefix] = value, 
+            a.uri = "http://www.w3.org/2000/xmlns/", domBuilder.startPrefixMapping(nsPrefix, value));
+        }
+        for (i = el.length; i--; ) {
+            (prefix = (a = el[i]).prefix) && ("xml" === prefix && (a.uri = "http://www.w3.org/XML/1998/namespace"), 
+            "xmlns" !== prefix && (a.uri = currentNSMap[prefix || ""]));
+        }
+        var nsp;
+        (nsp = tagName.indexOf(":")) > 0 ? (prefix = el.prefix = tagName.slice(0, nsp), 
+        localName = el.localName = tagName.slice(nsp + 1)) : (prefix = null, localName = el.localName = tagName);
+        var ns = el.uri = currentNSMap[prefix || ""];
+        if (domBuilder.startElement(ns, localName, tagName, el), !el.closed) return el.currentNSMap = currentNSMap, 
+        el.localNSMap = localNSMap, !0;
+        if (domBuilder.endElement(ns, localName, tagName), localNSMap) for (prefix in localNSMap) domBuilder.endPrefixMapping(prefix);
+    }
+    function parseHtmlSpecialContent(source, elStartEnd, tagName, entityReplacer, domBuilder) {
+        if (/^(?:script|textarea)$/i.test(tagName)) {
+            var elEndStart = source.indexOf("</" + tagName + ">", elStartEnd), text = source.substring(elStartEnd + 1, elEndStart);
+            if (/[&<]/.test(text)) return /^script$/i.test(tagName) ? (domBuilder.characters(text, 0, text.length), 
+            elEndStart) : (text = text.replace(/&#?\w+;/g, entityReplacer), domBuilder.characters(text, 0, text.length), 
+            elEndStart);
+        }
+        return elStartEnd + 1;
+    }
+    function fixSelfClosed(source, elStartEnd, tagName, closeMap) {
+        var pos = closeMap[tagName];
+        return null == pos && ((pos = source.lastIndexOf("</" + tagName + ">")) < elStartEnd && (pos = source.lastIndexOf("</" + tagName)), 
+        closeMap[tagName] = pos), pos < elStartEnd;
+    }
+    function _copy(source, target) {
+        for (var n in source) target[n] = source[n];
+    }
+    function parseDCC(source, start, domBuilder, errorHandler) {
+        if ("-" === source.charAt(start + 2)) return "-" === source.charAt(start + 3) ? (end = source.indexOf("--\x3e", start + 4)) > start ? (domBuilder.comment(source, start + 4, end - start - 4), 
+        end + 3) : (errorHandler.error("Unclosed comment"), -1) : -1;
+        if ("CDATA[" == source.substr(start + 3, 6)) {
+            var end = source.indexOf("]]>", start + 9);
+            return domBuilder.startCDATA(), domBuilder.characters(source, start + 9, end - start - 9), 
+            domBuilder.endCDATA(), end + 3;
+        }
+        var matchs = function(source, start) {
+            var match, buf = [], reg = /'[^']+'|"[^"]+"|[^\s<>\/=]+=?|(\/?\s*>|<)/g;
+            reg.lastIndex = start, reg.exec(source);
+            for (;match = reg.exec(source); ) if (buf.push(match), match[1]) return buf;
+        }(source, start), len = matchs.length;
+        if (len > 1 && /!doctype/i.test(matchs[0][0])) {
+            var name = matchs[1][0], pubid = !1, sysid = !1;
+            len > 3 && (/^public$/i.test(matchs[2][0]) ? (pubid = matchs[3][0], sysid = len > 4 && matchs[4][0]) : /^system$/i.test(matchs[2][0]) && (sysid = matchs[3][0]));
+            var lastMatch = matchs[len - 1];
+            return domBuilder.startDTD(name, pubid, sysid), domBuilder.endDTD(), lastMatch.index + lastMatch[0].length;
+        }
+        return -1;
+    }
+    function parseInstruction(source, start, domBuilder) {
+        var end = source.indexOf("?>", start);
+        if (end) {
+            var match = source.substring(start, end).match(/^<\?(\S*)\s*([\s\S]*?)\s*$/);
+            return match ? (match[0].length, domBuilder.processingInstruction(match[1], match[2]), 
+            end + 2) : -1;
+        }
+        return -1;
+    }
+    function ElementAttributes() {
+        this.attributeNames = {};
+    }
+    return ParseError.prototype = new Error, ParseError.prototype.name = ParseError.name, 
+    XMLReader.prototype = {
+        parse: function(source, defaultNSMap, entityMap) {
+            var domBuilder = this.domBuilder;
+            domBuilder.startDocument(), _copy(defaultNSMap, defaultNSMap = {}), function(source, defaultNSMapCopy, entityMap, domBuilder, errorHandler) {
+                function fixedFromCharCode(code) {
+                    if (code > 65535) {
+                        var surrogate1 = 55296 + ((code -= 65536) >> 10), surrogate2 = 56320 + (1023 & code);
+                        return String.fromCharCode(surrogate1, surrogate2);
+                    }
+                    return String.fromCharCode(code);
+                }
+                function entityReplacer(a) {
+                    var k = a.slice(1, -1);
+                    return k in entityMap ? entityMap[k] : "#" === k.charAt(0) ? fixedFromCharCode(parseInt(k.substr(1).replace("x", "0x"))) : (errorHandler.error("entity not found:" + a), 
+                    a);
+                }
+                function appendText(end) {
+                    if (end > start) {
+                        var xt = source.substring(start, end).replace(/&#?\w+;/g, entityReplacer);
+                        locator && position(start), domBuilder.characters(xt, 0, end - start), start = end;
+                    }
+                }
+                function position(p, m) {
+                    for (;p >= lineEnd && (m = linePattern.exec(source)); ) lineStart = m.index, lineEnd = lineStart + m[0].length, 
+                    locator.lineNumber++;
+                    locator.columnNumber = p - lineStart + 1;
+                }
+                var lineStart = 0, lineEnd = 0, linePattern = /.*(?:\r\n?|\n)|.*$/g, locator = domBuilder.locator, parseStack = [ {
+                    currentNSMap: defaultNSMapCopy
+                } ], closeMap = {}, start = 0;
+                for (;;) {
+                    try {
+                        var tagStart = source.indexOf("<", start);
+                        if (tagStart < 0) {
+                            if (!source.substr(start).match(/^\s*$/)) {
+                                var doc = domBuilder.doc, text = doc.createTextNode(source.substr(start));
+                                doc.appendChild(text), domBuilder.currentElement = text;
+                            }
+                            return;
+                        }
+                        switch (tagStart > start && appendText(tagStart), source.charAt(tagStart + 1)) {
+                          case "/":
+                            var end = source.indexOf(">", tagStart + 3), tagName = source.substring(tagStart + 2, end), config = parseStack.pop();
+                            end < 0 ? (tagName = source.substring(tagStart + 2).replace(/[\s<].*/, ""), errorHandler.error("end tag name: " + tagName + " is not complete:" + config.tagName), 
+                            end = tagStart + 1 + tagName.length) : tagName.match(/\s</) && (tagName = tagName.replace(/[\s<].*/, ""), 
+                            errorHandler.error("end tag name: " + tagName + " maybe not complete"), end = tagStart + 1 + tagName.length);
+                            var localNSMap = config.localNSMap, endMatch = config.tagName == tagName;
+                            if (endMatch || config.tagName && config.tagName.toLowerCase() == tagName.toLowerCase()) {
+                                if (domBuilder.endElement(config.uri, config.localName, tagName), localNSMap) for (var prefix in localNSMap) domBuilder.endPrefixMapping(prefix);
+                                endMatch || errorHandler.fatalError("end tag name: " + tagName + " is not match the current start tagName:" + config.tagName);
+                            } else parseStack.push(config);
+                            end++;
+                            break;
+
+                          case "?":
+                            locator && position(tagStart), end = parseInstruction(source, tagStart, domBuilder);
+                            break;
+
+                          case "!":
+                            locator && position(tagStart), end = parseDCC(source, tagStart, domBuilder, errorHandler);
+                            break;
+
+                          default:
+                            locator && position(tagStart);
+                            var el = new ElementAttributes, currentNSMap = parseStack[parseStack.length - 1].currentNSMap, len = (end = parseElementStartPart(source, tagStart, el, currentNSMap, entityReplacer, errorHandler), 
+                            el.length);
+                            if (!el.closed && fixSelfClosed(source, end, el.tagName, closeMap) && (el.closed = !0, 
+                            entityMap.nbsp || errorHandler.warning("unclosed xml attribute")), locator && len) {
+                                for (var locator2 = copyLocator(locator, {}), i = 0; i < len; i++) {
+                                    var a = el[i];
+                                    position(a.offset), a.locator = copyLocator(locator, {});
+                                }
+                                domBuilder.locator = locator2, appendElement(el, domBuilder, currentNSMap) && parseStack.push(el), 
+                                domBuilder.locator = locator;
+                            } else appendElement(el, domBuilder, currentNSMap) && parseStack.push(el);
+                            "http://www.w3.org/1999/xhtml" !== el.uri || el.closed ? end++ : end = parseHtmlSpecialContent(source, end, el.tagName, entityReplacer, domBuilder);
+                        }
+                    } catch (e) {
+                        if (e instanceof ParseError) throw e;
+                        errorHandler.error("element parse error: " + e), end = -1;
+                    }
+                    end > start ? start = end : appendText(Math.max(tagStart, start) + 1);
+                }
+            }(source, defaultNSMap, entityMap, domBuilder, this.errorHandler), domBuilder.endDocument();
+        }
+    }, ElementAttributes.prototype = {
+        setTagName: function(tagName) {
+            if (!tagNamePattern.test(tagName)) throw new Error("invalid tagName:" + tagName);
+            this.tagName = tagName;
+        },
+        addValue: function(qName, value, offset) {
+            if (!tagNamePattern.test(qName)) throw new Error("invalid attribute:" + qName);
+            this.attributeNames[qName] = this.length, this[this.length++] = {
+                qName,
+                value,
+                offset
+            };
+        },
+        length: 0,
+        getLocalName: function(i) {
+            return this[i].localName;
+        },
+        getLocator: function(i) {
+            return this[i].locator;
+        },
+        getQName: function(i) {
+            return this[i].qName;
+        },
+        getURI: function(i) {
+            return this[i].uri;
+        },
+        getValue: function(i) {
+            return this[i].value;
+        }
+    }, sax.XMLReader = XMLReader, sax.ParseError = ParseError, sax;
+}
+
+var hasRequiredDom, hasRequiredDomParser, dom = {};
+
+function requireDom() {
+    if (hasRequiredDom) return dom;
+    function copy(src, dest) {
+        for (var p in src) dest[p] = src[p];
+    }
+    function _extends(Class, Super) {
+        var pt = Class.prototype;
+        if (!(pt instanceof Super)) {
+            function t() {}
+            t.prototype = Super.prototype, copy(pt, t = new t), Class.prototype = pt = t;
+        }
+        pt.constructor != Class && ("function" != typeof Class && console.error("unknow Class:" + Class), 
+        pt.constructor = Class);
+    }
+    hasRequiredDom = 1;
+    var NodeType = {}, ELEMENT_NODE = NodeType.ELEMENT_NODE = 1, ATTRIBUTE_NODE = NodeType.ATTRIBUTE_NODE = 2, TEXT_NODE = NodeType.TEXT_NODE = 3, CDATA_SECTION_NODE = NodeType.CDATA_SECTION_NODE = 4, ENTITY_REFERENCE_NODE = NodeType.ENTITY_REFERENCE_NODE = 5, ENTITY_NODE = NodeType.ENTITY_NODE = 6, PROCESSING_INSTRUCTION_NODE = NodeType.PROCESSING_INSTRUCTION_NODE = 7, COMMENT_NODE = NodeType.COMMENT_NODE = 8, DOCUMENT_NODE = NodeType.DOCUMENT_NODE = 9, DOCUMENT_TYPE_NODE = NodeType.DOCUMENT_TYPE_NODE = 10, DOCUMENT_FRAGMENT_NODE = NodeType.DOCUMENT_FRAGMENT_NODE = 11, NOTATION_NODE = NodeType.NOTATION_NODE = 12, ExceptionCode = {}, ExceptionMessage = {};
+    ExceptionCode.INDEX_SIZE_ERR = (ExceptionMessage[1] = "Index size error", 1), ExceptionCode.DOMSTRING_SIZE_ERR = (ExceptionMessage[2] = "DOMString size error", 
+    2);
+    var HIERARCHY_REQUEST_ERR = ExceptionCode.HIERARCHY_REQUEST_ERR = (ExceptionMessage[3] = "Hierarchy request error", 
+    3);
+    ExceptionCode.WRONG_DOCUMENT_ERR = (ExceptionMessage[4] = "Wrong document", 4), 
+    ExceptionCode.INVALID_CHARACTER_ERR = (ExceptionMessage[5] = "Invalid character", 
+    5), ExceptionCode.NO_DATA_ALLOWED_ERR = (ExceptionMessage[6] = "No data allowed", 
+    6), ExceptionCode.NO_MODIFICATION_ALLOWED_ERR = (ExceptionMessage[7] = "No modification allowed", 
+    7);
+    var NOT_FOUND_ERR = ExceptionCode.NOT_FOUND_ERR = (ExceptionMessage[8] = "Not found", 
+    8);
+    ExceptionCode.NOT_SUPPORTED_ERR = (ExceptionMessage[9] = "Not supported", 9);
+    var INUSE_ATTRIBUTE_ERR = ExceptionCode.INUSE_ATTRIBUTE_ERR = (ExceptionMessage[10] = "Attribute in use", 
+    10);
+    function DOMException(code, message) {
+        if (message instanceof Error) var error = message; else error = this, Error.call(this, ExceptionMessage[code]), 
+        this.message = ExceptionMessage[code], Error.captureStackTrace && Error.captureStackTrace(this, DOMException);
+        return error.code = code, message && (this.message = this.message + ": " + message), 
+        error;
+    }
+    function NodeList() {}
+    function LiveNodeList(node, refresh) {
+        this._node = node, this._refresh = refresh, _updateLiveList(this);
+    }
+    function _updateLiveList(list) {
+        var inc = list._node._inc || list._node.ownerDocument._inc;
+        if (list._inc != inc) {
+            var ls = list._refresh(list._node);
+            __set__(list, "length", ls.length), copy(ls, list), list._inc = inc;
+        }
+    }
+    function NamedNodeMap() {}
+    function _findNodeIndex(list, node) {
+        for (var i = list.length; i--; ) if (list[i] === node) return i;
+    }
+    function _addNamedNode(el, list, newAttr, oldAttr) {
+        if (oldAttr ? list[_findNodeIndex(list, oldAttr)] = newAttr : list[list.length++] = newAttr, 
+        el) {
+            newAttr.ownerElement = el;
+            var doc = el.ownerDocument;
+            doc && (oldAttr && _onRemoveAttribute(doc, el, oldAttr), function(doc, el, newAttr) {
+                doc && doc._inc++, "http://www.w3.org/2000/xmlns/" == newAttr.namespaceURI && (el._nsMap[newAttr.prefix ? newAttr.localName : ""] = newAttr.value);
+            }(doc, el, newAttr));
+        }
+    }
+    function _removeNamedNode(el, list, attr) {
+        var i = _findNodeIndex(list, attr);
+        if (!(i >= 0)) throw DOMException(NOT_FOUND_ERR, new Error(el.tagName + "@" + attr));
+        for (var lastIndex = list.length - 1; i < lastIndex; ) list[i] = list[++i];
+        if (list.length = lastIndex, el) {
+            var doc = el.ownerDocument;
+            doc && (_onRemoveAttribute(doc, el, attr), attr.ownerElement = null);
+        }
+    }
+    function DOMImplementation(features) {
+        if (this._features = {}, features) for (var feature in features) this._features = features[feature];
+    }
+    function Node() {}
+    function _xmlEncoder(c) {
+        return ("<" == c ? "&lt;" : ">" == c && "&gt;") || "&" == c && "&amp;" || '"' == c && "&quot;" || "&#" + c.charCodeAt() + ";";
+    }
+    function _visitNode(node, callback) {
+        if (callback(node)) return !0;
+        if (node = node.firstChild) do {
+            if (_visitNode(node, callback)) return !0;
+        } while (node = node.nextSibling);
+    }
+    function Document() {}
+    function _onRemoveAttribute(doc, el, newAttr, remove) {
+        doc && doc._inc++, "http://www.w3.org/2000/xmlns/" == newAttr.namespaceURI && delete el._nsMap[newAttr.prefix ? newAttr.localName : ""];
+    }
+    function _onUpdateChild(doc, el, newChild) {
+        if (doc && doc._inc) {
+            doc._inc++;
+            var cs = el.childNodes;
+            if (newChild) cs[cs.length++] = newChild; else {
+                for (var child = el.firstChild, i = 0; child; ) cs[i++] = child, child = child.nextSibling;
+                cs.length = i;
+            }
+        }
+    }
+    function _removeChild(parentNode, child) {
+        var previous = child.previousSibling, next = child.nextSibling;
+        return previous ? previous.nextSibling = next : parentNode.firstChild = next, next ? next.previousSibling = previous : parentNode.lastChild = previous, 
+        _onUpdateChild(parentNode.ownerDocument, parentNode), child;
+    }
+    function _insertBefore(parentNode, newChild, nextChild) {
+        var cp = newChild.parentNode;
+        if (cp && cp.removeChild(newChild), newChild.nodeType === DOCUMENT_FRAGMENT_NODE) {
+            var newFirst = newChild.firstChild;
+            if (null == newFirst) return newChild;
+            var newLast = newChild.lastChild;
+        } else newFirst = newLast = newChild;
+        var pre = nextChild ? nextChild.previousSibling : parentNode.lastChild;
+        newFirst.previousSibling = pre, newLast.nextSibling = nextChild, pre ? pre.nextSibling = newFirst : parentNode.firstChild = newFirst, 
+        null == nextChild ? parentNode.lastChild = newLast : nextChild.previousSibling = newLast;
+        do {
+            newFirst.parentNode = parentNode;
+        } while (newFirst !== newLast && (newFirst = newFirst.nextSibling));
+        return _onUpdateChild(parentNode.ownerDocument || parentNode, parentNode), newChild.nodeType == DOCUMENT_FRAGMENT_NODE && (newChild.firstChild = newChild.lastChild = null), 
+        newChild;
+    }
+    function Element() {
+        this._nsMap = {};
+    }
+    function Attr() {}
+    function CharacterData() {}
+    function Text() {}
+    function Comment() {}
+    function CDATASection() {}
+    function DocumentType() {}
+    function Notation() {}
+    function Entity() {}
+    function EntityReference() {}
+    function DocumentFragment() {}
+    function ProcessingInstruction() {}
+    function XMLSerializer() {}
+    function nodeSerializeToString(isHtml, nodeFilter) {
+        var buf = [], refNode = 9 == this.nodeType && this.documentElement || this, prefix = refNode.prefix, uri = refNode.namespaceURI;
+        if (uri && null == prefix && null == (prefix = refNode.lookupPrefix(uri))) var visibleNamespaces = [ {
+            namespace: uri,
+            prefix: null
+        } ];
+        return serializeToString(this, buf, isHtml, nodeFilter, visibleNamespaces), buf.join("");
+    }
+    function needNamespaceDefine(node, isHTML, visibleNamespaces) {
+        var prefix = node.prefix || "", uri = node.namespaceURI;
+        if (!prefix && !uri) return !1;
+        if ("xml" === prefix && "http://www.w3.org/XML/1998/namespace" === uri || "http://www.w3.org/2000/xmlns/" == uri) return !1;
+        for (var i = visibleNamespaces.length; i--; ) {
+            var ns = visibleNamespaces[i];
+            if (ns.prefix == prefix) return ns.namespace != uri;
+        }
+        return !0;
+    }
+    function serializeToString(node, buf, isHTML, nodeFilter, visibleNamespaces) {
+        if (nodeFilter) {
+            if (!(node = nodeFilter(node))) return;
+            if ("string" == typeof node) return void buf.push(node);
+        }
+        switch (node.nodeType) {
+          case ELEMENT_NODE:
+            visibleNamespaces || (visibleNamespaces = []), visibleNamespaces.length;
+            var attrs = node.attributes, len = attrs.length, child = node.firstChild, nodeName = node.tagName;
+            isHTML = "http://www.w3.org/1999/xhtml" === node.namespaceURI || isHTML, buf.push("<", nodeName);
+            for (var i = 0; i < len; i++) {
+                "xmlns" == (attr = attrs.item(i)).prefix ? visibleNamespaces.push({
+                    prefix: attr.localName,
+                    namespace: attr.value
+                }) : "xmlns" == attr.nodeName && visibleNamespaces.push({
+                    prefix: "",
+                    namespace: attr.value
+                });
+            }
+            for (i = 0; i < len; i++) {
+                var attr;
+                if (needNamespaceDefine(attr = attrs.item(i), 0, visibleNamespaces)) {
+                    var prefix = attr.prefix || "", uri = attr.namespaceURI, ns = prefix ? " xmlns:" + prefix : " xmlns";
+                    buf.push(ns, '="', uri, '"'), visibleNamespaces.push({
+                        prefix,
+                        namespace: uri
+                    });
+                }
+                serializeToString(attr, buf, isHTML, nodeFilter, visibleNamespaces);
+            }
+            if (needNamespaceDefine(node, 0, visibleNamespaces)) {
+                prefix = node.prefix || "";
+                if (uri = node.namespaceURI) {
+                    ns = prefix ? " xmlns:" + prefix : " xmlns";
+                    buf.push(ns, '="', uri, '"'), visibleNamespaces.push({
+                        prefix,
+                        namespace: uri
+                    });
+                }
+            }
+            if (child || isHTML && !/^(?:meta|link|img|br|hr|input)$/i.test(nodeName)) {
+                if (buf.push(">"), isHTML && /^script$/i.test(nodeName)) for (;child; ) child.data ? buf.push(child.data) : serializeToString(child, buf, isHTML, nodeFilter, visibleNamespaces), 
+                child = child.nextSibling; else for (;child; ) serializeToString(child, buf, isHTML, nodeFilter, visibleNamespaces), 
+                child = child.nextSibling;
+                buf.push("</", nodeName, ">");
+            } else buf.push("/>");
+            return;
+
+          case DOCUMENT_NODE:
+          case DOCUMENT_FRAGMENT_NODE:
+            for (child = node.firstChild; child; ) serializeToString(child, buf, isHTML, nodeFilter, visibleNamespaces), 
+            child = child.nextSibling;
+            return;
+
+          case ATTRIBUTE_NODE:
+            return buf.push(" ", node.name, '="', node.value.replace(/[<&"]/g, _xmlEncoder), '"');
+
+          case TEXT_NODE:
+            return buf.push(node.data.replace(/[<&]/g, _xmlEncoder).replace(/]]>/g, "]]&gt;"));
+
+          case CDATA_SECTION_NODE:
+            return buf.push("<![CDATA[", node.data, "]]>");
+
+          case COMMENT_NODE:
+            return buf.push("\x3c!--", node.data, "--\x3e");
+
+          case DOCUMENT_TYPE_NODE:
+            var pubid = node.publicId, sysid = node.systemId;
+            if (buf.push("<!DOCTYPE ", node.name), pubid) buf.push(" PUBLIC ", pubid), sysid && "." != sysid && buf.push(" ", sysid), 
+            buf.push(">"); else if (sysid && "." != sysid) buf.push(" SYSTEM ", sysid, ">"); else {
+                var sub = node.internalSubset;
+                sub && buf.push(" [", sub, "]"), buf.push(">");
+            }
+            return;
+
+          case PROCESSING_INSTRUCTION_NODE:
+            return buf.push("<?", node.target, " ", node.data, "?>");
+
+          case ENTITY_REFERENCE_NODE:
+            return buf.push("&", node.nodeName, ";");
+
+          default:
+            buf.push("??", node.nodeName);
+        }
+    }
+    function importNode(doc, node, deep) {
+        var node2;
+        switch (node.nodeType) {
+          case ELEMENT_NODE:
+            (node2 = node.cloneNode(!1)).ownerDocument = doc;
+
+          case DOCUMENT_FRAGMENT_NODE:
+            break;
+
+          case ATTRIBUTE_NODE:
+            deep = !0;
+        }
+        if (node2 || (node2 = node.cloneNode(!1)), node2.ownerDocument = doc, node2.parentNode = null, 
+        deep) for (var child = node.firstChild; child; ) node2.appendChild(importNode(doc, child, deep)), 
+        child = child.nextSibling;
+        return node2;
+    }
+    function cloneNode(doc, node, deep) {
+        var node2 = new node.constructor;
+        for (var n in node) {
+            var v = node[n];
+            "object" != typeof v && v != node2[n] && (node2[n] = v);
+        }
+        switch (node.childNodes && (node2.childNodes = new NodeList), node2.ownerDocument = doc, 
+        node2.nodeType) {
+          case ELEMENT_NODE:
+            var attrs = node.attributes, attrs2 = node2.attributes = new NamedNodeMap, len = attrs.length;
+            attrs2._ownerElement = node2;
+            for (var i = 0; i < len; i++) node2.setAttributeNode(cloneNode(doc, attrs.item(i), !0));
+            break;
+
+          case ATTRIBUTE_NODE:
+            deep = !0;
+        }
+        if (deep) for (var child = node.firstChild; child; ) node2.appendChild(cloneNode(doc, child, deep)), 
+        child = child.nextSibling;
+        return node2;
+    }
+    function __set__(object, key, value) {
+        object[key] = value;
+    }
+    ExceptionCode.INVALID_STATE_ERR = (ExceptionMessage[11] = "Invalid state", 11), 
+    ExceptionCode.SYNTAX_ERR = (ExceptionMessage[12] = "Syntax error", 12), ExceptionCode.INVALID_MODIFICATION_ERR = (ExceptionMessage[13] = "Invalid modification", 
+    13), ExceptionCode.NAMESPACE_ERR = (ExceptionMessage[14] = "Invalid namespace", 
+    14), ExceptionCode.INVALID_ACCESS_ERR = (ExceptionMessage[15] = "Invalid access", 
+    15), DOMException.prototype = Error.prototype, copy(ExceptionCode, DOMException), 
+    NodeList.prototype = {
+        length: 0,
+        item: function(index) {
+            return this[index] || null;
+        },
+        toString: function(isHTML, nodeFilter) {
+            for (var buf = [], i = 0; i < this.length; i++) serializeToString(this[i], buf, isHTML, nodeFilter);
+            return buf.join("");
+        }
+    }, LiveNodeList.prototype.item = function(i) {
+        return _updateLiveList(this), this[i];
+    }, _extends(LiveNodeList, NodeList), NamedNodeMap.prototype = {
+        length: 0,
+        item: NodeList.prototype.item,
+        getNamedItem: function(key) {
+            for (var i = this.length; i--; ) {
+                var attr = this[i];
+                if (attr.nodeName == key) return attr;
+            }
+        },
+        setNamedItem: function(attr) {
+            var el = attr.ownerElement;
+            if (el && el != this._ownerElement) throw new DOMException(INUSE_ATTRIBUTE_ERR);
+            var oldAttr = this.getNamedItem(attr.nodeName);
+            return _addNamedNode(this._ownerElement, this, attr, oldAttr), oldAttr;
+        },
+        setNamedItemNS: function(attr) {
+            var oldAttr, el = attr.ownerElement;
+            if (el && el != this._ownerElement) throw new DOMException(INUSE_ATTRIBUTE_ERR);
+            return oldAttr = this.getNamedItemNS(attr.namespaceURI, attr.localName), _addNamedNode(this._ownerElement, this, attr, oldAttr), 
+            oldAttr;
+        },
+        removeNamedItem: function(key) {
+            var attr = this.getNamedItem(key);
+            return _removeNamedNode(this._ownerElement, this, attr), attr;
+        },
+        removeNamedItemNS: function(namespaceURI, localName) {
+            var attr = this.getNamedItemNS(namespaceURI, localName);
+            return _removeNamedNode(this._ownerElement, this, attr), attr;
+        },
+        getNamedItemNS: function(namespaceURI, localName) {
+            for (var i = this.length; i--; ) {
+                var node = this[i];
+                if (node.localName == localName && node.namespaceURI == namespaceURI) return node;
+            }
+            return null;
+        }
+    }, DOMImplementation.prototype = {
+        hasFeature: function(feature, version) {
+            var versions = this._features[feature.toLowerCase()];
+            return !(!versions || version && !(version in versions));
+        },
+        createDocument: function(namespaceURI, qualifiedName, doctype) {
+            var doc = new Document;
+            if (doc.implementation = this, doc.childNodes = new NodeList, doc.doctype = doctype, 
+            doctype && doc.appendChild(doctype), qualifiedName) {
+                var root = doc.createElementNS(namespaceURI, qualifiedName);
+                doc.appendChild(root);
+            }
+            return doc;
+        },
+        createDocumentType: function(qualifiedName, publicId, systemId) {
+            var node = new DocumentType;
+            return node.name = qualifiedName, node.nodeName = qualifiedName, node.publicId = publicId, 
+            node.systemId = systemId, node;
+        }
+    }, Node.prototype = {
+        firstChild: null,
+        lastChild: null,
+        previousSibling: null,
+        nextSibling: null,
+        attributes: null,
+        parentNode: null,
+        childNodes: null,
+        ownerDocument: null,
+        nodeValue: null,
+        namespaceURI: null,
+        prefix: null,
+        localName: null,
+        insertBefore: function(newChild, refChild) {
+            return _insertBefore(this, newChild, refChild);
+        },
+        replaceChild: function(newChild, oldChild) {
+            this.insertBefore(newChild, oldChild), oldChild && this.removeChild(oldChild);
+        },
+        removeChild: function(oldChild) {
+            return _removeChild(this, oldChild);
+        },
+        appendChild: function(newChild) {
+            return this.insertBefore(newChild, null);
+        },
+        hasChildNodes: function() {
+            return null != this.firstChild;
+        },
+        cloneNode: function(deep) {
+            return cloneNode(this.ownerDocument || this, this, deep);
+        },
+        normalize: function() {
+            for (var child = this.firstChild; child; ) {
+                var next = child.nextSibling;
+                next && next.nodeType == TEXT_NODE && child.nodeType == TEXT_NODE ? (this.removeChild(next), 
+                child.appendData(next.data)) : (child.normalize(), child = next);
+            }
+        },
+        isSupported: function(feature, version) {
+            return this.ownerDocument.implementation.hasFeature(feature, version);
+        },
+        hasAttributes: function() {
+            return this.attributes.length > 0;
+        },
+        lookupPrefix: function(namespaceURI) {
+            for (var el = this; el; ) {
+                var map = el._nsMap;
+                if (map) for (var n in map) if (map[n] == namespaceURI) return n;
+                el = el.nodeType == ATTRIBUTE_NODE ? el.ownerDocument : el.parentNode;
+            }
+            return null;
+        },
+        lookupNamespaceURI: function(prefix) {
+            for (var el = this; el; ) {
+                var map = el._nsMap;
+                if (map && prefix in map) return map[prefix];
+                el = el.nodeType == ATTRIBUTE_NODE ? el.ownerDocument : el.parentNode;
+            }
+            return null;
+        },
+        isDefaultNamespace: function(namespaceURI) {
+            return null == this.lookupPrefix(namespaceURI);
+        }
+    }, copy(NodeType, Node), copy(NodeType, Node.prototype), Document.prototype = {
+        nodeName: "#document",
+        nodeType: DOCUMENT_NODE,
+        doctype: null,
+        documentElement: null,
+        _inc: 1,
+        insertBefore: function(newChild, refChild) {
+            if (newChild.nodeType == DOCUMENT_FRAGMENT_NODE) {
+                for (var child = newChild.firstChild; child; ) {
+                    var next = child.nextSibling;
+                    this.insertBefore(child, refChild), child = next;
+                }
+                return newChild;
+            }
+            return null == this.documentElement && newChild.nodeType == ELEMENT_NODE && (this.documentElement = newChild), 
+            _insertBefore(this, newChild, refChild), newChild.ownerDocument = this, newChild;
+        },
+        removeChild: function(oldChild) {
+            return this.documentElement == oldChild && (this.documentElement = null), _removeChild(this, oldChild);
+        },
+        importNode: function(importedNode, deep) {
+            return importNode(this, importedNode, deep);
+        },
+        getElementById: function(id) {
+            var rtv = null;
+            return _visitNode(this.documentElement, (function(node) {
+                if (node.nodeType == ELEMENT_NODE && node.getAttribute("id") == id) return rtv = node, 
+                !0;
+            })), rtv;
+        },
+        getElementsByClassName: function(className) {
+            var pattern = new RegExp("(^|\\s)" + className + "(\\s|$)");
+            return new LiveNodeList(this, (function(base) {
+                var ls = [];
+                return _visitNode(base.documentElement, (function(node) {
+                    node !== base && node.nodeType == ELEMENT_NODE && pattern.test(node.getAttribute("class")) && ls.push(node);
+                })), ls;
+            }));
+        },
+        createElement: function(tagName) {
+            var node = new Element;
+            return node.ownerDocument = this, node.nodeName = tagName, node.tagName = tagName, 
+            node.childNodes = new NodeList, (node.attributes = new NamedNodeMap)._ownerElement = node, 
+            node;
+        },
+        createDocumentFragment: function() {
+            var node = new DocumentFragment;
+            return node.ownerDocument = this, node.childNodes = new NodeList, node;
+        },
+        createTextNode: function(data) {
+            var node = new Text;
+            return node.ownerDocument = this, node.appendData(data), node;
+        },
+        createComment: function(data) {
+            var node = new Comment;
+            return node.ownerDocument = this, node.appendData(data), node;
+        },
+        createCDATASection: function(data) {
+            var node = new CDATASection;
+            return node.ownerDocument = this, node.appendData(data), node;
+        },
+        createProcessingInstruction: function(target, data) {
+            var node = new ProcessingInstruction;
+            return node.ownerDocument = this, node.tagName = node.target = target, node.nodeValue = node.data = data, 
+            node;
+        },
+        createAttribute: function(name) {
+            var node = new Attr;
+            return node.ownerDocument = this, node.name = name, node.nodeName = name, node.localName = name, 
+            node.specified = !0, node;
+        },
+        createEntityReference: function(name) {
+            var node = new EntityReference;
+            return node.ownerDocument = this, node.nodeName = name, node;
+        },
+        createElementNS: function(namespaceURI, qualifiedName) {
+            var node = new Element, pl = qualifiedName.split(":"), attrs = node.attributes = new NamedNodeMap;
+            return node.childNodes = new NodeList, node.ownerDocument = this, node.nodeName = qualifiedName, 
+            node.tagName = qualifiedName, node.namespaceURI = namespaceURI, 2 == pl.length ? (node.prefix = pl[0], 
+            node.localName = pl[1]) : node.localName = qualifiedName, attrs._ownerElement = node, 
+            node;
+        },
+        createAttributeNS: function(namespaceURI, qualifiedName) {
+            var node = new Attr, pl = qualifiedName.split(":");
+            return node.ownerDocument = this, node.nodeName = qualifiedName, node.name = qualifiedName, 
+            node.namespaceURI = namespaceURI, node.specified = !0, 2 == pl.length ? (node.prefix = pl[0], 
+            node.localName = pl[1]) : node.localName = qualifiedName, node;
+        }
+    }, _extends(Document, Node), Element.prototype = {
+        nodeType: ELEMENT_NODE,
+        hasAttribute: function(name) {
+            return null != this.getAttributeNode(name);
+        },
+        getAttribute: function(name) {
+            var attr = this.getAttributeNode(name);
+            return attr && attr.value || "";
+        },
+        getAttributeNode: function(name) {
+            return this.attributes.getNamedItem(name);
+        },
+        setAttribute: function(name, value) {
+            var attr = this.ownerDocument.createAttribute(name);
+            attr.value = attr.nodeValue = "" + value, this.setAttributeNode(attr);
+        },
+        removeAttribute: function(name) {
+            var attr = this.getAttributeNode(name);
+            attr && this.removeAttributeNode(attr);
+        },
+        appendChild: function(newChild) {
+            return newChild.nodeType === DOCUMENT_FRAGMENT_NODE ? this.insertBefore(newChild, null) : function(parentNode, newChild) {
+                var cp = newChild.parentNode;
+                if (cp) {
+                    var pre = parentNode.lastChild;
+                    cp.removeChild(newChild), pre = parentNode.lastChild;
+                }
+                return pre = parentNode.lastChild, newChild.parentNode = parentNode, newChild.previousSibling = pre, 
+                newChild.nextSibling = null, pre ? pre.nextSibling = newChild : parentNode.firstChild = newChild, 
+                parentNode.lastChild = newChild, _onUpdateChild(parentNode.ownerDocument, parentNode, newChild), 
+                newChild;
+            }(this, newChild);
+        },
+        setAttributeNode: function(newAttr) {
+            return this.attributes.setNamedItem(newAttr);
+        },
+        setAttributeNodeNS: function(newAttr) {
+            return this.attributes.setNamedItemNS(newAttr);
+        },
+        removeAttributeNode: function(oldAttr) {
+            return this.attributes.removeNamedItem(oldAttr.nodeName);
+        },
+        removeAttributeNS: function(namespaceURI, localName) {
+            var old = this.getAttributeNodeNS(namespaceURI, localName);
+            old && this.removeAttributeNode(old);
+        },
+        hasAttributeNS: function(namespaceURI, localName) {
+            return null != this.getAttributeNodeNS(namespaceURI, localName);
+        },
+        getAttributeNS: function(namespaceURI, localName) {
+            var attr = this.getAttributeNodeNS(namespaceURI, localName);
+            return attr && attr.value || "";
+        },
+        setAttributeNS: function(namespaceURI, qualifiedName, value) {
+            var attr = this.ownerDocument.createAttributeNS(namespaceURI, qualifiedName);
+            attr.value = attr.nodeValue = "" + value, this.setAttributeNode(attr);
+        },
+        getAttributeNodeNS: function(namespaceURI, localName) {
+            return this.attributes.getNamedItemNS(namespaceURI, localName);
+        },
+        getElementsByTagName: function(tagName) {
+            return new LiveNodeList(this, (function(base) {
+                var ls = [];
+                return _visitNode(base, (function(node) {
+                    node === base || node.nodeType != ELEMENT_NODE || "*" !== tagName && node.tagName != tagName || ls.push(node);
+                })), ls;
+            }));
+        },
+        getElementsByTagNameNS: function(namespaceURI, localName) {
+            return new LiveNodeList(this, (function(base) {
+                var ls = [];
+                return _visitNode(base, (function(node) {
+                    node === base || node.nodeType !== ELEMENT_NODE || "*" !== namespaceURI && node.namespaceURI !== namespaceURI || "*" !== localName && node.localName != localName || ls.push(node);
+                })), ls;
+            }));
+        }
+    }, Document.prototype.getElementsByTagName = Element.prototype.getElementsByTagName, 
+    Document.prototype.getElementsByTagNameNS = Element.prototype.getElementsByTagNameNS, 
+    _extends(Element, Node), Attr.prototype.nodeType = ATTRIBUTE_NODE, _extends(Attr, Node), 
+    CharacterData.prototype = {
+        data: "",
+        substringData: function(offset, count) {
+            return this.data.substring(offset, offset + count);
+        },
+        appendData: function(text) {
+            text = this.data + text, this.nodeValue = this.data = text, this.length = text.length;
+        },
+        insertData: function(offset, text) {
+            this.replaceData(offset, 0, text);
+        },
+        appendChild: function(newChild) {
+            throw new Error(ExceptionMessage[HIERARCHY_REQUEST_ERR]);
+        },
+        deleteData: function(offset, count) {
+            this.replaceData(offset, count, "");
+        },
+        replaceData: function(offset, count, text) {
+            text = this.data.substring(0, offset) + text + this.data.substring(offset + count), 
+            this.nodeValue = this.data = text, this.length = text.length;
+        }
+    }, _extends(CharacterData, Node), Text.prototype = {
+        nodeName: "#text",
+        nodeType: TEXT_NODE,
+        splitText: function(offset) {
+            var text = this.data, newText = text.substring(offset);
+            text = text.substring(0, offset), this.data = this.nodeValue = text, this.length = text.length;
+            var newNode = this.ownerDocument.createTextNode(newText);
+            return this.parentNode && this.parentNode.insertBefore(newNode, this.nextSibling), 
+            newNode;
+        }
+    }, _extends(Text, CharacterData), Comment.prototype = {
+        nodeName: "#comment",
+        nodeType: COMMENT_NODE
+    }, _extends(Comment, CharacterData), CDATASection.prototype = {
+        nodeName: "#cdata-section",
+        nodeType: CDATA_SECTION_NODE
+    }, _extends(CDATASection, CharacterData), DocumentType.prototype.nodeType = DOCUMENT_TYPE_NODE, 
+    _extends(DocumentType, Node), Notation.prototype.nodeType = NOTATION_NODE, _extends(Notation, Node), 
+    Entity.prototype.nodeType = ENTITY_NODE, _extends(Entity, Node), EntityReference.prototype.nodeType = ENTITY_REFERENCE_NODE, 
+    _extends(EntityReference, Node), DocumentFragment.prototype.nodeName = "#document-fragment", 
+    DocumentFragment.prototype.nodeType = DOCUMENT_FRAGMENT_NODE, _extends(DocumentFragment, Node), 
+    ProcessingInstruction.prototype.nodeType = PROCESSING_INSTRUCTION_NODE, _extends(ProcessingInstruction, Node), 
+    XMLSerializer.prototype.serializeToString = function(node, isHtml, nodeFilter) {
+        return nodeSerializeToString.call(node, isHtml, nodeFilter);
+    }, Node.prototype.toString = nodeSerializeToString;
+    try {
+        if (Object.defineProperty) {
+            function getTextContent(node) {
+                switch (node.nodeType) {
+                  case ELEMENT_NODE:
+                  case DOCUMENT_FRAGMENT_NODE:
+                    var buf = [];
+                    for (node = node.firstChild; node; ) 7 !== node.nodeType && 8 !== node.nodeType && buf.push(getTextContent(node)), 
+                    node = node.nextSibling;
+                    return buf.join("");
+
+                  default:
+                    return node.nodeValue;
+                }
+            }
+            Object.defineProperty(LiveNodeList.prototype, "length", {
+                get: function() {
+                    return _updateLiveList(this), this.$$length;
+                }
+            }), Object.defineProperty(Node.prototype, "textContent", {
+                get: function() {
+                    return getTextContent(this);
+                },
+                set: function(data) {
+                    switch (this.nodeType) {
+                      case ELEMENT_NODE:
+                      case DOCUMENT_FRAGMENT_NODE:
+                        for (;this.firstChild; ) this.removeChild(this.firstChild);
+                        (data || String(data)) && this.appendChild(this.ownerDocument.createTextNode(data));
+                        break;
+
+                      default:
+                        this.data = data, this.value = data, this.nodeValue = data;
+                    }
+                }
+            }), __set__ = function(object, key, value) {
+                object["$$" + key] = value;
+            };
+        }
+    } catch (e) {}
+    return dom.Node = Node, dom.DOMException = DOMException, dom.DOMImplementation = DOMImplementation, 
+    dom.XMLSerializer = XMLSerializer, dom;
+}
+
+function requireDomParser() {
+    if (hasRequiredDomParser) return domParser;
+    function DOMParser(options) {
+        this.options = options || {
+            locator: {}
+        };
+    }
+    function DOMHandler() {
+        this.cdata = !1;
+    }
+    function position(locator, node) {
+        node.lineNumber = locator.lineNumber, node.columnNumber = locator.columnNumber;
+    }
+    function _locator(l) {
+        if (l) return "\n@" + (l.systemId || "") + "#[line:" + l.lineNumber + ",col:" + l.columnNumber + "]";
+    }
+    function _toString(chars, start, length) {
+        return "string" == typeof chars ? chars.substr(start, length) : chars.length >= start + length || start ? new java.lang.String(chars, start, length) + "" : chars;
+    }
+    function appendElement(hander, node) {
+        hander.currentElement ? hander.currentElement.appendChild(node) : hander.doc.appendChild(node);
+    }
+    hasRequiredDomParser = 1, DOMParser.prototype.parseFromString = function(source, mimeType) {
+        var options = this.options, sax = new XMLReader, domBuilder = options.domBuilder || new DOMHandler, errorHandler = options.errorHandler, locator = options.locator, defaultNSMap = options.xmlns || {}, isHTML = /\/x?html?$/.test(mimeType), entityMap = isHTML ? htmlEntity.entityMap : {
+            lt: "<",
+            gt: ">",
+            amp: "&",
+            quot: '"',
+            apos: "'"
+        };
+        return locator && domBuilder.setDocumentLocator(locator), sax.errorHandler = function(errorImpl, domBuilder, locator) {
+            if (!errorImpl) {
+                if (domBuilder instanceof DOMHandler) return domBuilder;
+                errorImpl = domBuilder;
+            }
+            var errorHandler = {}, isCallback = errorImpl instanceof Function;
+            function build(key) {
+                var fn = errorImpl[key];
+                !fn && isCallback && (fn = 2 == errorImpl.length ? function(msg) {
+                    errorImpl(key, msg);
+                } : errorImpl), errorHandler[key] = fn && function(msg) {
+                    fn("[xmldom " + key + "]\t" + msg + _locator(locator));
+                } || function() {};
+            }
+            return locator = locator || {}, build("warning"), build("error"), build("fatalError"), 
+            errorHandler;
+        }(errorHandler, domBuilder, locator), sax.domBuilder = options.domBuilder || domBuilder, 
+        isHTML && (defaultNSMap[""] = "http://www.w3.org/1999/xhtml"), defaultNSMap.xml = defaultNSMap.xml || "http://www.w3.org/XML/1998/namespace", 
+        source && "string" == typeof source ? sax.parse(source, defaultNSMap, entityMap) : sax.errorHandler.error("invalid doc source"), 
+        domBuilder.doc;
+    }, DOMHandler.prototype = {
+        startDocument: function() {
+            this.doc = (new DOMImplementation).createDocument(null, null, null), this.locator && (this.doc.documentURI = this.locator.systemId);
+        },
+        startElement: function(namespaceURI, localName, qName, attrs) {
+            var doc = this.doc, el = doc.createElementNS(namespaceURI, qName || localName), len = attrs.length;
+            appendElement(this, el), this.currentElement = el, this.locator && position(this.locator, el);
+            for (var i = 0; i < len; i++) {
+                namespaceURI = attrs.getURI(i);
+                var value = attrs.getValue(i), attr = (qName = attrs.getQName(i), doc.createAttributeNS(namespaceURI, qName));
+                this.locator && position(attrs.getLocator(i), attr), attr.value = attr.nodeValue = value, 
+                el.setAttributeNode(attr);
+            }
+        },
+        endElement: function(namespaceURI, localName, qName) {
+            var current = this.currentElement;
+            current.tagName, this.currentElement = current.parentNode;
+        },
+        startPrefixMapping: function(prefix, uri) {},
+        endPrefixMapping: function(prefix) {},
+        processingInstruction: function(target, data) {
+            var ins = this.doc.createProcessingInstruction(target, data);
+            this.locator && position(this.locator, ins), appendElement(this, ins);
+        },
+        ignorableWhitespace: function(ch, start, length) {},
+        characters: function(chars, start, length) {
+            if (chars = _toString.apply(this, arguments)) {
+                if (this.cdata) var charNode = this.doc.createCDATASection(chars); else charNode = this.doc.createTextNode(chars);
+                this.currentElement ? this.currentElement.appendChild(charNode) : /^\s*$/.test(chars) && this.doc.appendChild(charNode), 
+                this.locator && position(this.locator, charNode);
+            }
+        },
+        skippedEntity: function(name) {},
+        endDocument: function() {
+            this.doc.normalize();
+        },
+        setDocumentLocator: function(locator) {
+            (this.locator = locator) && (locator.lineNumber = 0);
+        },
+        comment: function(chars, start, length) {
+            chars = _toString.apply(this, arguments);
+            var comm = this.doc.createComment(chars);
+            this.locator && position(this.locator, comm), appendElement(this, comm);
+        },
+        startCDATA: function() {
+            this.cdata = !0;
+        },
+        endCDATA: function() {
+            this.cdata = !1;
+        },
+        startDTD: function(name, publicId, systemId) {
+            var impl = this.doc.implementation;
+            if (impl && impl.createDocumentType) {
+                var dt = impl.createDocumentType(name, publicId, systemId);
+                this.locator && position(this.locator, dt), appendElement(this, dt);
+            }
+        },
+        warning: function(error) {
+            console.warn("[xmldom warning]\t" + error, _locator(this.locator));
+        },
+        error: function(error) {
+            console.error("[xmldom error]\t" + error, _locator(this.locator));
+        },
+        fatalError: function(error) {
+            throw new ParseError(error, this.locator);
+        }
+    }, "endDTD,startEntity,endEntity,attributeDecl,elementDecl,externalEntityDecl,internalEntityDecl,resolveEntity,getExternalSubset,notationDecl,unparsedEntityDecl".replace(/\w+/g, (function(key) {
+        DOMHandler.prototype[key] = function() {
+            return null;
+        };
+    }));
+    var htmlEntity = (hasRequiredEntities || (hasRequiredEntities = 1, entities.entityMap = {
+        lt: "<",
+        gt: ">",
+        amp: "&",
+        quot: '"',
+        apos: "'",
+        Agrave: "À",
+        Aacute: "Á",
+        Acirc: "Â",
+        Atilde: "Ã",
+        Auml: "Ä",
+        Aring: "Å",
+        AElig: "Æ",
+        Ccedil: "Ç",
+        Egrave: "È",
+        Eacute: "É",
+        Ecirc: "Ê",
+        Euml: "Ë",
+        Igrave: "Ì",
+        Iacute: "Í",
+        Icirc: "Î",
+        Iuml: "Ï",
+        ETH: "Ð",
+        Ntilde: "Ñ",
+        Ograve: "Ò",
+        Oacute: "Ó",
+        Ocirc: "Ô",
+        Otilde: "Õ",
+        Ouml: "Ö",
+        Oslash: "Ø",
+        Ugrave: "Ù",
+        Uacute: "Ú",
+        Ucirc: "Û",
+        Uuml: "Ü",
+        Yacute: "Ý",
+        THORN: "Þ",
+        szlig: "ß",
+        agrave: "à",
+        aacute: "á",
+        acirc: "â",
+        atilde: "ã",
+        auml: "ä",
+        aring: "å",
+        aelig: "æ",
+        ccedil: "ç",
+        egrave: "è",
+        eacute: "é",
+        ecirc: "ê",
+        euml: "ë",
+        igrave: "ì",
+        iacute: "í",
+        icirc: "î",
+        iuml: "ï",
+        eth: "ð",
+        ntilde: "ñ",
+        ograve: "ò",
+        oacute: "ó",
+        ocirc: "ô",
+        otilde: "õ",
+        ouml: "ö",
+        oslash: "ø",
+        ugrave: "ù",
+        uacute: "ú",
+        ucirc: "û",
+        uuml: "ü",
+        yacute: "ý",
+        thorn: "þ",
+        yuml: "ÿ",
+        nbsp: " ",
+        iexcl: "¡",
+        cent: "¢",
+        pound: "£",
+        curren: "¤",
+        yen: "¥",
+        brvbar: "¦",
+        sect: "§",
+        uml: "¨",
+        copy: "©",
+        ordf: "ª",
+        laquo: "«",
+        not: "¬",
+        shy: "­­",
+        reg: "®",
+        macr: "¯",
+        deg: "°",
+        plusmn: "±",
+        sup2: "²",
+        sup3: "³",
+        acute: "´",
+        micro: "µ",
+        para: "¶",
+        middot: "·",
+        cedil: "¸",
+        sup1: "¹",
+        ordm: "º",
+        raquo: "»",
+        frac14: "¼",
+        frac12: "½",
+        frac34: "¾",
+        iquest: "¿",
+        times: "×",
+        divide: "÷",
+        forall: "∀",
+        part: "∂",
+        exist: "∃",
+        empty: "∅",
+        nabla: "∇",
+        isin: "∈",
+        notin: "∉",
+        ni: "∋",
+        prod: "∏",
+        sum: "∑",
+        minus: "−",
+        lowast: "∗",
+        radic: "√",
+        prop: "∝",
+        infin: "∞",
+        ang: "∠",
+        and: "∧",
+        or: "∨",
+        cap: "∩",
+        cup: "∪",
+        int: "∫",
+        there4: "∴",
+        sim: "∼",
+        cong: "≅",
+        asymp: "≈",
+        ne: "≠",
+        equiv: "≡",
+        le: "≤",
+        ge: "≥",
+        sub: "⊂",
+        sup: "⊃",
+        nsub: "⊄",
+        sube: "⊆",
+        supe: "⊇",
+        oplus: "⊕",
+        otimes: "⊗",
+        perp: "⊥",
+        sdot: "⋅",
+        Alpha: "Α",
+        Beta: "Β",
+        Gamma: "Γ",
+        Delta: "Δ",
+        Epsilon: "Ε",
+        Zeta: "Ζ",
+        Eta: "Η",
+        Theta: "Θ",
+        Iota: "Ι",
+        Kappa: "Κ",
+        Lambda: "Λ",
+        Mu: "Μ",
+        Nu: "Ν",
+        Xi: "Ξ",
+        Omicron: "Ο",
+        Pi: "Π",
+        Rho: "Ρ",
+        Sigma: "Σ",
+        Tau: "Τ",
+        Upsilon: "Υ",
+        Phi: "Φ",
+        Chi: "Χ",
+        Psi: "Ψ",
+        Omega: "Ω",
+        alpha: "α",
+        beta: "β",
+        gamma: "γ",
+        delta: "δ",
+        epsilon: "ε",
+        zeta: "ζ",
+        eta: "η",
+        theta: "θ",
+        iota: "ι",
+        kappa: "κ",
+        lambda: "λ",
+        mu: "μ",
+        nu: "ν",
+        xi: "ξ",
+        omicron: "ο",
+        pi: "π",
+        rho: "ρ",
+        sigmaf: "ς",
+        sigma: "σ",
+        tau: "τ",
+        upsilon: "υ",
+        phi: "φ",
+        chi: "χ",
+        psi: "ψ",
+        omega: "ω",
+        thetasym: "ϑ",
+        upsih: "ϒ",
+        piv: "ϖ",
+        OElig: "Œ",
+        oelig: "œ",
+        Scaron: "Š",
+        scaron: "š",
+        Yuml: "Ÿ",
+        fnof: "ƒ",
+        circ: "ˆ",
+        tilde: "˜",
+        ensp: " ",
+        emsp: " ",
+        thinsp: " ",
+        zwnj: "‌",
+        zwj: "‍",
+        lrm: "‎",
+        rlm: "‏",
+        ndash: "–",
+        mdash: "—",
+        lsquo: "‘",
+        rsquo: "’",
+        sbquo: "‚",
+        ldquo: "“",
+        rdquo: "”",
+        bdquo: "„",
+        dagger: "†",
+        Dagger: "‡",
+        bull: "•",
+        hellip: "…",
+        permil: "‰",
+        prime: "′",
+        Prime: "″",
+        lsaquo: "‹",
+        rsaquo: "›",
+        oline: "‾",
+        euro: "€",
+        trade: "™",
+        larr: "←",
+        uarr: "↑",
+        rarr: "→",
+        darr: "↓",
+        harr: "↔",
+        crarr: "↵",
+        lceil: "⌈",
+        rceil: "⌉",
+        lfloor: "⌊",
+        rfloor: "⌋",
+        loz: "◊",
+        spades: "♠",
+        clubs: "♣",
+        hearts: "♥",
+        diams: "♦"
+    }), entities), sax = requireSax(), XMLReader = sax.XMLReader, ParseError = sax.ParseError, DOMImplementation = domParser.DOMImplementation = requireDom().DOMImplementation;
+    return domParser.XMLSerializer = requireDom().XMLSerializer, domParser.DOMParser = DOMParser, 
+    domParser.__DOMHandler = DOMHandler, domParser;
+}
+
+var X2JS = X2JS$1.exports = function(config) {
+    var VERSION = "1.2.1";
+    config = config || {}, initConfigDefaults();
+    var IndentChar = " ", LF = "\n";
+    function initConfigDefaults() {
+        void 0 === config.space && (config.space = 0), void 0 === config.escapeMode && (config.escapeMode = !0), 
+        config.attributePrefix = config.attributePrefix || "_", config.arrayAccessForm = config.arrayAccessForm || "none", 
+        config.emptyNodeForm = config.emptyNodeForm || "text", void 0 === config.enableToStringFunc && (config.enableToStringFunc = !0), 
+        config.arrayAccessFormPaths = config.arrayAccessFormPaths || [], void 0 === config.skipEmptyTextNodesForObj && (config.skipEmptyTextNodesForObj = !0), 
+        void 0 === config.stripWhitespaces && (config.stripWhitespaces = !0), config.datetimeAccessFormPaths = config.datetimeAccessFormPaths || [], 
+        void 0 === config.useDoubleQuotes && (config.useDoubleQuotes = !1), config.xmlElementsFilter = config.xmlElementsFilter || [], 
+        config.jsonPropertiesFilter = config.jsonPropertiesFilter || [], void 0 === config.keepCData && (config.keepCData = !1), 
+        null == config.nativeType && (config.nativeType = !1), null == config.nativeTypeAttributes && (config.nativeTypeAttributes = !1), 
+        null == config.addElementTagForEmptyArray && (config.addElementTagForEmptyArray = !1);
+    }
+    var DOMNodeTypes = {
+        ELEMENT_NODE: 1,
+        TEXT_NODE: 3,
+        CDATA_SECTION_NODE: 4,
+        COMMENT_NODE: 8,
+        DOCUMENT_NODE: 9
+    };
+    function getNodeLocalName(node) {
+        var nodeLocalName = node.localName;
+        return null == nodeLocalName && (nodeLocalName = node.baseName), null != nodeLocalName && "" != nodeLocalName || (nodeLocalName = node.nodeName), 
+        nodeLocalName;
+    }
+    function getNodePrefix(node) {
+        return node.prefix;
+    }
+    function escapeXmlChars(str) {
+        return "string" == typeof str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;") : str;
+    }
+    function checkInStdFiltersArrayForm(stdFiltersArrayForm, obj, name, path) {
+        for (var idx = 0; idx < stdFiltersArrayForm.length; idx++) {
+            var filterPath = stdFiltersArrayForm[idx];
+            if ("string" == typeof filterPath) {
+                if (filterPath == path) break;
+            } else if (filterPath instanceof RegExp) {
+                if (filterPath.test(path)) break;
+            } else if ("function" == typeof filterPath && filterPath(obj, name, path)) break;
+        }
+        return idx != stdFiltersArrayForm.length;
+    }
+    function toArrayAccessForm(obj, childName, path) {
+        "property" === config.arrayAccessForm && (obj[childName] instanceof Array ? obj[childName + "_asArray"] = obj[childName] : obj[childName + "_asArray"] = [ obj[childName] ]), 
+        !(obj[childName] instanceof Array) && config.arrayAccessFormPaths.length > 0 && checkInStdFiltersArrayForm(config.arrayAccessFormPaths, obj, childName, path) && (obj[childName] = [ obj[childName] ]);
+    }
+    function fromXmlDateTime(prop) {
+        var bits = prop.split(/[-T:+Z]/g), d = new Date(bits[0], bits[1] - 1, bits[2]), secondBits = bits[5].split(".");
+        if (d.setHours(bits[3], bits[4], secondBits[0]), secondBits.length > 1 && d.setMilliseconds(secondBits[1]), 
+        bits[6] && bits[7]) {
+            var offsetMinutes = 60 * bits[6] + Number(bits[7]);
+            offsetMinutes = 0 + ("-" == (/\d\d-\d\d:\d\d$/.test(prop) ? "-" : "+") ? -1 * offsetMinutes : offsetMinutes), 
+            d.setMinutes(d.getMinutes() - offsetMinutes - d.getTimezoneOffset());
+        } else -1 !== prop.indexOf("Z", prop.length - 1) && (d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds())));
+        return d;
+    }
+    function checkFromXmlDateTimePaths(value, childName, fullPath) {
+        if (config.datetimeAccessFormPaths.length > 0) {
+            var path = fullPath.split(".#")[0];
+            return checkInStdFiltersArrayForm(config.datetimeAccessFormPaths, value, childName, path) ? fromXmlDateTime(value) : value;
+        }
+        return value;
+    }
+    function checkXmlElementsFilter(obj, childType, childName, childPath) {
+        return !(childType == DOMNodeTypes.ELEMENT_NODE && config.xmlElementsFilter.length > 0) || checkInStdFiltersArrayForm(config.xmlElementsFilter, obj, childName, childPath);
+    }
+    function nativeType(value) {
+        var nValue = Number(value);
+        if (!isNaN(nValue)) return nValue;
+        var bValue = value.toLowerCase();
+        return "true" === bValue || "false" !== bValue && value;
+    }
+    function parseDOMChildren(node, path) {
+        if (node.nodeType == DOMNodeTypes.DOCUMENT_NODE) {
+            for (var result = new Object, nodeChildren = node.childNodes, cidx = 0; cidx < nodeChildren.length; cidx++) (child = nodeChildren.item(cidx)).nodeType == DOMNodeTypes.ELEMENT_NODE && (result[childName = getNodeLocalName(child)] = parseDOMChildren(child, childName));
+            return result;
+        }
+        if (node.nodeType == DOMNodeTypes.ELEMENT_NODE) {
+            (result = new Object).__cnt = 0, nodeChildren = node.childNodes;
+            for (var aidx = 0; aidx < node.attributes.length; aidx++) {
+                var attr = node.attributes.item(aidx);
+                result.__cnt++;
+                var value = attr.value;
+                config.nativeTypeAttributes && (value = nativeType(attr.value)), result[config.attributePrefix + attr.name] = value;
+            }
+            for (cidx = 0; cidx < nodeChildren.length; cidx++) {
+                var child, childName = getNodeLocalName(child = nodeChildren.item(cidx));
+                if (child.nodeType != DOMNodeTypes.COMMENT_NODE) {
+                    var childPath = path + "." + childName;
+                    checkXmlElementsFilter(result, child.nodeType, childName, childPath) && (result.__cnt++, 
+                    null == result[childName] ? (result[childName] = parseDOMChildren(child, childPath), 
+                    toArrayAccessForm(result, childName, childPath)) : (null != result[childName] && (result[childName] instanceof Array || (result[childName] = [ result[childName] ], 
+                    toArrayAccessForm(result, childName, childPath))), result[childName][result[childName].length] = parseDOMChildren(child, childPath)));
+                }
+            }
+            var nodePrefix = getNodePrefix(node);
+            return null != nodePrefix && "" != nodePrefix && (result.__cnt++, result.__prefix = nodePrefix), 
+            null != result["#text"] && (result.__text = result["#text"], result.__text instanceof Array && (result.__text = result.__text.join("\n")), 
+            config.stripWhitespaces && (result.__text = result.__text.trim()), delete result["#text"], 
+            "property" == config.arrayAccessForm && delete result["#text_asArray"], result.__text = checkFromXmlDateTimePaths(result.__text, childName, path + "." + childName)), 
+            null != result["#cdata-section"] && (result.__cdata = result["#cdata-section"], 
+            delete result["#cdata-section"], "property" == config.arrayAccessForm && delete result["#cdata-section_asArray"]), 
+            0 == result.__cnt && "text" == config.emptyNodeForm ? result = "" : 1 == result.__cnt && null != result.__text ? result = result.__text : 1 != result.__cnt || null == result.__cdata || config.keepCData ? result.__cnt > 1 && null != result.__text && config.skipEmptyTextNodesForObj && (config.stripWhitespaces && "" == result.__text || "" == result.__text.trim()) && delete result.__text : result = result.__cdata, 
+            delete result.__cnt, !config.enableToStringFunc || null == result.__text && null == result.__cdata || (result.toString = function() {
+                return (null != this.__text ? this.__text : "") + (null != this.__cdata ? this.__cdata : "");
+            }), result;
+        }
+        if (node.nodeType == DOMNodeTypes.TEXT_NODE || node.nodeType == DOMNodeTypes.CDATA_SECTION_NODE) return node.nodeValue;
+    }
+    function startTag(jsonObj, element, attrList, closed, indent = "", fold = !1) {
+        var resultStr = indent + "<" + (null != jsonObj && null != jsonObj.__prefix ? jsonObj.__prefix + ":" : "") + element;
+        if (null != attrList) for (var aidx = 0; aidx < attrList.length; aidx++) {
+            var attrName = attrList[aidx], attrVal = jsonObj[attrName];
+            config.escapeMode && (attrVal = escapeXmlChars(attrVal)), resultStr += " " + attrName.substr(config.attributePrefix.length) + "=", 
+            config.useDoubleQuotes ? resultStr += '"' + attrVal + '"' : resultStr += "'" + attrVal + "'";
+        }
+        return resultStr += closed ? "/>" : ">", fold && config.space > 0 && (resultStr += LF), 
+        resultStr;
+    }
+    function endTag(jsonObj, elementName, indent = "", fold = !1) {
+        var resultStr = indent + "</" + (null != jsonObj.__prefix ? jsonObj.__prefix + ":" : "") + elementName + ">";
+        return fold && config.space > 0 && (resultStr += LF), resultStr;
+    }
+    function endsWith(str, suffix) {
+        return -1 !== str.indexOf(suffix, str.length - suffix.length);
+    }
+    function jsonXmlSpecialElem(jsonObj, jsonObjField) {
+        return !!("property" == config.arrayAccessForm && endsWith(jsonObjField.toString(), "_asArray") || 0 == jsonObjField.toString().indexOf(config.attributePrefix) || 0 == jsonObjField.toString().indexOf("__") || jsonObj[jsonObjField] instanceof Function);
+    }
+    function jsonXmlElemCount(jsonObj) {
+        var elementsCnt = 0;
+        if (jsonObj instanceof Object) for (var it in jsonObj) jsonXmlSpecialElem(jsonObj, it) || elementsCnt++;
+        return elementsCnt;
+    }
+    function checkJsonObjPropertiesFilter(jsonObj, propertyName, jsonObjPath) {
+        return 0 == config.jsonPropertiesFilter.length || "" == jsonObjPath || checkInStdFiltersArrayForm(config.jsonPropertiesFilter, jsonObj, propertyName, jsonObjPath);
+    }
+    function calcJSONIndent(jsonObjPath) {
+        var pathLevel = 0;
+        "" != jsonObjPath && (pathLevel = jsonObjPath.split(".").length);
+        var indent = "";
+        return config.space > 0 && (indent = IndentChar.repeat(pathLevel * config.space)), 
+        indent;
+    }
+    function parseJSONAttributes(jsonObj) {
+        var attrList = [];
+        if (jsonObj instanceof Object) for (var ait in jsonObj) -1 == ait.toString().indexOf("__") && 0 == ait.toString().indexOf(config.attributePrefix) && attrList.push(ait);
+        return attrList;
+    }
+    function parseJSONTextAttrs(jsonTxtObj) {
+        var result = "";
+        return null != jsonTxtObj.__cdata && (result += "<![CDATA[" + jsonTxtObj.__cdata + "]]>"), 
+        null != jsonTxtObj.__text && (config.escapeMode ? result += escapeXmlChars(jsonTxtObj.__text) : result += jsonTxtObj.__text), 
+        result;
+    }
+    function parseJSONTextObject(jsonTxtObj) {
+        var result = "";
+        return jsonTxtObj instanceof Object ? result += parseJSONTextAttrs(jsonTxtObj) : null != jsonTxtObj && (config.escapeMode ? result += escapeXmlChars(jsonTxtObj) : result += jsonTxtObj), 
+        result;
+    }
+    function getJsonPropertyPath(jsonObjPath, jsonPropName) {
+        return "" === jsonObjPath ? jsonPropName : jsonObjPath + "." + jsonPropName;
+    }
+    function parseJSONArray(jsonArrRoot, jsonArrObj, attrList, jsonObjPath) {
+        var result = "", indent = calcJSONIndent(jsonObjPath);
+        if (0 == jsonArrRoot.length) config.addElementTagForEmptyArray && (result += startTag(jsonArrRoot, jsonArrObj, attrList, !0)); else for (var arIdx = 0; arIdx < jsonArrRoot.length; arIdx++) {
+            var arObj = jsonArrRoot[arIdx], arObjElementsCnt = jsonXmlElemCount(arObj);
+            "string" == typeof arObj ? (result += startTag(jsonArrRoot[arIdx], jsonArrObj, parseJSONAttributes(jsonArrRoot[arIdx]), !1, indent, !1), 
+            result += parseJSONObject(jsonArrRoot[arIdx], getJsonPropertyPath(jsonObjPath, jsonArrObj)), 
+            result += endTag(jsonArrRoot[arIdx], jsonArrObj, "", !0)) : arObjElementsCnt > 0 || null != arObj.__text || null != arObj.__cdata ? null != arObj.__text ? (result += startTag(jsonArrRoot[arIdx], jsonArrObj, parseJSONAttributes(jsonArrRoot[arIdx]), !1, indent, !1), 
+            result += parseJSONObject(jsonArrRoot[arIdx], getJsonPropertyPath(jsonObjPath, jsonArrObj)), 
+            result += endTag(jsonArrRoot[arIdx], jsonArrObj, "", !0)) : (result += startTag(jsonArrRoot[arIdx], jsonArrObj, parseJSONAttributes(jsonArrRoot[arIdx]), !1, indent, !0), 
+            result += parseJSONObject(jsonArrRoot[arIdx], getJsonPropertyPath(jsonObjPath, jsonArrObj)), 
+            result += endTag(jsonArrRoot[arIdx], jsonArrObj, indent, !0)) : result += startTag(jsonArrRoot[arIdx], jsonArrObj, parseJSONAttributes(jsonArrRoot[arIdx]), !0, indent, !0);
+        }
+        return result;
+    }
+    function parseJSONObject(jsonObj, jsonObjPath) {
+        var result = "", elementsCnt = jsonXmlElemCount(jsonObj), indent = calcJSONIndent(jsonObjPath);
+        if (elementsCnt > 0) for (var it in jsonObj) if (!jsonXmlSpecialElem(jsonObj, it) && ("" == jsonObjPath || checkJsonObjPropertiesFilter(jsonObj, it, getJsonPropertyPath(jsonObjPath, it)))) {
+            var subObj = jsonObj[it], attrList = parseJSONAttributes(subObj);
+            null == subObj || null == subObj ? result += startTag(subObj, it, attrList, !0, indent, !0) : subObj instanceof Object ? subObj instanceof Array ? result += parseJSONArray(subObj, it, attrList, jsonObjPath) : subObj instanceof Date ? (result += startTag(subObj, it, attrList, !1, indent, !1), 
+            result += subObj.toISOString(), result += endTag(subObj, it, "", !0)) : jsonXmlElemCount(subObj) > 0 || null != subObj.__text || null != subObj.__cdata ? (result += startTag(subObj, it, attrList, !1, indent, !0), 
+            result += parseJSONObject(subObj, getJsonPropertyPath(jsonObjPath, it)), result += endTag(subObj, it, indent, !0)) : result += startTag(subObj, it, attrList, !0, indent, !0) : (result += startTag(subObj, it, attrList, !1, indent, !1), 
+            result += parseJSONTextObject(subObj), result += endTag(subObj, it, "", !0));
+        }
+        return result += parseJSONTextObject(jsonObj);
+    }
+    this.parseXmlString = function(xmlDocStr) {
+        if (void 0 === xmlDocStr) return null;
+        var xmlDoc;
+        const {DOMParser} = requireDomParser();
+        var parser = new DOMParser, parsererrorNS = null;
+        try {
+            parsererrorNS = parser.parseFromString("INVALID", "text/xml").getElementsByTagName("parsererror")[0].namespaceURI;
+        } catch (err) {
+            parsererrorNS = null;
+        }
+        try {
+            xmlDoc = parser.parseFromString(xmlDocStr, "text/xml"), null != parsererrorNS && xmlDoc.getElementsByTagNameNS(parsererrorNS, "parsererror").length > 0 && (xmlDoc = null);
+        } catch (err) {
+            xmlDoc = null;
+        }
+        return xmlDoc;
+    }, this.asArray = function(prop) {
+        return void 0 === prop || null == prop ? [] : prop instanceof Array ? prop : [ prop ];
+    }, this.toXmlDateTime = function(dt) {
+        return dt instanceof Date ? dt.toISOString() : "number" == typeof dt ? new Date(dt).toISOString() : null;
+    }, this.asDateTime = function(prop) {
+        return "string" == typeof prop ? fromXmlDateTime(prop) : prop;
+    }, this.xml2json = function(xmlDoc) {
+        return parseDOMChildren(xmlDoc);
+    }, this.xml_str2json = function(xmlDocStr) {
+        var xmlDoc = this.parseXmlString(xmlDocStr);
+        return null != xmlDoc ? this.xml2json(xmlDoc) : null;
+    }, this.json2xml_str = function(jsonObj) {
+        return parseJSONObject(jsonObj, "");
+    }, this.json2xml = function(jsonObj) {
+        var xmlDocStr = this.json2xml_str(jsonObj);
+        return this.parseXmlString(xmlDocStr);
+    }, this.getVersion = function() {
+        return VERSION;
+    };
+};
+
+const Attr$1 = function(name) {
+    return "@" + name;
+};
+
+class GenericError extends Error {
+    constructor(code, message) {
+        super(message), this.code = code, this.message = message;
+    }
+    toString() {
+        return `GenericError(code=${this.code}, message=${this.message}`;
+    }
+}
+
+function attr(name) {
+    return "@" + name;
+}
+
+function toNumber(str, radix = 10) {
+    if ("number" == typeof str) return str;
+    const num = 10 === radix ? Number.parseFloat(str) : Number.parseInt(str);
+    return Number.isNaN(num) ? 0 : num;
+}
+
+function filter(range, bandwidth, tolerance = 1e5) {
+    let result = !1;
+    const ranges = function(bitrate, tolerance = 1e5) {
+        let lowerBound = 0, upperBound = 0;
+        if (bitrate.indexOf("-") >= 0) {
+            const [lowerBoundStr, upperBoundStr] = bitrate.split("-");
+            return "" === upperBoundStr ? (lowerBound = Number(lowerBoundStr), upperBound = Number.MAX_VALUE) : "" === lowerBoundStr ? (lowerBound = 0, 
+            upperBound = Number(upperBoundStr)) : (lowerBound = Number(lowerBoundStr), upperBound = Number(upperBoundStr)), 
+            lowerBound >= upperBound && (lowerBound = -1, upperBound = -1), [ lowerBound, upperBound ];
+        }
+        return lowerBound = Number(bitrate) - tolerance, upperBound = Number(bitrate) + tolerance, 
+        [ lowerBound, upperBound ];
+    }(range, tolerance);
+    return ranges[0] <= bandwidth && bandwidth <= ranges[1] && (result = !0), result;
+}
+
+function parseResolution(maxSupportedResolution) {
+    const pair = maxSupportedResolution.split("-");
+    if (!pair[0] || !pair[1] || !pair[0] && !pair[1]) throw new GenericError(400, "DashParser: filterVariantsByResolution ,updateVariantAtIndex and updateVariants need resolution in format 'x-y'.");
+    return {
+        width: toNumber(pair[0]),
+        height: toNumber(pair[1])
+    };
+}
+
+function getContentType(adaptationSet) {
+    return [ adaptationSet[attr(DashConstants.ATTR_CONTENT_TYPE)] ? adaptationSet[attr(DashConstants.ATTR_CONTENT_TYPE)] : "", adaptationSet[attr(DashConstants.ATTR_MIME_TYPE)] ? adaptationSet[attr(DashConstants.ATTR_MIME_TYPE)] : "" ];
+}
+
+const dashMpd = new class {
+    constructor() {
+        this.indent = 0;
+    }
+    parse(mpdXml) {
+        const x2js = new X2JS({
+            attributePrefix: "@",
+            useDoubleQuotes: !0,
+            arrayAccessFormPaths: DashConstants.ALWAYS_ARRAY_ELEMENTS,
+            nativeTypeAttributes: !0
+        });
+        this.mpd = x2js.xml_str2json(mpdXml);
+    }
+    getJSON() {
+        return this.mpd;
+    }
+    setJSON(mpdJson) {
+        this.mpd = mpdJson;
+    }
+    getMPD() {
+        return new X2JS({
+            attributePrefix: "@",
+            useDoubleQuotes: !0,
+            space: this.indent
+        }).json2xml_str(this.mpd);
+    }
+    setIndent(space) {
+        this.indent = space;
+    }
+    attr(name) {
+        return "@" + name;
+    }
+    filterVideoRenditionByBandwidth(ranges) {
+        function filterFnForVideoAdaptationSet(element) {
+            let result = !1;
+            return ranges.forEach((range => {
+                range[0] <= element[Attr$1(DashConstants.ATTR_BANDWIDTH)] && element[Attr$1(DashConstants.ATTR_BANDWIDTH)] <= range[1] && (result = !0);
+            })), result;
+        }
+        function filterFnForUnknownAdaptationSet(element) {
+            if (!(element[Attr$1(DashConstants.ATTR_MIME_TYPE)] ? element[Attr$1(DashConstants.ATTR_MIME_TYPE)] : "").startsWith("video/")) return !0;
+            let result = !1;
+            return ranges.forEach((range => {
+                range[0] <= element[Attr$1(DashConstants.ATTR_BANDWIDTH)] && element[Attr$1(DashConstants.ATTR_BANDWIDTH)] <= range[1] && (result = !0);
+            })), result;
+        }
+        this.mpd[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+            period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
+                const _contentType = adaptationSet[this.attr(DashConstants.ATTR_CONTENT_TYPE)] ? adaptationSet[this.attr(DashConstants.ATTR_CONTENT_TYPE)] : "", _mimeType = adaptationSet[this.attr(DashConstants.ATTR_MIME_TYPE)] ? adaptationSet[this.attr(DashConstants.ATTR_MIME_TYPE)] : "";
+                if ("video" == _contentType || _mimeType.startsWith("video/")) {
+                    let filteredRenditions = adaptationSet[DashConstants.REPRESENTATION].filter(filterFnForVideoAdaptationSet);
+                    adaptationSet[DashConstants.REPRESENTATION] = filteredRenditions;
+                } else if ("" === _contentType && "" === _mimeType) {
+                    let filteredRenditions = adaptationSet[DashConstants.REPRESENTATION].filter(filterFnForUnknownAdaptationSet);
+                    adaptationSet[DashConstants.REPRESENTATION] = filteredRenditions;
+                }
+            }));
+        }));
+    }
+}, Attr = function(name) {
+    return "@" + name;
+}, MIME_TYPE_VIDEO_PREFIX = "video/", MIME_TYPE_AUDIO_PREFIX = "audio/", MIME_TYPE_TEXT_PREFIX = "application/";
+
+class DashParser {
+    static parseMPD(mpdXml) {
+        try {
+            dashMpd.parse(mpdXml);
+        } catch (error) {
+            throw new Error(`DashParser: failed to parseMPD due to ${error.message}`);
+        }
+    }
+    static getJSON() {
+        return dashMpd.getJSON();
+    }
+    static setJSON(mpdJson) {
+        dashMpd.setJSON(mpdJson);
+    }
+    static stringifyMPD() {
+        try {
+            return dashMpd.getMPD();
+        } catch (error) {
+            throw new Error(`DashParser: failed to parseMPD due to ${error.message}`);
+        }
+    }
+}
+
+DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
+    if (!mpdJson) throw new Error("DashParser: filterVariantsByBandwidth api failed ,dash mpd json object cannot be empty");
+    if (!bitrates) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates cannot be empty");
+    if (!Array.isArray(bitrates)) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be array");
+    if (!bitrates.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be of strings!");
+    const filterFnForVideoAdaptationSet = knownMimeType => element => {
+        let result = !1;
+        const match = {};
+        if (!knownMimeType) {
+            const _mimeType = element[Attr(DashConstants.ATTR_MIME_TYPE)] ? element[Attr(DashConstants.ATTR_MIME_TYPE)] : "", _contentType = element[Attr(DashConstants.ATTR_CONTENT_TYPE)] ? element[Attr(DashConstants.ATTR_CONTENT_TYPE)] : "";
+            if (logger.log("filterVariantsByBandwidth filterFnForVideoAdaptationSet mimetype : %s", _mimeType), 
+            logger.log("filterVariantsByBandwidth filterFnForVideoAdaptationSet contenttype : %s", _contentType), 
+            _mimeType && !_mimeType.startsWith("video/") || _contentType && "video" != _contentType) return !0;
+        }
+        return bitrates.forEach((range => {
+            if (range) {
+                const intermediateResult = filter(range, element[Attr(DashConstants.ATTR_BANDWIDTH)], tolerance);
+                match[range] = intermediateResult;
+            }
+        })), result = Object.values(match).includes(!0), logger.log("bws object values", Object.values(match)), 
+        result;
+    };
+    try {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+            period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
+                const [_contentType, _mimeType] = getContentType(adaptationSet);
+                let filteredRenditions = [];
+                "video" == _contentType || _mimeType.startsWith("video/") ? (filteredRenditions = filteredRenditions.concat(adaptationSet[DashConstants.REPRESENTATION].filter(filterFnForVideoAdaptationSet(!0))), 
+                logger.log("filterVariantsByBandwidth video representations", filteredRenditions), 
+                adaptationSet[DashConstants.REPRESENTATION] = filteredRenditions) : "" === _contentType && "" === _mimeType && (filteredRenditions = adaptationSet[DashConstants.REPRESENTATION].filter(filterFnForVideoAdaptationSet(!1)), 
+                adaptationSet[DashConstants.REPRESENTATION] = filteredRenditions);
+            }));
+        }));
+    } catch (error) {
+        throw new Error(`DashParser: failed to filterVariantsByBandwidth due to ${error.message}`);
+    }
+}, DashParser.filterVariantsByResolution = (mpdJson, maxSupportedResolution) => {
+    if (!mpdJson) throw new Error("DashParser: filterVariantsByResolution api failed,dash mpd json object cannot be empty!");
+    if (!maxSupportedResolution || "string" != typeof maxSupportedResolution) throw new Error("DashParser: filterVariantsByResolution api failed,maxSupportedResolution should be a string and not empty !");
+    const maxSupportedResolutionObject = parseResolution(maxSupportedResolution), filterFnForVideoResolution = knownMimeType => element => {
+        let result = !1;
+        if (!knownMimeType) {
+            const _mimeType = element[Attr(DashConstants.ATTR_MIME_TYPE)] ? element[Attr(DashConstants.ATTR_MIME_TYPE)] : "";
+            if (!_mimeType.startsWith("video/")) return !0;
+            logger.log("filterVariantsByResolution filterFnForVideoResolution mimetype : %s", _mimeType);
+        }
+        const width = element[Attr(DashConstants.ATTR_WIDTH)] ? element[Attr(DashConstants.ATTR_WIDTH)] : 0, height = element[Attr(DashConstants.ATTR_HEIGHT)] ? element[Attr(DashConstants.ATTR_HEIGHT)] : 0;
+        return result = width <= maxSupportedResolutionObject.width && height <= maxSupportedResolutionObject.height, 
+        result;
+    };
+    try {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+            period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
+                const _contentType = adaptationSet[Attr(DashConstants.ATTR_CONTENT_TYPE)] ? adaptationSet[Attr(DashConstants.ATTR_CONTENT_TYPE)] : "", _mimeType = adaptationSet[Attr(DashConstants.ATTR_MIME_TYPE)] ? adaptationSet[Attr(DashConstants.ATTR_MIME_TYPE)] : "";
+                if (logger.log("filterVariantsByResolution mimetype : %s", _mimeType), logger.log("filterVariantsByResolution contenttype : %s", _contentType), 
+                "video" == _contentType || _mimeType.startsWith("video/")) {
+                    logger.log("representation", adaptationSet[DashConstants.REPRESENTATION]);
+                    const filteredRenditions = adaptationSet[DashConstants.REPRESENTATION].filter(filterFnForVideoResolution(!0));
+                    adaptationSet[DashConstants.REPRESENTATION] = filteredRenditions;
+                } else if ("" === _contentType && "" === _mimeType) {
+                    const filteredRenditions = adaptationSet[DashConstants.REPRESENTATION].filter(filterFnForVideoResolution(!1));
+                    adaptationSet[DashConstants.REPRESENTATION] = filteredRenditions;
+                }
+            }));
+        }));
+    } catch (error) {
+        throw new Error(`DashParser: failed to filterVariantsByResolution due to ${error.message}`);
+    }
+}, DashParser.updateVariantAtIndex = (mpdJson, resolution, newIndex) => {
+    if (logger.log(resolution, newIndex), logger.log(typeof resolution, typeof newIndex), 
+    !mpdJson) throw new Error("DashParser: updateVariantAtIndex api failed,dash mpd json object cannot be empty!");
+    if (!resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution cannot be empty!");
+    if ("string" != typeof resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution must be a string!");
+    if (0 != newIndex && !newIndex || null === newIndex) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex cannot be empty,undefined or null!");
+    if ("number" != typeof newIndex || newIndex < 0) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex must be a number greater than or equal to 0!");
+    try {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+            period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
+                const [_contentType, _mimeType] = getContentType(adaptationSet);
+                ("video" == _contentType || _mimeType.startsWith("video/")) && (representations => {
+                    let isVariantAtIndexUpdated = !1;
+                    if (newIndex >= representations.length) return isVariantAtIndexUpdated;
+                    let currVariantIndex = 0;
+                    const resolutionObject = parseResolution(resolution);
+                    for (;currVariantIndex < representations.length; ) if (representations[currVariantIndex][Attr(DashConstants.ATTR_WIDTH)] && representations[currVariantIndex][Attr(DashConstants.ATTR_HEIGHT)] && representations[currVariantIndex][Attr(DashConstants.ATTR_WIDTH)] === resolutionObject.width && representations[currVariantIndex][Attr(DashConstants.ATTR_HEIGHT)] === resolutionObject.height) {
+                        if (currVariantIndex == newIndex) return;
+                        {
+                            const splicedEle = representations.splice(currVariantIndex, 1)[0];
+                            representations.splice(newIndex, 0, splicedEle), isVariantAtIndexUpdated = !0, logger.log("updateVariantAtIndex variant updated at index %s", newIndex), 
+                            logger.log("updateVariantAtIndex variant updated at index %s", newIndex), logger.log("updateVariantAtIndex element spliced %s", splicedEle), 
+                            currVariantIndex++;
+                        }
+                    } else currVariantIndex++;
+                })(adaptationSet[DashConstants.REPRESENTATION]);
+            }));
+        }));
+    } catch (error) {
+        throw new Error(`DashParser: failed to updateVariantAtIndex due to ${error.message}`);
+    }
+}, DashParser.updateVariants = (mpdJson, resolutions, newIndex = 0) => {
+    if (!mpdJson || !resolutions) throw new Error("DashParser: updateVariants api failed,dash mpd json object cannot be empty!");
+    if (!resolutions) throw new Error("DashParser: updateVariants api failed,resolutions cannot be empty!");
+    if (!Array.isArray(resolutions)) throw new Error("DashParser: updateVariants api failed,resolutions must be an array!");
+    if (!resolutions.every((item => "string" == typeof item))) throw new Error("DashParser: updateVariants api failed,resolutions must be an array of strings!");
+    try {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+            period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
+                const [_contentType, _mimeType] = getContentType(adaptationSet);
+                ("video" == _contentType || _mimeType.startsWith("video/")) && (representations => {
+                    let isVariantAtIndexUpdated = !1;
+                    newIndex = 0;
+                    const numOfRes = resolutions.length;
+                    for (let currResIndex = 0; currResIndex < numOfRes; currResIndex++) {
+                        let currVariantIndex = 0;
+                        const resolutionObject = parseResolution(resolutions[currResIndex]);
+                        for (;currVariantIndex < representations.length; ) if (representations[currVariantIndex][Attr(DashConstants.ATTR_WIDTH)] && representations[currVariantIndex][Attr(DashConstants.ATTR_HEIGHT)] && representations[currVariantIndex][Attr(DashConstants.ATTR_WIDTH)] === resolutionObject.width && representations[currVariantIndex][Attr(DashConstants.ATTR_HEIGHT)] === resolutionObject.height) {
+                            if (currVariantIndex != newIndex) {
+                                const splicedEle = representations.splice(currVariantIndex, 1)[0];
+                                representations.splice(newIndex, 0, splicedEle), logger.log("updateVariants variant updated at index %s", newIndex), 
+                                logger.log("updateVariants currVariantIndex %s", currVariantIndex), logger.log("updateVariants element spliced %s", splicedEle), 
+                                newIndex++, isVariantAtIndexUpdated = !0, currVariantIndex++;
+                            }
+                        } else currVariantIndex++;
+                    }
+                })(adaptationSet[DashConstants.REPRESENTATION]);
+            }));
+        }));
+    } catch (error) {
+        throw new Error(`DashParser: failed to updateVariants due to ${error.message}`);
+    }
+}, DashParser.filterVariantsByAudioLanguage = (mpdJson, languages) => {
+    if (!mpdJson) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,dash mpd json object cannot be empty!");
+    if (!languages) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages cannot be empty!");
+    if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array!");
+    if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array of strings!");
+    try {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+            const filteredRenditions = period[DashConstants.ADAPTATION_SET].filter((element => {
+                let result = !1;
+                const [_contentType, _mimeType] = getContentType(element);
+                if (logger.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet _contentType %s", _contentType), 
+                logger.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet _mimeType %s", _mimeType), 
+                !_mimeType && !_contentType) return !0;
+                if (_mimeType && !_mimeType.startsWith("audio/") || _contentType && "audio" != _contentType) return !0;
+                const lang = element[Attr(DashConstants.ATTR_LANG)] ? element[Attr(DashConstants.ATTR_LANG)] : "";
+                return result = languages.includes(lang), logger.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet language matches %s", languages.includes(lang)), 
+                result;
+            }));
+            period[DashConstants.ADAPTATION_SET] = filteredRenditions, filteredRenditions.forEach((adaptationSet => {
+                const languageFromAdaptationSet = adaptationSet[Attr(DashConstants.ATTR_LANG)] ? adaptationSet[Attr(DashConstants.ATTR_LANG)] : "", filteredRepresentation = adaptationSet[DashConstants.REPRESENTATION].filter((languageFromAdaptationSet => element => {
+                    let result = !1;
+                    const _mimeType = element[Attr(DashConstants.ATTR_MIME_TYPE)] ? element[Attr(DashConstants.ATTR_MIME_TYPE)] : "", _contentType = element[Attr(DashConstants.ATTR_CONTENT_TYPE)] ? element[Attr(DashConstants.ATTR_CONTENT_TYPE)] : "";
+                    if (!_mimeType.startsWith("audio/") || "audio" != _contentType) return !0;
+                    const lang = element[Attr(DashConstants.ATTR_LANG)] ? element[Attr(DashConstants.ATTR_LANG)] : languageFromAdaptationSet;
+                    return result = languages.includes(lang), logger.log("filterVariantsByAudioLanguage filterFnForAudioRepresentation language matches %s", languages.includes(lang)), 
+                    result;
+                })(languageFromAdaptationSet));
+                adaptationSet[DashConstants.REPRESENTATION] = filteredRepresentation;
+            }));
+        }));
+    } catch (error) {
+        throw new Error(`DashParser: failed to filterVariantsByAudioLanguage due to ${error.message}`);
+    }
+}, DashParser.filterVariantsBySubtitlesLanguage = (mpdJson, languages) => {
+    if (!mpdJson) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,dash mpd json object cannot be empty!");
+    if (!languages) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages cannot be empty!");
+    if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array!");
+    if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array of strings!");
+    try {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+            const filteredRenditions = period[DashConstants.ADAPTATION_SET].filter((element => {
+                let result = !1;
+                const [_contentType, _mimeType] = getContentType(element);
+                if (logger.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _contentType %s", _contentType), 
+                logger.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _mimeType %s", _mimeType), 
+                _mimeType && !_mimeType.startsWith("application/") || _contentType && "text" != _contentType) return !0;
+                const lang = element[Attr(DashConstants.ATTR_LANG)] ? element[Attr(DashConstants.ATTR_LANG)] : "";
+                return result = languages.includes(lang), logger.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet language matches %s", languages.includes(lang)), 
+                result;
+            }));
+            period[DashConstants.ADAPTATION_SET] = filteredRenditions, filteredRenditions.forEach((adaptationSet => {
+                const languageFromAdaptationSet = adaptationSet[Attr(DashConstants.ATTR_LANG)] ? adaptationSet[Attr(DashConstants.ATTR_LANG)] : "", filteredRepresentation = adaptationSet[DashConstants.REPRESENTATION].filter((languageFromAdaptationSet => element => {
+                    let result = !1;
+                    const _mimeType = element[Attr(DashConstants.ATTR_MIME_TYPE)] ? element[Attr(DashConstants.ATTR_MIME_TYPE)] : "", _contentType = element[Attr(DashConstants.ATTR_CONTENT_TYPE)] ? element[Attr(DashConstants.ATTR_CONTENT_TYPE)] : "";
+                    if (!_mimeType.startsWith("application/") || "text" != _contentType) return !0;
+                    const lang = element[Attr(DashConstants.ATTR_LANG)] ? element[Attr(DashConstants.ATTR_LANG)] : languageFromAdaptationSet;
+                    return result = languages.includes(lang), logger.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleRepresentation language matches %s", languages.includes(lang)), 
+                    result;
+                })(languageFromAdaptationSet));
+                adaptationSet[DashConstants.REPRESENTATION] = filteredRepresentation;
+            }));
+        }));
+    } catch (error) {
+        throw new Error(`DashParser: failed to filterVariantsBySubtitlesLanguage due to ${error.message}`);
+    }
+};
+
+export { DashParser, MIME_TYPE_AUDIO_PREFIX, MIME_TYPE_TEXT_PREFIX, MIME_TYPE_VIDEO_PREFIX };

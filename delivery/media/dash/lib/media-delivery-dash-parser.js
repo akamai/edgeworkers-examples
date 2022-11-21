@@ -1788,7 +1788,7 @@ class DashParser {
         try {
             dashMpd.parse(mpdXml);
         } catch (error) {
-            throw new GenericError(400, `DashParser: failed to parseMPD due to ${error.message}`);
+            throw new Error(`DashParser: failed to parseMPD due to ${error.message}`);
         }
     }
     static getJSON() {
@@ -1801,15 +1801,16 @@ class DashParser {
         try {
             return dashMpd.getMPD();
         } catch (error) {
-            throw new GenericError(400, `DashParser: failed to parseMPD due to ${error.message}`);
+            throw new Error(`DashParser: failed to parseMPD due to ${error.message}`);
         }
     }
 }
 
-DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
-    if (!mpd || !ranges) throw new Error("Invalid arguments!");
-    if (!Array.isArray(ranges)) throw new Error("Invalid arguments!");
-    if (!ranges.every((item => "string" == typeof item))) throw new Error("Invalid arguments!");
+DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
+    if (!mpdJson) throw new Error("DashParser: filterVariantsByBandwidth api failed ,dash mpd json object cannot be empty");
+    if (!bitrates) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates cannot be empty");
+    if (!Array.isArray(bitrates)) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be array");
+    if (!bitrates.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be of strings!");
     const filterFnForVideoAdaptationSet = knownMimeType => element => {
         let result = !1;
         const match = {};
@@ -1819,7 +1820,7 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
             logger.log("filterVariantsByBandwidth filterFnForVideoAdaptationSet contenttype : %s", _contentType), 
             _mimeType && !_mimeType.startsWith("video/") || _contentType && "video" != _contentType) return !0;
         }
-        return ranges.forEach((range => {
+        return bitrates.forEach((range => {
             if (range) {
                 const intermediateResult = filter(range, element[Attr(DashConstants.ATTR_BANDWIDTH)], tolerance);
                 match[range] = intermediateResult;
@@ -1828,7 +1829,7 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
         result;
     };
     try {
-        mpd[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
                 const [_contentType, _mimeType] = getContentType(adaptationSet);
                 let filteredRenditions = [];
@@ -1839,11 +1840,11 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
             }));
         }));
     } catch (error) {
-        throw new GenericError(400, `DashParser: failed to filterVariantsByBandwidth due to ${error.message}`);
+        throw new Error(`DashParser: failed to filterVariantsByBandwidth due to ${error.message}`);
     }
-}, DashParser.filterVariantsByResolution = (mpd, maxSupportedResolution) => {
-    if (!mpd || !maxSupportedResolution) throw new Error("Invalid arguments!");
-    if ("string" != typeof maxSupportedResolution) throw new Error("Invalid arguments!");
+}, DashParser.filterVariantsByResolution = (mpdJson, maxSupportedResolution) => {
+    if (!mpdJson) throw new Error("DashParser: filterVariantsByResolution api failed,dash mpd json object cannot be empty!");
+    if (!maxSupportedResolution || "string" != typeof maxSupportedResolution) throw new Error("DashParser: filterVariantsByResolution api failed,maxSupportedResolution should be a string and not empty !");
     const maxSupportedResolutionObject = parseResolution(maxSupportedResolution), filterFnForVideoResolution = knownMimeType => element => {
         let result = !1;
         if (!knownMimeType) {
@@ -1856,7 +1857,7 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
         result;
     };
     try {
-        mpd[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
                 const _contentType = adaptationSet[Attr(DashConstants.ATTR_CONTENT_TYPE)] ? adaptationSet[Attr(DashConstants.ATTR_CONTENT_TYPE)] : "", _mimeType = adaptationSet[Attr(DashConstants.ATTR_MIME_TYPE)] ? adaptationSet[Attr(DashConstants.ATTR_MIME_TYPE)] : "";
                 if (logger.log("filterVariantsByResolution mimetype : %s", _mimeType), logger.log("filterVariantsByResolution contenttype : %s", _contentType), 
@@ -1871,14 +1872,17 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
             }));
         }));
     } catch (error) {
-        throw new GenericError(400, `DashParser: failed to filterVariantsByResolution due to ${error.message}`);
+        throw new Error(`DashParser: failed to filterVariantsByResolution due to ${error.message}`);
     }
-}, DashParser.updateVariantAtIndex = (mpd, resolution, newIndex) => {
+}, DashParser.updateVariantAtIndex = (mpdJson, resolution, newIndex) => {
     if (logger.log(resolution, newIndex), logger.log(typeof resolution, typeof newIndex), 
-    !mpd || !resolution || null === newIndex) throw new Error("Invalid arguments!");
-    if ("string" != typeof resolution || "number" != typeof newIndex || newIndex < 0) throw new Error("Invalid arguments!");
+    !mpdJson) throw new Error("DashParser: updateVariantAtIndex api failed,dash mpd json object cannot be empty!");
+    if (!resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution cannot be empty!");
+    if ("string" != typeof resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution must be a string!");
+    if (0 != newIndex && !newIndex || null === newIndex) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex cannot be empty,undefined or null!");
+    if ("number" != typeof newIndex || newIndex < 0) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex must be a number greater than or equal to 0!");
     try {
-        mpd[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
                 const [_contentType, _mimeType] = getContentType(adaptationSet);
                 ("video" == _contentType || _mimeType.startsWith("video/")) && (representations => {
@@ -1899,14 +1903,15 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
             }));
         }));
     } catch (error) {
-        throw new GenericError(400, `DashParser: failed to updateVariantAtIndex due to ${error.message}`);
+        throw new Error(`DashParser: failed to updateVariantAtIndex due to ${error.message}`);
     }
-}, DashParser.updateVariants = (mpd, resolutions, newIndex = 0) => {
-    if (!mpd || !resolutions) throw new Error("Invalid arguments!");
-    if (!Array.isArray(resolutions) || "number" != typeof newIndex || newIndex < 0) throw new Error("Invalid arguments!");
-    if (!resolutions.every((item => "string" == typeof item))) throw new Error("Invalid arguments!");
+}, DashParser.updateVariants = (mpdJson, resolutions, newIndex = 0) => {
+    if (!mpdJson || !resolutions) throw new Error("DashParser: updateVariants api failed,dash mpd json object cannot be empty!");
+    if (!resolutions) throw new Error("DashParser: updateVariants api failed,resolutions cannot be empty!");
+    if (!Array.isArray(resolutions)) throw new Error("DashParser: updateVariants api failed,resolutions must be an array!");
+    if (!resolutions.every((item => "string" == typeof item))) throw new Error("DashParser: updateVariants api failed,resolutions must be an array of strings!");
     try {
-        mpd[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
                 const [_contentType, _mimeType] = getContentType(adaptationSet);
                 ("video" == _contentType || _mimeType.startsWith("video/")) && (representations => {
@@ -1929,14 +1934,15 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
             }));
         }));
     } catch (error) {
-        throw new GenericError(400, `DashParser: failed to updateVariants due to ${error.message}`);
+        throw new Error(`DashParser: failed to updateVariants due to ${error.message}`);
     }
-}, DashParser.filterVariantsByAudioLanguage = (mpd, languages) => {
-    if (!mpd || !languages) throw new Error("Invalid arguments!");
-    if (!Array.isArray(languages)) throw new Error("Invalid arguments!");
-    if (!languages.every((item => "string" == typeof item))) throw new Error("Invalid arguments!");
+}, DashParser.filterVariantsByAudioLanguage = (mpdJson, languages) => {
+    if (!mpdJson) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,dash mpd json object cannot be empty!");
+    if (!languages) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages cannot be empty!");
+    if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array!");
+    if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array of strings!");
     try {
-        mpd[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             const filteredRenditions = period[DashConstants.ADAPTATION_SET].filter((element => {
                 let result = !1;
                 const [_contentType, _mimeType] = getContentType(element);
@@ -1961,14 +1967,15 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
             }));
         }));
     } catch (error) {
-        throw new GenericError(400, `DashParser: failed to filterVariantsByAudioLanguage due to ${error.message}`);
+        throw new Error(`DashParser: failed to filterVariantsByAudioLanguage due to ${error.message}`);
     }
-}, DashParser.filterVariantsBySubtitlesLanguage = (mpd, languages) => {
-    if (!mpd || !languages) throw new Error("Invalid arguments!");
-    if (!Array.isArray(languages)) throw new Error("Invalid arguments!");
-    if (!languages.every((item => "string" == typeof item))) throw new Error("Invalid arguments!");
+}, DashParser.filterVariantsBySubtitlesLanguage = (mpdJson, languages) => {
+    if (!mpdJson) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,dash mpd json object cannot be empty!");
+    if (!languages) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages cannot be empty!");
+    if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array!");
+    if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array of strings!");
     try {
-        mpd[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
+        mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             const filteredRenditions = period[DashConstants.ADAPTATION_SET].filter((element => {
                 let result = !1;
                 const [_contentType, _mimeType] = getContentType(element);
@@ -1992,7 +1999,7 @@ DashParser.filterVariantsByBandwidth = (mpd, ranges, tolerance = 1e5) => {
             }));
         }));
     } catch (error) {
-        throw new GenericError(400, `DashParser: failed to filterVariantsBySubtitlesLanguage due to ${error.message}`);
+        throw new Error(`DashParser: failed to filterVariantsBySubtitlesLanguage due to ${error.message}`);
     }
 };
 

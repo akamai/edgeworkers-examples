@@ -1,0 +1,8 @@
+{
+    "edgeworker-version": "0.3",
+    "description" : "HLS MPer Test",
+    "misc":{
+        "author":"Rajan Kalra",
+        "date":"Jun 21, 2022"
+    }
+}

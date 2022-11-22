@@ -1,2 +1,4585 @@
-function t(t,e,r){if(r||2===arguments.length)for(var n,i=0,s=e.length;i<s;i++)!n&&i in e||(n||(n=Array.prototype.slice.call(e,0,i)),n[i]=e[i]);return t.concat(n||Array.prototype.slice.call(e))}var e="undefined"!=typeof global?global:"undefined"!=typeof self?self:"undefined"!=typeof window?window:{},r=[],n=[],i="undefined"!=typeof Uint8Array?Uint8Array:Array,s=!1;function a(){s=!0;for(var t="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",e=0,i=t.length;e<i;++e)r[e]=t[e],n[t.charCodeAt(e)]=e;n["-".charCodeAt(0)]=62,n["_".charCodeAt(0)]=63}function o(t,e,n){for(var i,s,a=[],o=e;o<n;o+=3)i=(t[o]<<16)+(t[o+1]<<8)+t[o+2],a.push(r[(s=i)>>18&63]+r[s>>12&63]+r[s>>6&63]+r[63&s]);return a.join("")}function u(t){var e;s||a();for(var n=t.length,i=n%3,u="",h=[],c=16383,l=0,f=n-i;l<f;l+=c)h.push(o(t,l,l+c>f?f:l+c));return 1===i?(e=t[n-1],u+=r[e>>2],u+=r[e<<4&63],u+="=="):2===i&&(e=(t[n-2]<<8)+t[n-1],u+=r[e>>10],u+=r[e>>4&63],u+=r[e<<2&63],u+="="),h.push(u),h.join("")}function h(t,e,r,n,i){var s,a,o=8*i-n-1,u=(1<<o)-1,h=u>>1,c=-7,l=r?i-1:0,f=r?-1:1,E=t[e+l];for(l+=f,s=E&(1<<-c)-1,E>>=-c,c+=o;c>0;s=256*s+t[e+l],l+=f,c-=8);for(a=s&(1<<-c)-1,s>>=-c,c+=n;c>0;a=256*a+t[e+l],l+=f,c-=8);if(0===s)s=1-h;else{if(s===u)return a?NaN:1/0*(E?-1:1);a+=Math.pow(2,n),s-=h}return(E?-1:1)*a*Math.pow(2,s-n)}function c(t,e,r,n,i,s){var a,o,u,h=8*s-i-1,c=(1<<h)-1,l=c>>1,f=23===i?Math.pow(2,-24)-Math.pow(2,-77):0,E=n?0:s-1,T=n?1:-1,p=e<0||0===e&&1/e<0?1:0;for(e=Math.abs(e),isNaN(e)||e===1/0?(o=isNaN(e)?1:0,a=c):(a=Math.floor(Math.log(e)/Math.LN2),e*(u=Math.pow(2,-a))<1&&(a--,u*=2),(e+=a+l>=1?f/u:f*Math.pow(2,1-l))*u>=2&&(a++,u/=2),a+l>=c?(o=0,a=c):a+l>=1?(o=(e*u-1)*Math.pow(2,i),a+=l):(o=e*Math.pow(2,l-1)*Math.pow(2,i),a=0));i>=8;t[r+E]=255&o,E+=T,o/=256,i-=8);for(a=a<<i|o,h+=i;h>0;t[r+E]=255&a,E+=T,a/=256,h-=8);t[r+E-T]|=128*p}var l={}.toString,f=Array.isArray||function(t){return"[object Array]"==l.call(t)};function E(){return p.TYPED_ARRAY_SUPPORT?2147483647:1073741823}function T(t,e){if(E()<e)throw new RangeError("Invalid typed array length");return p.TYPED_ARRAY_SUPPORT?(t=new Uint8Array(e)).__proto__=p.prototype:(null===t&&(t=new p(e)),t.length=e),t}function p(t,e,r){if(!(p.TYPED_ARRAY_SUPPORT||this instanceof p))return new p(t,e,r);if("number"==typeof t){if("string"==typeof e)throw new Error("If encoding is specified then the first argument must be a string");return d(this,t)}return A(this,t,e,r)}function A(t,e,r,n){if("number"==typeof e)throw new TypeError('"value" argument must not be a number');return"undefined"!=typeof ArrayBuffer&&e instanceof ArrayBuffer?function(t,e,r,n){if(e.byteLength,r<0||e.byteLength<r)throw new RangeError("'offset' is out of bounds");if(e.byteLength<r+(n||0))throw new RangeError("'length' is out of bounds");e=void 0===r&&void 0===n?new Uint8Array(e):void 0===n?new Uint8Array(e,r):new Uint8Array(e,r,n);p.TYPED_ARRAY_SUPPORT?(t=e).__proto__=p.prototype:t=g(t,e);return t}(t,e,r,n):"string"==typeof e?function(t,e,r){"string"==typeof r&&""!==r||(r="utf8");if(!p.isEncoding(r))throw new TypeError('"encoding" must be a valid string encoding');var n=0|y(e,r),i=(t=T(t,n)).write(e,r);i!==n&&(t=t.slice(0,i));return t}(t,e,r):function(t,e){if(N(e)){var r=0|S(e.length);return 0===(t=T(t,r)).length||e.copy(t,0,0,r),t}if(e){if("undefined"!=typeof ArrayBuffer&&e.buffer instanceof ArrayBuffer||"length"in e)return"number"!=typeof e.length||(n=e.length)!=n?T(t,0):g(t,e);if("Buffer"===e.type&&f(e.data))return g(t,e.data)}var n;throw new TypeError("First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.")}(t,e)}function I(t){if("number"!=typeof t)throw new TypeError('"size" argument must be a number');if(t<0)throw new RangeError('"size" argument must not be negative')}function d(t,e){if(I(e),t=T(t,e<0?0:0|S(e)),!p.TYPED_ARRAY_SUPPORT)for(var r=0;r<e;++r)t[r]=0;return t}function g(t,e){var r=e.length<0?0:0|S(e.length);t=T(t,r);for(var n=0;n<r;n+=1)t[n]=255&e[n];return t}function S(t){if(t>=E())throw new RangeError("Attempt to allocate Buffer larger than maximum size: 0x"+E().toString(16)+" bytes");return 0|t}function N(t){return!(null==t||!t._isBuffer)}function y(t,e){if(N(t))return t.length;if("undefined"!=typeof ArrayBuffer&&"function"==typeof ArrayBuffer.isView&&(ArrayBuffer.isView(t)||t instanceof ArrayBuffer))return t.byteLength;"string"!=typeof t&&(t=""+t);var r=t.length;if(0===r)return 0;for(var n=!1;;)switch(e){case"ascii":case"latin1":case"binary":return r;case"utf8":case"utf-8":case void 0:return q(t).length;case"ucs2":case"ucs-2":case"utf16le":case"utf-16le":return 2*r;case"hex":return r>>>1;case"base64":return W(t).length;default:if(n)return q(t).length;e=(""+e).toLowerCase(),n=!0}}function R(t,e,r){var n=!1;if((void 0===e||e<0)&&(e=0),e>this.length)return"";if((void 0===r||r>this.length)&&(r=this.length),r<=0)return"";if((r>>>=0)<=(e>>>=0))return"";for(t||(t="utf8");;)switch(t){case"hex":return V(this,e,r);case"utf8":case"utf-8":return M(this,e,r);case"ascii":return U(this,e,r);case"latin1":case"binary":return Y(this,e,r);case"base64":return C(this,e,r);case"ucs2":case"ucs-2":case"utf16le":case"utf-16le":return B(this,e,r);default:if(n)throw new TypeError("Unknown encoding: "+t);t=(t+"").toLowerCase(),n=!0}}function m(t,e,r){var n=t[e];t[e]=t[r],t[r]=n}function X(t,e,r,n,i){if(0===t.length)return-1;if("string"==typeof r?(n=r,r=0):r>2147483647?r=2147483647:r<-2147483648&&(r=-2147483648),r=+r,isNaN(r)&&(r=i?0:t.length-1),r<0&&(r=t.length+r),r>=t.length){if(i)return-1;r=t.length-1}else if(r<0){if(!i)return-1;r=0}if("string"==typeof e&&(e=p.from(e,n)),N(e))return 0===e.length?-1:L(t,e,r,n,i);if("number"==typeof e)return e&=255,p.TYPED_ARRAY_SUPPORT&&"function"==typeof Uint8Array.prototype.indexOf?i?Uint8Array.prototype.indexOf.call(t,e,r):Uint8Array.prototype.lastIndexOf.call(t,e,r):L(t,[e],r,n,i);throw new TypeError("val must be string, number or Buffer")}function L(t,e,r,n,i){var s,a=1,o=t.length,u=e.length;if(void 0!==n&&("ucs2"===(n=String(n).toLowerCase())||"ucs-2"===n||"utf16le"===n||"utf-16le"===n)){if(t.length<2||e.length<2)return-1;a=2,o/=2,u/=2,r/=2}function h(t,e){return 1===a?t[e]:t.readUInt16BE(e*a)}if(i){var c=-1;for(s=r;s<o;s++)if(h(t,s)===h(e,-1===c?0:s-c)){if(-1===c&&(c=s),s-c+1===u)return c*a}else-1!==c&&(s-=s-c),c=-1}else for(r+u>o&&(r=o-u),s=r;s>=0;s--){for(var l=!0,f=0;f<u;f++)if(h(t,s+f)!==h(e,f)){l=!1;break}if(l)return s}return-1}function P(t,e,r,n){r=Number(r)||0;var i=t.length-r;n?(n=Number(n))>i&&(n=i):n=i;var s=e.length;if(s%2!=0)throw new TypeError("Invalid hex string");n>s/2&&(n=s/2);for(var a=0;a<n;++a){var o=parseInt(e.substr(2*a,2),16);if(isNaN(o))return a;t[r+a]=o}return a}function D(t,e,r,n){return Q(q(e,t.length-r),t,r,n)}function O(t,e,r,n){return Q(function(t){for(var e=[],r=0;r<t.length;++r)e.push(255&t.charCodeAt(r));return e}(e),t,r,n)}function v(t,e,r,n){return O(t,e,r,n)}function b(t,e,r,n){return Q(W(e),t,r,n)}function w(t,e,r,n){return Q(function(t,e){for(var r,n,i,s=[],a=0;a<t.length&&!((e-=2)<0);++a)n=(r=t.charCodeAt(a))>>8,i=r%256,s.push(i),s.push(n);return s}(e,t.length-r),t,r,n)}function C(t,e,r){return 0===e&&r===t.length?u(t):u(t.slice(e,r))}function M(t,e,r){r=Math.min(t.length,r);for(var n=[],i=e;i<r;){var s,a,o,u,h=t[i],c=null,l=h>239?4:h>223?3:h>191?2:1;if(i+l<=r)switch(l){case 1:h<128&&(c=h);break;case 2:128==(192&(s=t[i+1]))&&(u=(31&h)<<6|63&s)>127&&(c=u);break;case 3:s=t[i+1],a=t[i+2],128==(192&s)&&128==(192&a)&&(u=(15&h)<<12|(63&s)<<6|63&a)>2047&&(u<55296||u>57343)&&(c=u);break;case 4:s=t[i+1],a=t[i+2],o=t[i+3],128==(192&s)&&128==(192&a)&&128==(192&o)&&(u=(15&h)<<18|(63&s)<<12|(63&a)<<6|63&o)>65535&&u<1114112&&(c=u)}null===c?(c=65533,l=1):c>65535&&(c-=65536,n.push(c>>>10&1023|55296),c=56320|1023&c),n.push(c),i+=l}return function(t){var e=t.length;if(e<=4096)return String.fromCharCode.apply(String,t);var r="",n=0;for(;n<e;)r+=String.fromCharCode.apply(String,t.slice(n,n+=4096));return r}(n)}p.TYPED_ARRAY_SUPPORT=void 0===e.TYPED_ARRAY_SUPPORT||e.TYPED_ARRAY_SUPPORT,E(),p.poolSize=8192,p._augment=function(t){return t.__proto__=p.prototype,t},p.from=function(t,e,r){return A(null,t,e,r)},p.TYPED_ARRAY_SUPPORT&&(p.prototype.__proto__=Uint8Array.prototype,p.__proto__=Uint8Array,"undefined"!=typeof Symbol&&Symbol.species&&p[Symbol.species]),p.alloc=function(t,e,r){return function(t,e,r,n){return I(e),e<=0?T(t,e):void 0!==r?"string"==typeof n?T(t,e).fill(r,n):T(t,e).fill(r):T(t,e)}(null,t,e,r)},p.allocUnsafe=function(t){return d(null,t)},p.allocUnsafeSlow=function(t){return d(null,t)},p.isBuffer=function(t){return null!=t&&(!!t._isBuffer||z(t)||function(t){return"function"==typeof t.readFloatLE&&"function"==typeof t.slice&&z(t.slice(0,0))}(t))},p.compare=function(t,e){if(!N(t)||!N(e))throw new TypeError("Arguments must be Buffers");if(t===e)return 0;for(var r=t.length,n=e.length,i=0,s=Math.min(r,n);i<s;++i)if(t[i]!==e[i]){r=t[i],n=e[i];break}return r<n?-1:n<r?1:0},p.isEncoding=function(t){switch(String(t).toLowerCase()){case"hex":case"utf8":case"utf-8":case"ascii":case"latin1":case"binary":case"base64":case"ucs2":case"ucs-2":case"utf16le":case"utf-16le":return!0;default:return!1}},p.concat=function(t,e){if(!f(t))throw new TypeError('"list" argument must be an Array of Buffers');if(0===t.length)return p.alloc(0);var r;if(void 0===e)for(e=0,r=0;r<t.length;++r)e+=t[r].length;var n=p.allocUnsafe(e),i=0;for(r=0;r<t.length;++r){var s=t[r];if(!N(s))throw new TypeError('"list" argument must be an Array of Buffers');s.copy(n,i),i+=s.length}return n},p.byteLength=y,p.prototype._isBuffer=!0,p.prototype.swap16=function(){var t=this.length;if(t%2!=0)throw new RangeError("Buffer size must be a multiple of 16-bits");for(var e=0;e<t;e+=2)m(this,e,e+1);return this},p.prototype.swap32=function(){var t=this.length;if(t%4!=0)throw new RangeError("Buffer size must be a multiple of 32-bits");for(var e=0;e<t;e+=4)m(this,e,e+3),m(this,e+1,e+2);return this},p.prototype.swap64=function(){var t=this.length;if(t%8!=0)throw new RangeError("Buffer size must be a multiple of 64-bits");for(var e=0;e<t;e+=8)m(this,e,e+7),m(this,e+1,e+6),m(this,e+2,e+5),m(this,e+3,e+4);return this},p.prototype.toString=function(){var t=0|this.length;return 0===t?"":0===arguments.length?M(this,0,t):R.apply(this,arguments)},p.prototype.equals=function(t){if(!N(t))throw new TypeError("Argument must be a Buffer");return this===t||0===p.compare(this,t)},p.prototype.inspect=function(){var t="";return this.length>0&&(t=this.toString("hex",0,50).match(/.{2}/g).join(" "),this.length>50&&(t+=" ... ")),"<Buffer "+t+">"},p.prototype.compare=function(t,e,r,n,i){if(!N(t))throw new TypeError("Argument must be a Buffer");if(void 0===e&&(e=0),void 0===r&&(r=t?t.length:0),void 0===n&&(n=0),void 0===i&&(i=this.length),e<0||r>t.length||n<0||i>this.length)throw new RangeError("out of range index");if(n>=i&&e>=r)return 0;if(n>=i)return-1;if(e>=r)return 1;if(this===t)return 0;for(var s=(i>>>=0)-(n>>>=0),a=(r>>>=0)-(e>>>=0),o=Math.min(s,a),u=this.slice(n,i),h=t.slice(e,r),c=0;c<o;++c)if(u[c]!==h[c]){s=u[c],a=h[c];break}return s<a?-1:a<s?1:0},p.prototype.includes=function(t,e,r){return-1!==this.indexOf(t,e,r)},p.prototype.indexOf=function(t,e,r){return X(this,t,e,r,!0)},p.prototype.lastIndexOf=function(t,e,r){return X(this,t,e,r,!1)},p.prototype.write=function(t,e,r,n){if(void 0===e)n="utf8",r=this.length,e=0;else if(void 0===r&&"string"==typeof e)n=e,r=this.length,e=0;else{if(!isFinite(e))throw new Error("Buffer.write(string, encoding, offset[, length]) is no longer supported");e|=0,isFinite(r)?(r|=0,void 0===n&&(n="utf8")):(n=r,r=void 0)}var i=this.length-e;if((void 0===r||r>i)&&(r=i),t.length>0&&(r<0||e<0)||e>this.length)throw new RangeError("Attempt to write outside buffer bounds");n||(n="utf8");for(var s=!1;;)switch(n){case"hex":return P(this,t,e,r);case"utf8":case"utf-8":return D(this,t,e,r);case"ascii":return O(this,t,e,r);case"latin1":case"binary":return v(this,t,e,r);case"base64":return b(this,t,e,r);case"ucs2":case"ucs-2":case"utf16le":case"utf-16le":return w(this,t,e,r);default:if(s)throw new TypeError("Unknown encoding: "+n);n=(""+n).toLowerCase(),s=!0}},p.prototype.toJSON=function(){return{type:"Buffer",data:Array.prototype.slice.call(this._arr||this,0)}};function U(t,e,r){var n="";r=Math.min(t.length,r);for(var i=e;i<r;++i)n+=String.fromCharCode(127&t[i]);return n}function Y(t,e,r){var n="";r=Math.min(t.length,r);for(var i=e;i<r;++i)n+=String.fromCharCode(t[i]);return n}function V(t,e,r){var n=t.length;(!e||e<0)&&(e=0),(!r||r<0||r>n)&&(r=n);for(var i="",s=e;s<r;++s)i+=j(t[s]);return i}function B(t,e,r){for(var n=t.slice(e,r),i="",s=0;s<n.length;s+=2)i+=String.fromCharCode(n[s]+256*n[s+1]);return i}function $(t,e,r){if(t%1!=0||t<0)throw new RangeError("offset is not uint");if(t+e>r)throw new RangeError("Trying to access beyond buffer length")}function H(t,e,r,n,i,s){if(!N(t))throw new TypeError('"buffer" argument must be a Buffer instance');if(e>i||e<s)throw new RangeError('"value" argument is out of bounds');if(r+n>t.length)throw new RangeError("Index out of range")}function F(t,e,r,n){e<0&&(e=65535+e+1);for(var i=0,s=Math.min(t.length-r,2);i<s;++i)t[r+i]=(e&255<<8*(n?i:1-i))>>>8*(n?i:1-i)}function G(t,e,r,n){e<0&&(e=4294967295+e+1);for(var i=0,s=Math.min(t.length-r,4);i<s;++i)t[r+i]=e>>>8*(n?i:3-i)&255}function x(t,e,r,n,i,s){if(r+n>t.length)throw new RangeError("Index out of range");if(r<0)throw new RangeError("Index out of range")}function _(t,e,r,n,i){return i||x(t,0,r,4),c(t,e,r,n,23,4),r+4}function K(t,e,r,n,i){return i||x(t,0,r,8),c(t,e,r,n,52,8),r+8}p.prototype.slice=function(t,e){var r,n=this.length;if((t=~~t)<0?(t+=n)<0&&(t=0):t>n&&(t=n),(e=void 0===e?n:~~e)<0?(e+=n)<0&&(e=0):e>n&&(e=n),e<t&&(e=t),p.TYPED_ARRAY_SUPPORT)(r=this.subarray(t,e)).__proto__=p.prototype;else{var i=e-t;r=new p(i,void 0);for(var s=0;s<i;++s)r[s]=this[s+t]}return r},p.prototype.readUIntLE=function(t,e,r){t|=0,e|=0,r||$(t,e,this.length);for(var n=this[t],i=1,s=0;++s<e&&(i*=256);)n+=this[t+s]*i;return n},p.prototype.readUIntBE=function(t,e,r){t|=0,e|=0,r||$(t,e,this.length);for(var n=this[t+--e],i=1;e>0&&(i*=256);)n+=this[t+--e]*i;return n},p.prototype.readUInt8=function(t,e){return e||$(t,1,this.length),this[t]},p.prototype.readUInt16LE=function(t,e){return e||$(t,2,this.length),this[t]|this[t+1]<<8},p.prototype.readUInt16BE=function(t,e){return e||$(t,2,this.length),this[t]<<8|this[t+1]},p.prototype.readUInt32LE=function(t,e){return e||$(t,4,this.length),(this[t]|this[t+1]<<8|this[t+2]<<16)+16777216*this[t+3]},p.prototype.readUInt32BE=function(t,e){return e||$(t,4,this.length),16777216*this[t]+(this[t+1]<<16|this[t+2]<<8|this[t+3])},p.prototype.readIntLE=function(t,e,r){t|=0,e|=0,r||$(t,e,this.length);for(var n=this[t],i=1,s=0;++s<e&&(i*=256);)n+=this[t+s]*i;return n>=(i*=128)&&(n-=Math.pow(2,8*e)),n},p.prototype.readIntBE=function(t,e,r){t|=0,e|=0,r||$(t,e,this.length);for(var n=e,i=1,s=this[t+--n];n>0&&(i*=256);)s+=this[t+--n]*i;return s>=(i*=128)&&(s-=Math.pow(2,8*e)),s},p.prototype.readInt8=function(t,e){return e||$(t,1,this.length),128&this[t]?-1*(255-this[t]+1):this[t]},p.prototype.readInt16LE=function(t,e){e||$(t,2,this.length);var r=this[t]|this[t+1]<<8;return 32768&r?4294901760|r:r},p.prototype.readInt16BE=function(t,e){e||$(t,2,this.length);var r=this[t+1]|this[t]<<8;return 32768&r?4294901760|r:r},p.prototype.readInt32LE=function(t,e){return e||$(t,4,this.length),this[t]|this[t+1]<<8|this[t+2]<<16|this[t+3]<<24},p.prototype.readInt32BE=function(t,e){return e||$(t,4,this.length),this[t]<<24|this[t+1]<<16|this[t+2]<<8|this[t+3]},p.prototype.readFloatLE=function(t,e){return e||$(t,4,this.length),h(this,t,!0,23,4)},p.prototype.readFloatBE=function(t,e){return e||$(t,4,this.length),h(this,t,!1,23,4)},p.prototype.readDoubleLE=function(t,e){return e||$(t,8,this.length),h(this,t,!0,52,8)},p.prototype.readDoubleBE=function(t,e){return e||$(t,8,this.length),h(this,t,!1,52,8)},p.prototype.writeUIntLE=function(t,e,r,n){(t=+t,e|=0,r|=0,n)||H(this,t,e,r,Math.pow(2,8*r)-1,0);var i=1,s=0;for(this[e]=255&t;++s<r&&(i*=256);)this[e+s]=t/i&255;return e+r},p.prototype.writeUIntBE=function(t,e,r,n){(t=+t,e|=0,r|=0,n)||H(this,t,e,r,Math.pow(2,8*r)-1,0);var i=r-1,s=1;for(this[e+i]=255&t;--i>=0&&(s*=256);)this[e+i]=t/s&255;return e+r},p.prototype.writeUInt8=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,1,255,0),p.TYPED_ARRAY_SUPPORT||(t=Math.floor(t)),this[e]=255&t,e+1},p.prototype.writeUInt16LE=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,2,65535,0),p.TYPED_ARRAY_SUPPORT?(this[e]=255&t,this[e+1]=t>>>8):F(this,t,e,!0),e+2},p.prototype.writeUInt16BE=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,2,65535,0),p.TYPED_ARRAY_SUPPORT?(this[e]=t>>>8,this[e+1]=255&t):F(this,t,e,!1),e+2},p.prototype.writeUInt32LE=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,4,4294967295,0),p.TYPED_ARRAY_SUPPORT?(this[e+3]=t>>>24,this[e+2]=t>>>16,this[e+1]=t>>>8,this[e]=255&t):G(this,t,e,!0),e+4},p.prototype.writeUInt32BE=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,4,4294967295,0),p.TYPED_ARRAY_SUPPORT?(this[e]=t>>>24,this[e+1]=t>>>16,this[e+2]=t>>>8,this[e+3]=255&t):G(this,t,e,!1),e+4},p.prototype.writeIntLE=function(t,e,r,n){if(t=+t,e|=0,!n){var i=Math.pow(2,8*r-1);H(this,t,e,r,i-1,-i)}var s=0,a=1,o=0;for(this[e]=255&t;++s<r&&(a*=256);)t<0&&0===o&&0!==this[e+s-1]&&(o=1),this[e+s]=(t/a>>0)-o&255;return e+r},p.prototype.writeIntBE=function(t,e,r,n){if(t=+t,e|=0,!n){var i=Math.pow(2,8*r-1);H(this,t,e,r,i-1,-i)}var s=r-1,a=1,o=0;for(this[e+s]=255&t;--s>=0&&(a*=256);)t<0&&0===o&&0!==this[e+s+1]&&(o=1),this[e+s]=(t/a>>0)-o&255;return e+r},p.prototype.writeInt8=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,1,127,-128),p.TYPED_ARRAY_SUPPORT||(t=Math.floor(t)),t<0&&(t=255+t+1),this[e]=255&t,e+1},p.prototype.writeInt16LE=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,2,32767,-32768),p.TYPED_ARRAY_SUPPORT?(this[e]=255&t,this[e+1]=t>>>8):F(this,t,e,!0),e+2},p.prototype.writeInt16BE=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,2,32767,-32768),p.TYPED_ARRAY_SUPPORT?(this[e]=t>>>8,this[e+1]=255&t):F(this,t,e,!1),e+2},p.prototype.writeInt32LE=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,4,2147483647,-2147483648),p.TYPED_ARRAY_SUPPORT?(this[e]=255&t,this[e+1]=t>>>8,this[e+2]=t>>>16,this[e+3]=t>>>24):G(this,t,e,!0),e+4},p.prototype.writeInt32BE=function(t,e,r){return t=+t,e|=0,r||H(this,t,e,4,2147483647,-2147483648),t<0&&(t=4294967295+t+1),p.TYPED_ARRAY_SUPPORT?(this[e]=t>>>24,this[e+1]=t>>>16,this[e+2]=t>>>8,this[e+3]=255&t):G(this,t,e,!1),e+4},p.prototype.writeFloatLE=function(t,e,r){return _(this,t,e,!0,r)},p.prototype.writeFloatBE=function(t,e,r){return _(this,t,e,!1,r)},p.prototype.writeDoubleLE=function(t,e,r){return K(this,t,e,!0,r)},p.prototype.writeDoubleBE=function(t,e,r){return K(this,t,e,!1,r)},p.prototype.copy=function(t,e,r,n){if(r||(r=0),n||0===n||(n=this.length),e>=t.length&&(e=t.length),e||(e=0),n>0&&n<r&&(n=r),n===r)return 0;if(0===t.length||0===this.length)return 0;if(e<0)throw new RangeError("targetStart out of bounds");if(r<0||r>=this.length)throw new RangeError("sourceStart out of bounds");if(n<0)throw new RangeError("sourceEnd out of bounds");n>this.length&&(n=this.length),t.length-e<n-r&&(n=t.length-e+r);var i,s=n-r;if(this===t&&r<e&&e<n)for(i=s-1;i>=0;--i)t[i+e]=this[i+r];else if(s<1e3||!p.TYPED_ARRAY_SUPPORT)for(i=0;i<s;++i)t[i+e]=this[i+r];else Uint8Array.prototype.set.call(t,this.subarray(r,r+s),e);return s},p.prototype.fill=function(t,e,r,n){if("string"==typeof t){if("string"==typeof e?(n=e,e=0,r=this.length):"string"==typeof r&&(n=r,r=this.length),1===t.length){var i=t.charCodeAt(0);i<256&&(t=i)}if(void 0!==n&&"string"!=typeof n)throw new TypeError("encoding must be a string");if("string"==typeof n&&!p.isEncoding(n))throw new TypeError("Unknown encoding: "+n)}else"number"==typeof t&&(t&=255);if(e<0||this.length<e||this.length<r)throw new RangeError("Out of range index");if(r<=e)return this;var s;if(e>>>=0,r=void 0===r?this.length:r>>>0,t||(t=0),"number"==typeof t)for(s=e;s<r;++s)this[s]=t;else{var a=N(t)?t:q(new p(t,n).toString()),o=a.length;for(s=0;s<r-e;++s)this[s+e]=a[s%o]}return this};var k=/[^+\/0-9A-Za-z-_]/g;function j(t){return t<16?"0"+t.toString(16):t.toString(16)}function q(t,e){var r;e=e||1/0;for(var n=t.length,i=null,s=[],a=0;a<n;++a){if((r=t.charCodeAt(a))>55295&&r<57344){if(!i){if(r>56319){(e-=3)>-1&&s.push(239,191,189);continue}if(a+1===n){(e-=3)>-1&&s.push(239,191,189);continue}i=r;continue}if(r<56320){(e-=3)>-1&&s.push(239,191,189),i=r;continue}r=65536+(i-55296<<10|r-56320)}else i&&(e-=3)>-1&&s.push(239,191,189);if(i=null,r<128){if((e-=1)<0)break;s.push(r)}else if(r<2048){if((e-=2)<0)break;s.push(r>>6|192,63&r|128)}else if(r<65536){if((e-=3)<0)break;s.push(r>>12|224,r>>6&63|128,63&r|128)}else{if(!(r<1114112))throw new Error("Invalid code point");if((e-=4)<0)break;s.push(r>>18|240,r>>12&63|128,r>>6&63|128,63&r|128)}}return s}function W(t){return function(t){var e,r,o,u,h,c;s||a();var l=t.length;if(l%4>0)throw new Error("Invalid string. Length must be a multiple of 4");h="="===t[l-2]?2:"="===t[l-1]?1:0,c=new i(3*l/4-h),o=h>0?l-4:l;var f=0;for(e=0,r=0;e<o;e+=4,r+=3)u=n[t.charCodeAt(e)]<<18|n[t.charCodeAt(e+1)]<<12|n[t.charCodeAt(e+2)]<<6|n[t.charCodeAt(e+3)],c[f++]=u>>16&255,c[f++]=u>>8&255,c[f++]=255&u;return 2===h?(u=n[t.charCodeAt(e)]<<2|n[t.charCodeAt(e+1)]>>4,c[f++]=255&u):1===h&&(u=n[t.charCodeAt(e)]<<10|n[t.charCodeAt(e+1)]<<4|n[t.charCodeAt(e+2)]>>2,c[f++]=u>>8&255,c[f++]=255&u),c}(function(t){if((t=function(t){return t.trim?t.trim():t.replace(/^\s+|\s+$/g,"")}(t).replace(k,"")).length<2)return"";for(;t.length%4!=0;)t+="=";return t}(t))}function Q(t,e,r,n){for(var i=0;i<n&&!(i+r>=e.length||i>=t.length);++i)e[i+r]=t[i];return i}function z(t){return!!t.constructor&&"function"==typeof t.constructor.isBuffer&&t.constructor.isBuffer(t)}let Z={};function J(t){if(Z.strictMode)throw t;Z.silent||console.error(t.message)}function tt(t,e=10){if("number"==typeof t)return t;const r=10===e?Number.parseFloat(t,e):Number.parseInt(t,e);return Number.isNaN(r)?0:r}var et={THROW:J,ASSERT:function(t,...e){for(const[r,n]of e.entries())n||J(new Error(`${t} : Failed at [${r}]`))},CONDITIONALASSERT:function(...t){for(const[e,[r,n]]of t.entries())r&&(n||J(new Error(`Conditional Assert : Failed at [${e}]`)))},PARAMCHECK:function(...t){for(const[e,r]of t.entries())void 0===r&&J(new Error(`Param Check : Failed at [${e}]`))},CONDITIONALPARAMCHECK:function(...t){for(const[e,[r,n]]of t.entries())r&&void 0===n&&J(new Error(`Conditional Param Check : Failed at [${e}]`))},INVALIDPLAYLIST:function(t){J(new Error(`Invalid Playlist : ${t}`))},toNumber:tt,hexToByteSequence:function(t){(t.startsWith("0x")||t.startsWith("0X"))&&(t=t.slice(2));const e=[];for(let r=0;r<t.length;r+=2)e.push(tt(t.slice(r,r+2),16));return p.from(e)},byteSequenceToHex:function(t,e=0,r=t.length){r<=e&&J(new Error(`end must be larger than start : start=${e}, end=${r}`));const n=[];for(let i=e;i<r;i++)n.push(`0${(255&t[i]).toString(16).toUpperCase()}`.slice(-2));return`0x${n.join("")}`},tryCatch:function(t,e){try{return t()}catch(t){return e(t)}},splitAt:function(t,e,r=0){let n=-1;for(let i=0,s=0;i<t.length;i++)if(t[i]===e){if(s++===r)return[t.slice(0,i),t.slice(i+1)];n=i}return-1!==n?[t.slice(0,n),t.slice(n+1)]:[t]},trim:function(t,e=" "){return t?(t=t.trim()," "===e||(t.startsWith(e)&&(t=t.slice(1)),t.endsWith(e)&&(t=t.slice(0,-1))),t):t},splitByCommaWithPreservingQuotes:function(t){const e=[];let r=!0,n=0;const i=[];for(let s=0;s<t.length;s++){const a=t[s];r&&","===a?(e.push(t.slice(n,s).trim()),n=s+1):'"'!==a&&"'"!==a||(r?(i.push(a),r=!1):a===i[i.length-1]?(i.pop(),r=!0):i.push(a))}return e.push(t.slice(n).trim()),e},camelify:function(t){const e=[];let r=!1;for(const n of t)"-"!==n&&"_"!==n?r?(e.push(n.toUpperCase()),r=!1):e.push(n.toLowerCase()):r=!0;return e.join("")},formatDate:function(t){return`${t.getUTCFullYear()}-${("0"+(t.getUTCMonth()+1)).slice(-2)}-${("0"+t.getUTCDate()).slice(-2)}T${("0"+t.getUTCHours()).slice(-2)}:${("0"+t.getUTCMinutes()).slice(-2)}:${("0"+t.getUTCSeconds()).slice(-2)}.${("00"+t.getUTCMilliseconds()).slice(-3)}Z`},hasOwnProp:function(t,e){return Object.hasOwnProperty.call(t,e)},setOptions:function(t={}){Z=Object.assign(Z,t)},getOptions:function(){return Object.assign({},Z)}};const rt=et;class nt{constructor(t){rt.PARAMCHECK(t),this.type=t}}class it extends nt{constructor({isMasterPlaylist:t,uri:e,version:r,independentSegments:n=!1,start:i,source:s}){super("playlist"),rt.PARAMCHECK(t),this.isMasterPlaylist=t,this.uri=e,this.version=r,this.independentSegments=n,this.start=i,this.source=s}}var st={Rendition:class{constructor({type:t,uri:e,groupId:r,language:n,assocLanguage:i,name:s,isDefault:a,autoselect:o,forced:u,instreamId:h,characteristics:c,channels:l}){rt.PARAMCHECK(t,r,s),rt.CONDITIONALASSERT(["SUBTITLES"===t,e],["CLOSED-CAPTIONS"===t,h],["CLOSED-CAPTIONS"===t,!e],[u,"SUBTITLES"===t]),this.type=t,this.uri=e,this.groupId=r,this.language=n,this.assocLanguage=i,this.name=s,this.isDefault=a,this.autoselect=o,this.forced=u,this.instreamId=h,this.characteristics=c,this.channels=l}},Variant:class{constructor({uri:t,isIFrameOnly:e=!1,bandwidth:r,averageBandwidth:n,score:i,codecs:s,resolution:a,frameRate:o,hdcpLevel:u,allowedCpc:h,videoRange:c,stableVariantId:l,audio:f=[],video:E=[],subtitles:T=[],closedCaptions:p=[],currentRenditions:A={audio:0,video:0,subtitles:0,closedCaptions:0}}){rt.PARAMCHECK(t,r),this.uri=t,this.isIFrameOnly=e,this.bandwidth=r,this.averageBandwidth=n,this.score=i,this.codecs=s,this.resolution=a,this.frameRate=o,this.hdcpLevel=u,this.allowedCpc=h,this.videoRange=c,this.stableVariantId=l,this.audio=f,this.video=E,this.subtitles=T,this.closedCaptions=p,this.currentRenditions=A}},SessionData:class{constructor({id:t,value:e,uri:r,language:n}){rt.PARAMCHECK(t,e||r),rt.ASSERT("SessionData cannot have both value and uri, shoud be either.",!(e&&r)),this.id=t,this.value=e,this.uri=r,this.language=n}},Key:class{constructor({method:t,uri:e,iv:r,format:n,formatVersion:i}){rt.PARAMCHECK(t),rt.CONDITIONALPARAMCHECK(["NONE"!==t,e]),rt.CONDITIONALASSERT(["NONE"===t,!(e||r||n||i)]),this.method=t,this.uri=e,this.iv=r,this.format=n,this.formatVersion=i}},MediaInitializationSection:class{constructor({hint:t=!1,uri:e,mimeType:r,byterange:n}){rt.PARAMCHECK(e),this.hint=t,this.uri=e,this.mimeType=r,this.byterange=n}},DateRange:class{constructor({id:t,classId:e,start:r,end:n,duration:i,plannedDuration:s,endOnNext:a,attributes:o={}}){rt.PARAMCHECK(t),rt.CONDITIONALPARAMCHECK([!0===a,e]),rt.CONDITIONALASSERT([n,r],[n,r<=n],[i,i>=0],[s,s>=0]),this.id=t,this.classId=e,this.start=r,this.end=n,this.duration=i,this.plannedDuration=s,this.endOnNext=a,this.attributes=o}},SpliceInfo:class{constructor({type:t,duration:e,tagName:r,value:n}){rt.PARAMCHECK(t),rt.CONDITIONALPARAMCHECK(["OUT"===t,e]),rt.CONDITIONALPARAMCHECK(["RAW"===t,r]),this.type=t,this.duration=e,this.tagName=r,this.value=n}},Playlist:it,MasterPlaylist:class extends it{constructor(t={}){t.isMasterPlaylist=!0,super(t);const{variants:e=[],currentVariant:r,sessionDataList:n=[],sessionKeyList:i=[]}=t;this.variants=e,this.currentVariant=r,this.sessionDataList=n,this.sessionKeyList=i}},MediaPlaylist:class extends it{constructor(t={}){t.isMasterPlaylist=!1,super(t);const{targetDuration:e,mediaSequenceBase:r=0,discontinuitySequenceBase:n=0,endlist:i=!1,playlistType:s,isIFrame:a,segments:o=[],prefetchSegments:u=[],lowLatencyCompatibility:h,partTargetDuration:c,renditionReports:l=[],skip:f=0,hash:E}=t;this.targetDuration=e,this.mediaSequenceBase=r,this.discontinuitySequenceBase=n,this.endlist=i,this.playlistType=s,this.isIFrame=a,this.segments=o,this.prefetchSegments=u,this.lowLatencyCompatibility=h,this.partTargetDuration=c,this.renditionReports=l,this.skip=f,this.hash=E}},Segment:class extends nt{constructor({uri:t,mimeType:e,data:r,duration:n,title:i,byterange:s,discontinuity:a,mediaSequenceNumber:o=0,discontinuitySequence:u=0,key:h,map:c,programDateTime:l,dateRange:f,markers:E=[],parts:T=[]}){super("segment"),this.uri=t,this.mimeType=e,this.data=r,this.duration=n,this.title=i,this.byterange=s,this.discontinuity=a,this.mediaSequenceNumber=o,this.discontinuitySequence=u,this.key=h,this.map=c,this.programDateTime=l,this.dateRange=f,this.markers=E,this.parts=T}},PartialSegment:class extends nt{constructor({hint:t=!1,uri:e,duration:r,independent:n,byterange:i,gap:s}){super("part"),rt.PARAMCHECK(e),this.hint=t,this.uri=e,this.duration=r,this.independent=n,this.duration=r,this.byterange=i,this.gap=s}},PrefetchSegment:class extends nt{constructor({uri:t,discontinuity:e,mediaSequenceNumber:r=0,discontinuitySequence:n=0,key:i}){super("prefetch"),rt.PARAMCHECK(t),this.uri=t,this.discontinuity=e,this.mediaSequenceNumber=r,this.discontinuitySequence=n,this.key=i}},RenditionReport:class{constructor({uri:t,lastMSN:e,lastPart:r}){rt.PARAMCHECK(t),this.uri=t,this.lastMSN=e,this.lastPart=r}}};const at=et,{Rendition:ot,Variant:ut,SessionData:ht,Key:ct,MediaInitializationSection:lt,DateRange:ft,SpliceInfo:Et,MasterPlaylist:Tt,MediaPlaylist:pt,Segment:At,PartialSegment:It,PrefetchSegment:dt,RenditionReport:gt}=st;function St(t){return at.trim(t,'"')}function Nt(t){const e=at.splitAt(t,",");return{duration:at.toNumber(e[0]),title:decodeURIComponent(escape(e[1]))}}function yt(t){const e=at.splitAt(t,"@");return{length:at.toNumber(e[0]),offset:e[1]?at.toNumber(e[1]):-1}}function Rt(t){const e=at.splitAt(t,"x");return{width:at.toNumber(e[0]),height:at.toNumber(e[1])}}function mt(t){const e="ALLOWED-CPC: Each entry must consit of KEYFORMAT and Content Protection Configuration",r=t.split(",");0===r.length&&at.INVALIDPLAYLIST(e);const n=[];for(const t of r){const[r,i]=at.splitAt(t,":");r&&i?n.push({format:r,cpcList:i.split("/")}):at.INVALIDPLAYLIST(e)}return n}function Xt(t){const e=at.hexToByteSequence(t);return 16!==e.length&&at.INVALIDPLAYLIST("IV must be a 128-bit unsigned integer"),e}function Lt(t,e){e.IV&&t.compatibleVersion<2&&(t.compatibleVersion=2),(e.KEYFORMAT||e.KEYFORMATVERSIONS)&&t.compatibleVersion<5&&(t.compatibleVersion=5)}function Pt(t){const e={};for(const n of at.splitByCommaWithPreservingQuotes(t)){const[t,i]=at.splitAt(n,"="),s=St(i);switch(t){case"URI":e[t]=s;break;case"START-DATE":case"END-DATE":e[t]=new Date(s);break;case"IV":e[t]=Xt(s);break;case"BYTERANGE":e[t]=yt(s);break;case"RESOLUTION":e[t]=Rt(s);break;case"ALLOWED-CPC":e[t]=mt(s);break;case"END-ON-NEXT":case"DEFAULT":case"AUTOSELECT":case"FORCED":case"PRECISE":case"CAN-BLOCK-RELOAD":case"INDEPENDENT":case"GAP":e[t]="YES"===s;break;case"DURATION":case"PLANNED-DURATION":case"BANDWIDTH":case"AVERAGE-BANDWIDTH":case"FRAME-RATE":case"TIME-OFFSET":case"CAN-SKIP-UNTIL":case"HOLD-BACK":case"PART-HOLD-BACK":case"PART-TARGET":case"BYTERANGE-START":case"BYTERANGE-LENGTH":case"LAST-MSN":case"LAST-PART":case"SKIPPED-SEGMENTS":case"SCORE":e[t]=at.toNumber(s);break;default:t.startsWith("SCTE35-")?e[t]=at.hexToByteSequence(s):t.startsWith("X-")?e[t]=(r=i).startsWith('"')?St(r):r.startsWith("0x")||r.startsWith("0X")?at.hexToByteSequence(r):at.toNumber(r):("VIDEO-RANGE"===t&&"SDR"!==s&&"HLG"!==s&&"PQ"!==s&&at.INVALIDPLAYLIST(`VIDEO-RANGE: unknown value "${s}"`),e[t]=s)}}var r;return e}function Dt(){at.INVALIDPLAYLIST("The file contains both media and master playlist tags.")}function Ot(t,e,r){const n=function({attributes:t}){return new ot({type:t.TYPE,uri:t.URI,groupId:t["GROUP-ID"],language:t.LANGUAGE,assocLanguage:t["ASSOC-LANGUAGE"],name:t.NAME,isDefault:t.DEFAULT,autoselect:t.AUTOSELECT,forced:t.FORCED,instreamId:t["INSTREAM-ID"],characteristics:t.CHARACTERISTICS,channels:t.CHANNELS})}(e),i=t[at.camelify(r)],s=function(t,e){let r=!1;for(const n of t){if(n.name===e.name)return"All EXT-X-MEDIA tags in the same Group MUST have different NAME attributes.";n.isDefault&&(r=!0)}return r&&e.isDefault?"EXT-X-MEDIA A Group MUST NOT have more than one member with a DEFAULT attribute of YES.":""}(i,n);s&&at.INVALIDPLAYLIST(s),i.push(n),n.isDefault&&(t.currentRenditions[at.camelify(r)]=i.length-1)}function vt(t,e,r,n,i){const s=new ut({uri:r,bandwidth:e.BANDWIDTH,averageBandwidth:e["AVERAGE-BANDWIDTH"],score:e.SCORE,codecs:e.CODECS,resolution:e.RESOLUTION,frameRate:e["FRAME-RATE"],hdcpLevel:e["HDCP-LEVEL"],allowedCpc:e["ALLOWED-CPC"],videoRange:e["VIDEO-RANGE"],stableVariantId:e["STABLE-VARIANT-ID"]});for(const r of t)if("EXT-X-MEDIA"===r.name){const t=r.attributes,n=t.TYPE;if(n&&t["GROUP-ID"]||at.INVALIDPLAYLIST("EXT-X-MEDIA TYPE attribute is REQUIRED."),e[n]===t["GROUP-ID"]&&(Ot(s,r,n),"CLOSED-CAPTIONS"===n))for(const{instreamId:t}of s.closedCaptions)if(t&&t.startsWith("SERVICE")&&i.compatibleVersion<7){i.compatibleVersion=7;break}}return function(t,e,r){for(const n of["AUDIO","VIDEO","SUBTITLES","CLOSED-CAPTIONS"])"CLOSED-CAPTIONS"===n&&"NONE"===t[n]?(r.isClosedCaptionsNone=!0,e.closedCaptions=[]):t[n]&&!e[at.camelify(n)].some((e=>e.groupId===t[n]))&&at.INVALIDPLAYLIST(`${n} attribute MUST match the value of the GROUP-ID attribute of an EXT-X-MEDIA tag whose TYPE attribute is ${n}.`)}(e,s,i),s.isIFrameOnly=n,s}function bt(t,e){if(t.method!==e.method)return!1;if(t.uri!==e.uri)return!1;if(t.iv){if(!e.iv)return!1;if(t.iv.length!==e.iv.length)return!1;for(let r=0;r<t.iv.length;r++)if(t.iv[r]!==e.iv[r])return!1}else if(e.iv)return!1;return t.format===e.format&&t.formatVersion===e.formatVersion}function wt(t,e,r,n,i,s,a){const o=new At({uri:e,mediaSequenceNumber:i,discontinuitySequence:s});let u=!1,h=!1;for(let e=r;e<=n;e++){const{name:r,value:n,attributes:i}=t[e];if("EXTINF"===r)!Number.isInteger(n.duration)&&a.compatibleVersion<3&&(a.compatibleVersion=3),Math.round(n.duration)>a.targetDuration&&at.INVALIDPLAYLIST("EXTINF duration, when rounded to the nearest integer, MUST be less than or equal to the target duration"),o.duration=n.duration,o.title=n.title;else if("EXT-X-BYTERANGE"===r)a.compatibleVersion<4&&(a.compatibleVersion=4),o.byterange=n;else if("EXT-X-DISCONTINUITY"===r)o.parts.length>0&&at.INVALIDPLAYLIST("EXT-X-DISCONTINUITY must appear before the first EXT-X-PART tag of the Parent Segment."),o.discontinuity=!0;else if("EXT-X-KEY"===r)o.parts.length>0&&at.INVALIDPLAYLIST("EXT-X-KEY must appear before the first EXT-X-PART tag of the Parent Segment."),Lt(a,i),o.key=new ct({method:i.METHOD,uri:i.URI,iv:i.IV,format:i.KEYFORMAT,formatVersion:i.KEYFORMATVERSIONS});else if("EXT-X-MAP"===r)o.parts.length>0&&at.INVALIDPLAYLIST("EXT-X-MAP must appear before the first EXT-X-PART tag of the Parent Segment."),a.compatibleVersion<5&&(a.compatibleVersion=5),a.hasMap=!0,o.map=new lt({uri:i.URI,byterange:i.BYTERANGE});else if("EXT-X-PROGRAM-DATE-TIME"===r)o.programDateTime=n;else if("EXT-X-DATERANGE"===r){const t={};for(const e of Object.keys(i))(e.startsWith("SCTE35-")||e.startsWith("X-"))&&(t[e]=i[e]);o.dateRange=new ft({id:i.ID,classId:i.CLASS,start:i["START-DATE"],end:i["END-DATE"],duration:i.DURATION,plannedDuration:i["PLANNED-DURATION"],endOnNext:i["END-ON-NEXT"],attributes:t})}else if("EXT-X-CUE-OUT"===r)o.markers.push(new Et({type:"OUT",duration:i&&i.DURATION||n}));else if("EXT-X-CUE-IN"===r)o.markers.push(new Et({type:"IN"}));else if("EXT-X-CUE-OUT-CONT"===r||"EXT-X-CUE"===r||"EXT-OATCLS-SCTE35"===r||"EXT-X-ASSET"===r||"EXT-X-SCTE35"===r)o.markers.push(new Et({type:"RAW",tagName:r,value:n}));else if("EXT-X-PRELOAD-HINT"!==r||i.TYPE)if("EXT-X-PRELOAD-HINT"===r&&"PART"===i.TYPE&&h)at.INVALIDPLAYLIST("Servers should not add more than one EXT-X-PRELOAD-HINT tag with the same TYPE attribute to a Playlist.");else if("EXT-X-PART"!==r&&"EXT-X-PRELOAD-HINT"!==r||i.URI){if("EXT-X-PRELOAD-HINT"===r&&"MAP"===i.TYPE)u&&at.INVALIDPLAYLIST("Servers should not add more than one EXT-X-PRELOAD-HINT tag with the same TYPE attribute to a Playlist."),u=!0,a.hasMap=!0,o.map=new lt({hint:!0,uri:i.URI,byterange:{length:i["BYTERANGE-LENGTH"],offset:i["BYTERANGE-START"]||0}});else if("EXT-X-PART"===r||"EXT-X-PRELOAD-HINT"===r&&"PART"===i.TYPE){"EXT-X-PART"!==r||i.DURATION||at.INVALIDPLAYLIST("EXT-X-PART: DURATION attribute is mandatory"),"EXT-X-PRELOAD-HINT"===r&&(h=!0);const t=new It({hint:"EXT-X-PRELOAD-HINT"===r,uri:i.URI,byterange:"EXT-X-PART"===r?i.BYTERANGE:{length:i["BYTERANGE-LENGTH"],offset:i["BYTERANGE-START"]||0},duration:i.DURATION,independent:i.INDEPENDENT,gap:i.GAP});o.parts.push(t)}}else at.INVALIDPLAYLIST("EXT-X-PART / EXT-X-PRELOAD-HINT: URI attribute is mandatory");else at.INVALIDPLAYLIST("EXT-X-PRELOAD-HINT: TYPE attribute is mandatory")}return o}function Ct(t,e,r,n,i,s,a){const o=new dt({uri:e,mediaSequenceNumber:i,discontinuitySequence:s});for(let e=r;e<=n;e++){const{name:r,attributes:n}=t[e];"EXTINF"===r?at.INVALIDPLAYLIST("A prefetch segment must not be advertised with an EXTINF tag."):"EXT-X-DISCONTINUITY"===r?at.INVALIDPLAYLIST("A prefetch segment must not be advertised with an EXT-X-DISCONTINUITY tag."):"EXT-X-PREFETCH-DISCONTINUITY"===r?o.discontinuity=!0:"EXT-X-KEY"===r?(Lt(a,n),o.key=new ct({method:n.METHOD,uri:n.URI,iv:n.IV,format:n.KEYFORMAT,formatVersion:n.KEYFORMATVERSIONS})):"EXT-X-MAP"===r&&at.INVALIDPLAYLIST("Prefetch segments must not be advertised with an EXT-X-MAP tag.")}return o}function Mt(t,e){const r=new pt;let n=-1,i=0,s=!1,a=!1,o=0,u=null,h=null,c=!1;for(const[l,f]of t.entries()){const{name:E,value:T,attributes:p,category:A}=f;if("Segment"!==A){if("EXT-X-VERSION"===E)void 0===r.version?r.version=T:at.INVALIDPLAYLIST("A Playlist file MUST NOT contain more than one EXT-X-VERSION tag.");else if("EXT-X-TARGETDURATION"===E)r.targetDuration=e.targetDuration=T;else if("EXT-X-MEDIA-SEQUENCE"===E)r.segments.length>0&&at.INVALIDPLAYLIST("The EXT-X-MEDIA-SEQUENCE tag MUST appear before the first Media Segment in the Playlist."),r.mediaSequenceBase=i=T;else if("EXT-X-DISCONTINUITY-SEQUENCE"===E)r.segments.length>0&&at.INVALIDPLAYLIST("The EXT-X-DISCONTINUITY-SEQUENCE tag MUST appear before the first Media Segment in the Playlist."),s&&at.INVALIDPLAYLIST("The EXT-X-DISCONTINUITY-SEQUENCE tag MUST appear before any EXT-X-DISCONTINUITY tag."),r.discontinuitySequenceBase=o=T;else if("EXT-X-ENDLIST"===E)r.endlist=!0;else if("EXT-X-PLAYLIST-TYPE"===E)r.playlistType=T;else if("EXT-X-I-FRAMES-ONLY"===E)e.compatibleVersion<4&&(e.compatibleVersion=4),r.isIFrame=!0;else if("EXT-X-INDEPENDENT-SEGMENTS"===E)r.independentSegments&&at.INVALIDPLAYLIST("EXT-X-INDEPENDENT-SEGMENTS tag MUST NOT appear more than once in a Playlist"),r.independentSegments=!0;else if("EXT-X-START"===E)r.start&&at.INVALIDPLAYLIST("EXT-X-START tag MUST NOT appear more than once in a Playlist"),"number"!=typeof p["TIME-OFFSET"]&&at.INVALIDPLAYLIST("EXT-X-START: TIME-OFFSET attribute is REQUIRED"),r.start={offset:p["TIME-OFFSET"],precise:p.PRECISE||!1};else if("EXT-X-SERVER-CONTROL"===E)p["CAN-BLOCK-RELOAD"]||at.INVALIDPLAYLIST("EXT-X-SERVER-CONTROL: CAN-BLOCK-RELOAD=YES is mandatory for Low-Latency HLS"),r.lowLatencyCompatibility={canBlockReload:p["CAN-BLOCK-RELOAD"],canSkipUntil:p["CAN-SKIP-UNTIL"],holdBack:p["HOLD-BACK"],partHoldBack:p["PART-HOLD-BACK"]};else if("EXT-X-PART-INF"===E)p["PART-TARGET"]||at.INVALIDPLAYLIST("EXT-X-PART-INF: PART-TARGET attribute is mandatory"),r.partTargetDuration=p["PART-TARGET"];else if("EXT-X-RENDITION-REPORT"===E)p.URI||at.INVALIDPLAYLIST("EXT-X-RENDITION-REPORT: URI attribute is mandatory"),0===p.URI.search(/^[a-z]+:/)&&at.INVALIDPLAYLIST("EXT-X-RENDITION-REPORT: URI must be relative to the playlist uri"),r.renditionReports.push(new gt({uri:p.URI,lastMSN:p["LAST-MSN"],lastPart:p["LAST-PART"]}));else if("EXT-X-SKIP"===E)p["SKIPPED-SEGMENTS"]||at.INVALIDPLAYLIST("EXT-X-SKIP: SKIPPED-SEGMENTS attribute is mandatory"),e.compatibleVersion<9&&(e.compatibleVersion=9),r.skip=p["SKIPPED-SEGMENTS"],i+=r.skip;else if("EXT-X-PREFETCH"===E){const s=Ct(t,T,-1===n?l:n,l-1,i++,o,e);s&&(s.discontinuity&&(s.discontinuitySequence++,o=s.discontinuitySequence),s.key?u=s.key:s.key=u,r.prefetchSegments.push(s)),a=!0,n=-1}else if("string"==typeof f){-1===n&&at.INVALIDPLAYLIST("A URI line is not preceded by any segment tags"),r.targetDuration||at.INVALIDPLAYLIST("The EXT-X-TARGETDURATION tag is REQUIRED"),a&&at.INVALIDPLAYLIST("These segments must appear after all complete segments.");const s=wt(t,f,n,l-1,i++,o,e);s&&([o,u,h]=Ut(r,s,o,u,h),!c&&s.parts.length>0&&(c=!0)),n=-1}}else-1===n&&(n=l),"EXT-X-DISCONTINUITY"===E&&(s=!0)}if(-1!==n){const s=wt(t,"",n,t.length-1,i++,o,e);if(s){const{parts:t}=s;t.length>0&&!r.endlist&&!t[t.length-1].hint&&at.INVALIDPLAYLIST("If the Playlist contains EXT-X-PART tags and does not contain an EXT-X-ENDLIST tag, the Playlist must contain an EXT-X-PRELOAD-HINT tag with a TYPE=PART attribute"),Ut(r,s,u,h),!c&&s.parts.length>0&&(c=!0)}}return function(t){const e=new Map,r=new Map;let n=!1,i=!1;for(let s=t.length-1;s>=0;s--){const{programDateTime:a,dateRange:o}=t[s];if(a&&(i=!0),o&&o.start){n=!0,o.endOnNext&&(o.end||o.duration)&&at.INVALIDPLAYLIST("An EXT-X-DATERANGE tag with an END-ON-NEXT=YES attribute MUST NOT contain DURATION or END-DATE attributes.");const t=o.start.getTime(),i=o.duration||0;o.end&&o.duration&&t+1e3*i!==o.end.getTime()&&at.INVALIDPLAYLIST("END-DATE MUST be equal to the value of the START-DATE attribute plus the value of the DURATION"),o.endOnNext&&(o.end=e.get(o.classId)),e.set(o.classId,o.start);const s=o.end?o.end.getTime():o.start.getTime()+1e3*(o.duration||0),a=r.get(o.classId);if(a){for(const e of a)(e.start<=t&&e.end>t||e.start>=t&&e.start<s)&&at.INVALIDPLAYLIST("DATERANGE tags with the same CLASS should not overlap");a.push({start:t,end:s})}else r.set(o.classId,[{start:t,end:s}])}}n&&!i&&at.INVALIDPLAYLIST("If a Playlist contains an EXT-X-DATERANGE tag, it MUST also contain at least one EXT-X-PROGRAM-DATE-TIME tag.")}(r.segments),r.lowLatencyCompatibility&&function({lowLatencyCompatibility:t,targetDuration:e,partTargetDuration:r,segments:n,renditionReports:i},s){const{canSkipUntil:a,holdBack:o,partHoldBack:u}=t;a<6*e&&at.INVALIDPLAYLIST("The Skip Boundary must be at least six times the EXT-X-TARGETDURATION.");o<3*e&&at.INVALIDPLAYLIST("HOLD-BACK must be at least three times the EXT-X-TARGETDURATION.");if(s){void 0===r&&at.INVALIDPLAYLIST("EXT-X-PART-INF is required if a Playlist contains one or more EXT-X-PART tags"),void 0===u&&at.INVALIDPLAYLIST("EXT-X-PART: PART-HOLD-BACK attribute is mandatory"),u<r&&at.INVALIDPLAYLIST("PART-HOLD-BACK must be at least PART-TARGET");for(const[t,{parts:e}]of n.entries()){e.length>0&&t<n.length-3&&at.INVALIDPLAYLIST("Remove EXT-X-PART tags from the Playlist after they are greater than three target durations from the end of the Playlist.");for(const[t,{duration:n}]of e.entries())void 0!==n&&(n>r&&at.INVALIDPLAYLIST("PART-TARGET is the maximum duration of any Partial Segment"),t<e.length-1&&n<.85*r&&at.INVALIDPLAYLIST("All Partial Segments except the last part of a segment must have a duration of at least 85% of PART-TARGET"))}}for(const t of i){const e=n[n.length-1];t.lastMSN||(t.lastMSN=e.mediaSequenceNumber),!t.lastPart&&e.parts.length>0&&(t.lastPart=e.parts.length-1)}}(r,c),r}function Ut(t,e,r,n,i){const{discontinuity:s,key:a,map:o,byterange:u,uri:h}=e;if(s&&(e.discontinuitySequence=r+1),a||(e.key=n),o||(e.map=i),u&&-1===u.offset){const{segments:e}=t;if(e.length>0){const t=e[e.length-1];t.byterange&&t.uri===h?u.offset=t.byterange.offset+t.byterange.length:at.INVALIDPLAYLIST("If offset of EXT-X-BYTERANGE is not present, a previous Media Segment MUST be a sub-range of the same media resource")}else at.INVALIDPLAYLIST("If offset of EXT-X-BYTERANGE is not present, a previous Media Segment MUST appear in the Playlist file")}return t.segments.push(e),[e.discontinuitySequence,e.key,e.map]}function Yt(t,e){const[r,n]=function(t){const e=t.indexOf(":");return-1===e?[t.slice(1).trim(),null]:[t.slice(1,e).trim(),t.slice(e+1).trim()]}(t),i=function(t){switch(t){case"EXTM3U":case"EXT-X-VERSION":return"Basic";case"EXTINF":case"EXT-X-BYTERANGE":case"EXT-X-DISCONTINUITY":case"EXT-X-PREFETCH-DISCONTINUITY":case"EXT-X-KEY":case"EXT-X-MAP":case"EXT-X-PROGRAM-DATE-TIME":case"EXT-X-DATERANGE":case"EXT-X-CUE-OUT":case"EXT-X-CUE-IN":case"EXT-X-CUE-OUT-CONT":case"EXT-X-CUE":case"EXT-OATCLS-SCTE35":case"EXT-X-ASSET":case"EXT-X-SCTE35":case"EXT-X-PART":case"EXT-X-PRELOAD-HINT":return"Segment";case"EXT-X-TARGETDURATION":case"EXT-X-MEDIA-SEQUENCE":case"EXT-X-DISCONTINUITY-SEQUENCE":case"EXT-X-ENDLIST":case"EXT-X-PLAYLIST-TYPE":case"EXT-X-I-FRAMES-ONLY":case"EXT-X-SERVER-CONTROL":case"EXT-X-PART-INF":case"EXT-X-PREFETCH":case"EXT-X-RENDITION-REPORT":case"EXT-X-SKIP":return"MediaPlaylist";case"EXT-X-MEDIA":case"EXT-X-STREAM-INF":case"EXT-X-I-FRAME-STREAM-INF":case"EXT-X-SESSION-DATA":case"EXT-X-SESSION-KEY":return"MasterPlaylist";case"EXT-X-INDEPENDENT-SEGMENTS":case"EXT-X-START":return"MediaorMasterPlaylist";default:return"Unknown"}}(r);if(function(t,e){if("Segment"===t||"MediaPlaylist"===t)return void 0===e.isMasterPlaylist?void(e.isMasterPlaylist=!1):void(e.isMasterPlaylist&&Dt());if("MasterPlaylist"===t){if(void 0===e.isMasterPlaylist)return void(e.isMasterPlaylist=!0);!1===e.isMasterPlaylist&&Dt()}}(i,e),"Unknown"===i)return null;"MediaPlaylist"===i&&"EXT-X-RENDITION-REPORT"!==r&&"EXT-X-PREFETCH"!==r&&(e.hash[r]&&at.INVALIDPLAYLIST("There MUST NOT be more than one Media Playlist tag of each type in any Media Playlist"),e.hash[r]=!0);const[s,a]=function(t,e){switch(t){case"EXTM3U":case"EXT-X-DISCONTINUITY":case"EXT-X-ENDLIST":case"EXT-X-I-FRAMES-ONLY":case"EXT-X-INDEPENDENT-SEGMENTS":case"EXT-X-CUE-IN":return[null,null];case"EXT-X-VERSION":case"EXT-X-TARGETDURATION":case"EXT-X-MEDIA-SEQUENCE":case"EXT-X-DISCONTINUITY-SEQUENCE":return[at.toNumber(e),null];case"EXT-X-CUE-OUT":return Number.isNaN(Number(e))?[null,Pt(e)]:[at.toNumber(e),null];case"EXT-X-KEY":case"EXT-X-MAP":case"EXT-X-DATERANGE":case"EXT-X-MEDIA":case"EXT-X-STREAM-INF":case"EXT-X-I-FRAME-STREAM-INF":case"EXT-X-SESSION-DATA":case"EXT-X-SESSION-KEY":case"EXT-X-START":case"EXT-X-SERVER-CONTROL":case"EXT-X-PART-INF":case"EXT-X-PART":case"EXT-X-PRELOAD-HINT":case"EXT-X-RENDITION-REPORT":case"EXT-X-SKIP":return[null,Pt(e)];case"EXTINF":return[Nt(e),null];case"EXT-X-BYTERANGE":return[yt(e),null];case"EXT-X-PROGRAM-DATE-TIME":return[new Date(e),null];default:return[e,null]}}(r,n);return{name:r,category:i,value:s,attributes:a}}function Vt(t,e){let r;return e.isMasterPlaylist?r=function(t,e){const r=new Tt;let n=!1;for(const[i,{name:s,value:a,attributes:o}]of t.entries())if("EXT-X-VERSION"===s)r.version=a;else if("EXT-X-STREAM-INF"===s){const s=t[i+1];("string"!=typeof s||s.startsWith("#EXT"))&&at.INVALIDPLAYLIST("EXT-X-STREAM-INF must be followed by a URI line");const a=vt(t,o,s,!1,e);a&&("number"==typeof a.score&&(n=!0,a.score<0&&at.INVALIDPLAYLIST("SCORE attribute on EXT-X-STREAM-INF must be positive decimal-floating-point number.")),r.variants.push(a))}else if("EXT-X-I-FRAME-STREAM-INF"===s){const n=vt(t,o,o.URI,!0,e);n&&r.variants.push(n)}else if("EXT-X-SESSION-DATA"===s){const t=new ht({id:o["DATA-ID"],value:o.VALUE,uri:o.URI,language:o.LANGUAGE});r.sessionDataList.some((e=>e.id===t.id&&e.language===t.language))&&at.INVALIDPLAYLIST("A Playlist MUST NOT contain more than one EXT-X-SESSION-DATA tag with the same DATA-ID attribute and the same LANGUAGE attribute."),r.sessionDataList.push(t)}else if("EXT-X-SESSION-KEY"===s){"NONE"===o.METHOD&&at.INVALIDPLAYLIST("EXT-X-SESSION-KEY: The value of the METHOD attribute MUST NOT be NONE");const t=new ct({method:o.METHOD,uri:o.URI,iv:o.IV,format:o.KEYFORMAT,formatVersion:o.KEYFORMATVERSIONS});r.sessionKeyList.some((e=>bt(e,t)))&&at.INVALIDPLAYLIST("A Master Playlist MUST NOT contain more than one EXT-X-SESSION-KEY tag with the same METHOD, URI, IV, KEYFORMAT, and KEYFORMATVERSIONS attribute values."),Lt(e,o),r.sessionKeyList.push(t)}else"EXT-X-INDEPENDENT-SEGMENTS"===s?(r.independentSegments&&at.INVALIDPLAYLIST("EXT-X-INDEPENDENT-SEGMENTS tag MUST NOT appear more than once in a Playlist"),r.independentSegments=!0):"EXT-X-START"===s&&(r.start&&at.INVALIDPLAYLIST("EXT-X-START tag MUST NOT appear more than once in a Playlist"),"number"!=typeof o["TIME-OFFSET"]&&at.INVALIDPLAYLIST("EXT-X-START: TIME-OFFSET attribute is REQUIRED"),r.start={offset:o["TIME-OFFSET"],precise:o.PRECISE||!1});if(n)for(const t of r.variants)"number"!=typeof t.score&&at.INVALIDPLAYLIST("If any Variant Stream contains the SCORE attribute, then all Variant Streams in the Master Playlist SHOULD have a SCORE attribute");if(e.isClosedCaptionsNone)for(const t of r.variants)t.closedCaptions.length>0&&at.INVALIDPLAYLIST("If there is a variant with CLOSED-CAPTIONS attribute of NONE, all EXT-X-STREAM-INF tags MUST have this attribute with a value of NONE");return r}(t,e):(r=Mt(t,e),!r.isIFrame&&e.hasMap&&e.compatibleVersion<6&&(e.compatibleVersion=6)),e.compatibleVersion>1&&(!r.version||r.version<e.compatibleVersion)&&at.INVALIDPLAYLIST(`EXT-X-VERSION needs to be ${e.compatibleVersion} or higher.`),r}var Bt=function(t){const e={version:void 0,isMasterPlaylist:void 0,hasMap:!1,targetDuration:0,compatibleVersion:1,isClosedCaptionsNone:!1,hash:{}},r=function(t,e){const r=[];for(const n of t.split("\n")){const t=p.from(n.trim()).toString();if(t)if(t.startsWith("#")){if(t.startsWith("#EXT")){const n=Yt(t,e);n&&r.push(n)}}else r.push(t)}return 0!==r.length&&"EXTM3U"===r[0].name||at.INVALIDPLAYLIST("The EXTM3U tag MUST be the first line."),r}(t,e),n=Vt(r,e);return n.source=t,n};const $t=et,Ht=["#EXTINF","#EXT-X-BYTERANGE","#EXT-X-DISCONTINUITY","#EXT-X-STREAM-INF","#EXT-X-CUE-OUT","#EXT-X-CUE-IN","#EXT-X-KEY","#EXT-X-MAP"],Ft=["#EXT-X-MEDIA"];class Gt extends Array{constructor(t){super(),this.baseUri=t}push(...t){for(const e of t)if(e.startsWith("#"))if(Ht.some((t=>e.startsWith(t))))super.push(e);else{if(this.includes(e)){if(Ft.some((t=>e.startsWith(t))))continue;$t.INVALIDPLAYLIST(`Redundant item (${e})`)}super.push(e)}else super.push(e)}}function xt(t,e){let r=1e3;e&&(r=10**e);const n=Math.round(t*r)/r;return e?n.toFixed(e):n}function _t(t){const e=[`DATA-ID="${t.id}"`];return t.language&&e.push(`LANGUAGE="${t.language}"`),t.value?e.push(`VALUE="${t.value}"`):t.uri&&e.push(`URI="${t.uri}"`),`#EXT-X-SESSION-DATA:${e.join(",")}`}function Kt(t,e){const r=e?"#EXT-X-SESSION-KEY":"#EXT-X-KEY",n=[`METHOD=${t.method}`];return t.uri&&n.push(`URI="${t.uri}"`),t.iv&&(16!==t.iv.length&&$t.INVALIDPLAYLIST("IV must be a 128-bit unsigned integer"),n.push(`IV=${$t.byteSequenceToHex(t.iv)}`)),t.format&&n.push(`KEYFORMAT="${t.format}"`),t.formatVersion&&n.push(`KEYFORMATVERSIONS="${t.formatVersion}"`),`${r}:${n.join(",")}`}function kt(t,e){const r=e.isIFrameOnly?"#EXT-X-I-FRAME-STREAM-INF":"#EXT-X-STREAM-INF",n=[`BANDWIDTH=${e.bandwidth}`];if(e.averageBandwidth&&n.push(`AVERAGE-BANDWIDTH=${e.averageBandwidth}`),e.isIFrameOnly&&n.push(`URI="${e.uri}"`),e.codecs&&n.push(`CODECS="${e.codecs}"`),e.resolution&&n.push(`RESOLUTION=${e.resolution.width}x${e.resolution.height}`),e.frameRate&&n.push(`FRAME-RATE=${xt(e.frameRate,3)}`),e.hdcpLevel&&n.push(`HDCP-LEVEL=${e.hdcpLevel}`),e.audio.length>0){n.push(`AUDIO="${e.audio[0].groupId}"`);for(const r of e.audio)t.push(jt(r))}if(e.video.length>0){n.push(`VIDEO="${e.video[0].groupId}"`);for(const r of e.video)t.push(jt(r))}if(e.subtitles.length>0){n.push(`SUBTITLES="${e.subtitles[0].groupId}"`);for(const r of e.subtitles)t.push(jt(r))}if($t.getOptions().allowClosedCaptionsNone&&0===e.closedCaptions.length)n.push("CLOSED-CAPTIONS=NONE");else if(e.closedCaptions.length>0){n.push(`CLOSED-CAPTIONS="${e.closedCaptions[0].groupId}"`);for(const r of e.closedCaptions)t.push(jt(r))}if(e.score&&n.push(`SCORE=${e.score}`),e.allowedCpc){const t=[];for(const{format:r,cpcList:n}of e.allowedCpc)t.push(`${r}:${n.join("/")}`);n.push(`ALLOWED-CPC="${t.join(",")}"`)}e.videoRange&&n.push(`VIDEO-RANGE=${e.videoRange}`),e.stableVariantId&&n.push(`STABLE-VARIANT-ID="${e.stableVariantId}"`),t.push(`${r}:${n.join(",")}`),e.isIFrameOnly||t.push(`${e.uri}`)}function jt(t){const e=[`TYPE=${t.type}`,`GROUP-ID="${t.groupId}"`,`NAME="${t.name}"`];return void 0!==t.isDefault&&e.push("DEFAULT="+(t.isDefault?"YES":"NO")),void 0!==t.autoselect&&e.push("AUTOSELECT="+(t.autoselect?"YES":"NO")),void 0!==t.forced&&e.push("FORCED="+(t.forced?"YES":"NO")),t.language&&e.push(`LANGUAGE="${t.language}"`),t.assocLanguage&&e.push(`ASSOC-LANGUAGE="${t.assocLanguage}"`),t.instreamId&&e.push(`INSTREAM-ID="${t.instreamId}"`),t.characteristics&&e.push(`CHARACTERISTICS="${t.characteristics}"`),t.channels&&e.push(`CHANNELS="${t.channels}"`),t.uri&&e.push(`URI="${t.uri}"`),`#EXT-X-MEDIA:${e.join(",")}`}function qt(t,e,r,n,i=1){let s=!1,a="";if(e.discontinuity&&t.push("#EXT-X-DISCONTINUITY"),e.key){const n=Kt(e.key);n!==r&&(t.push(n),r=n)}if(e.map){const r=function(t){const e=[`URI="${t.uri}"`];t.byterange&&e.push(`BYTERANGE="${Wt(t.byterange)}"`);return`#EXT-X-MAP:${e.join(",")}`}(e.map);r!==n&&(t.push(r),n=r)}if(e.programDateTime&&t.push(`#EXT-X-PROGRAM-DATE-TIME:${$t.formatDate(e.programDateTime)}`),e.dateRange&&t.push(function(t){const e=[`ID="${t.id}"`];t.start&&e.push(`START-DATE="${$t.formatDate(t.start)}"`);t.end&&e.push(`END-DATE="${t.end}"`);t.duration&&e.push(`DURATION=${t.duration}`);t.plannedDuration&&e.push(`PLANNED-DURATION=${t.plannedDuration}`);t.classId&&e.push(`CLASS="${t.classId}"`);t.endOnNext&&e.push("END-ON-NEXT=YES");for(const r of Object.keys(t.attributes))r.startsWith("X-")?"number"==typeof t.attributes[r]?e.push(`${r}=${t.attributes[r]}`):e.push(`${r}="${t.attributes[r]}"`):r.startsWith("SCTE35-")&&e.push(`${r}=${$t.byteSequenceToHex(t.attributes[r])}`);return`#EXT-X-DATERANGE:${e.join(",")}`}(e.dateRange)),e.markers.length>0&&(a=function(t,e){let r="";for(const n of e)if("OUT"===n.type)r="OUT",t.push(`#EXT-X-CUE-OUT:DURATION=${n.duration}`);else if("IN"===n.type)r="IN",t.push("#EXT-X-CUE-IN");else if("RAW"===n.type){const e=n.value?`:${n.value}`:"";t.push(`#${n.tagName}${e}`)}return r}(t,e.markers)),e.parts.length>0&&(s=function(t,e){let r=!1;for(const n of e)if(n.hint){const e=[];if(e.push("TYPE=PART",`URI="${n.uri}"`),n.byterange){const{offset:t,length:r}=n.byterange;e.push(`BYTERANGE-START=${t}`),r&&e.push(`BYTERANGE-LENGTH=${r}`)}t.push(`#EXT-X-PRELOAD-HINT:${e.join(",")}`),r=!0}else{const e=[];e.push(`DURATION=${n.duration}`,`URI="${n.uri}"`),n.byterange&&e.push(`BYTERANGE=${Wt(n.byterange)}`),n.independent&&e.push("INDEPENDENT=YES"),n.gap&&e.push("GAP=YES"),t.push(`#EXT-X-PART:${e.join(",")}`)}return r}(t,e.parts)),s)return[r,n];const o=i<3?Math.round(e.duration):xt(e.duration,function(t){const e=t.toString(10),r=e.indexOf(".");return-1===r?0:e.length-r-1}(e.duration));return t.push(`#EXTINF:${o},${unescape(encodeURIComponent(e.title||""))}`),e.byterange&&t.push(`#EXT-X-BYTERANGE:${Wt(e.byterange)}`),Array.prototype.push.call(t,`${e.uri}`),[r,n,a]}function Wt({offset:t,length:e}){return`${e}@${t}`}var Qt=function(t){$t.PARAMCHECK(t),$t.ASSERT("Not a playlist","playlist"===t.type);const e=new Gt(t.uri);return e.push("#EXTM3U"),t.version&&e.push(`#EXT-X-VERSION:${t.version}`),t.independentSegments&&e.push("#EXT-X-INDEPENDENT-SEGMENTS"),t.start&&e.push(`#EXT-X-START:TIME-OFFSET=${xt(t.start.offset)}${t.start.precise?",PRECISE=YES":""}`),t.isMasterPlaylist?function(t,e){for(const r of e.sessionDataList)t.push(_t(r));for(const r of e.sessionKeyList)t.push(Kt(r,!0));for(const r of e.variants)kt(t,r)}(e,t):function(t,e){let r="",n="",i=!1;if(e.targetDuration&&t.push(`#EXT-X-TARGETDURATION:${e.targetDuration}`),e.lowLatencyCompatibility){const{canBlockReload:r,canSkipUntil:n,holdBack:i,partHoldBack:s}=e.lowLatencyCompatibility,a=[];a.push("CAN-BLOCK-RELOAD="+(r?"YES":"NO")),void 0!==n&&a.push(`CAN-SKIP-UNTIL=${n}`),void 0!==i&&a.push(`HOLD-BACK=${i}`),void 0!==s&&a.push(`PART-HOLD-BACK=${s}`),t.push(`#EXT-X-SERVER-CONTROL:${a.join(",")}`)}e.partTargetDuration&&t.push(`#EXT-X-PART-INF:PART-TARGET=${e.partTargetDuration}`),e.mediaSequenceBase&&t.push(`#EXT-X-MEDIA-SEQUENCE:${e.mediaSequenceBase}`),e.discontinuitySequenceBase&&t.push(`#EXT-X-DISCONTINUITY-SEQUENCE:${e.discontinuitySequenceBase}`),e.playlistType&&t.push(`#EXT-X-PLAYLIST-TYPE:${e.playlistType}`),e.isIFrame&&t.push("#EXT-X-I-FRAMES-ONLY"),e.skip>0&&t.push(`#EXT-X-SKIP:SKIPPED-SEGMENTS=${e.skip}`);for(const s of e.segments){let a="";[r,n,a]=qt(t,s,r,n,e.version),"OUT"===a?i=!0:"IN"===a&&i&&(i=!1)}"VOD"===e.playlistType&&i&&t.push("#EXT-X-CUE-IN"),e.prefetchSegments.length>2&&$t.INVALIDPLAYLIST("The server must deliver no more than two prefetch segments");for(const r of e.prefetchSegments)r.discontinuity&&t.push("#EXT-X-PREFETCH-DISCONTINUITY"),t.push(`#EXT-X-PREFETCH:${r.uri}`);e.endlist&&t.push("#EXT-X-ENDLIST");for(const r of e.renditionReports){const e=[];e.push(`URI="${r.uri}"`,`LAST-MSN=${r.lastMSN}`),void 0!==r.lastPart&&e.push(`LAST-PART=${r.lastPart}`),t.push(`#EXT-X-RENDITION-REPORT:${e.join(",")}`)}}(e,t),e.join("\n")};
-/*! Copyright Kuu Miyazaki. SPDX-License-Identifier: MIT */const{getOptions:zt,setOptions:Zt}=et;var Jt,te={parse:Bt,stringify:Qt,types:st,getOptions:zt,setOptions:Zt};function ee(t,e){var r=0,n=0,i=t.split("-"),s=i[0],a=i[1];return void 0===a?(r=Number(s)-e,n=Number(s)+e):(r=Number(s),0==(n=Number(a))&&(n=Number.MAX_VALUE)),r>=n&&(r=-1,n=-1),[r,n]}function re(t,e){if(void 0===e&&(e=10),"number"==typeof t)return t;var r=10===e?Number.parseFloat(t):Number.parseInt(t);return Number.isNaN(r)?0:r}function ne(t){var e=t.split("x");return{width:re(e[0]),height:re(e[1])}}te.setOptions({strictMode:!0}),function(t){t.MASTER_MANIFEST="Master Manifest",t.MEDIA_MANIFEST="Media Manifest"}(Jt||(Jt={}));var ie=function(){function e(){}return e.parseManifest=function(t){if("string"!=typeof t)throw new Error("HLSParser: parseManifest api failed - Invalid input type, expected input type string.");if(""===t)throw new Error("HLSParser: parseManifest api failed - Empty input value, expected non-empty string as input.");try{return te.parse(t)}catch(t){throw new Error("HLSParser: hls-parser parse api failed - ".concat(t.message))}},e.populateManifest=function(t){if(!t)throw new Error("HLSParser: populateManifest api failed - Empty playlist object, expected playlist object created using parseManifest api.");try{return te.stringify(t)}catch(t){throw new Error("HLSParser: hls-parser stringify api failed - ".concat(t.message))}},e.getManifestType=function(t){if(!t)throw new Error("HLSParser: getManifestType api failed - Empty playlist object, expected playlist object created using parseManifest api.");try{return t.isMasterPlaylist?Jt.MASTER_MANIFEST:Jt.MEDIA_MANIFEST}catch(t){throw new Error("HLSParser: getManifestType api failed - Playlist type initialization not found in playlistObj - ".concat(t.message))}},e.removeVariantsByBitrate=function(t,e,r){if(void 0===r&&(r=1e5),!t)throw new Error("HLSParser: removeVariantsByBitrate api failed - Empty playlist object, expected playlist object created using parseManifest api.");if(!e||!Array.isArray(e)||0==e.length)throw new Error("HLSParser: removeVariantsByBitrate api failed - Empty bitrates array, expected bitrates array of strings.");if(r<0)throw new Error("HLSParser: removeVariantsByBitrate api failed - Invalid tolerance value, expected non-negative tolerance value.");var n=!1;try{for(var i=e.length,s=new Set,a=0;a<i;a++)if(!(e[a].length<=0)){var o=ee(e[a],r),u=o[0],h=o[1];if(-1==u)return n;for(var c=0,l=t.variants.length;c<l;)t.variants[c].bandwidth&&t.variants[c].bandwidth>=u&&t.variants[c].bandwidth<=h&&s.add(t.variants[c].bandwidth),c++}if(s.size>0)for(c=0,l=t.variants.length;c<l;)t.variants[c].bandwidth&&!s.has(t.variants[c].bandwidth)?(t.variants.splice(c,1),n=!0,l--):c++}catch(t){throw new Error("HLSParser: removeVariantsByBitrate api failed - ".concat(t.message))}return n},e.removeVariantsByResolution=function(t,e){if(!t)throw new Error("HLSParser: removeVariantsByResolution api failed - Empty playlist object, expected playlist object created using parseManifest api.");if("string"!=typeof e)throw new Error("HLSParser: removeVariantsByResolution api failed - Invalid maximum supported resolution type, expected type string.");if(""===e)throw new Error("HLSParser: removeVariantsByResolution api failed - Empty maximum supported resolution value, expected non-empty string.");var r=!1;try{for(var n=ne(e),i=0,s=t.variants.length;i<s;)t.variants[i].resolution&&(t.variants[i].resolution.width>n.width||t.variants[i].resolution.height>n.height)?(t.variants.splice(i,1),r=!0,s--):i++}catch(t){throw new Error("HLSParser: removeVariantsByResolution api failed - ".concat(t.message))}return r},e.moveVariantToIndex=function(t,e,r){if(void 0===r&&(r=0),!t)throw new Error("HLSParser: moveVariantToIndex api failed - Empty playlist object, expected playlist object created using parseManifest api.");if("string"!=typeof e)throw new Error("HLSParser: moveVariantToIndex api failed - Invalid resolution type, expected type string.");if(""===e)throw new Error("HLSParser: moveVariantToIndex api failed - Empty resolution value, expected non-empty string.");if(r<0)throw new Error("HLSParser: moveVariantToIndex api failed - Invalid new index value, expected non-negative new index value.");try{if(!t||!e||r<0)return-1;for(var n=0,i=t.variants.length,s=ne(e);n<i&&r<i;)t.variants[n].resolution&&t.variants[n].resolution.width===s.width&&t.variants[n].resolution.height===s.height&&(n!=r&&t.variants.splice(r,0,t.variants.splice(n,1)[0]),r++),n++}catch(t){throw new Error("HLSParser: moveVariantToIndex api failed - ".concat(t.message))}return r},e.updateResolutionOrder=function(t,e){if(!t)throw new Error("HLSParser: updateResolutionOrder api failed - Empty playlistObj object, expected playlistObj object created using parseManifest api.");if(!e||!Array.isArray(e)||0==e.length)throw new Error("HLSParser: updateResolutionOrder api failed - Empty list of resolutions, expected non-empty list of resolutions.");var r=!1;try{if(!t||!e||0==e.length)return r;var n=0,i=e.length;if(i>t.variants.length)return r;for(var s=0;s<i;s++){var a=this.moveVariantToIndex(t,e[s],n);a!=n&&(r=!0,n=a)}}catch(t){throw new Error("HLSParser: updateResolutionOrder api failed - ".concat(t.message))}return r},e.removeAudioRenditionsByLanguage=function(t,e){if(!t)throw new Error("HLSParser: removeAudioRenditionsByLanguage api failed - Empty playlistObj object, expected playlistObj object created using parseManifest api.");if(!e||!Array.isArray(e)||0==e.length)throw new Error("HLSParser: removeAudioRenditionsByLanguage api failed - Empty list of languages to preserve, expected non-empty list of languages to preserve.");var r=!1;try{if(!t||!e||0==e.length)return r;for(var n=t.variants.length,i=0;i<n;i++)for(var s=0,a=t.variants[i].audio.length;s<a;)e.indexOf(t.variants[i].audio[s].language)<0?(t.variants[i].audio.splice(s,1),r=!0,a--):s++}catch(t){throw new Error("HLSParser: removeAudioRenditionsByLanguage api failed - ".concat(t.message))}return r},e.removeSubtitleRenditionsByLanguage=function(t,e){if(!t)throw new Error("HLSParser: removeSubtitleRenditionsByLanguage api failed - Empty playlistObj object, expected playlistObj object created using parseManifest api.");if(!e||!Array.isArray(e)||0==e.length)throw new Error("HLSParser: removeSubtitleRenditionsByLanguage api failed - Empty list of languages to preserve, expected non-empty list of languages to preserve.");var r=!1;try{for(var n=t.variants.length,i=0;i<n;i++)for(var s=0,a=t.variants[i].subtitles.length;s<a;)e.indexOf(t.variants[i].subtitles[s].language)<0?(t.variants[i].subtitles.splice(s,1),r=!0,a--):s++}catch(t){throw new Error("HLSParser: removeSubtitleRenditionsByLanguage api failed - ".concat(t.message))}return r},e.insertAuxiliaryContent=function(e,r){var n;if(!e)throw new Error("HLSParser: insertAuxiliaryContent api failed - Empty primaryPlaylistObj object, expected primaryPlaylistObj object created using parseManifest api.");if(!r||!Array.isArray(r)||0==r.length)throw new Error("HLSParser: insertAuxiliaryContent api failed - Empty bumpers list, expected non-empty list of bumpers.");try{var i=r.length,s=0,a=[],o=void 0,u=void 0,h=void 0;r.sort((function(t,e){return t.afterSeconds-e.afterSeconds})),o=0,u=0,h=0;for(var c=0;c<r.length;++c){if(0==(T=r[c]).afterSeconds)h=0,a[s++]=h,e.segments[0].discontinuity=!0;else if(T.afterSeconds>0&&T.afterSeconds<Number.MAX_VALUE){for(var l=void 0,f=u;f<e.segments.length&&(l=e.segments[f],!(o>=T.afterSeconds));++f)o+=l.duration,h++,u++;u!==e.segments.length&&(l.discontinuity=!0),a[s++]=h}else T.afterSeconds==Number.MAX_VALUE&&(h=e.segments.length,a[s++]=h)}for(var E in r){var T;(T=r[E]).auxContentRespBodyObj.segments[0].discontinuity=!0}var p=0;for(c=0;c<i;c++)a[c]+=p,(n=e.segments).splice.apply(n,t([a[c],0],r[c].auxContentRespBodyObj.segments,!1)),p+=r[c].auxContentRespBodyObj.segments.length}catch(t){throw new Error("HLSParser: insertAuxiliaryContent api failed - ".concat(t.message))}},e}();export{Jt as ManifestType,ie as hls};
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+function __spreadArray(to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+}
+
+var global$1 = (typeof global !== "undefined" ? global :
+  typeof self !== "undefined" ? self :
+  typeof window !== "undefined" ? window : {});
+
+var lookup = [];
+var revLookup = [];
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
+var inited = false;
+function init () {
+  inited = true;
+  var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  for (var i = 0, len = code.length; i < len; ++i) {
+    lookup[i] = code[i];
+    revLookup[code.charCodeAt(i)] = i;
+  }
+
+  revLookup['-'.charCodeAt(0)] = 62;
+  revLookup['_'.charCodeAt(0)] = 63;
+}
+
+function toByteArray (b64) {
+  if (!inited) {
+    init();
+  }
+  var i, j, l, tmp, placeHolders, arr;
+  var len = b64.length;
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0;
+
+  // base64 is 4/3 + up to two characters of the original data
+  arr = new Arr(len * 3 / 4 - placeHolders);
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len;
+
+  var L = 0;
+
+  for (i = 0, j = 0; i < l; i += 4, j += 3) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)];
+    arr[L++] = (tmp >> 16) & 0xFF;
+    arr[L++] = (tmp >> 8) & 0xFF;
+    arr[L++] = tmp & 0xFF;
+  }
+
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4);
+    arr[L++] = tmp & 0xFF;
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2);
+    arr[L++] = (tmp >> 8) & 0xFF;
+    arr[L++] = tmp & 0xFF;
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp;
+  var output = [];
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
+    output.push(tripletToBase64(tmp));
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  if (!inited) {
+    init();
+  }
+  var tmp;
+  var len = uint8.length;
+  var extraBytes = len % 3; // if we have 1 byte left, pad 2 bytes
+  var output = '';
+  var parts = [];
+  var maxChunkLength = 16383; // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)));
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1];
+    output += lookup[tmp >> 2];
+    output += lookup[(tmp << 4) & 0x3F];
+    output += '==';
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1]);
+    output += lookup[tmp >> 10];
+    output += lookup[(tmp >> 4) & 0x3F];
+    output += lookup[(tmp << 2) & 0x3F];
+    output += '=';
+  }
+
+  parts.push(output);
+
+  return parts.join('')
+}
+
+function read (buffer, offset, isLE, mLen, nBytes) {
+  var e, m;
+  var eLen = nBytes * 8 - mLen - 1;
+  var eMax = (1 << eLen) - 1;
+  var eBias = eMax >> 1;
+  var nBits = -7;
+  var i = isLE ? (nBytes - 1) : 0;
+  var d = isLE ? -1 : 1;
+  var s = buffer[offset + i];
+
+  i += d;
+
+  e = s & ((1 << (-nBits)) - 1);
+  s >>= (-nBits);
+  nBits += eLen;
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1);
+  e >>= (-nBits);
+  nBits += mLen;
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias;
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen);
+    e = e - eBias;
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+function write (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c;
+  var eLen = nBytes * 8 - mLen - 1;
+  var eMax = (1 << eLen) - 1;
+  var eBias = eMax >> 1;
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0);
+  var i = isLE ? 0 : (nBytes - 1);
+  var d = isLE ? 1 : -1;
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+
+  value = Math.abs(value);
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0;
+    e = eMax;
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2);
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--;
+      c *= 2;
+    }
+    if (e + eBias >= 1) {
+      value += rt / c;
+    } else {
+      value += rt * Math.pow(2, 1 - eBias);
+    }
+    if (value * c >= 2) {
+      e++;
+      c /= 2;
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0;
+      e = eMax;
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen);
+      e = e + eBias;
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+      e = 0;
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m;
+  eLen += mLen;
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128;
+}
+
+var toString = {}.toString;
+
+var isArray = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+
+var INSPECT_MAX_BYTES = 50;
+
+/**
+ * If `Buffer.TYPED_ARRAY_SUPPORT`:
+ *   === true    Use Uint8Array implementation (fastest)
+ *   === false   Use Object implementation (most compatible, even IE6)
+ *
+ * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+ * Opera 11.6+, iOS 4.2+.
+ *
+ * Due to various browser bugs, sometimes the Object implementation will be used even
+ * when the browser supports typed arrays.
+ *
+ * Note:
+ *
+ *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
+ *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+ *
+ *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+ *
+ *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+ *     incorrect length in some situations.
+
+ * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
+ * get the Object implementation, which is slower but behaves correctly.
+ */
+Buffer.TYPED_ARRAY_SUPPORT = global$1.TYPED_ARRAY_SUPPORT !== undefined
+  ? global$1.TYPED_ARRAY_SUPPORT
+  : true;
+
+/*
+ * Export kMaxLength after typed array support is determined.
+ */
+kMaxLength();
+
+function kMaxLength () {
+  return Buffer.TYPED_ARRAY_SUPPORT
+    ? 0x7fffffff
+    : 0x3fffffff
+}
+
+function createBuffer (that, length) {
+  if (kMaxLength() < length) {
+    throw new RangeError('Invalid typed array length')
+  }
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = new Uint8Array(length);
+    that.__proto__ = Buffer.prototype;
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    if (that === null) {
+      that = new Buffer(length);
+    }
+    that.length = length;
+  }
+
+  return that
+}
+
+/**
+ * The Buffer constructor returns instances of `Uint8Array` that have their
+ * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
+ * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
+ * and the `Uint8Array` methods. Square bracket notation works as expected -- it
+ * returns a single octet.
+ *
+ * The `Uint8Array` prototype remains unmodified.
+ */
+
+function Buffer (arg, encodingOrOffset, length) {
+  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
+    return new Buffer(arg, encodingOrOffset, length)
+  }
+
+  // Common case.
+  if (typeof arg === 'number') {
+    if (typeof encodingOrOffset === 'string') {
+      throw new Error(
+        'If encoding is specified then the first argument must be a string'
+      )
+    }
+    return allocUnsafe(this, arg)
+  }
+  return from(this, arg, encodingOrOffset, length)
+}
+
+Buffer.poolSize = 8192; // not used by this implementation
+
+// TODO: Legacy, not needed anymore. Remove in next major version.
+Buffer._augment = function (arr) {
+  arr.__proto__ = Buffer.prototype;
+  return arr
+};
+
+function from (that, value, encodingOrOffset, length) {
+  if (typeof value === 'number') {
+    throw new TypeError('"value" argument must not be a number')
+  }
+
+  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
+    return fromArrayBuffer(that, value, encodingOrOffset, length)
+  }
+
+  if (typeof value === 'string') {
+    return fromString(that, value, encodingOrOffset)
+  }
+
+  return fromObject(that, value)
+}
+
+/**
+ * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
+ * if value is a number.
+ * Buffer.from(str[, encoding])
+ * Buffer.from(array)
+ * Buffer.from(buffer)
+ * Buffer.from(arrayBuffer[, byteOffset[, length]])
+ **/
+Buffer.from = function (value, encodingOrOffset, length) {
+  return from(null, value, encodingOrOffset, length)
+};
+
+if (Buffer.TYPED_ARRAY_SUPPORT) {
+  Buffer.prototype.__proto__ = Uint8Array.prototype;
+  Buffer.__proto__ = Uint8Array;
+  if (typeof Symbol !== 'undefined' && Symbol.species &&
+      Buffer[Symbol.species] === Buffer) ;
+}
+
+function assertSize (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
+  }
+}
+
+function alloc (that, size, fill, encoding) {
+  assertSize(size);
+  if (size <= 0) {
+    return createBuffer(that, size)
+  }
+  if (fill !== undefined) {
+    // Only pay attention to encoding if it's a string. This
+    // prevents accidentally sending in a number that would
+    // be interpretted as a start offset.
+    return typeof encoding === 'string'
+      ? createBuffer(that, size).fill(fill, encoding)
+      : createBuffer(that, size).fill(fill)
+  }
+  return createBuffer(that, size)
+}
+
+/**
+ * Creates a new filled Buffer instance.
+ * alloc(size[, fill[, encoding]])
+ **/
+Buffer.alloc = function (size, fill, encoding) {
+  return alloc(null, size, fill, encoding)
+};
+
+function allocUnsafe (that, size) {
+  assertSize(size);
+  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0);
+  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+    for (var i = 0; i < size; ++i) {
+      that[i] = 0;
+    }
+  }
+  return that
+}
+
+/**
+ * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
+ * */
+Buffer.allocUnsafe = function (size) {
+  return allocUnsafe(null, size)
+};
+/**
+ * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
+ */
+Buffer.allocUnsafeSlow = function (size) {
+  return allocUnsafe(null, size)
+};
+
+function fromString (that, string, encoding) {
+  if (typeof encoding !== 'string' || encoding === '') {
+    encoding = 'utf8';
+  }
+
+  if (!Buffer.isEncoding(encoding)) {
+    throw new TypeError('"encoding" must be a valid string encoding')
+  }
+
+  var length = byteLength(string, encoding) | 0;
+  that = createBuffer(that, length);
+
+  var actual = that.write(string, encoding);
+
+  if (actual !== length) {
+    // Writing a hex string, for example, that contains invalid characters will
+    // cause everything after the first invalid character to be ignored. (e.g.
+    // 'abxxcd' will be treated as 'ab')
+    that = that.slice(0, actual);
+  }
+
+  return that
+}
+
+function fromArrayLike (that, array) {
+  var length = array.length < 0 ? 0 : checked(array.length) | 0;
+  that = createBuffer(that, length);
+  for (var i = 0; i < length; i += 1) {
+    that[i] = array[i] & 255;
+  }
+  return that
+}
+
+function fromArrayBuffer (that, array, byteOffset, length) {
+  array.byteLength; // this throws if `array` is not a valid ArrayBuffer
+
+  if (byteOffset < 0 || array.byteLength < byteOffset) {
+    throw new RangeError('\'offset\' is out of bounds')
+  }
+
+  if (array.byteLength < byteOffset + (length || 0)) {
+    throw new RangeError('\'length\' is out of bounds')
+  }
+
+  if (byteOffset === undefined && length === undefined) {
+    array = new Uint8Array(array);
+  } else if (length === undefined) {
+    array = new Uint8Array(array, byteOffset);
+  } else {
+    array = new Uint8Array(array, byteOffset, length);
+  }
+
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = array;
+    that.__proto__ = Buffer.prototype;
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    that = fromArrayLike(that, array);
+  }
+  return that
+}
+
+function fromObject (that, obj) {
+  if (internalIsBuffer(obj)) {
+    var len = checked(obj.length) | 0;
+    that = createBuffer(that, len);
+
+    if (that.length === 0) {
+      return that
+    }
+
+    obj.copy(that, 0, 0, len);
+    return that
+  }
+
+  if (obj) {
+    if ((typeof ArrayBuffer !== 'undefined' &&
+        obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
+      if (typeof obj.length !== 'number' || isnan(obj.length)) {
+        return createBuffer(that, 0)
+      }
+      return fromArrayLike(that, obj)
+    }
+
+    if (obj.type === 'Buffer' && isArray(obj.data)) {
+      return fromArrayLike(that, obj.data)
+    }
+  }
+
+  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
+}
+
+function checked (length) {
+  // Note: cannot use `length < kMaxLength()` here because that fails when
+  // length is NaN (which is otherwise coerced to zero.)
+  if (length >= kMaxLength()) {
+    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
+  }
+  return length | 0
+}
+Buffer.isBuffer = isBuffer;
+function internalIsBuffer (b) {
+  return !!(b != null && b._isBuffer)
+}
+
+Buffer.compare = function compare (a, b) {
+  if (!internalIsBuffer(a) || !internalIsBuffer(b)) {
+    throw new TypeError('Arguments must be Buffers')
+  }
+
+  if (a === b) return 0
+
+  var x = a.length;
+  var y = b.length;
+
+  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+    if (a[i] !== b[i]) {
+      x = a[i];
+      y = b[i];
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+};
+
+Buffer.isEncoding = function isEncoding (encoding) {
+  switch (String(encoding).toLowerCase()) {
+    case 'hex':
+    case 'utf8':
+    case 'utf-8':
+    case 'ascii':
+    case 'latin1':
+    case 'binary':
+    case 'base64':
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      return true
+    default:
+      return false
+  }
+};
+
+Buffer.concat = function concat (list, length) {
+  if (!isArray(list)) {
+    throw new TypeError('"list" argument must be an Array of Buffers')
+  }
+
+  if (list.length === 0) {
+    return Buffer.alloc(0)
+  }
+
+  var i;
+  if (length === undefined) {
+    length = 0;
+    for (i = 0; i < list.length; ++i) {
+      length += list[i].length;
+    }
+  }
+
+  var buffer = Buffer.allocUnsafe(length);
+  var pos = 0;
+  for (i = 0; i < list.length; ++i) {
+    var buf = list[i];
+    if (!internalIsBuffer(buf)) {
+      throw new TypeError('"list" argument must be an Array of Buffers')
+    }
+    buf.copy(buffer, pos);
+    pos += buf.length;
+  }
+  return buffer
+};
+
+function byteLength (string, encoding) {
+  if (internalIsBuffer(string)) {
+    return string.length
+  }
+  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
+      (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
+    return string.byteLength
+  }
+  if (typeof string !== 'string') {
+    string = '' + string;
+  }
+
+  var len = string.length;
+  if (len === 0) return 0
+
+  // Use a for loop to avoid recursion
+  var loweredCase = false;
+  for (;;) {
+    switch (encoding) {
+      case 'ascii':
+      case 'latin1':
+      case 'binary':
+        return len
+      case 'utf8':
+      case 'utf-8':
+      case undefined:
+        return utf8ToBytes(string).length
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return len * 2
+      case 'hex':
+        return len >>> 1
+      case 'base64':
+        return base64ToBytes(string).length
+      default:
+        if (loweredCase) return utf8ToBytes(string).length // assume utf8
+        encoding = ('' + encoding).toLowerCase();
+        loweredCase = true;
+    }
+  }
+}
+Buffer.byteLength = byteLength;
+
+function slowToString (encoding, start, end) {
+  var loweredCase = false;
+
+  // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
+  // property of a typed array.
+
+  // This behaves neither like String nor Uint8Array in that we set start/end
+  // to their upper/lower bounds if the value passed is out of range.
+  // undefined is handled specially as per ECMA-262 6th Edition,
+  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
+  if (start === undefined || start < 0) {
+    start = 0;
+  }
+  // Return early if start > this.length. Done here to prevent potential uint32
+  // coercion fail below.
+  if (start > this.length) {
+    return ''
+  }
+
+  if (end === undefined || end > this.length) {
+    end = this.length;
+  }
+
+  if (end <= 0) {
+    return ''
+  }
+
+  // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
+  end >>>= 0;
+  start >>>= 0;
+
+  if (end <= start) {
+    return ''
+  }
+
+  if (!encoding) encoding = 'utf8';
+
+  while (true) {
+    switch (encoding) {
+      case 'hex':
+        return hexSlice(this, start, end)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Slice(this, start, end)
+
+      case 'ascii':
+        return asciiSlice(this, start, end)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Slice(this, start, end)
+
+      case 'base64':
+        return base64Slice(this, start, end)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return utf16leSlice(this, start, end)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = (encoding + '').toLowerCase();
+        loweredCase = true;
+    }
+  }
+}
+
+// The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
+// Buffer instances.
+Buffer.prototype._isBuffer = true;
+
+function swap (b, n, m) {
+  var i = b[n];
+  b[n] = b[m];
+  b[m] = i;
+}
+
+Buffer.prototype.swap16 = function swap16 () {
+  var len = this.length;
+  if (len % 2 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 16-bits')
+  }
+  for (var i = 0; i < len; i += 2) {
+    swap(this, i, i + 1);
+  }
+  return this
+};
+
+Buffer.prototype.swap32 = function swap32 () {
+  var len = this.length;
+  if (len % 4 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 32-bits')
+  }
+  for (var i = 0; i < len; i += 4) {
+    swap(this, i, i + 3);
+    swap(this, i + 1, i + 2);
+  }
+  return this
+};
+
+Buffer.prototype.swap64 = function swap64 () {
+  var len = this.length;
+  if (len % 8 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 64-bits')
+  }
+  for (var i = 0; i < len; i += 8) {
+    swap(this, i, i + 7);
+    swap(this, i + 1, i + 6);
+    swap(this, i + 2, i + 5);
+    swap(this, i + 3, i + 4);
+  }
+  return this
+};
+
+Buffer.prototype.toString = function toString () {
+  var length = this.length | 0;
+  if (length === 0) return ''
+  if (arguments.length === 0) return utf8Slice(this, 0, length)
+  return slowToString.apply(this, arguments)
+};
+
+Buffer.prototype.equals = function equals (b) {
+  if (!internalIsBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  if (this === b) return true
+  return Buffer.compare(this, b) === 0
+};
+
+Buffer.prototype.inspect = function inspect () {
+  var str = '';
+  var max = INSPECT_MAX_BYTES;
+  if (this.length > 0) {
+    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ');
+    if (this.length > max) str += ' ... ';
+  }
+  return '<Buffer ' + str + '>'
+};
+
+Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+  if (!internalIsBuffer(target)) {
+    throw new TypeError('Argument must be a Buffer')
+  }
+
+  if (start === undefined) {
+    start = 0;
+  }
+  if (end === undefined) {
+    end = target ? target.length : 0;
+  }
+  if (thisStart === undefined) {
+    thisStart = 0;
+  }
+  if (thisEnd === undefined) {
+    thisEnd = this.length;
+  }
+
+  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
+    throw new RangeError('out of range index')
+  }
+
+  if (thisStart >= thisEnd && start >= end) {
+    return 0
+  }
+  if (thisStart >= thisEnd) {
+    return -1
+  }
+  if (start >= end) {
+    return 1
+  }
+
+  start >>>= 0;
+  end >>>= 0;
+  thisStart >>>= 0;
+  thisEnd >>>= 0;
+
+  if (this === target) return 0
+
+  var x = thisEnd - thisStart;
+  var y = end - start;
+  var len = Math.min(x, y);
+
+  var thisCopy = this.slice(thisStart, thisEnd);
+  var targetCopy = target.slice(start, end);
+
+  for (var i = 0; i < len; ++i) {
+    if (thisCopy[i] !== targetCopy[i]) {
+      x = thisCopy[i];
+      y = targetCopy[i];
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+};
+
+// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+//
+// Arguments:
+// - buffer - a Buffer to search
+// - val - a string, Buffer, or number
+// - byteOffset - an index into `buffer`; will be clamped to an int32
+// - encoding - an optional encoding, relevant is val is a string
+// - dir - true for indexOf, false for lastIndexOf
+function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+  // Empty buffer means no match
+  if (buffer.length === 0) return -1
+
+  // Normalize byteOffset
+  if (typeof byteOffset === 'string') {
+    encoding = byteOffset;
+    byteOffset = 0;
+  } else if (byteOffset > 0x7fffffff) {
+    byteOffset = 0x7fffffff;
+  } else if (byteOffset < -0x80000000) {
+    byteOffset = -0x80000000;
+  }
+  byteOffset = +byteOffset;  // Coerce to Number.
+  if (isNaN(byteOffset)) {
+    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+    byteOffset = dir ? 0 : (buffer.length - 1);
+  }
+
+  // Normalize byteOffset: negative offsets start from the end of the buffer
+  if (byteOffset < 0) byteOffset = buffer.length + byteOffset;
+  if (byteOffset >= buffer.length) {
+    if (dir) return -1
+    else byteOffset = buffer.length - 1;
+  } else if (byteOffset < 0) {
+    if (dir) byteOffset = 0;
+    else return -1
+  }
+
+  // Normalize val
+  if (typeof val === 'string') {
+    val = Buffer.from(val, encoding);
+  }
+
+  // Finally, search either indexOf (if dir is true) or lastIndexOf
+  if (internalIsBuffer(val)) {
+    // Special case: looking for empty string/buffer always fails
+    if (val.length === 0) {
+      return -1
+    }
+    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+  } else if (typeof val === 'number') {
+    val = val & 0xFF; // Search for a byte value [0-255]
+    if (Buffer.TYPED_ARRAY_SUPPORT &&
+        typeof Uint8Array.prototype.indexOf === 'function') {
+      if (dir) {
+        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+      } else {
+        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+      }
+    }
+    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+  }
+
+  throw new TypeError('val must be string, number or Buffer')
+}
+
+function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
+  var indexSize = 1;
+  var arrLength = arr.length;
+  var valLength = val.length;
+
+  if (encoding !== undefined) {
+    encoding = String(encoding).toLowerCase();
+    if (encoding === 'ucs2' || encoding === 'ucs-2' ||
+        encoding === 'utf16le' || encoding === 'utf-16le') {
+      if (arr.length < 2 || val.length < 2) {
+        return -1
+      }
+      indexSize = 2;
+      arrLength /= 2;
+      valLength /= 2;
+      byteOffset /= 2;
+    }
+  }
+
+  function read (buf, i) {
+    if (indexSize === 1) {
+      return buf[i]
+    } else {
+      return buf.readUInt16BE(i * indexSize)
+    }
+  }
+
+  var i;
+  if (dir) {
+    var foundIndex = -1;
+    for (i = byteOffset; i < arrLength; i++) {
+      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+        if (foundIndex === -1) foundIndex = i;
+        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+      } else {
+        if (foundIndex !== -1) i -= i - foundIndex;
+        foundIndex = -1;
+      }
+    }
+  } else {
+    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength;
+    for (i = byteOffset; i >= 0; i--) {
+      var found = true;
+      for (var j = 0; j < valLength; j++) {
+        if (read(arr, i + j) !== read(val, j)) {
+          found = false;
+          break
+        }
+      }
+      if (found) return i
+    }
+  }
+
+  return -1
+}
+
+Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
+  return this.indexOf(val, byteOffset, encoding) !== -1
+};
+
+Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+};
+
+Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
+};
+
+function hexWrite (buf, string, offset, length) {
+  offset = Number(offset) || 0;
+  var remaining = buf.length - offset;
+  if (!length) {
+    length = remaining;
+  } else {
+    length = Number(length);
+    if (length > remaining) {
+      length = remaining;
+    }
+  }
+
+  // must be an even number of digits
+  var strLen = string.length;
+  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
+
+  if (length > strLen / 2) {
+    length = strLen / 2;
+  }
+  for (var i = 0; i < length; ++i) {
+    var parsed = parseInt(string.substr(i * 2, 2), 16);
+    if (isNaN(parsed)) return i
+    buf[offset + i] = parsed;
+  }
+  return i
+}
+
+function utf8Write (buf, string, offset, length) {
+  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+function asciiWrite (buf, string, offset, length) {
+  return blitBuffer(asciiToBytes(string), buf, offset, length)
+}
+
+function latin1Write (buf, string, offset, length) {
+  return asciiWrite(buf, string, offset, length)
+}
+
+function base64Write (buf, string, offset, length) {
+  return blitBuffer(base64ToBytes(string), buf, offset, length)
+}
+
+function ucs2Write (buf, string, offset, length) {
+  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+Buffer.prototype.write = function write (string, offset, length, encoding) {
+  // Buffer#write(string)
+  if (offset === undefined) {
+    encoding = 'utf8';
+    length = this.length;
+    offset = 0;
+  // Buffer#write(string, encoding)
+  } else if (length === undefined && typeof offset === 'string') {
+    encoding = offset;
+    length = this.length;
+    offset = 0;
+  // Buffer#write(string, offset[, length][, encoding])
+  } else if (isFinite(offset)) {
+    offset = offset | 0;
+    if (isFinite(length)) {
+      length = length | 0;
+      if (encoding === undefined) encoding = 'utf8';
+    } else {
+      encoding = length;
+      length = undefined;
+    }
+  // legacy write(string, encoding, offset, length) - remove in v0.13
+  } else {
+    throw new Error(
+      'Buffer.write(string, encoding, offset[, length]) is no longer supported'
+    )
+  }
+
+  var remaining = this.length - offset;
+  if (length === undefined || length > remaining) length = remaining;
+
+  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+    throw new RangeError('Attempt to write outside buffer bounds')
+  }
+
+  if (!encoding) encoding = 'utf8';
+
+  var loweredCase = false;
+  for (;;) {
+    switch (encoding) {
+      case 'hex':
+        return hexWrite(this, string, offset, length)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Write(this, string, offset, length)
+
+      case 'ascii':
+        return asciiWrite(this, string, offset, length)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Write(this, string, offset, length)
+
+      case 'base64':
+        // Warning: maxLength not taken into account in base64Write
+        return base64Write(this, string, offset, length)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return ucs2Write(this, string, offset, length)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = ('' + encoding).toLowerCase();
+        loweredCase = true;
+    }
+  }
+};
+
+Buffer.prototype.toJSON = function toJSON () {
+  return {
+    type: 'Buffer',
+    data: Array.prototype.slice.call(this._arr || this, 0)
+  }
+};
+
+function base64Slice (buf, start, end) {
+  if (start === 0 && end === buf.length) {
+    return fromByteArray(buf)
+  } else {
+    return fromByteArray(buf.slice(start, end))
+  }
+}
+
+function utf8Slice (buf, start, end) {
+  end = Math.min(buf.length, end);
+  var res = [];
+
+  var i = start;
+  while (i < end) {
+    var firstByte = buf[i];
+    var codePoint = null;
+    var bytesPerSequence = (firstByte > 0xEF) ? 4
+      : (firstByte > 0xDF) ? 3
+      : (firstByte > 0xBF) ? 2
+      : 1;
+
+    if (i + bytesPerSequence <= end) {
+      var secondByte, thirdByte, fourthByte, tempCodePoint;
+
+      switch (bytesPerSequence) {
+        case 1:
+          if (firstByte < 0x80) {
+            codePoint = firstByte;
+          }
+          break
+        case 2:
+          secondByte = buf[i + 1];
+          if ((secondByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F);
+            if (tempCodePoint > 0x7F) {
+              codePoint = tempCodePoint;
+            }
+          }
+          break
+        case 3:
+          secondByte = buf[i + 1];
+          thirdByte = buf[i + 2];
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F);
+            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
+              codePoint = tempCodePoint;
+            }
+          }
+          break
+        case 4:
+          secondByte = buf[i + 1];
+          thirdByte = buf[i + 2];
+          fourthByte = buf[i + 3];
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F);
+            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
+              codePoint = tempCodePoint;
+            }
+          }
+      }
+    }
+
+    if (codePoint === null) {
+      // we did not generate a valid codePoint so insert a
+      // replacement char (U+FFFD) and advance only 1 byte
+      codePoint = 0xFFFD;
+      bytesPerSequence = 1;
+    } else if (codePoint > 0xFFFF) {
+      // encode to utf16 (surrogate pair dance)
+      codePoint -= 0x10000;
+      res.push(codePoint >>> 10 & 0x3FF | 0xD800);
+      codePoint = 0xDC00 | codePoint & 0x3FF;
+    }
+
+    res.push(codePoint);
+    i += bytesPerSequence;
+  }
+
+  return decodeCodePointsArray(res)
+}
+
+// Based on http://stackoverflow.com/a/22747272/680742, the browser with
+// the lowest limit is Chrome, with 0x10000 args.
+// We go 1 magnitude less, for safety
+var MAX_ARGUMENTS_LENGTH = 0x1000;
+
+function decodeCodePointsArray (codePoints) {
+  var len = codePoints.length;
+  if (len <= MAX_ARGUMENTS_LENGTH) {
+    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
+  }
+
+  // Decode in chunks to avoid "call stack size exceeded".
+  var res = '';
+  var i = 0;
+  while (i < len) {
+    res += String.fromCharCode.apply(
+      String,
+      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+    );
+  }
+  return res
+}
+
+function asciiSlice (buf, start, end) {
+  var ret = '';
+  end = Math.min(buf.length, end);
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i] & 0x7F);
+  }
+  return ret
+}
+
+function latin1Slice (buf, start, end) {
+  var ret = '';
+  end = Math.min(buf.length, end);
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i]);
+  }
+  return ret
+}
+
+function hexSlice (buf, start, end) {
+  var len = buf.length;
+
+  if (!start || start < 0) start = 0;
+  if (!end || end < 0 || end > len) end = len;
+
+  var out = '';
+  for (var i = start; i < end; ++i) {
+    out += toHex(buf[i]);
+  }
+  return out
+}
+
+function utf16leSlice (buf, start, end) {
+  var bytes = buf.slice(start, end);
+  var res = '';
+  for (var i = 0; i < bytes.length; i += 2) {
+    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256);
+  }
+  return res
+}
+
+Buffer.prototype.slice = function slice (start, end) {
+  var len = this.length;
+  start = ~~start;
+  end = end === undefined ? len : ~~end;
+
+  if (start < 0) {
+    start += len;
+    if (start < 0) start = 0;
+  } else if (start > len) {
+    start = len;
+  }
+
+  if (end < 0) {
+    end += len;
+    if (end < 0) end = 0;
+  } else if (end > len) {
+    end = len;
+  }
+
+  if (end < start) end = start;
+
+  var newBuf;
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    newBuf = this.subarray(start, end);
+    newBuf.__proto__ = Buffer.prototype;
+  } else {
+    var sliceLen = end - start;
+    newBuf = new Buffer(sliceLen, undefined);
+    for (var i = 0; i < sliceLen; ++i) {
+      newBuf[i] = this[i + start];
+    }
+  }
+
+  return newBuf
+};
+
+/*
+ * Need to make sure that buffer isn't trying to write out of bounds.
+ */
+function checkOffset (offset, ext, length) {
+  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
+  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+}
+
+Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0;
+  byteLength = byteLength | 0;
+  if (!noAssert) checkOffset(offset, byteLength, this.length);
+
+  var val = this[offset];
+  var mul = 1;
+  var i = 0;
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul;
+  }
+
+  return val
+};
+
+Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0;
+  byteLength = byteLength | 0;
+  if (!noAssert) {
+    checkOffset(offset, byteLength, this.length);
+  }
+
+  var val = this[offset + --byteLength];
+  var mul = 1;
+  while (byteLength > 0 && (mul *= 0x100)) {
+    val += this[offset + --byteLength] * mul;
+  }
+
+  return val
+};
+
+Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length);
+  return this[offset]
+};
+
+Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length);
+  return this[offset] | (this[offset + 1] << 8)
+};
+
+Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length);
+  return (this[offset] << 8) | this[offset + 1]
+};
+
+Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length);
+
+  return ((this[offset]) |
+      (this[offset + 1] << 8) |
+      (this[offset + 2] << 16)) +
+      (this[offset + 3] * 0x1000000)
+};
+
+Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length);
+
+  return (this[offset] * 0x1000000) +
+    ((this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    this[offset + 3])
+};
+
+Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0;
+  byteLength = byteLength | 0;
+  if (!noAssert) checkOffset(offset, byteLength, this.length);
+
+  var val = this[offset];
+  var mul = 1;
+  var i = 0;
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul;
+  }
+  mul *= 0x80;
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength);
+
+  return val
+};
+
+Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0;
+  byteLength = byteLength | 0;
+  if (!noAssert) checkOffset(offset, byteLength, this.length);
+
+  var i = byteLength;
+  var mul = 1;
+  var val = this[offset + --i];
+  while (i > 0 && (mul *= 0x100)) {
+    val += this[offset + --i] * mul;
+  }
+  mul *= 0x80;
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength);
+
+  return val
+};
+
+Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length);
+  if (!(this[offset] & 0x80)) return (this[offset])
+  return ((0xff - this[offset] + 1) * -1)
+};
+
+Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length);
+  var val = this[offset] | (this[offset + 1] << 8);
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+};
+
+Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length);
+  var val = this[offset + 1] | (this[offset] << 8);
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+};
+
+Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length);
+
+  return (this[offset]) |
+    (this[offset + 1] << 8) |
+    (this[offset + 2] << 16) |
+    (this[offset + 3] << 24)
+};
+
+Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length);
+
+  return (this[offset] << 24) |
+    (this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    (this[offset + 3])
+};
+
+Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length);
+  return read(this, offset, true, 23, 4)
+};
+
+Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length);
+  return read(this, offset, false, 23, 4)
+};
+
+Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length);
+  return read(this, offset, true, 52, 8)
+};
+
+Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length);
+  return read(this, offset, false, 52, 8)
+};
+
+function checkInt (buf, value, offset, ext, max, min) {
+  if (!internalIsBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
+  if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+}
+
+Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  byteLength = byteLength | 0;
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1;
+    checkInt(this, value, offset, byteLength, maxBytes, 0);
+  }
+
+  var mul = 1;
+  var i = 0;
+  this[offset] = value & 0xFF;
+  while (++i < byteLength && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF;
+  }
+
+  return offset + byteLength
+};
+
+Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  byteLength = byteLength | 0;
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1;
+    checkInt(this, value, offset, byteLength, maxBytes, 0);
+  }
+
+  var i = byteLength - 1;
+  var mul = 1;
+  this[offset + i] = value & 0xFF;
+  while (--i >= 0 && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF;
+  }
+
+  return offset + byteLength
+};
+
+Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0);
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
+  this[offset] = (value & 0xff);
+  return offset + 1
+};
+
+function objectWriteUInt16 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffff + value + 1;
+  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
+    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+      (littleEndian ? i : 1 - i) * 8;
+  }
+}
+
+Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff);
+    this[offset + 1] = (value >>> 8);
+  } else {
+    objectWriteUInt16(this, value, offset, true);
+  }
+  return offset + 2
+};
+
+Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8);
+    this[offset + 1] = (value & 0xff);
+  } else {
+    objectWriteUInt16(this, value, offset, false);
+  }
+  return offset + 2
+};
+
+function objectWriteUInt32 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffffffff + value + 1;
+  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
+    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff;
+  }
+}
+
+Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset + 3] = (value >>> 24);
+    this[offset + 2] = (value >>> 16);
+    this[offset + 1] = (value >>> 8);
+    this[offset] = (value & 0xff);
+  } else {
+    objectWriteUInt32(this, value, offset, true);
+  }
+  return offset + 4
+};
+
+Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24);
+    this[offset + 1] = (value >>> 16);
+    this[offset + 2] = (value >>> 8);
+    this[offset + 3] = (value & 0xff);
+  } else {
+    objectWriteUInt32(this, value, offset, false);
+  }
+  return offset + 4
+};
+
+Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1);
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit);
+  }
+
+  var i = 0;
+  var mul = 1;
+  var sub = 0;
+  this[offset] = value & 0xFF;
+  while (++i < byteLength && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
+      sub = 1;
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF;
+  }
+
+  return offset + byteLength
+};
+
+Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1);
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit);
+  }
+
+  var i = byteLength - 1;
+  var mul = 1;
+  var sub = 0;
+  this[offset + i] = value & 0xFF;
+  while (--i >= 0 && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
+      sub = 1;
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF;
+  }
+
+  return offset + byteLength
+};
+
+Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80);
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
+  if (value < 0) value = 0xff + value + 1;
+  this[offset] = (value & 0xff);
+  return offset + 1
+};
+
+Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff);
+    this[offset + 1] = (value >>> 8);
+  } else {
+    objectWriteUInt16(this, value, offset, true);
+  }
+  return offset + 2
+};
+
+Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8);
+    this[offset + 1] = (value & 0xff);
+  } else {
+    objectWriteUInt16(this, value, offset, false);
+  }
+  return offset + 2
+};
+
+Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff);
+    this[offset + 1] = (value >>> 8);
+    this[offset + 2] = (value >>> 16);
+    this[offset + 3] = (value >>> 24);
+  } else {
+    objectWriteUInt32(this, value, offset, true);
+  }
+  return offset + 4
+};
+
+Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+  value = +value;
+  offset = offset | 0;
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
+  if (value < 0) value = 0xffffffff + value + 1;
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24);
+    this[offset + 1] = (value >>> 16);
+    this[offset + 2] = (value >>> 8);
+    this[offset + 3] = (value & 0xff);
+  } else {
+    objectWriteUInt32(this, value, offset, false);
+  }
+  return offset + 4
+};
+
+function checkIEEE754 (buf, value, offset, ext, max, min) {
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+  if (offset < 0) throw new RangeError('Index out of range')
+}
+
+function writeFloat (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 4);
+  }
+  write(buf, value, offset, littleEndian, 23, 4);
+  return offset + 4
+}
+
+Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, true, noAssert)
+};
+
+Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, false, noAssert)
+};
+
+function writeDouble (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 8);
+  }
+  write(buf, value, offset, littleEndian, 52, 8);
+  return offset + 8
+}
+
+Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, true, noAssert)
+};
+
+Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, false, noAssert)
+};
+
+// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+  if (!start) start = 0;
+  if (!end && end !== 0) end = this.length;
+  if (targetStart >= target.length) targetStart = target.length;
+  if (!targetStart) targetStart = 0;
+  if (end > 0 && end < start) end = start;
+
+  // Copy 0 bytes; we're done
+  if (end === start) return 0
+  if (target.length === 0 || this.length === 0) return 0
+
+  // Fatal error conditions
+  if (targetStart < 0) {
+    throw new RangeError('targetStart out of bounds')
+  }
+  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+  if (end < 0) throw new RangeError('sourceEnd out of bounds')
+
+  // Are we oob?
+  if (end > this.length) end = this.length;
+  if (target.length - targetStart < end - start) {
+    end = target.length - targetStart + start;
+  }
+
+  var len = end - start;
+  var i;
+
+  if (this === target && start < targetStart && targetStart < end) {
+    // descending copy from end
+    for (i = len - 1; i >= 0; --i) {
+      target[i + targetStart] = this[i + start];
+    }
+  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+    // ascending copy from start
+    for (i = 0; i < len; ++i) {
+      target[i + targetStart] = this[i + start];
+    }
+  } else {
+    Uint8Array.prototype.set.call(
+      target,
+      this.subarray(start, start + len),
+      targetStart
+    );
+  }
+
+  return len
+};
+
+// Usage:
+//    buffer.fill(number[, offset[, end]])
+//    buffer.fill(buffer[, offset[, end]])
+//    buffer.fill(string[, offset[, end]][, encoding])
+Buffer.prototype.fill = function fill (val, start, end, encoding) {
+  // Handle string cases:
+  if (typeof val === 'string') {
+    if (typeof start === 'string') {
+      encoding = start;
+      start = 0;
+      end = this.length;
+    } else if (typeof end === 'string') {
+      encoding = end;
+      end = this.length;
+    }
+    if (val.length === 1) {
+      var code = val.charCodeAt(0);
+      if (code < 256) {
+        val = code;
+      }
+    }
+    if (encoding !== undefined && typeof encoding !== 'string') {
+      throw new TypeError('encoding must be a string')
+    }
+    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
+      throw new TypeError('Unknown encoding: ' + encoding)
+    }
+  } else if (typeof val === 'number') {
+    val = val & 255;
+  }
+
+  // Invalid ranges are not set to a default, so can range check early.
+  if (start < 0 || this.length < start || this.length < end) {
+    throw new RangeError('Out of range index')
+  }
+
+  if (end <= start) {
+    return this
+  }
+
+  start = start >>> 0;
+  end = end === undefined ? this.length : end >>> 0;
+
+  if (!val) val = 0;
+
+  var i;
+  if (typeof val === 'number') {
+    for (i = start; i < end; ++i) {
+      this[i] = val;
+    }
+  } else {
+    var bytes = internalIsBuffer(val)
+      ? val
+      : utf8ToBytes(new Buffer(val, encoding).toString());
+    var len = bytes.length;
+    for (i = 0; i < end - start; ++i) {
+      this[i + start] = bytes[i % len];
+    }
+  }
+
+  return this
+};
+
+// HELPER FUNCTIONS
+// ================
+
+var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g;
+
+function base64clean (str) {
+  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+  str = stringtrim(str).replace(INVALID_BASE64_RE, '');
+  // Node converts strings with length < 2 to ''
+  if (str.length < 2) return ''
+  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+  while (str.length % 4 !== 0) {
+    str = str + '=';
+  }
+  return str
+}
+
+function stringtrim (str) {
+  if (str.trim) return str.trim()
+  return str.replace(/^\s+|\s+$/g, '')
+}
+
+function toHex (n) {
+  if (n < 16) return '0' + n.toString(16)
+  return n.toString(16)
+}
+
+function utf8ToBytes (string, units) {
+  units = units || Infinity;
+  var codePoint;
+  var length = string.length;
+  var leadSurrogate = null;
+  var bytes = [];
+
+  for (var i = 0; i < length; ++i) {
+    codePoint = string.charCodeAt(i);
+
+    // is surrogate component
+    if (codePoint > 0xD7FF && codePoint < 0xE000) {
+      // last char was a lead
+      if (!leadSurrogate) {
+        // no lead yet
+        if (codePoint > 0xDBFF) {
+          // unexpected trail
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
+          continue
+        } else if (i + 1 === length) {
+          // unpaired lead
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
+          continue
+        }
+
+        // valid lead
+        leadSurrogate = codePoint;
+
+        continue
+      }
+
+      // 2 leads in a row
+      if (codePoint < 0xDC00) {
+        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
+        leadSurrogate = codePoint;
+        continue
+      }
+
+      // valid surrogate pair
+      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000;
+    } else if (leadSurrogate) {
+      // valid bmp char, but last char was a lead
+      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
+    }
+
+    leadSurrogate = null;
+
+    // encode utf8
+    if (codePoint < 0x80) {
+      if ((units -= 1) < 0) break
+      bytes.push(codePoint);
+    } else if (codePoint < 0x800) {
+      if ((units -= 2) < 0) break
+      bytes.push(
+        codePoint >> 0x6 | 0xC0,
+        codePoint & 0x3F | 0x80
+      );
+    } else if (codePoint < 0x10000) {
+      if ((units -= 3) < 0) break
+      bytes.push(
+        codePoint >> 0xC | 0xE0,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      );
+    } else if (codePoint < 0x110000) {
+      if ((units -= 4) < 0) break
+      bytes.push(
+        codePoint >> 0x12 | 0xF0,
+        codePoint >> 0xC & 0x3F | 0x80,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      );
+    } else {
+      throw new Error('Invalid code point')
+    }
+  }
+
+  return bytes
+}
+
+function asciiToBytes (str) {
+  var byteArray = [];
+  for (var i = 0; i < str.length; ++i) {
+    // Node's code seems to be doing this and not & 0x7F..
+    byteArray.push(str.charCodeAt(i) & 0xFF);
+  }
+  return byteArray
+}
+
+function utf16leToBytes (str, units) {
+  var c, hi, lo;
+  var byteArray = [];
+  for (var i = 0; i < str.length; ++i) {
+    if ((units -= 2) < 0) break
+
+    c = str.charCodeAt(i);
+    hi = c >> 8;
+    lo = c % 256;
+    byteArray.push(lo);
+    byteArray.push(hi);
+  }
+
+  return byteArray
+}
+
+
+function base64ToBytes (str) {
+  return toByteArray(base64clean(str))
+}
+
+function blitBuffer (src, dst, offset, length) {
+  for (var i = 0; i < length; ++i) {
+    if ((i + offset >= dst.length) || (i >= src.length)) break
+    dst[i + offset] = src[i];
+  }
+  return i
+}
+
+function isnan (val) {
+  return val !== val // eslint-disable-line no-self-compare
+}
+
+
+// the following is from is-buffer, also by Feross Aboukhadijeh and with same lisence
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+function isBuffer(obj) {
+  return obj != null && (!!obj._isBuffer || isFastBuffer(obj) || isSlowBuffer(obj))
+}
+
+function isFastBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isFastBuffer(obj.slice(0, 0))
+}
+
+let options = {};
+
+function THROW(err) {
+  if (!options.strictMode) {
+    if (!options.silent) {
+      console.error(err.message);
+    }
+    return;
+  }
+  throw err;
+}
+
+function ASSERT(msg, ...options) {
+  for (const [index, param] of options.entries()) {
+    if (!param) {
+      THROW(new Error(`${msg} : Failed at [${index}]`));
+    }
+  }
+}
+
+function CONDITIONALASSERT(...options) {
+  for (const [index, [cond, param]] of options.entries()) {
+    if (!cond) {
+      continue;
+    }
+    if (!param) {
+      THROW(new Error(`Conditional Assert : Failed at [${index}]`));
+    }
+  }
+}
+
+function PARAMCHECK(...options) {
+  for (const [index, param] of options.entries()) {
+    if (param === undefined) {
+      THROW(new Error(`Param Check : Failed at [${index}]`));
+    }
+  }
+}
+
+function CONDITIONALPARAMCHECK(...options) {
+  for (const [index, [cond, param]] of options.entries()) {
+    if (!cond) {
+      continue;
+    }
+    if (param === undefined) {
+      THROW(new Error(`Conditional Param Check : Failed at [${index}]`));
+    }
+  }
+}
+
+function INVALIDPLAYLIST(msg) {
+  THROW(new Error(`Invalid Playlist : ${msg}`));
+}
+
+function toNumber$1(str, radix = 10) {
+  if (typeof str === 'number') {
+    return str;
+  }
+  const num = radix === 10 ? Number.parseFloat(str, radix) : Number.parseInt(str, radix);
+  if (Number.isNaN(num)) {
+    return 0;
+  }
+  return num;
+}
+
+function hexToByteSequence(str) {
+  if (str.startsWith('0x') || str.startsWith('0X')) {
+    str = str.slice(2);
+  }
+  const numArray = [];
+  for (let i = 0; i < str.length; i += 2) {
+    numArray.push(toNumber$1(str.slice(i, i + 2), 16));
+  }
+  return Buffer.from(numArray);
+}
+
+function byteSequenceToHex(sequence, start = 0, end = sequence.length) {
+  if (end <= start) {
+    THROW(new Error(`end must be larger than start : start=${start}, end=${end}`));
+  }
+  const array = [];
+  for (let i = start; i < end; i++) {
+    array.push(`0${(sequence[i] & 0xFF).toString(16).toUpperCase()}`.slice(-2));
+  }
+  return `0x${array.join('')}`;
+}
+
+function tryCatch(body, errorHandler) {
+  try {
+    return body();
+  } catch (err) {
+    return errorHandler(err);
+  }
+}
+
+function splitAt(str, delimiter, index = 0) {
+  let lastDelimiterPos = -1;
+  for (let i = 0, j = 0; i < str.length; i++) {
+    if (str[i] === delimiter) {
+      if (j++ === index) {
+        return [str.slice(0, i), str.slice(i + 1)];
+      }
+      lastDelimiterPos = i;
+    }
+  }
+  if (lastDelimiterPos !== -1) {
+    return [str.slice(0, lastDelimiterPos), str.slice(lastDelimiterPos + 1)];
+  }
+  return [str];
+}
+
+function trim(str, char = ' ') {
+  if (!str) {
+    return str;
+  }
+  str = str.trim();
+  if (char === ' ') {
+    return str;
+  }
+  if (str.startsWith(char)) {
+    str = str.slice(1);
+  }
+  if (str.endsWith(char)) {
+    str = str.slice(0, -1);
+  }
+  return str;
+}
+
+function splitByCommaWithPreservingQuotes(str) {
+  const list = [];
+  let doParse = true;
+  let start = 0;
+  const prevQuotes = [];
+  for (let i = 0; i < str.length; i++) {
+    const curr = str[i];
+    if (doParse && curr === ',') {
+      list.push(str.slice(start, i).trim());
+      start = i + 1;
+      continue;
+    }
+    if (curr === '"' || curr === '\'') {
+      if (doParse) {
+        prevQuotes.push(curr);
+        doParse = false;
+      } else if (curr === prevQuotes[prevQuotes.length - 1]) {
+        prevQuotes.pop();
+        doParse = true;
+      } else {
+        prevQuotes.push(curr);
+      }
+    }
+  }
+  list.push(str.slice(start).trim());
+  return list;
+}
+
+function camelify(str) {
+  const array = [];
+  let nextUpper = false;
+  for (const ch of str) {
+    if (ch === '-' || ch === '_') {
+      nextUpper = true;
+      continue;
+    }
+    if (nextUpper) {
+      array.push(ch.toUpperCase());
+      nextUpper = false;
+      continue;
+    }
+    array.push(ch.toLowerCase());
+  }
+  return array.join('');
+}
+
+function formatDate(date) {
+  const YYYY = date.getUTCFullYear();
+  const MM = ('0' + (date.getUTCMonth() + 1)).slice(-2);
+  const DD = ('0' + date.getUTCDate()).slice(-2);
+  const hh = ('0' + date.getUTCHours()).slice(-2);
+  const mm = ('0' + date.getUTCMinutes()).slice(-2);
+  const ss = ('0' + date.getUTCSeconds()).slice(-2);
+  const msc = ('00' + date.getUTCMilliseconds()).slice(-3);
+  return `${YYYY}-${MM}-${DD}T${hh}:${mm}:${ss}.${msc}Z`;
+}
+
+function hasOwnProp(obj, propName) {
+  return Object.hasOwnProperty.call(obj, propName);
+}
+
+function setOptions$1(newOptions = {}) {
+  options = Object.assign(options, newOptions);
+}
+
+function getOptions$1() {
+  return Object.assign({}, options);
+}
+
+var utils$3 = {
+  THROW,
+  ASSERT,
+  CONDITIONALASSERT,
+  PARAMCHECK,
+  CONDITIONALPARAMCHECK,
+  INVALIDPLAYLIST,
+  toNumber: toNumber$1,
+  hexToByteSequence,
+  byteSequenceToHex,
+  tryCatch,
+  splitAt,
+  trim,
+  splitByCommaWithPreservingQuotes,
+  camelify,
+  formatDate,
+  hasOwnProp,
+  setOptions: setOptions$1,
+  getOptions: getOptions$1
+};
+
+const utils$2 = utils$3;
+
+class Rendition$1 {
+  constructor({
+    type, // required
+    uri, // required if type='SUBTITLES'
+    groupId, // required
+    language,
+    assocLanguage,
+    name, // required
+    isDefault,
+    autoselect,
+    forced,
+    instreamId, // required if type=CLOSED-CAPTIONS
+    characteristics,
+    channels
+  }) {
+    utils$2.PARAMCHECK(type, groupId, name);
+    utils$2.CONDITIONALASSERT([type === 'SUBTITLES', uri], [type === 'CLOSED-CAPTIONS', instreamId], [type === 'CLOSED-CAPTIONS', !uri], [forced, type === 'SUBTITLES']);
+    this.type = type;
+    this.uri = uri;
+    this.groupId = groupId;
+    this.language = language;
+    this.assocLanguage = assocLanguage;
+    this.name = name;
+    this.isDefault = isDefault;
+    this.autoselect = autoselect;
+    this.forced = forced;
+    this.instreamId = instreamId;
+    this.characteristics = characteristics;
+    this.channels = channels;
+  }
+}
+
+class Variant$1 {
+  constructor({
+    uri, // required
+    isIFrameOnly = false,
+    bandwidth, // required
+    averageBandwidth,
+    score,
+    codecs, // required?
+    resolution,
+    frameRate,
+    hdcpLevel,
+    allowedCpc,
+    videoRange,
+    stableVariantId,
+    audio = [],
+    video = [],
+    subtitles = [],
+    closedCaptions = [],
+    currentRenditions = {audio: 0, video: 0, subtitles: 0, closedCaptions: 0}
+  }) {
+    // utils.PARAMCHECK(uri, bandwidth, codecs);
+    utils$2.PARAMCHECK(uri, bandwidth); // the spec states that CODECS is required but not true in the real world
+    this.uri = uri;
+    this.isIFrameOnly = isIFrameOnly;
+    this.bandwidth = bandwidth;
+    this.averageBandwidth = averageBandwidth;
+    this.score = score;
+    this.codecs = codecs;
+    this.resolution = resolution;
+    this.frameRate = frameRate;
+    this.hdcpLevel = hdcpLevel;
+    this.allowedCpc = allowedCpc;
+    this.videoRange = videoRange;
+    this.stableVariantId = stableVariantId;
+    this.audio = audio;
+    this.video = video;
+    this.subtitles = subtitles;
+    this.closedCaptions = closedCaptions;
+    this.currentRenditions = currentRenditions;
+  }
+}
+
+class SessionData$1 {
+  constructor({
+    id, // required
+    value,
+    uri,
+    language
+  }) {
+    utils$2.PARAMCHECK(id, value || uri);
+    utils$2.ASSERT('SessionData cannot have both value and uri, shoud be either.', !(value && uri));
+    this.id = id;
+    this.value = value;
+    this.uri = uri;
+    this.language = language;
+  }
+}
+
+class Key$1 {
+  constructor({
+    method, // required
+    uri, // required unless method=NONE
+    iv,
+    format,
+    formatVersion
+  }) {
+    utils$2.PARAMCHECK(method);
+    utils$2.CONDITIONALPARAMCHECK([method !== 'NONE', uri]);
+    utils$2.CONDITIONALASSERT([method === 'NONE', !(uri || iv || format || formatVersion)]);
+    this.method = method;
+    this.uri = uri;
+    this.iv = iv;
+    this.format = format;
+    this.formatVersion = formatVersion;
+  }
+}
+
+class MediaInitializationSection$1 {
+  constructor({
+    hint = false,
+    uri, // required
+    mimeType,
+    byterange
+  }) {
+    utils$2.PARAMCHECK(uri);
+    this.hint = hint;
+    this.uri = uri;
+    this.mimeType = mimeType;
+    this.byterange = byterange;
+  }
+}
+
+class DateRange$1 {
+  constructor({
+    id, // required
+    classId, // required if endOnNext is true
+    start,
+    end,
+    duration,
+    plannedDuration,
+    endOnNext,
+    attributes = {}
+  }) {
+    utils$2.PARAMCHECK(id);
+    utils$2.CONDITIONALPARAMCHECK([endOnNext === true, classId]);
+    utils$2.CONDITIONALASSERT([end, start], [end, start <= end], [duration, duration >= 0], [plannedDuration, plannedDuration >= 0]);
+    this.id = id;
+    this.classId = classId;
+    this.start = start;
+    this.end = end;
+    this.duration = duration;
+    this.plannedDuration = plannedDuration;
+    this.endOnNext = endOnNext;
+    this.attributes = attributes;
+  }
+}
+
+class SpliceInfo$1 {
+  constructor({
+    type, // required
+    duration, // required if the type is 'OUT'
+    tagName, // required if the type is 'RAW'
+    value
+  }) {
+    utils$2.PARAMCHECK(type);
+    utils$2.CONDITIONALPARAMCHECK([type === 'OUT', duration]);
+    utils$2.CONDITIONALPARAMCHECK([type === 'RAW', tagName]);
+    this.type = type;
+    this.duration = duration;
+    this.tagName = tagName;
+    this.value = value;
+  }
+}
+
+class Data {
+  constructor(type) {
+    utils$2.PARAMCHECK(type);
+    this.type = type;
+  }
+}
+
+class Playlist extends Data {
+  constructor({
+    isMasterPlaylist, // required
+    uri,
+    version,
+    independentSegments = false,
+    start,
+    source
+  }) {
+    super('playlist');
+    utils$2.PARAMCHECK(isMasterPlaylist);
+    this.isMasterPlaylist = isMasterPlaylist;
+    this.uri = uri;
+    this.version = version;
+    this.independentSegments = independentSegments;
+    this.start = start;
+    this.source = source;
+  }
+}
+
+class MasterPlaylist$1 extends Playlist {
+  constructor(params = {}) {
+    params.isMasterPlaylist = true;
+    super(params);
+    const {
+      variants = [],
+      currentVariant,
+      sessionDataList = [],
+      sessionKeyList = []
+    } = params;
+    this.variants = variants;
+    this.currentVariant = currentVariant;
+    this.sessionDataList = sessionDataList;
+    this.sessionKeyList = sessionKeyList;
+  }
+}
+
+class MediaPlaylist$1 extends Playlist {
+  constructor(params = {}) {
+    params.isMasterPlaylist = false;
+    super(params);
+    const {
+      targetDuration,
+      mediaSequenceBase = 0,
+      discontinuitySequenceBase = 0,
+      endlist = false,
+      playlistType,
+      isIFrame,
+      segments = [],
+      prefetchSegments = [],
+      lowLatencyCompatibility,
+      partTargetDuration,
+      renditionReports = [],
+      skip = 0,
+      hash
+    } = params;
+    this.targetDuration = targetDuration;
+    this.mediaSequenceBase = mediaSequenceBase;
+    this.discontinuitySequenceBase = discontinuitySequenceBase;
+    this.endlist = endlist;
+    this.playlistType = playlistType;
+    this.isIFrame = isIFrame;
+    this.segments = segments;
+    this.prefetchSegments = prefetchSegments;
+    this.lowLatencyCompatibility = lowLatencyCompatibility;
+    this.partTargetDuration = partTargetDuration;
+    this.renditionReports = renditionReports;
+    this.skip = skip;
+    this.hash = hash;
+  }
+}
+
+class Segment$1 extends Data {
+  constructor({
+    uri,
+    mimeType,
+    data,
+    duration,
+    title,
+    byterange,
+    discontinuity,
+    mediaSequenceNumber = 0,
+    discontinuitySequence = 0,
+    key,
+    map,
+    programDateTime,
+    dateRange,
+    markers = [],
+    parts = []
+  }) {
+    super('segment');
+    // utils.PARAMCHECK(uri, mediaSequenceNumber, discontinuitySequence);
+    this.uri = uri;
+    this.mimeType = mimeType;
+    this.data = data;
+    this.duration = duration;
+    this.title = title;
+    this.byterange = byterange;
+    this.discontinuity = discontinuity;
+    this.mediaSequenceNumber = mediaSequenceNumber;
+    this.discontinuitySequence = discontinuitySequence;
+    this.key = key;
+    this.map = map;
+    this.programDateTime = programDateTime;
+    this.dateRange = dateRange;
+    this.markers = markers;
+    this.parts = parts;
+  }
+}
+
+class PartialSegment$1 extends Data {
+  constructor({
+    hint = false,
+    uri, // required
+    duration,
+    independent,
+    byterange,
+    gap
+  }) {
+    super('part');
+    utils$2.PARAMCHECK(uri);
+    this.hint = hint;
+    this.uri = uri;
+    this.duration = duration;
+    this.independent = independent;
+    this.duration = duration;
+    this.byterange = byterange;
+    this.gap = gap;
+  }
+}
+
+class PrefetchSegment$1 extends Data {
+  constructor({
+    uri, // required
+    discontinuity,
+    mediaSequenceNumber = 0,
+    discontinuitySequence = 0,
+    key
+  }) {
+    super('prefetch');
+    utils$2.PARAMCHECK(uri);
+    this.uri = uri;
+    this.discontinuity = discontinuity;
+    this.mediaSequenceNumber = mediaSequenceNumber;
+    this.discontinuitySequence = discontinuitySequence;
+    this.key = key;
+  }
+}
+
+class RenditionReport$1 {
+  constructor({
+    uri, // required
+    lastMSN,
+    lastPart
+  }) {
+    utils$2.PARAMCHECK(uri);
+    this.uri = uri;
+    this.lastMSN = lastMSN;
+    this.lastPart = lastPart;
+  }
+}
+
+var types$1 = {
+  Rendition: Rendition$1,
+  Variant: Variant$1,
+  SessionData: SessionData$1,
+  Key: Key$1,
+  MediaInitializationSection: MediaInitializationSection$1,
+  DateRange: DateRange$1,
+  SpliceInfo: SpliceInfo$1,
+  Playlist,
+  MasterPlaylist: MasterPlaylist$1,
+  MediaPlaylist: MediaPlaylist$1,
+  Segment: Segment$1,
+  PartialSegment: PartialSegment$1,
+  PrefetchSegment: PrefetchSegment$1,
+  RenditionReport: RenditionReport$1
+};
+
+const utils$1 = utils$3;
+const {
+  Rendition,
+  Variant,
+  SessionData,
+  Key,
+  MediaInitializationSection,
+  DateRange,
+  SpliceInfo,
+  MasterPlaylist,
+  MediaPlaylist,
+  Segment,
+  PartialSegment,
+  PrefetchSegment,
+  RenditionReport
+} = types$1;
+
+function unquote(str) {
+  return utils$1.trim(str, '"');
+}
+
+function getTagCategory(tagName) {
+  switch (tagName) {
+    case 'EXTM3U':
+    case 'EXT-X-VERSION':
+      return 'Basic';
+    case 'EXTINF':
+    case 'EXT-X-BYTERANGE':
+    case 'EXT-X-DISCONTINUITY':
+    case 'EXT-X-PREFETCH-DISCONTINUITY':
+    case 'EXT-X-KEY':
+    case 'EXT-X-MAP':
+    case 'EXT-X-PROGRAM-DATE-TIME':
+    case 'EXT-X-DATERANGE':
+    case 'EXT-X-CUE-OUT':
+    case 'EXT-X-CUE-IN':
+    case 'EXT-X-CUE-OUT-CONT':
+    case 'EXT-X-CUE':
+    case 'EXT-OATCLS-SCTE35':
+    case 'EXT-X-ASSET':
+    case 'EXT-X-SCTE35':
+    case 'EXT-X-PART':
+    case 'EXT-X-PRELOAD-HINT':
+      return 'Segment';
+    case 'EXT-X-TARGETDURATION':
+    case 'EXT-X-MEDIA-SEQUENCE':
+    case 'EXT-X-DISCONTINUITY-SEQUENCE':
+    case 'EXT-X-ENDLIST':
+    case 'EXT-X-PLAYLIST-TYPE':
+    case 'EXT-X-I-FRAMES-ONLY':
+    case 'EXT-X-SERVER-CONTROL':
+    case 'EXT-X-PART-INF':
+    case 'EXT-X-PREFETCH':
+    case 'EXT-X-RENDITION-REPORT':
+    case 'EXT-X-SKIP':
+      return 'MediaPlaylist';
+    case 'EXT-X-MEDIA':
+    case 'EXT-X-STREAM-INF':
+    case 'EXT-X-I-FRAME-STREAM-INF':
+    case 'EXT-X-SESSION-DATA':
+    case 'EXT-X-SESSION-KEY':
+      return 'MasterPlaylist';
+    case 'EXT-X-INDEPENDENT-SEGMENTS':
+    case 'EXT-X-START':
+      return 'MediaorMasterPlaylist';
+    default:
+      return 'Unknown';
+  }
+}
+
+function parseEXTINF(param) {
+  const pair = utils$1.splitAt(param, ',');
+  return {duration: utils$1.toNumber(pair[0]), title: decodeURIComponent(escape(pair[1]))};
+}
+
+function parseBYTERANGE(param) {
+  const pair = utils$1.splitAt(param, '@');
+  return {length: utils$1.toNumber(pair[0]), offset: pair[1] ? utils$1.toNumber(pair[1]) : -1};
+}
+
+function parseResolution$1(str) {
+  const pair = utils$1.splitAt(str, 'x');
+  return {width: utils$1.toNumber(pair[0]), height: utils$1.toNumber(pair[1])};
+}
+
+function parseAllowedCpc(str) {
+  const message = 'ALLOWED-CPC: Each entry must consit of KEYFORMAT and Content Protection Configuration';
+  const list = str.split(',');
+  if (list.length === 0) {
+    utils$1.INVALIDPLAYLIST(message);
+  }
+  const allowedCpcList = [];
+  for (const item of list) {
+    const [format, cpcText] = utils$1.splitAt(item, ':');
+    if (!format || !cpcText) {
+      utils$1.INVALIDPLAYLIST(message);
+      continue;
+    }
+    allowedCpcList.push({format, cpcList: cpcText.split('/')});
+  }
+  return allowedCpcList;
+}
+
+function parseIV(str) {
+  const iv = utils$1.hexToByteSequence(str);
+  if (iv.length !== 16) {
+    utils$1.INVALIDPLAYLIST('IV must be a 128-bit unsigned integer');
+  }
+  return iv;
+}
+
+function parseUserAttribute(str) {
+  if (str.startsWith('"')) {
+    return unquote(str);
+  }
+  if (str.startsWith('0x') || str.startsWith('0X')) {
+    return utils$1.hexToByteSequence(str);
+  }
+  return utils$1.toNumber(str);
+}
+
+function setCompatibleVersionOfKey(params, attributes) {
+  if (attributes['IV'] && params.compatibleVersion < 2) {
+    params.compatibleVersion = 2;
+  }
+  if ((attributes['KEYFORMAT'] || attributes['KEYFORMATVERSIONS']) && params.compatibleVersion < 5) {
+    params.compatibleVersion = 5;
+  }
+}
+
+function parseAttributeList(param) {
+  const attributes = {};
+  for (const item of utils$1.splitByCommaWithPreservingQuotes(param)) {
+    const [key, value] = utils$1.splitAt(item, '=');
+    const val = unquote(value);
+    switch (key) {
+      case 'URI':
+        attributes[key] = val;
+        break;
+      case 'START-DATE':
+      case 'END-DATE':
+        attributes[key] = new Date(val);
+        break;
+      case 'IV':
+        attributes[key] = parseIV(val);
+        break;
+      case 'BYTERANGE':
+        attributes[key] = parseBYTERANGE(val);
+        break;
+      case 'RESOLUTION':
+        attributes[key] = parseResolution$1(val);
+        break;
+      case 'ALLOWED-CPC':
+        attributes[key] = parseAllowedCpc(val);
+        break;
+      case 'END-ON-NEXT':
+      case 'DEFAULT':
+      case 'AUTOSELECT':
+      case 'FORCED':
+      case 'PRECISE':
+      case 'CAN-BLOCK-RELOAD':
+      case 'INDEPENDENT':
+      case 'GAP':
+        attributes[key] = val === 'YES';
+        break;
+      case 'DURATION':
+      case 'PLANNED-DURATION':
+      case 'BANDWIDTH':
+      case 'AVERAGE-BANDWIDTH':
+      case 'FRAME-RATE':
+      case 'TIME-OFFSET':
+      case 'CAN-SKIP-UNTIL':
+      case 'HOLD-BACK':
+      case 'PART-HOLD-BACK':
+      case 'PART-TARGET':
+      case 'BYTERANGE-START':
+      case 'BYTERANGE-LENGTH':
+      case 'LAST-MSN':
+      case 'LAST-PART':
+      case 'SKIPPED-SEGMENTS':
+      case 'SCORE':
+        attributes[key] = utils$1.toNumber(val);
+        break;
+      default:
+        if (key.startsWith('SCTE35-')) {
+          attributes[key] = utils$1.hexToByteSequence(val);
+        } else if (key.startsWith('X-')) {
+          attributes[key] = parseUserAttribute(value);
+        } else {
+          if (key === 'VIDEO-RANGE' && val !== 'SDR' && val !== 'HLG' && val !== 'PQ') {
+            utils$1.INVALIDPLAYLIST(`VIDEO-RANGE: unknown value "${val}"`);
+          }
+          attributes[key] = val;
+        }
+    }
+  }
+  return attributes;
+}
+
+function parseTagParam(name, param) {
+  switch (name) {
+    case 'EXTM3U':
+    case 'EXT-X-DISCONTINUITY':
+    case 'EXT-X-ENDLIST':
+    case 'EXT-X-I-FRAMES-ONLY':
+    case 'EXT-X-INDEPENDENT-SEGMENTS':
+    case 'EXT-X-CUE-IN':
+      return [null, null];
+    case 'EXT-X-VERSION':
+    case 'EXT-X-TARGETDURATION':
+    case 'EXT-X-MEDIA-SEQUENCE':
+    case 'EXT-X-DISCONTINUITY-SEQUENCE':
+      return [utils$1.toNumber(param), null];
+    case 'EXT-X-CUE-OUT':
+      // For backwards compatibility: attributes list is optional,
+      // if only a number is found, use it as the duration
+      if (!Number.isNaN(Number(param))) {
+        return [utils$1.toNumber(param), null];
+      }
+      // If attributes are found, parse them out (i.e. DURATION)
+      return [null, parseAttributeList(param)];
+    case 'EXT-X-KEY':
+    case 'EXT-X-MAP':
+    case 'EXT-X-DATERANGE':
+    case 'EXT-X-MEDIA':
+    case 'EXT-X-STREAM-INF':
+    case 'EXT-X-I-FRAME-STREAM-INF':
+    case 'EXT-X-SESSION-DATA':
+    case 'EXT-X-SESSION-KEY':
+    case 'EXT-X-START':
+    case 'EXT-X-SERVER-CONTROL':
+    case 'EXT-X-PART-INF':
+    case 'EXT-X-PART':
+    case 'EXT-X-PRELOAD-HINT':
+    case 'EXT-X-RENDITION-REPORT':
+    case 'EXT-X-SKIP':
+      return [null, parseAttributeList(param)];
+    case 'EXTINF':
+      return [parseEXTINF(param), null];
+    case 'EXT-X-BYTERANGE':
+      return [parseBYTERANGE(param), null];
+    case 'EXT-X-PROGRAM-DATE-TIME':
+      return [new Date(param), null];
+    case 'EXT-X-PLAYLIST-TYPE':
+      return [param, null]; // <EVENT|VOD>
+    default:
+      return [param, null]; // Unknown tag
+  }
+}
+
+function MIXEDTAGS() {
+  utils$1.INVALIDPLAYLIST(`The file contains both media and master playlist tags.`);
+}
+
+function splitTag(line) {
+  const index = line.indexOf(':');
+  if (index === -1) {
+    return [line.slice(1).trim(), null];
+  }
+  return [line.slice(1, index).trim(), line.slice(index + 1).trim()];
+}
+
+function parseRendition({attributes}) {
+  const rendition = new Rendition({
+    type: attributes['TYPE'],
+    uri: attributes['URI'],
+    groupId: attributes['GROUP-ID'],
+    language: attributes['LANGUAGE'],
+    assocLanguage: attributes['ASSOC-LANGUAGE'],
+    name: attributes['NAME'],
+    isDefault: attributes['DEFAULT'],
+    autoselect: attributes['AUTOSELECT'],
+    forced: attributes['FORCED'],
+    instreamId: attributes['INSTREAM-ID'],
+    characteristics: attributes['CHARACTERISTICS'],
+    channels: attributes['CHANNELS']
+  });
+  return rendition;
+}
+
+function checkRedundantRendition(renditions, rendition) {
+  let defaultFound = false;
+  for (const item of renditions) {
+    if (item.name === rendition.name) {
+      return 'All EXT-X-MEDIA tags in the same Group MUST have different NAME attributes.';
+    }
+    if (item.isDefault) {
+      defaultFound = true;
+    }
+  }
+  if (defaultFound && rendition.isDefault) {
+    return 'EXT-X-MEDIA A Group MUST NOT have more than one member with a DEFAULT attribute of YES.';
+  }
+  return '';
+}
+
+function addRendition(variant, line, type) {
+  const rendition = parseRendition(line);
+  const renditions = variant[utils$1.camelify(type)];
+  const errorMessage = checkRedundantRendition(renditions, rendition);
+  if (errorMessage) {
+    utils$1.INVALIDPLAYLIST(errorMessage);
+  }
+  renditions.push(rendition);
+  if (rendition.isDefault) {
+    variant.currentRenditions[utils$1.camelify(type)] = renditions.length - 1;
+  }
+}
+
+function matchTypes(attrs, variant, params) {
+  for (const type of ['AUDIO', 'VIDEO', 'SUBTITLES', 'CLOSED-CAPTIONS']) {
+    if (type === 'CLOSED-CAPTIONS' && attrs[type] === 'NONE') {
+      params.isClosedCaptionsNone = true;
+      variant.closedCaptions = [];
+    } else if (attrs[type] && !variant[utils$1.camelify(type)].some(item => item.groupId === attrs[type])) {
+      utils$1.INVALIDPLAYLIST(`${type} attribute MUST match the value of the GROUP-ID attribute of an EXT-X-MEDIA tag whose TYPE attribute is ${type}.`);
+    }
+  }
+}
+
+function parseVariant(lines, variantAttrs, uri, iFrameOnly, params) {
+  const variant = new Variant({
+    uri,
+    bandwidth: variantAttrs['BANDWIDTH'],
+    averageBandwidth: variantAttrs['AVERAGE-BANDWIDTH'],
+    score: variantAttrs['SCORE'],
+    codecs: variantAttrs['CODECS'],
+    resolution: variantAttrs['RESOLUTION'],
+    frameRate: variantAttrs['FRAME-RATE'],
+    hdcpLevel: variantAttrs['HDCP-LEVEL'],
+    allowedCpc: variantAttrs['ALLOWED-CPC'],
+    videoRange: variantAttrs['VIDEO-RANGE'],
+    stableVariantId: variantAttrs['STABLE-VARIANT-ID']
+  });
+  for (const line of lines) {
+    if (line.name === 'EXT-X-MEDIA') {
+      const renditionAttrs = line.attributes;
+      const renditionType = renditionAttrs['TYPE'];
+      if (!renditionType || !renditionAttrs['GROUP-ID']) {
+        utils$1.INVALIDPLAYLIST('EXT-X-MEDIA TYPE attribute is REQUIRED.');
+      }
+      if (variantAttrs[renditionType] === renditionAttrs['GROUP-ID']) {
+        addRendition(variant, line, renditionType);
+        if (renditionType === 'CLOSED-CAPTIONS') {
+          for (const {instreamId} of variant.closedCaptions) {
+            if (instreamId && instreamId.startsWith('SERVICE') && params.compatibleVersion < 7) {
+              params.compatibleVersion = 7;
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+  matchTypes(variantAttrs, variant, params);
+  variant.isIFrameOnly = iFrameOnly;
+  return variant;
+}
+
+function sameKey(key1, key2) {
+  if (key1.method !== key2.method) {
+    return false;
+  }
+  if (key1.uri !== key2.uri) {
+    return false;
+  }
+  if (key1.iv) {
+    if (!key2.iv) {
+      return false;
+    }
+    if (key1.iv.length !== key2.iv.length) {
+      return false;
+    }
+    for (let i = 0; i < key1.iv.length; i++) {
+      if (key1.iv[i] !== key2.iv[i]) {
+        return false;
+      }
+    }
+  } else if (key2.iv) {
+    return false;
+  }
+  if (key1.format !== key2.format) {
+    return false;
+  }
+  if (key1.formatVersion !== key2.formatVersion) {
+    return false;
+  }
+  return true;
+}
+
+function parseMasterPlaylist(lines, params) {
+  const playlist = new MasterPlaylist();
+  let variantIsScored = false;
+  for (const [index, {name, value, attributes}] of lines.entries()) {
+    if (name === 'EXT-X-VERSION') {
+      playlist.version = value;
+    } else if (name === 'EXT-X-STREAM-INF') {
+      const uri = lines[index + 1];
+      if (typeof uri !== 'string' || uri.startsWith('#EXT')) {
+        utils$1.INVALIDPLAYLIST('EXT-X-STREAM-INF must be followed by a URI line');
+      }
+      const variant = parseVariant(lines, attributes, uri, false, params);
+      if (variant) {
+        if (typeof variant.score === 'number') {
+          variantIsScored = true;
+          if (variant.score < 0) {
+            utils$1.INVALIDPLAYLIST('SCORE attribute on EXT-X-STREAM-INF must be positive decimal-floating-point number.');
+          }
+        }
+        playlist.variants.push(variant);
+      }
+    } else if (name === 'EXT-X-I-FRAME-STREAM-INF') {
+      const variant = parseVariant(lines, attributes, attributes.URI, true, params);
+      if (variant) {
+        playlist.variants.push(variant);
+      }
+    } else if (name === 'EXT-X-SESSION-DATA') {
+      const sessionData = new SessionData({
+        id: attributes['DATA-ID'],
+        value: attributes['VALUE'],
+        uri: attributes['URI'],
+        language: attributes['LANGUAGE']
+      });
+      if (playlist.sessionDataList.some(item => item.id === sessionData.id && item.language === sessionData.language)) {
+        utils$1.INVALIDPLAYLIST('A Playlist MUST NOT contain more than one EXT-X-SESSION-DATA tag with the same DATA-ID attribute and the same LANGUAGE attribute.');
+      }
+      playlist.sessionDataList.push(sessionData);
+    } else if (name === 'EXT-X-SESSION-KEY') {
+      if (attributes['METHOD'] === 'NONE') {
+        utils$1.INVALIDPLAYLIST('EXT-X-SESSION-KEY: The value of the METHOD attribute MUST NOT be NONE');
+      }
+      const sessionKey = new Key({
+        method: attributes['METHOD'],
+        uri: attributes['URI'],
+        iv: attributes['IV'],
+        format: attributes['KEYFORMAT'],
+        formatVersion: attributes['KEYFORMATVERSIONS']
+      });
+      if (playlist.sessionKeyList.some(item => sameKey(item, sessionKey))) {
+        utils$1.INVALIDPLAYLIST('A Master Playlist MUST NOT contain more than one EXT-X-SESSION-KEY tag with the same METHOD, URI, IV, KEYFORMAT, and KEYFORMATVERSIONS attribute values.');
+      }
+      setCompatibleVersionOfKey(params, attributes);
+      playlist.sessionKeyList.push(sessionKey);
+    } else if (name === 'EXT-X-INDEPENDENT-SEGMENTS') {
+      if (playlist.independentSegments) {
+        utils$1.INVALIDPLAYLIST('EXT-X-INDEPENDENT-SEGMENTS tag MUST NOT appear more than once in a Playlist');
+      }
+      playlist.independentSegments = true;
+    } else if (name === 'EXT-X-START') {
+      if (playlist.start) {
+        utils$1.INVALIDPLAYLIST('EXT-X-START tag MUST NOT appear more than once in a Playlist');
+      }
+      if (typeof attributes['TIME-OFFSET'] !== 'number') {
+        utils$1.INVALIDPLAYLIST('EXT-X-START: TIME-OFFSET attribute is REQUIRED');
+      }
+      playlist.start = {offset: attributes['TIME-OFFSET'], precise: attributes['PRECISE'] || false};
+    }
+  }
+  if (variantIsScored) {
+    for (const variant of playlist.variants) {
+      if (typeof variant.score !== 'number') {
+        utils$1.INVALIDPLAYLIST('If any Variant Stream contains the SCORE attribute, then all Variant Streams in the Master Playlist SHOULD have a SCORE attribute');
+      }
+    }
+  }
+  if (params.isClosedCaptionsNone) {
+    for (const variant of playlist.variants) {
+      if (variant.closedCaptions.length > 0) {
+        utils$1.INVALIDPLAYLIST('If there is a variant with CLOSED-CAPTIONS attribute of NONE, all EXT-X-STREAM-INF tags MUST have this attribute with a value of NONE');
+      }
+    }
+  }
+  return playlist;
+}
+
+function parseSegment(lines, uri, start, end, mediaSequenceNumber, discontinuitySequence, params) {
+  const segment = new Segment({uri, mediaSequenceNumber, discontinuitySequence});
+  let mapHint = false;
+  let partHint = false;
+  for (let i = start; i <= end; i++) {
+    const {name, value, attributes} = lines[i];
+    if (name === 'EXTINF') {
+      if (!Number.isInteger(value.duration) && params.compatibleVersion < 3) {
+        params.compatibleVersion = 3;
+      }
+      if (Math.round(value.duration) > params.targetDuration) {
+        utils$1.INVALIDPLAYLIST('EXTINF duration, when rounded to the nearest integer, MUST be less than or equal to the target duration');
+      }
+      segment.duration = value.duration;
+      segment.title = value.title;
+    } else if (name === 'EXT-X-BYTERANGE') {
+      if (params.compatibleVersion < 4) {
+        params.compatibleVersion = 4;
+      }
+      segment.byterange = value;
+    } else if (name === 'EXT-X-DISCONTINUITY') {
+      if (segment.parts.length > 0) {
+        utils$1.INVALIDPLAYLIST('EXT-X-DISCONTINUITY must appear before the first EXT-X-PART tag of the Parent Segment.');
+      }
+      segment.discontinuity = true;
+    } else if (name === 'EXT-X-KEY') {
+      if (segment.parts.length > 0) {
+        utils$1.INVALIDPLAYLIST('EXT-X-KEY must appear before the first EXT-X-PART tag of the Parent Segment.');
+      }
+      setCompatibleVersionOfKey(params, attributes);
+      segment.key = new Key({
+        method: attributes['METHOD'],
+        uri: attributes['URI'],
+        iv: attributes['IV'],
+        format: attributes['KEYFORMAT'],
+        formatVersion: attributes['KEYFORMATVERSIONS']
+      });
+    } else if (name === 'EXT-X-MAP') {
+      if (segment.parts.length > 0) {
+        utils$1.INVALIDPLAYLIST('EXT-X-MAP must appear before the first EXT-X-PART tag of the Parent Segment.');
+      }
+      if (params.compatibleVersion < 5) {
+        params.compatibleVersion = 5;
+      }
+      params.hasMap = true;
+      segment.map = new MediaInitializationSection({
+        uri: attributes['URI'],
+        byterange: attributes['BYTERANGE']
+      });
+    } else if (name === 'EXT-X-PROGRAM-DATE-TIME') {
+      segment.programDateTime = value;
+    } else if (name === 'EXT-X-DATERANGE') {
+      const attrs = {};
+      for (const key of Object.keys(attributes)) {
+        if (key.startsWith('SCTE35-') || key.startsWith('X-')) {
+          attrs[key] = attributes[key];
+        }
+      }
+      segment.dateRange = new DateRange({
+        id: attributes['ID'],
+        classId: attributes['CLASS'],
+        start: attributes['START-DATE'],
+        end: attributes['END-DATE'],
+        duration: attributes['DURATION'],
+        plannedDuration: attributes['PLANNED-DURATION'],
+        endOnNext: attributes['END-ON-NEXT'],
+        attributes: attrs
+      });
+    } else if (name === 'EXT-X-CUE-OUT') {
+      segment.markers.push(new SpliceInfo({
+        type: 'OUT',
+        duration: (attributes && attributes.DURATION) || value
+      }));
+    } else if (name === 'EXT-X-CUE-IN') {
+      segment.markers.push(new SpliceInfo({
+        type: 'IN'
+      }));
+    } else if (
+      name === 'EXT-X-CUE-OUT-CONT' ||
+      name === 'EXT-X-CUE' ||
+      name === 'EXT-OATCLS-SCTE35' ||
+      name === 'EXT-X-ASSET' ||
+      name === 'EXT-X-SCTE35'
+    ) {
+      segment.markers.push(new SpliceInfo({
+        type: 'RAW',
+        tagName: name,
+        value
+      }));
+    } else if (name === 'EXT-X-PRELOAD-HINT' && !attributes['TYPE']) {
+      utils$1.INVALIDPLAYLIST('EXT-X-PRELOAD-HINT: TYPE attribute is mandatory');
+    } else if (name === 'EXT-X-PRELOAD-HINT' && attributes['TYPE'] === 'PART' && partHint) {
+      utils$1.INVALIDPLAYLIST('Servers should not add more than one EXT-X-PRELOAD-HINT tag with the same TYPE attribute to a Playlist.');
+    } else if ((name === 'EXT-X-PART' || name === 'EXT-X-PRELOAD-HINT') && !attributes['URI']) {
+      utils$1.INVALIDPLAYLIST('EXT-X-PART / EXT-X-PRELOAD-HINT: URI attribute is mandatory');
+    } else if (name === 'EXT-X-PRELOAD-HINT' && attributes['TYPE'] === 'MAP') {
+      if (mapHint) {
+        utils$1.INVALIDPLAYLIST('Servers should not add more than one EXT-X-PRELOAD-HINT tag with the same TYPE attribute to a Playlist.');
+      }
+      mapHint = true;
+      params.hasMap = true;
+      segment.map = new MediaInitializationSection({
+        hint: true,
+        uri: attributes['URI'],
+        byterange: {length: attributes['BYTERANGE-LENGTH'], offset: attributes['BYTERANGE-START'] || 0}
+      });
+    } else if (name === 'EXT-X-PART' || (name === 'EXT-X-PRELOAD-HINT' && attributes['TYPE'] === 'PART')) {
+      if (name === 'EXT-X-PART' && !attributes['DURATION']) {
+        utils$1.INVALIDPLAYLIST('EXT-X-PART: DURATION attribute is mandatory');
+      }
+      if (name === 'EXT-X-PRELOAD-HINT') {
+        partHint = true;
+      }
+      const partialSegment = new PartialSegment({
+        hint: (name === 'EXT-X-PRELOAD-HINT'),
+        uri: attributes['URI'],
+        byterange: (name === 'EXT-X-PART' ? attributes['BYTERANGE'] : {length: attributes['BYTERANGE-LENGTH'], offset: attributes['BYTERANGE-START'] || 0}),
+        duration: attributes['DURATION'],
+        independent: attributes['INDEPENDENT'],
+        gap: attributes['GAP']
+      });
+      segment.parts.push(partialSegment);
+    }
+  }
+  return segment;
+}
+
+function parsePrefetchSegment(lines, uri, start, end, mediaSequenceNumber, discontinuitySequence, params) {
+  const segment = new PrefetchSegment({uri, mediaSequenceNumber, discontinuitySequence});
+  for (let i = start; i <= end; i++) {
+    const {name, attributes} = lines[i];
+    if (name === 'EXTINF') {
+      utils$1.INVALIDPLAYLIST('A prefetch segment must not be advertised with an EXTINF tag.');
+    } else if (name === 'EXT-X-DISCONTINUITY') {
+      utils$1.INVALIDPLAYLIST('A prefetch segment must not be advertised with an EXT-X-DISCONTINUITY tag.');
+    } else if (name === 'EXT-X-PREFETCH-DISCONTINUITY') {
+      segment.discontinuity = true;
+    } else if (name === 'EXT-X-KEY') {
+      setCompatibleVersionOfKey(params, attributes);
+      segment.key = new Key({
+        method: attributes['METHOD'],
+        uri: attributes['URI'],
+        iv: attributes['IV'],
+        format: attributes['KEYFORMAT'],
+        formatVersion: attributes['KEYFORMATVERSIONS']
+      });
+    } else if (name === 'EXT-X-MAP') {
+      utils$1.INVALIDPLAYLIST('Prefetch segments must not be advertised with an EXT-X-MAP tag.');
+    }
+  }
+  return segment;
+}
+
+function parseMediaPlaylist(lines, params) {
+  const playlist = new MediaPlaylist();
+  let segmentStart = -1;
+  let mediaSequence = 0;
+  let discontinuityFound = false;
+  let prefetchFound = false;
+  let discontinuitySequence = 0;
+  let currentKey = null;
+  let currentMap = null;
+  let containsParts = false;
+  for (const [index, line] of lines.entries()) {
+    const {name, value, attributes, category} = line;
+    if (category === 'Segment') {
+      if (segmentStart === -1) {
+        segmentStart = index;
+      }
+      if (name === 'EXT-X-DISCONTINUITY') {
+        discontinuityFound = true;
+      }
+      continue;
+    }
+    if (name === 'EXT-X-VERSION') {
+      if (playlist.version === undefined) {
+        playlist.version = value;
+      } else {
+        utils$1.INVALIDPLAYLIST('A Playlist file MUST NOT contain more than one EXT-X-VERSION tag.');
+      }
+    } else if (name === 'EXT-X-TARGETDURATION') {
+      playlist.targetDuration = params.targetDuration = value;
+    } else if (name === 'EXT-X-MEDIA-SEQUENCE') {
+      if (playlist.segments.length > 0) {
+        utils$1.INVALIDPLAYLIST('The EXT-X-MEDIA-SEQUENCE tag MUST appear before the first Media Segment in the Playlist.');
+      }
+      playlist.mediaSequenceBase = mediaSequence = value;
+    } else if (name === 'EXT-X-DISCONTINUITY-SEQUENCE') {
+      if (playlist.segments.length > 0) {
+        utils$1.INVALIDPLAYLIST('The EXT-X-DISCONTINUITY-SEQUENCE tag MUST appear before the first Media Segment in the Playlist.');
+      }
+      if (discontinuityFound) {
+        utils$1.INVALIDPLAYLIST('The EXT-X-DISCONTINUITY-SEQUENCE tag MUST appear before any EXT-X-DISCONTINUITY tag.');
+      }
+      playlist.discontinuitySequenceBase = discontinuitySequence = value;
+    } else if (name === 'EXT-X-ENDLIST') {
+      playlist.endlist = true;
+    } else if (name === 'EXT-X-PLAYLIST-TYPE') {
+      playlist.playlistType = value;
+    } else if (name === 'EXT-X-I-FRAMES-ONLY') {
+      if (params.compatibleVersion < 4) {
+        params.compatibleVersion = 4;
+      }
+      playlist.isIFrame = true;
+    } else if (name === 'EXT-X-INDEPENDENT-SEGMENTS') {
+      if (playlist.independentSegments) {
+        utils$1.INVALIDPLAYLIST('EXT-X-INDEPENDENT-SEGMENTS tag MUST NOT appear more than once in a Playlist');
+      }
+      playlist.independentSegments = true;
+    } else if (name === 'EXT-X-START') {
+      if (playlist.start) {
+        utils$1.INVALIDPLAYLIST('EXT-X-START tag MUST NOT appear more than once in a Playlist');
+      }
+      if (typeof attributes['TIME-OFFSET'] !== 'number') {
+        utils$1.INVALIDPLAYLIST('EXT-X-START: TIME-OFFSET attribute is REQUIRED');
+      }
+      playlist.start = {offset: attributes['TIME-OFFSET'], precise: attributes['PRECISE'] || false};
+    } else if (name === 'EXT-X-SERVER-CONTROL') {
+      if (!attributes['CAN-BLOCK-RELOAD']) {
+        utils$1.INVALIDPLAYLIST('EXT-X-SERVER-CONTROL: CAN-BLOCK-RELOAD=YES is mandatory for Low-Latency HLS');
+      }
+      playlist.lowLatencyCompatibility = {
+        canBlockReload: attributes['CAN-BLOCK-RELOAD'],
+        canSkipUntil: attributes['CAN-SKIP-UNTIL'],
+        holdBack: attributes['HOLD-BACK'],
+        partHoldBack: attributes['PART-HOLD-BACK']
+      };
+    } else if (name === 'EXT-X-PART-INF') {
+      if (!attributes['PART-TARGET']) {
+        utils$1.INVALIDPLAYLIST('EXT-X-PART-INF: PART-TARGET attribute is mandatory');
+      }
+      playlist.partTargetDuration = attributes['PART-TARGET'];
+    } else if (name === 'EXT-X-RENDITION-REPORT') {
+      if (!attributes['URI']) {
+        utils$1.INVALIDPLAYLIST('EXT-X-RENDITION-REPORT: URI attribute is mandatory');
+      }
+      if (attributes['URI'].search(/^[a-z]+:/) === 0) {
+        utils$1.INVALIDPLAYLIST('EXT-X-RENDITION-REPORT: URI must be relative to the playlist uri');
+      }
+      playlist.renditionReports.push(new RenditionReport({
+        uri: attributes['URI'],
+        lastMSN: attributes['LAST-MSN'],
+        lastPart: attributes['LAST-PART']
+      }));
+    } else if (name === 'EXT-X-SKIP') {
+      if (!attributes['SKIPPED-SEGMENTS']) {
+        utils$1.INVALIDPLAYLIST('EXT-X-SKIP: SKIPPED-SEGMENTS attribute is mandatory');
+      }
+      if (params.compatibleVersion < 9) {
+        params.compatibleVersion = 9;
+      }
+      playlist.skip = attributes['SKIPPED-SEGMENTS'];
+      mediaSequence += playlist.skip;
+    } else if (name === 'EXT-X-PREFETCH') {
+      const segment = parsePrefetchSegment(lines, value, segmentStart === -1 ? index : segmentStart, index - 1, mediaSequence++, discontinuitySequence, params);
+      if (segment) {
+        if (segment.discontinuity) {
+          segment.discontinuitySequence++;
+          discontinuitySequence = segment.discontinuitySequence;
+        }
+        if (segment.key) {
+          currentKey = segment.key;
+        } else {
+          segment.key = currentKey;
+        }
+        playlist.prefetchSegments.push(segment);
+      }
+      prefetchFound = true;
+      segmentStart = -1;
+    } else if (typeof line === 'string') {
+      // uri
+      if (segmentStart === -1) {
+        utils$1.INVALIDPLAYLIST('A URI line is not preceded by any segment tags');
+      }
+      if (!playlist.targetDuration) {
+        utils$1.INVALIDPLAYLIST('The EXT-X-TARGETDURATION tag is REQUIRED');
+      }
+      if (prefetchFound) {
+        utils$1.INVALIDPLAYLIST('These segments must appear after all complete segments.');
+      }
+      const segment = parseSegment(lines, line, segmentStart, index - 1, mediaSequence++, discontinuitySequence, params);
+      if (segment) {
+        [discontinuitySequence, currentKey, currentMap] = addSegment(playlist, segment, discontinuitySequence, currentKey, currentMap);
+        if (!containsParts && segment.parts.length > 0) {
+          containsParts = true;
+        }
+      }
+      segmentStart = -1;
+    }
+  }
+  if (segmentStart !== -1) {
+    const segment = parseSegment(lines, '', segmentStart, lines.length - 1, mediaSequence++, discontinuitySequence, params);
+    if (segment) {
+      const {parts} = segment;
+      if (parts.length > 0 && !playlist.endlist && !parts[parts.length - 1].hint) {
+        utils$1.INVALIDPLAYLIST('If the Playlist contains EXT-X-PART tags and does not contain an EXT-X-ENDLIST tag, the Playlist must contain an EXT-X-PRELOAD-HINT tag with a TYPE=PART attribute');
+      }
+      addSegment(playlist, segment, currentKey, currentMap);
+      if (!containsParts && segment.parts.length > 0) {
+        containsParts = true;
+      }
+    }
+  }
+  checkDateRange(playlist.segments);
+  if (playlist.lowLatencyCompatibility) {
+    checkLowLatencyCompatibility(playlist, containsParts);
+  }
+  return playlist;
+}
+
+function addSegment(playlist, segment, discontinuitySequence, currentKey, currentMap) {
+  const {discontinuity, key, map, byterange, uri} = segment;
+  if (discontinuity) {
+    segment.discontinuitySequence = discontinuitySequence + 1;
+  }
+  if (!key) {
+    segment.key = currentKey;
+  }
+  if (!map) {
+    segment.map = currentMap;
+  }
+  if (byterange && byterange.offset === -1) {
+    const {segments} = playlist;
+    if (segments.length > 0) {
+      const prevSegment = segments[segments.length - 1];
+      if (prevSegment.byterange && prevSegment.uri === uri) {
+        byterange.offset = prevSegment.byterange.offset + prevSegment.byterange.length;
+      } else {
+        utils$1.INVALIDPLAYLIST('If offset of EXT-X-BYTERANGE is not present, a previous Media Segment MUST be a sub-range of the same media resource');
+      }
+    } else {
+      utils$1.INVALIDPLAYLIST('If offset of EXT-X-BYTERANGE is not present, a previous Media Segment MUST appear in the Playlist file');
+    }
+  }
+  playlist.segments.push(segment);
+  return [segment.discontinuitySequence, segment.key, segment.map];
+}
+
+function checkDateRange(segments) {
+  const earliestDates = new Map();
+  const rangeList = new Map();
+  let hasDateRange = false;
+  let hasProgramDateTime = false;
+  for (let i = segments.length - 1; i >= 0; i--) {
+    const {programDateTime, dateRange} = segments[i];
+    if (programDateTime) {
+      hasProgramDateTime = true;
+    }
+    if (dateRange && dateRange.start) {
+      hasDateRange = true;
+      if (dateRange.endOnNext && (dateRange.end || dateRange.duration)) {
+        utils$1.INVALIDPLAYLIST('An EXT-X-DATERANGE tag with an END-ON-NEXT=YES attribute MUST NOT contain DURATION or END-DATE attributes.');
+      }
+      const start = dateRange.start.getTime();
+      const duration = dateRange.duration || 0;
+      if (dateRange.end && dateRange.duration) {
+        if ((start + duration * 1000) !== dateRange.end.getTime()) {
+          utils$1.INVALIDPLAYLIST('END-DATE MUST be equal to the value of the START-DATE attribute plus the value of the DURATION');
+        }
+      }
+      if (dateRange.endOnNext) {
+        dateRange.end = earliestDates.get(dateRange.classId);
+      }
+      earliestDates.set(dateRange.classId, dateRange.start);
+      const end = dateRange.end ? dateRange.end.getTime() : dateRange.start.getTime() + (dateRange.duration || 0) * 1000;
+      const range = rangeList.get(dateRange.classId);
+      if (range) {
+        for (const entry of range) {
+          if ((entry.start <= start && entry.end > start) || (entry.start >= start && entry.start < end)) {
+            utils$1.INVALIDPLAYLIST('DATERANGE tags with the same CLASS should not overlap');
+          }
+        }
+        range.push({start, end});
+      } else {
+        rangeList.set(dateRange.classId, [{start, end}]);
+      }
+    }
+  }
+  if (hasDateRange && !hasProgramDateTime) {
+    utils$1.INVALIDPLAYLIST('If a Playlist contains an EXT-X-DATERANGE tag, it MUST also contain at least one EXT-X-PROGRAM-DATE-TIME tag.');
+  }
+}
+
+function checkLowLatencyCompatibility({lowLatencyCompatibility, targetDuration, partTargetDuration, segments, renditionReports}, containsParts) {
+  const {canSkipUntil, holdBack, partHoldBack} = lowLatencyCompatibility;
+  if (canSkipUntil < targetDuration * 6) {
+    utils$1.INVALIDPLAYLIST('The Skip Boundary must be at least six times the EXT-X-TARGETDURATION.');
+  }
+  // Its value is a floating-point number of seconds and .
+  if (holdBack < targetDuration * 3) {
+    utils$1.INVALIDPLAYLIST('HOLD-BACK must be at least three times the EXT-X-TARGETDURATION.');
+  }
+  if (containsParts) {
+    if (partTargetDuration === undefined) {
+      utils$1.INVALIDPLAYLIST('EXT-X-PART-INF is required if a Playlist contains one or more EXT-X-PART tags');
+    }
+    if (partHoldBack === undefined) {
+      utils$1.INVALIDPLAYLIST('EXT-X-PART: PART-HOLD-BACK attribute is mandatory');
+    }
+    if (partHoldBack < partTargetDuration) {
+      utils$1.INVALIDPLAYLIST('PART-HOLD-BACK must be at least PART-TARGET');
+    }
+    for (const [segmentIndex, {parts}] of segments.entries()) {
+      if (parts.length > 0 && segmentIndex < segments.length - 3) {
+        utils$1.INVALIDPLAYLIST('Remove EXT-X-PART tags from the Playlist after they are greater than three target durations from the end of the Playlist.');
+      }
+      for (const [partIndex, {duration}] of parts.entries()) {
+        if (duration === undefined) {
+          continue;
+        }
+        if (duration > partTargetDuration) {
+          utils$1.INVALIDPLAYLIST('PART-TARGET is the maximum duration of any Partial Segment');
+        }
+        if (partIndex < parts.length - 1 && duration < partTargetDuration * 0.85) {
+          utils$1.INVALIDPLAYLIST('All Partial Segments except the last part of a segment must have a duration of at least 85% of PART-TARGET');
+        }
+      }
+    }
+  }
+  for (const report of renditionReports) {
+    const lastSegment = segments[segments.length - 1];
+    if (!report.lastMSN) {
+      report.lastMSN = lastSegment.mediaSequenceNumber;
+    }
+    if (!report.lastPart && lastSegment.parts.length > 0) {
+      report.lastPart = lastSegment.parts.length - 1;
+    }
+  }
+}
+
+function CHECKTAGCATEGORY(category, params) {
+  if (category === 'Segment' || category === 'MediaPlaylist') {
+    if (params.isMasterPlaylist === undefined) {
+      params.isMasterPlaylist = false;
+      return;
+    }
+    if (params.isMasterPlaylist) {
+      MIXEDTAGS();
+    }
+    return;
+  }
+  if (category === 'MasterPlaylist') {
+    if (params.isMasterPlaylist === undefined) {
+      params.isMasterPlaylist = true;
+      return;
+    }
+    if (params.isMasterPlaylist === false) {
+      MIXEDTAGS();
+    }
+  }
+  // category === 'Basic' or 'MediaorMasterPlaylist' or 'Unknown'
+}
+
+function parseTag(line, params) {
+  const [name, param] = splitTag(line);
+  const category = getTagCategory(name);
+  CHECKTAGCATEGORY(category, params);
+  if (category === 'Unknown') {
+    return null;
+  }
+  if (category === 'MediaPlaylist' && name !== 'EXT-X-RENDITION-REPORT' && name !== 'EXT-X-PREFETCH') {
+    if (params.hash[name]) {
+      utils$1.INVALIDPLAYLIST('There MUST NOT be more than one Media Playlist tag of each type in any Media Playlist');
+    }
+    params.hash[name] = true;
+  }
+  const [value, attributes] = parseTagParam(name, param);
+  return {name, category, value, attributes};
+}
+
+function lexicalParse(text, params) {
+  const lines = [];
+  for (const l of text.split('\n')) {
+    // V8 has garbage collection issues when cleaning up substrings split from strings greater
+    // than 13 characters so before we continue we need to safely copy over each line so that it
+    // doesn't hold any reference to the containing string.
+    const line = Buffer.from(l.trim()).toString();
+    if (!line) {
+      // empty line
+      continue;
+    }
+    if (line.startsWith('#')) {
+      if (line.startsWith('#EXT')) {
+        // tag
+        const tag = parseTag(line, params);
+        if (tag) {
+          lines.push(tag);
+        }
+      }
+      // comment
+      continue;
+    }
+    // uri
+    lines.push(line);
+  }
+  if (lines.length === 0 || lines[0].name !== 'EXTM3U') {
+    utils$1.INVALIDPLAYLIST('The EXTM3U tag MUST be the first line.');
+  }
+  return lines;
+}
+
+function semanticParse(lines, params) {
+  let playlist;
+  if (params.isMasterPlaylist) {
+    playlist = parseMasterPlaylist(lines, params);
+  } else {
+    playlist = parseMediaPlaylist(lines, params);
+    if (!playlist.isIFrame && params.hasMap && params.compatibleVersion < 6) {
+      params.compatibleVersion = 6;
+    }
+  }
+  if (params.compatibleVersion > 1) {
+    if (!playlist.version || playlist.version < params.compatibleVersion) {
+      utils$1.INVALIDPLAYLIST(`EXT-X-VERSION needs to be ${params.compatibleVersion} or higher.`);
+    }
+  }
+  return playlist;
+}
+
+function parse$1(text) {
+  const params = {
+    version: undefined,
+    isMasterPlaylist: undefined,
+    hasMap: false,
+    targetDuration: 0,
+    compatibleVersion: 1,
+    isClosedCaptionsNone: false,
+    hash: {}
+  };
+
+  const lines = lexicalParse(text, params);
+  const playlist = semanticParse(lines, params);
+  playlist.source = text;
+  return playlist;
+}
+
+var parse_1 = parse$1;
+
+const utils = utils$3;
+
+const ALLOW_REDUNDANCY = [
+  '#EXTINF',
+  '#EXT-X-BYTERANGE',
+  '#EXT-X-DISCONTINUITY',
+  '#EXT-X-STREAM-INF',
+  '#EXT-X-CUE-OUT',
+  '#EXT-X-CUE-IN',
+  '#EXT-X-KEY',
+  '#EXT-X-MAP'
+];
+
+const SKIP_IF_REDUNDANT = [
+  '#EXT-X-MEDIA'
+];
+
+class LineArray extends Array {
+  constructor(baseUri) {
+    super();
+    this.baseUri = baseUri;
+  }
+
+  // @override
+  push(...elems) {
+    // redundancy check
+    for (const elem of elems) {
+      if (!elem.startsWith('#')) {
+        super.push(elem);
+        continue;
+      }
+      if (ALLOW_REDUNDANCY.some(item => elem.startsWith(item))) {
+        super.push(elem);
+        continue;
+      }
+      if (this.includes(elem)) {
+        if (SKIP_IF_REDUNDANT.some(item => elem.startsWith(item))) {
+          continue;
+        }
+        utils.INVALIDPLAYLIST(`Redundant item (${elem})`);
+      }
+      super.push(elem);
+    }
+  }
+}
+
+function buildDecimalFloatingNumber(num, fixed) {
+  let roundFactor = 1000;
+  if (fixed) {
+    roundFactor = 10 ** fixed;
+  }
+  const rounded = Math.round(num * roundFactor) / roundFactor;
+  return fixed ? rounded.toFixed(fixed) : rounded;
+}
+
+function getNumberOfDecimalPlaces(num) {
+  const str = num.toString(10);
+  const index = str.indexOf('.');
+  if (index === -1) {
+    return 0;
+  }
+  return str.length - index - 1;
+}
+
+function buildMasterPlaylist(lines, playlist) {
+  for (const sessionData of playlist.sessionDataList) {
+    lines.push(buildSessionData(sessionData));
+  }
+  for (const sessionKey of playlist.sessionKeyList) {
+    lines.push(buildKey(sessionKey, true));
+  }
+  for (const variant of playlist.variants) {
+    buildVariant(lines, variant);
+  }
+}
+
+function buildSessionData(sessionData) {
+  const attrs = [`DATA-ID="${sessionData.id}"`];
+  if (sessionData.language) {
+    attrs.push(`LANGUAGE="${sessionData.language}"`);
+  }
+  if (sessionData.value) {
+    attrs.push(`VALUE="${sessionData.value}"`);
+  } else if (sessionData.uri) {
+    attrs.push(`URI="${sessionData.uri}"`);
+  }
+  return `#EXT-X-SESSION-DATA:${attrs.join(',')}`;
+}
+
+function buildKey(key, isSessionKey) {
+  const name = isSessionKey ? '#EXT-X-SESSION-KEY' : '#EXT-X-KEY';
+  const attrs = [`METHOD=${key.method}`];
+  if (key.uri) {
+    attrs.push(`URI="${key.uri}"`);
+  }
+  if (key.iv) {
+    if (key.iv.length !== 16) {
+      utils.INVALIDPLAYLIST('IV must be a 128-bit unsigned integer');
+    }
+    attrs.push(`IV=${utils.byteSequenceToHex(key.iv)}`);
+  }
+  if (key.format) {
+    attrs.push(`KEYFORMAT="${key.format}"`);
+  }
+  if (key.formatVersion) {
+    attrs.push(`KEYFORMATVERSIONS="${key.formatVersion}"`);
+  }
+  return `${name}:${attrs.join(',')}`;
+}
+
+function buildVariant(lines, variant) {
+  const name = variant.isIFrameOnly ? '#EXT-X-I-FRAME-STREAM-INF' : '#EXT-X-STREAM-INF';
+  const attrs = [`BANDWIDTH=${variant.bandwidth}`];
+  if (variant.averageBandwidth) {
+    attrs.push(`AVERAGE-BANDWIDTH=${variant.averageBandwidth}`);
+  }
+  if (variant.isIFrameOnly) {
+    attrs.push(`URI="${variant.uri}"`);
+  }
+  if (variant.codecs) {
+    attrs.push(`CODECS="${variant.codecs}"`);
+  }
+  if (variant.resolution) {
+    attrs.push(`RESOLUTION=${variant.resolution.width}x${variant.resolution.height}`);
+  }
+  if (variant.frameRate) {
+    attrs.push(`FRAME-RATE=${buildDecimalFloatingNumber(variant.frameRate, 3)}`);
+  }
+  if (variant.hdcpLevel) {
+    attrs.push(`HDCP-LEVEL=${variant.hdcpLevel}`);
+  }
+  if (variant.audio.length > 0) {
+    attrs.push(`AUDIO="${variant.audio[0].groupId}"`);
+    for (const rendition of variant.audio) {
+      lines.push(buildRendition(rendition));
+    }
+  }
+  if (variant.video.length > 0) {
+    attrs.push(`VIDEO="${variant.video[0].groupId}"`);
+    for (const rendition of variant.video) {
+      lines.push(buildRendition(rendition));
+    }
+  }
+  if (variant.subtitles.length > 0) {
+    attrs.push(`SUBTITLES="${variant.subtitles[0].groupId}"`);
+    for (const rendition of variant.subtitles) {
+      lines.push(buildRendition(rendition));
+    }
+  }
+  if (utils.getOptions().allowClosedCaptionsNone && variant.closedCaptions.length === 0) {
+    attrs.push(`CLOSED-CAPTIONS=NONE`);
+  } else if (variant.closedCaptions.length > 0) {
+    attrs.push(`CLOSED-CAPTIONS="${variant.closedCaptions[0].groupId}"`);
+    for (const rendition of variant.closedCaptions) {
+      lines.push((buildRendition(rendition)));
+    }
+  }
+  if (variant.score) {
+    attrs.push(`SCORE=${variant.score}`);
+  }
+  if (variant.allowedCpc) {
+    const list = [];
+    for (const {format, cpcList} of variant.allowedCpc) {
+      list.push(`${format}:${cpcList.join('/')}`);
+    }
+    attrs.push(`ALLOWED-CPC="${list.join(',')}"`);
+  }
+  if (variant.videoRange) {
+    attrs.push(`VIDEO-RANGE=${variant.videoRange}`);
+  }
+  if (variant.stableVariantId) {
+    attrs.push(`STABLE-VARIANT-ID="${variant.stableVariantId}"`);
+  }
+  lines.push(`${name}:${attrs.join(',')}`);
+  if (!variant.isIFrameOnly) {
+    lines.push(`${variant.uri}`);
+  }
+}
+
+function buildRendition(rendition) {
+  const attrs = [
+    `TYPE=${rendition.type}`,
+    `GROUP-ID="${rendition.groupId}"`,
+    `NAME="${rendition.name}"`
+  ];
+  if (rendition.isDefault !== undefined) {
+    attrs.push(`DEFAULT=${rendition.isDefault ? 'YES' : 'NO'}`);
+  }
+  if (rendition.autoselect !== undefined) {
+    attrs.push(`AUTOSELECT=${rendition.autoselect ? 'YES' : 'NO'}`);
+  }
+  if (rendition.forced !== undefined) {
+    attrs.push(`FORCED=${rendition.forced ? 'YES' : 'NO'}`);
+  }
+  if (rendition.language) {
+    attrs.push(`LANGUAGE="${rendition.language}"`);
+  }
+  if (rendition.assocLanguage) {
+    attrs.push(`ASSOC-LANGUAGE="${rendition.assocLanguage}"`);
+  }
+  if (rendition.instreamId) {
+    attrs.push(`INSTREAM-ID="${rendition.instreamId}"`);
+  }
+  if (rendition.characteristics) {
+    attrs.push(`CHARACTERISTICS="${rendition.characteristics}"`);
+  }
+  if (rendition.channels) {
+    attrs.push(`CHANNELS="${rendition.channels}"`);
+  }
+  if (rendition.uri) {
+    attrs.push(`URI="${rendition.uri}"`);
+  }
+  return `#EXT-X-MEDIA:${attrs.join(',')}`;
+}
+
+function buildMediaPlaylist(lines, playlist) {
+  let lastKey = '';
+  let lastMap = '';
+  let unclosedCueIn = false;
+
+  if (playlist.targetDuration) {
+    lines.push(`#EXT-X-TARGETDURATION:${playlist.targetDuration}`);
+  }
+  if (playlist.lowLatencyCompatibility) {
+    const {canBlockReload, canSkipUntil, holdBack, partHoldBack} = playlist.lowLatencyCompatibility;
+    const params = [];
+    params.push(`CAN-BLOCK-RELOAD=${canBlockReload ? 'YES' : 'NO'}`);
+    if (canSkipUntil !== undefined) {
+      params.push(`CAN-SKIP-UNTIL=${canSkipUntil}`);
+    }
+    if (holdBack !== undefined) {
+      params.push(`HOLD-BACK=${holdBack}`);
+    }
+    if (partHoldBack !== undefined) {
+      params.push(`PART-HOLD-BACK=${partHoldBack}`);
+    }
+    lines.push(`#EXT-X-SERVER-CONTROL:${params.join(',')}`);
+  }
+  if (playlist.partTargetDuration) {
+    lines.push(`#EXT-X-PART-INF:PART-TARGET=${playlist.partTargetDuration}`);
+  }
+  if (playlist.mediaSequenceBase) {
+    lines.push(`#EXT-X-MEDIA-SEQUENCE:${playlist.mediaSequenceBase}`);
+  }
+  if (playlist.discontinuitySequenceBase) {
+    lines.push(`#EXT-X-DISCONTINUITY-SEQUENCE:${playlist.discontinuitySequenceBase}`);
+  }
+  if (playlist.playlistType) {
+    lines.push(`#EXT-X-PLAYLIST-TYPE:${playlist.playlistType}`);
+  }
+  if (playlist.isIFrame) {
+    lines.push(`#EXT-X-I-FRAMES-ONLY`);
+  }
+  if (playlist.skip > 0) {
+    lines.push(`#EXT-X-SKIP:SKIPPED-SEGMENTS=${playlist.skip}`);
+  }
+  for (const segment of playlist.segments) {
+    let markerType = '';
+    [lastKey, lastMap, markerType] = buildSegment(lines, segment, lastKey, lastMap, playlist.version);
+    if (markerType === 'OUT') {
+      unclosedCueIn = true;
+    } else if (markerType === 'IN' && unclosedCueIn) {
+      unclosedCueIn = false;
+    }
+  }
+  if (playlist.playlistType === 'VOD' && unclosedCueIn) {
+    lines.push('#EXT-X-CUE-IN');
+  }
+  if (playlist.prefetchSegments.length > 2) {
+    utils.INVALIDPLAYLIST('The server must deliver no more than two prefetch segments');
+  }
+  for (const segment of playlist.prefetchSegments) {
+    if (segment.discontinuity) {
+      lines.push(`#EXT-X-PREFETCH-DISCONTINUITY`);
+    }
+    lines.push(`#EXT-X-PREFETCH:${segment.uri}`);
+  }
+  if (playlist.endlist) {
+    lines.push(`#EXT-X-ENDLIST`);
+  }
+  for (const report of playlist.renditionReports) {
+    const params = [];
+    params.push(`URI="${report.uri}"`, `LAST-MSN=${report.lastMSN}`);
+    if (report.lastPart !== undefined) {
+      params.push(`LAST-PART=${report.lastPart}`);
+    }
+    lines.push(`#EXT-X-RENDITION-REPORT:${params.join(',')}`);
+  }
+}
+
+function buildSegment(lines, segment, lastKey, lastMap, version = 1) {
+  let hint = false;
+  let markerType = '';
+
+  if (segment.discontinuity) {
+    lines.push(`#EXT-X-DISCONTINUITY`);
+  }
+  if (segment.key) {
+    const line = buildKey(segment.key);
+    if (line !== lastKey) {
+      lines.push(line);
+      lastKey = line;
+    }
+  }
+  if (segment.map) {
+    const line = buildMap(segment.map);
+    if (line !== lastMap) {
+      lines.push(line);
+      lastMap = line;
+    }
+  }
+  if (segment.programDateTime) {
+    lines.push(`#EXT-X-PROGRAM-DATE-TIME:${utils.formatDate(segment.programDateTime)}`);
+  }
+  if (segment.dateRange) {
+    lines.push(buildDateRange(segment.dateRange));
+  }
+  if (segment.markers.length > 0) {
+    markerType = buildMarkers(lines, segment.markers);
+  }
+  if (segment.parts.length > 0) {
+    hint = buildParts(lines, segment.parts);
+  }
+  if (hint) {
+    return [lastKey, lastMap];
+  }
+  const duration = version < 3 ? Math.round(segment.duration) : buildDecimalFloatingNumber(segment.duration, getNumberOfDecimalPlaces(segment.duration));
+  lines.push(`#EXTINF:${duration},${unescape(encodeURIComponent(segment.title || ''))}`);
+  if (segment.byterange) {
+    lines.push(`#EXT-X-BYTERANGE:${buildByteRange(segment.byterange)}`);
+  }
+  Array.prototype.push.call(lines, `${segment.uri}`); // URIs could be redundant when EXT-X-BYTERANGE is used
+  return [lastKey, lastMap, markerType];
+}
+
+function buildMap(map) {
+  const attrs = [`URI="${map.uri}"`];
+  if (map.byterange) {
+    attrs.push(`BYTERANGE="${buildByteRange(map.byterange)}"`);
+  }
+  return `#EXT-X-MAP:${attrs.join(',')}`;
+}
+
+function buildByteRange({offset, length}) {
+  return `${length}@${offset}`;
+}
+
+function buildDateRange(dateRange) {
+  const attrs = [
+    `ID="${dateRange.id}"`
+  ];
+  if (dateRange.start) {
+    attrs.push(`START-DATE="${utils.formatDate(dateRange.start)}"`);
+  }
+  if (dateRange.end) {
+    attrs.push(`END-DATE="${dateRange.end}"`);
+  }
+  if (dateRange.duration) {
+    attrs.push(`DURATION=${dateRange.duration}`);
+  }
+  if (dateRange.plannedDuration) {
+    attrs.push(`PLANNED-DURATION=${dateRange.plannedDuration}`);
+  }
+  if (dateRange.classId) {
+    attrs.push(`CLASS="${dateRange.classId}"`);
+  }
+  if (dateRange.endOnNext) {
+    attrs.push(`END-ON-NEXT=YES`);
+  }
+  for (const key of Object.keys(dateRange.attributes)) {
+    if (key.startsWith('X-')) {
+      if (typeof dateRange.attributes[key] === 'number') {
+        attrs.push(`${key}=${dateRange.attributes[key]}`);
+      } else {
+        attrs.push(`${key}="${dateRange.attributes[key]}"`);
+      }
+    } else if (key.startsWith('SCTE35-')) {
+      attrs.push(`${key}=${utils.byteSequenceToHex(dateRange.attributes[key])}`);
+    }
+  }
+  return `#EXT-X-DATERANGE:${attrs.join(',')}`;
+}
+
+function buildMarkers(lines, markers) {
+  let type = '';
+  for (const marker of markers) {
+    if (marker.type === 'OUT') {
+      type = 'OUT';
+      lines.push(`#EXT-X-CUE-OUT:DURATION=${marker.duration}`);
+    } else if (marker.type === 'IN') {
+      type = 'IN';
+      lines.push('#EXT-X-CUE-IN');
+    } else if (marker.type === 'RAW') {
+      const value = marker.value ? `:${marker.value}` : '';
+      lines.push(`#${marker.tagName}${value}`);
+    }
+  }
+  return type;
+}
+
+function buildParts(lines, parts) {
+  let hint = false;
+  for (const part of parts) {
+    if (part.hint) {
+      const params = [];
+      params.push('TYPE=PART', `URI="${part.uri}"`);
+      if (part.byterange) {
+        const {offset, length} = part.byterange;
+        params.push(`BYTERANGE-START=${offset}`);
+        if (length) {
+          params.push(`BYTERANGE-LENGTH=${length}`);
+        }
+      }
+      lines.push(`#EXT-X-PRELOAD-HINT:${params.join(',')}`);
+      hint = true;
+    } else {
+      const params = [];
+      params.push(`DURATION=${part.duration}`, `URI="${part.uri}"`);
+      if (part.byterange) {
+        params.push(`BYTERANGE=${buildByteRange(part.byterange)}`);
+      }
+      if (part.independent) {
+        params.push('INDEPENDENT=YES');
+      }
+      if (part.gap) {
+        params.push('GAP=YES');
+      }
+      lines.push(`#EXT-X-PART:${params.join(',')}`);
+    }
+  }
+  return hint;
+}
+
+function stringify$1(playlist) {
+  utils.PARAMCHECK(playlist);
+  utils.ASSERT('Not a playlist', playlist.type === 'playlist');
+  const lines = new LineArray(playlist.uri);
+  lines.push('#EXTM3U');
+  if (playlist.version) {
+    lines.push(`#EXT-X-VERSION:${playlist.version}`);
+  }
+  if (playlist.independentSegments) {
+    lines.push('#EXT-X-INDEPENDENT-SEGMENTS');
+  }
+  if (playlist.start) {
+    lines.push(`#EXT-X-START:TIME-OFFSET=${buildDecimalFloatingNumber(playlist.start.offset)}${playlist.start.precise ? ',PRECISE=YES' : ''}`);
+  }
+  if (playlist.isMasterPlaylist) {
+    buildMasterPlaylist(lines, playlist);
+  } else {
+    buildMediaPlaylist(lines, playlist);
+  }
+  // console.log('<<<');
+  // console.log(lines.join('\n'));
+  // console.log('>>>');
+  return lines.join('\n');
+}
+
+var stringify_1 = stringify$1;
+
+/*! Copyright Kuu Miyazaki. SPDX-License-Identifier: MIT */
+
+const {getOptions, setOptions} = utils$3;
+const parse = parse_1;
+const stringify = stringify_1;
+const types = types$1;
+
+var hlsParser = {
+  parse,
+  stringify,
+  types,
+  getOptions,
+  setOptions
+};
+
+function ParseBitrateRange(bitrate, tolerance) {
+    var lowerBound = 0;
+    var upperBound = 0;
+    var _a = bitrate.split('-'), lowerBoundStr = _a[0], upperBoundStr = _a[1];
+    // CASE: Range has not been provided as input,
+    // as upperBoundStr is undefined
+    if (upperBoundStr === undefined) {
+        lowerBound = Number(lowerBoundStr) - tolerance;
+        upperBound = Number(lowerBoundStr) + tolerance;
+        // CASE: Range has been provided as input
+    }
+    else {
+        lowerBound = Number(lowerBoundStr);
+        upperBound = Number(upperBoundStr);
+        // CASE: Range has been provided as input, with
+        // no upperBound. Thus set upperBound as MAX
+        if (upperBound == 0)
+            upperBound = Number.MAX_VALUE;
+    }
+    if (lowerBound >= upperBound) {
+        lowerBound = -1;
+        upperBound = -1;
+    }
+    return [lowerBound, upperBound];
+}
+function toNumber(str, radix) {
+    if (radix === void 0) { radix = 10; }
+    if (typeof str === 'number') {
+        return str;
+    }
+    var num = radix === 10 ? Number.parseFloat(str) : Number.parseInt(str);
+    if (Number.isNaN(num)) {
+        return 0;
+    }
+    return num;
+}
+function parseResolution(maxSupportedResolution) {
+    var pair = maxSupportedResolution.split('x');
+    return { width: toNumber(pair[0]), height: toNumber(pair[1]) };
+}
+
+// Initialize hls-parser in strictMode to
+// disable silent logging of internal errors
+hlsParser.setOptions({ strictMode: true });
+/**
+ * @enum Defines types of manifest
+ */
+var ManifestType;
+(function (ManifestType) {
+    ManifestType["MASTER_MANIFEST"] = "Master Manifest";
+    ManifestType["MEDIA_MANIFEST"] = "Media Manifest";
+})(ManifestType || (ManifestType = {}));
+/**
+ * This class exposes APIs to cater Manifest Personalization using edgeworkers.
+ */
+var hls = /** @class */ (function () {
+    function hls() {
+    }
+    /**
+     * This API parses plain text playlist & creates structured JS object.
+     *
+     * @param text
+     *
+     * @returns It returns the structured JS object created from plain text playlist.
+     */
+    hls.parseManifest = function (text) {
+        if (typeof text !== 'string') {
+            throw new Error('HLSParser: parseManifest api failed - Invalid input type, expected input type string.');
+        }
+        if (text === '') {
+            throw new Error('HLSParser: parseManifest api failed - Empty input value, expected non-empty string as input.');
+        }
+        try {
+            return hlsParser.parse(text);
+        }
+        catch (error) {
+            throw new Error("HLSParser: hls-parser parse api failed - ".concat(error.message));
+        }
+    };
+    /**
+     * This API converts structured JS object to plain text playlist.
+     *
+     * @param playlistObj
+     *
+     * @returns It returns the plain text playlist recreated from structured JS object.
+     */
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    hls.populateManifest = function (playlistObj) {
+        if (!playlistObj) {
+            throw new Error('HLSParser: populateManifest api failed - Empty playlist object, expected playlist object created using parseManifest api.');
+        }
+        try {
+            return hlsParser.stringify(playlistObj);
+        }
+        catch (error) {
+            throw new Error("HLSParser: hls-parser stringify api failed - ".concat(error.message));
+        }
+    };
+    /**
+     * This API returns type of manifest that was passed to created
+     * structured JS object.
+     *
+     * @param playlistObj
+     *
+     * @returns Returns string MASTER_MANIFEST / MEDIA_MANIFEST.
+     */
+    hls.getManifestType = function (playlistObj) {
+        if (!playlistObj) {
+            throw new Error('HLSParser: getManifestType api failed - Empty playlist object, expected playlist object created using parseManifest api.');
+        }
+        try {
+            if (playlistObj.isMasterPlaylist)
+                return ManifestType.MASTER_MANIFEST;
+            else
+                return ManifestType.MEDIA_MANIFEST;
+        }
+        catch (error) {
+            throw new Error("HLSParser: getManifestType api failed - Playlist type initialization not found in playlistObj - ".concat(error.message));
+        }
+    };
+    /**
+     * This API preserves variants with given bitrate in the manifest & removes any other
+     * variants. It accepts single bitrate as a string or a single range of bitrates
+     * separated by '-' as a string.
+     *
+     * @param playlistObj
+     * @param bitrates
+     * @param tolerance
+     *
+     * @returns It returns boolean value where true infers that a variant matching given
+     * bitrate is removed & false infers that no variant is removed from the passed JS object.
+     */
+    hls.removeVariantsByBitrate = function (playlistObj, bitrates, tolerance) {
+        if (tolerance === void 0) { tolerance = 100000; }
+        if (!playlistObj) {
+            throw new Error('HLSParser: removeVariantsByBitrate api failed - Empty playlist object, expected playlist object created using parseManifest api.');
+        }
+        if (!bitrates || !Array.isArray(bitrates) || bitrates.length == 0) {
+            throw new Error('HLSParser: removeVariantsByBitrate api failed - Empty bitrates array, expected bitrates array of strings.');
+        }
+        if (tolerance < 0) {
+            throw new Error('HLSParser: removeVariantsByBitrate api failed - Invalid tolerance value, expected non-negative tolerance value.');
+        }
+        var isVariantRemoved = false;
+        try {
+            var numOfBitrates = bitrates.length;
+            var bitratesToPreserve = new Set();
+            // finding bitrates to preserve in the manifest
+            for (var i = 0; i < numOfBitrates; i++) {
+                if (bitrates[i].length <= 0)
+                    continue;
+                var _a = ParseBitrateRange(bitrates[i], tolerance), lowerBound = _a[0], upperBound = _a[1];
+                if (lowerBound == -1)
+                    return isVariantRemoved;
+                var j = 0;
+                var numOfVariantsInManifest = playlistObj.variants.length;
+                while (j < numOfVariantsInManifest) {
+                    if (playlistObj.variants[j].bandwidth &&
+                        playlistObj.variants[j].bandwidth >= lowerBound &&
+                        playlistObj.variants[j].bandwidth <= upperBound) {
+                        bitratesToPreserve.add(playlistObj.variants[j].bandwidth);
+                    }
+                    j++;
+                }
+            }
+            // removing bitrates not in the list of bitrates to be preserved
+            if (bitratesToPreserve.size > 0) {
+                var j = 0;
+                var numOfVariantsInManifest = playlistObj.variants.length;
+                while (j < numOfVariantsInManifest) {
+                    if (playlistObj.variants[j].bandwidth &&
+                        !bitratesToPreserve.has(playlistObj.variants[j].bandwidth)) {
+                        playlistObj.variants.splice(j, 1);
+                        isVariantRemoved = true;
+                        numOfVariantsInManifest--;
+                    }
+                    else {
+                        j++;
+                    }
+                }
+            }
+        }
+        catch (error) {
+            throw new Error("HLSParser: removeVariantsByBitrate api failed - ".concat(error.message));
+        }
+        return isVariantRemoved;
+    };
+    /**
+     * This API removes all resolutions higher than the given maximum supported resolution.
+     * It accepts single resolution as string in the format <width>x<height>.
+     *
+     * @param playlistObj
+     * @param maxSupportedResolution
+     *
+     * @returns It returns boolean value where true infers that a variant with resolution
+     * higher than given resolution is removed & false infers that no variant is removed
+     * from the passed JS object.
+     */
+    hls.removeVariantsByResolution = function (playlistObj, maxSupportedResolution) {
+        if (!playlistObj) {
+            throw new Error('HLSParser: removeVariantsByResolution api failed - Empty playlist object, expected playlist object created using parseManifest api.');
+        }
+        if (typeof maxSupportedResolution !== 'string') {
+            throw new Error('HLSParser: removeVariantsByResolution api failed - Invalid maximum supported resolution type, expected type string.');
+        }
+        if (maxSupportedResolution === '') {
+            throw new Error('HLSParser: removeVariantsByResolution api failed - Empty maximum supported resolution value, expected non-empty string.');
+        }
+        var isVariantRemoved = false;
+        try {
+            var maxSupportedResolutionObject = parseResolution(maxSupportedResolution);
+            var i = 0;
+            var numOfVariantsInManifest = playlistObj.variants.length;
+            while (i < numOfVariantsInManifest) {
+                if (playlistObj.variants[i].resolution &&
+                    (playlistObj.variants[i].resolution.width >
+                        maxSupportedResolutionObject.width ||
+                        playlistObj.variants[i].resolution.height >
+                            maxSupportedResolutionObject.height)) {
+                    playlistObj.variants.splice(i, 1);
+                    isVariantRemoved = true;
+                    numOfVariantsInManifest--;
+                }
+                else {
+                    i++;
+                }
+            }
+        }
+        catch (error) {
+            throw new Error("HLSParser: removeVariantsByResolution api failed - ".concat(error.message));
+        }
+        return isVariantRemoved;
+    };
+    /**
+     * This API moves metadata of a variant with given resolution to the newIndex.
+     * newIndex is an optional parameter, if not passed the variant is moved to 0th
+     * index. If there are multiple occurences of given resolution, this function
+     * brings all of them in sequence starting from newIndex. Rest of the variants
+     * metadata will slide downwards in the manifest.
+     *
+     * @param playlistObj
+     * @param resolution
+     * @param newIndex
+     *
+     * @returns It returns a number which infers the next index the variant will be moved to.
+     */
+    hls.moveVariantToIndex = function (playlistObj, resolution, newIndex) {
+        if (newIndex === void 0) { newIndex = 0; }
+        if (!playlistObj) {
+            throw new Error('HLSParser: moveVariantToIndex api failed - Empty playlist object, expected playlist object created using parseManifest api.');
+        }
+        if (typeof resolution !== 'string') {
+            throw new Error('HLSParser: moveVariantToIndex api failed - Invalid resolution type, expected type string.');
+        }
+        if (resolution === '') {
+            throw new Error('HLSParser: moveVariantToIndex api failed - Empty resolution value, expected non-empty string.');
+        }
+        if (newIndex < 0) {
+            throw new Error('HLSParser: moveVariantToIndex api failed - Invalid new index value, expected non-negative new index value.');
+        }
+        try {
+            // review this if return value required
+            if (!playlistObj || !resolution || newIndex < 0)
+                return -1;
+            var i = 0;
+            var numOfVariantsInManifest = playlistObj.variants.length;
+            var resolutionObject = parseResolution(resolution);
+            while (i < numOfVariantsInManifest &&
+                newIndex < numOfVariantsInManifest) {
+                if (playlistObj.variants[i].resolution &&
+                    playlistObj.variants[i].resolution.width === resolutionObject.width &&
+                    playlistObj.variants[i].resolution.height === resolutionObject.height) {
+                    // if current index of given is equal to newIndex, we don't move the resolution object
+                    if (i != newIndex) {
+                        playlistObj.variants.splice(newIndex, 0, playlistObj.variants.splice(i, 1)[0]);
+                    }
+                    newIndex++;
+                }
+                i++;
+            }
+        }
+        catch (error) {
+            throw new Error("HLSParser: moveVariantToIndex api failed - ".concat(error.message));
+        }
+        return newIndex;
+    };
+    /**
+     * This API moves metadata of all variants with given resolutions
+     * to the top. It will keep the order of these variants same as provided in the array of
+     * resolutions. Providing multiple entries of same resolution can cause undesired results.
+     *
+     * @param playlistObj
+     * @param resolutions
+     * @param newIndex
+     *
+     * @returns It returns a boolean where true infers that atleast one of the resolution order
+     * is updated as per given list of resolutions.
+     */
+    hls.updateResolutionOrder = function (playlistObj, resolutions) {
+        if (!playlistObj) {
+            throw new Error('HLSParser: updateResolutionOrder api failed - Empty playlistObj object, expected playlistObj object created using parseManifest api.');
+        }
+        if (!resolutions ||
+            !Array.isArray(resolutions) ||
+            resolutions.length == 0) {
+            throw new Error('HLSParser: updateResolutionOrder api failed - Empty list of resolutions, expected non-empty list of resolutions.');
+        }
+        var isResolutionOrderUpdated = false;
+        try {
+            if (!playlistObj || !resolutions || resolutions.length == 0)
+                return isResolutionOrderUpdated;
+            var newIndex = 0;
+            var numOfResToBeUpdated = resolutions.length;
+            var numOfVariantsInManifest = playlistObj.variants.length;
+            if (numOfResToBeUpdated > numOfVariantsInManifest)
+                return isResolutionOrderUpdated;
+            for (var i = 0; i < numOfResToBeUpdated; i++) {
+                var nextIndex = this.moveVariantToIndex(playlistObj, resolutions[i], newIndex);
+                if (nextIndex != newIndex) {
+                    isResolutionOrderUpdated = true;
+                    newIndex = nextIndex;
+                }
+            }
+        }
+        catch (error) {
+            throw new Error("HLSParser: updateResolutionOrder api failed - ".concat(error.message));
+        }
+        return isResolutionOrderUpdated;
+    };
+    /**
+     * This API preserves audio renditions with given language in the JS object & removes
+     * any other audio renditions. It accepts an array of strings with single / multiple
+     * langugages to be preserved.
+     *
+     * @param playlistObj
+     * @param languagesToPreserve
+     *
+     * @returns It returns a boolean where true infers that atleast one audio rendition with
+     * language not matching the list of languages was removed.
+     */
+    hls.removeAudioRenditionsByLanguage = function (playlistObj, languagesToPreserve) {
+        if (!playlistObj) {
+            throw new Error('HLSParser: removeAudioRenditionsByLanguage api failed - Empty playlistObj object, expected playlistObj object created using parseManifest api.');
+        }
+        if (!languagesToPreserve ||
+            !Array.isArray(languagesToPreserve) ||
+            languagesToPreserve.length == 0) {
+            throw new Error('HLSParser: removeAudioRenditionsByLanguage api failed - Empty list of languages to preserve, expected non-empty list of languages to preserve.');
+        }
+        var isAudioRenditionRemoved = false;
+        try {
+            if (!playlistObj ||
+                !languagesToPreserve ||
+                languagesToPreserve.length == 0)
+                return isAudioRenditionRemoved;
+            var numOfVariantsInManifest = playlistObj.variants.length;
+            for (var j = 0; j < numOfVariantsInManifest; j++) {
+                var k = 0;
+                var numOfAudioRenditions = playlistObj.variants[j].audio.length;
+                while (k < numOfAudioRenditions) {
+                    if (languagesToPreserve.indexOf(playlistObj.variants[j].audio[k].language) < 0) {
+                        playlistObj.variants[j].audio.splice(k, 1);
+                        isAudioRenditionRemoved = true;
+                        numOfAudioRenditions--;
+                    }
+                    else {
+                        k++;
+                    }
+                }
+            }
+        }
+        catch (error) {
+            throw new Error("HLSParser: removeAudioRenditionsByLanguage api failed - ".concat(error.message));
+        }
+        return isAudioRenditionRemoved;
+    };
+    /**
+     * This API preserves subtitle renditions with given language in the JS object &
+     * removes any other subtitle renditions. It accepts an array of strings with single / multiple
+     * langugages to be preserved.
+     *
+     * @param playlistObj
+     * @param languagesToPreserve
+     *
+     * @returns It returns a boolean where true infers that atleast one subtitle rendition with language
+     * not matching the list of languages was removed.
+     */
+    hls.removeSubtitleRenditionsByLanguage = function (playlistObj, languagesToPreserve) {
+        if (!playlistObj) {
+            throw new Error('HLSParser: removeSubtitleRenditionsByLanguage api failed - Empty playlistObj object, expected playlistObj object created using parseManifest api.');
+        }
+        if (!languagesToPreserve ||
+            !Array.isArray(languagesToPreserve) ||
+            languagesToPreserve.length == 0) {
+            throw new Error('HLSParser: removeSubtitleRenditionsByLanguage api failed - Empty list of languages to preserve, expected non-empty list of languages to preserve.');
+        }
+        var isSubtitleRenditionRemoved = false;
+        try {
+            var numOfVariantsInManifest = playlistObj.variants.length;
+            for (var j = 0; j < numOfVariantsInManifest; j++) {
+                var k = 0;
+                var numOfSubtitleRenditions = playlistObj.variants[j].subtitles.length;
+                while (k < numOfSubtitleRenditions) {
+                    if (languagesToPreserve.indexOf(playlistObj.variants[j].subtitles[k].language) < 0) {
+                        playlistObj.variants[j].subtitles.splice(k, 1);
+                        isSubtitleRenditionRemoved = true;
+                        numOfSubtitleRenditions--;
+                    }
+                    else {
+                        k++;
+                    }
+                }
+            }
+        }
+        catch (error) {
+            throw new Error("HLSParser: removeSubtitleRenditionsByLanguage api failed - ".concat(error.message));
+        }
+        return isSubtitleRenditionRemoved;
+    };
+    /**
+     * This api inserts the auxiliary content to the main asset's playlist. This
+     * auxiliary content must be present as individual segments on the origin &
+     * must have have its own playlist. This auxiliary content can be inserted as
+     * pre/mid/post roll i.e this auxiliary content can be added before/middle/after
+     * the primary content segments.
+     *
+     * @param primaryPlaylistObj
+     * @param bumpersList
+     *
+     * @returns void
+     */
+    hls.insertAuxiliaryContent = function (primaryPlaylistObj, bumpersList) {
+        var _a;
+        if (!primaryPlaylistObj) {
+            throw new Error('HLSParser: insertAuxiliaryContent api failed - Empty primaryPlaylistObj object, expected primaryPlaylistObj object created using parseManifest api.');
+        }
+        if (!bumpersList ||
+            !Array.isArray(bumpersList) ||
+            bumpersList.length == 0) {
+            throw new Error('HLSParser: insertAuxiliaryContent api failed - Empty bumpers list, expected non-empty list of bumpers.');
+        }
+        try {
+            var bumpersListSize = bumpersList.length;
+            var k = 0;
+            var auxContentPosInPrimPlaylistArr = [];
+            var elapsedSeconds = void 0;
+            var primPlaylistCurrSegment = void 0;
+            var auxContentPosInPrimPlaylist = void 0;
+            // sort the bumpersList by afterSeconds in ascending order
+            bumpersList.sort(function (a, b) { return a.afterSeconds - b.afterSeconds; });
+            /**
+             * Iterating list of bumpers to find absolute position of each
+             * bumper in primary playlist
+             */
+            elapsedSeconds = 0;
+            primPlaylistCurrSegment = 0;
+            auxContentPosInPrimPlaylist = 0;
+            for (var i = 0; i < bumpersList.length; ++i) {
+                var bumper = bumpersList[i];
+                // CASE: bumper is pre-roll
+                if (bumper.afterSeconds == 0) {
+                    // reinitializing it to 0 to support multiple instances of
+                    // pre-roll content
+                    auxContentPosInPrimPlaylist = 0;
+                    auxContentPosInPrimPlaylistArr[k++] = auxContentPosInPrimPlaylist;
+                    primaryPlaylistObj.segments[0].discontinuity = true;
+                    // CASE: bumper is mid-roll
+                }
+                else if (bumper.afterSeconds > 0 &&
+                    bumper.afterSeconds < Number.MAX_VALUE) {
+                    var segment = void 0;
+                    for (var j = primPlaylistCurrSegment; j < primaryPlaylistObj.segments.length; ++j) {
+                        segment = primaryPlaylistObj.segments[j];
+                        if (elapsedSeconds >= bumper.afterSeconds) {
+                            break;
+                        }
+                        elapsedSeconds += segment.duration;
+                        auxContentPosInPrimPlaylist++;
+                        primPlaylistCurrSegment++;
+                    }
+                    // this handles the case when afterSeconds value of corresponding
+                    // bumper is greater than the complete primary playlist playback
+                    if (primPlaylistCurrSegment !== primaryPlaylistObj.segments.length)
+                        segment.discontinuity = true;
+                    auxContentPosInPrimPlaylistArr[k++] = auxContentPosInPrimPlaylist;
+                    // CASE: bumper is post-roll i.e bumper.afterSeconds == 0
+                }
+                else if (bumper.afterSeconds == Number.MAX_VALUE) {
+                    auxContentPosInPrimPlaylist = primaryPlaylistObj.segments.length;
+                    auxContentPosInPrimPlaylistArr[k++] = auxContentPosInPrimPlaylist;
+                }
+            }
+            /**
+             * Initializing discontinuity attribute of first segment of each
+             * bumper as true. This ensures that beginning of aux content has
+             * EXT-X-DISCONTINUITY inserted
+             */
+            for (var key in bumpersList) {
+                var bumper = bumpersList[key];
+                bumper.auxContentRespBodyObj.segments[0].discontinuity = true;
+            }
+            /**
+             * Inserting each bumper at absolute position calculated above
+             */
+            var auxCntSegListLen = 0;
+            for (var i = 0; i < bumpersListSize; i++) {
+                auxContentPosInPrimPlaylistArr[i] += auxCntSegListLen;
+                (_a = primaryPlaylistObj.segments).splice.apply(_a, __spreadArray([auxContentPosInPrimPlaylistArr[i],
+                    0], bumpersList[i].auxContentRespBodyObj.segments, false));
+                auxCntSegListLen +=
+                    bumpersList[i].auxContentRespBodyObj.segments.length;
+            }
+        }
+        catch (error) {
+            throw new Error("HLSParser: insertAuxiliaryContent api failed - ".concat(error.message));
+        }
+    };
+    return hls;
+}());
+
+export { ManifestType, hls };

@@ -73,9 +73,7 @@ const DashConstants = new class {
     }
 };
 
-"undefined" != typeof globalThis ? globalThis : "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self && self;
-
-var hasRequiredEntities, X2JS$1 = {
+var hasRequiredEntities, commonjsGlobal = "undefined" != typeof globalThis ? globalThis : "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : {}, X2JS$1 = {
     exports: {}
 }, domParser = {}, entities = {};
 
@@ -1672,23 +1670,535 @@ const Attr$1 = function(name) {
     return "@" + name;
 };
 
-class GenericError extends Error {
-    constructor(code, message) {
-        super(message), this.code = code, this.message = message;
-    }
-    toString() {
-        return `GenericError(code=${this.code}, message=${this.message}`;
-    }
+var abs$1 = {}, isNegative$1 = {}, toUnit = {}, parse = {}, units = {};
+
+!function(exports) {
+    var __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+        return __assign = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+            return t;
+        }, __assign.apply(this, arguments);
+    };
+    Object.defineProperty(exports, "__esModule", {
+        value: !0
+    }), exports.UNITS_META = exports.UNITS = exports.UNITS_META_MAP = exports.UNITS_META_MAP_LITERAL = exports.ZERO = void 0;
+    exports.ZERO = Object.freeze({
+        years: 0,
+        months: 0,
+        weeks: 0,
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        milliseconds: 0
+    }), exports.UNITS_META_MAP_LITERAL = {
+        years: {
+            milliseconds: 31536e6,
+            months: 12,
+            dateGetter: function(date) {
+                return date.getFullYear();
+            },
+            ISOCharacter: "Y",
+            ISOPrecision: "period"
+        },
+        months: {
+            milliseconds: 2628e6,
+            months: 1,
+            dateGetter: function(date) {
+                return date.getMonth();
+            },
+            ISOCharacter: "M",
+            ISOPrecision: "period"
+        },
+        weeks: {
+            milliseconds: 6048e5,
+            dateGetter: function() {
+                return 0;
+            },
+            ISOCharacter: "W",
+            ISOPrecision: "period",
+            stringifyConvertTo: "days"
+        },
+        days: {
+            milliseconds: 864e5,
+            dateGetter: function(date) {
+                return date.getDate();
+            },
+            ISOCharacter: "D",
+            ISOPrecision: "period"
+        },
+        hours: {
+            milliseconds: 36e5,
+            dateGetter: function(date) {
+                return date.getHours();
+            },
+            ISOCharacter: "H",
+            ISOPrecision: "time"
+        },
+        minutes: {
+            milliseconds: 6e4,
+            dateGetter: function(date) {
+                return date.getMinutes();
+            },
+            ISOCharacter: "M",
+            ISOPrecision: "time"
+        },
+        seconds: {
+            milliseconds: 1e3,
+            dateGetter: function(date) {
+                return date.getSeconds();
+            },
+            ISOCharacter: "S",
+            ISOPrecision: "time"
+        },
+        milliseconds: {
+            milliseconds: 1,
+            dateGetter: function(date) {
+                return date.getMilliseconds();
+            },
+            stringifyConvertTo: "seconds"
+        }
+    }, exports.UNITS_META_MAP = exports.UNITS_META_MAP_LITERAL, exports.UNITS = Object.freeze([ "years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds" ]), 
+    exports.UNITS_META = Object.freeze(exports.UNITS.map((function(unit) {
+        return __assign(__assign({}, exports.UNITS_META_MAP[unit]), {
+            unit
+        });
+    })));
+}(units);
+
+var hasRequiredNegate, parseISODuration = {}, negate = {};
+
+function requireNegate() {
+    if (hasRequiredNegate) return negate;
+    hasRequiredNegate = 1;
+    var __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+        return __assign = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+            return t;
+        }, __assign.apply(this, arguments);
+    };
+    Object.defineProperty(negate, "__esModule", {
+        value: !0
+    }), negate.negate = void 0;
+    var units_1 = units, parse_1 = requireParse();
+    return negate.negate = function(duration) {
+        var output = __assign({}, (0, parse_1.parse)(duration));
+        return units_1.UNITS.forEach((function(unit) {
+            output[unit] = 0 === output[unit] ? 0 : -output[unit];
+        })), output;
+    }, negate;
 }
+
+var numberUtils = {};
+
+Object.defineProperty(numberUtils, "__esModule", {
+    value: !0
+}), numberUtils.isNegativelySigned = void 0;
+
+var hasRequiredParseISODuration;
+
+numberUtils.isNegativelySigned = function(n) {
+    return n < 0 || Object.is(n, -0);
+};
+
+var validate$1 = {};
+
+Object.defineProperty(validate$1, "__esModule", {
+    value: !0
+}), validate$1.validate = void 0;
+
+var units_1$7 = units;
+
+validate$1.validate = function(duration) {
+    Object.keys(duration).forEach((function(unit) {
+        if (!units_1$7.UNITS.includes(unit)) throw new TypeError('Unexpected property "'.concat(unit, '" on Duration object.'));
+        if (!Number.isInteger(duration[unit])) throw new TypeError('Property "'.concat(unit, '" must be a an integer. Received ').concat(duration[unit], "."));
+    }));
+};
+
+var cleanDurationObject$1 = {}, __assign$4 = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign$4 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign$4.apply(this, arguments);
+};
+
+Object.defineProperty(cleanDurationObject$1, "__esModule", {
+    value: !0
+}), cleanDurationObject$1.cleanDurationObject = void 0;
+
+var hasRequiredParse, units_1$6 = units;
+
+function requireParse() {
+    if (hasRequiredParse) return parse;
+    hasRequiredParse = 1;
+    var __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+        return __assign = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+            return t;
+        }, __assign.apply(this, arguments);
+    };
+    Object.defineProperty(parse, "__esModule", {
+        value: !0
+    }), parse.parse = void 0;
+    var units_1 = units, parseISODuration_1 = function() {
+        if (hasRequiredParseISODuration) return parseISODuration;
+        hasRequiredParseISODuration = 1;
+        var __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+            return __assign = Object.assign || function(t) {
+                for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+                return t;
+            }, __assign.apply(this, arguments);
+        };
+        Object.defineProperty(parseISODuration, "__esModule", {
+            value: !0
+        }), parseISODuration.parseISODuration = void 0;
+        var units_1 = units, negate_1 = requireNegate(), numberUtils_1 = numberUtils, millisecondsPattern = "(?:[,.](\\d{1,3})\\d*)?", unitPattern = function(unit) {
+            return "(?:(-?\\d+)".concat(unit, ")?");
+        }, createDurationParser = function(regex, unitsOrder) {
+            return function(duration) {
+                var match = duration.match(regex);
+                if (!match) return null;
+                var isDurationNegative = "-" === match[1], unitStrings = match.slice(2);
+                if (unitStrings.every((function(value) {
+                    return void 0 === value;
+                }))) return null;
+                var unitNumbers = unitStrings.map((function(value, i) {
+                    value = null != value ? value : "0";
+                    var isMilliseconds = i === unitStrings.length - 1;
+                    return Number(isMilliseconds ? value.padEnd(3, "0") : value);
+                })), output = __assign({}, units_1.ZERO);
+                return unitsOrder.forEach((function(unit, i) {
+                    output[unit] = unitNumbers[i];
+                })), (0, numberUtils_1.isNegativelySigned)(output.seconds) && (output.milliseconds *= -1), 
+                isDurationNegative ? (0, negate_1.negate)(output) : output;
+            };
+        }, parseFullFormatISODuration = createDurationParser(new RegExp([ "^(-)?P", "(\\d{4})", "-?", "(\\d{2})", "-?", "(\\d{2})", "T", "(\\d{2})", ":?", "(\\d{2})", ":?", "(\\d{2})", millisecondsPattern, "$" ].join("")), [ "years", "months", "days", "hours", "minutes", "seconds", "milliseconds" ]), parseUnitsISODuration = createDurationParser(new RegExp([ "^(-)?P", unitPattern("Y"), unitPattern("M"), unitPattern("W"), unitPattern("D"), "(?:T", unitPattern("H"), unitPattern("M"), unitPattern("".concat(millisecondsPattern, "S")), ")?$" ].join("")), [ "years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds" ]);
+        return parseISODuration.parseISODuration = function(duration) {
+            var output = parseUnitsISODuration(duration) || parseFullFormatISODuration(duration);
+            if (null === output) throw new SyntaxError('Failed to parse duration. "'.concat(duration, '" is not a valid ISO duration string.'));
+            return output;
+        }, parseISODuration;
+    }(), validate_1 = validate$1, cleanDurationObject_1 = cleanDurationObject$1;
+    return parse.parse = function(duration) {
+        var output = function(duration) {
+            return "string" == typeof duration ? (0, parseISODuration_1.parseISODuration)(duration) : __assign(__assign({}, units_1.ZERO), "number" == typeof duration ? {
+                milliseconds: duration
+            } : duration);
+        }(duration);
+        return (0, validate_1.validate)(output), (0, cleanDurationObject_1.cleanDurationObject)(output);
+    }, parse;
+}
+
+cleanDurationObject$1.cleanDurationObject = function(duration) {
+    var output = __assign$4({}, duration);
+    return units_1$6.UNITS.forEach((function(key) {
+        0 === output[key] && (output[key] = 0);
+    })), output;
+}, function(exports) {
+    Object.defineProperty(exports, "__esModule", {
+        value: !0
+    }), exports.toYears = exports.toMonths = exports.toWeeks = exports.toDays = exports.toHours = exports.toMinutes = exports.toSeconds = exports.toUnit = exports.toMilliseconds = void 0;
+    var parse_1 = requireParse(), units_1 = units;
+    exports.toMilliseconds = function(duration) {
+        var parsed = (0, parse_1.parse)(duration);
+        return units_1.UNITS_META.reduce((function(total, _a) {
+            var unit = _a.unit, milliseconds = _a.milliseconds;
+            return total + parsed[unit] * milliseconds;
+        }), 0);
+    };
+    exports.toUnit = function(duration, unit) {
+        return (0, exports.toMilliseconds)(duration) / units_1.UNITS_META_MAP[unit].milliseconds;
+    };
+    var createDurationConverter = function(unit) {
+        return function(duration) {
+            return (0, exports.toUnit)(duration, unit);
+        };
+    };
+    exports.toSeconds = createDurationConverter("seconds"), exports.toMinutes = createDurationConverter("minutes"), 
+    exports.toHours = createDurationConverter("hours"), exports.toDays = createDurationConverter("days"), 
+    exports.toWeeks = createDurationConverter("weeks"), exports.toMonths = createDurationConverter("months"), 
+    exports.toYears = createDurationConverter("years");
+}(toUnit), Object.defineProperty(isNegative$1, "__esModule", {
+    value: !0
+}), isNegative$1.isNegative = void 0;
+
+var toUnit_1$2 = toUnit;
+
+isNegative$1.isNegative = function(duration) {
+    return (0, toUnit_1$2.toMilliseconds)(duration) < 0;
+}, Object.defineProperty(abs$1, "__esModule", {
+    value: !0
+}), abs$1.abs = void 0;
+
+var isNegative_1 = isNegative$1, negate_1$2 = requireNegate(), parse_1$5 = requireParse();
+
+abs$1.abs = function(duration) {
+    return (0, isNegative_1.isNegative)(duration) ? (0, negate_1$2.negate)(duration) : (0, 
+    parse_1$5.parse)(duration);
+};
+
+var apply$1 = {}, dateUtils = {};
+
+!function(exports) {
+    Object.defineProperty(exports, "__esModule", {
+        value: !0
+    }), exports.addMonths = exports.getDaysInMonth = void 0;
+    exports.getDaysInMonth = function(date) {
+        var monthIndex = date.getMonth(), lastDayOfMonth = new Date(0);
+        return lastDayOfMonth.setFullYear(date.getFullYear(), monthIndex + 1, 0), lastDayOfMonth.setHours(0, 0, 0, 0), 
+        lastDayOfMonth.getDate();
+    };
+    exports.addMonths = function(date, value) {
+        var desiredMonth = date.getMonth() + value, dateWithDesiredMonth = new Date(0);
+        dateWithDesiredMonth.setFullYear(date.getFullYear(), desiredMonth, 1), dateWithDesiredMonth.setHours(0, 0, 0, 0);
+        var daysInMonth = (0, exports.getDaysInMonth)(dateWithDesiredMonth);
+        date.setMonth(desiredMonth, Math.min(daysInMonth, date.getDate()));
+    };
+}(dateUtils), Object.defineProperty(apply$1, "__esModule", {
+    value: !0
+}), apply$1.apply = void 0;
+
+var dateUtils_1 = dateUtils, parse_1$4 = requireParse();
+
+apply$1.apply = function(date, duration) {
+    var parsedDate = new Date(date), _a = (0, parse_1$4.parse)(duration), years = _a.years, months = _a.months, weeks = _a.weeks, days = _a.days, hours = _a.hours, minutes = _a.minutes, seconds = _a.seconds, milliseconds = _a.milliseconds;
+    return (0, dateUtils_1.addMonths)(parsedDate, 12 * years + months), parsedDate.setDate(parsedDate.getDate() + 7 * weeks + days), 
+    parsedDate.setHours(parsedDate.getHours() + hours, parsedDate.getMinutes() + minutes, parsedDate.getSeconds() + seconds, parsedDate.getMilliseconds() + milliseconds), 
+    parsedDate;
+};
+
+var between$1 = {}, __assign$3 = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign$3 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign$3.apply(this, arguments);
+};
+
+Object.defineProperty(between$1, "__esModule", {
+    value: !0
+}), between$1.between = void 0;
+
+var units_1$5 = units;
+
+between$1.between = function(date1, date2) {
+    var a = new Date(date1), b = new Date(date2), output = __assign$3({}, units_1$5.ZERO);
+    return units_1$5.UNITS_META.forEach((function(_a) {
+        var unit = _a.unit, dateGetter = _a.dateGetter;
+        output[unit] = dateGetter(b) - dateGetter(a);
+    })), output;
+};
+
+var isZero$1 = {};
+
+Object.defineProperty(isZero$1, "__esModule", {
+    value: !0
+}), isZero$1.isZero = void 0;
+
+var toUnit_1$1 = toUnit;
+
+isZero$1.isZero = function(duration) {
+    return 0 === (0, toUnit_1$1.toMilliseconds)(duration);
+};
+
+var normalize$1 = {}, __assign$2 = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign$2 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign$2.apply(this, arguments);
+}, __rest = commonjsGlobal && commonjsGlobal.__rest || function(s, e) {
+    var t = {};
+    for (var p in s) Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0 && (t[p] = s[p]);
+    if (null != s && "function" == typeof Object.getOwnPropertySymbols) {
+        var i = 0;
+        for (p = Object.getOwnPropertySymbols(s); i < p.length; i++) e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]) && (t[p[i]] = s[p[i]]);
+    }
+    return t;
+};
+
+Object.defineProperty(normalize$1, "__esModule", {
+    value: !0
+}), normalize$1.normalize = void 0;
+
+var units_1$4 = units, between_1 = between$1, apply_1 = apply$1, toUnit_1 = toUnit, parse_1$3 = requireParse(), createUnitsNormalizer = function(keys, getDivisor) {
+    return function(duration, remaining) {
+        var output = __assign$2({}, duration);
+        return keys.forEach((function(unit) {
+            var divisor = getDivisor(unit);
+            output[unit] = ~~(remaining / divisor), remaining -= output[unit] * divisor;
+        })), output;
+    };
+}, yearMonthNormalizer = createUnitsNormalizer([ "years", "months" ], (function(unit) {
+    return units_1$4.UNITS_META_MAP_LITERAL[unit].months;
+})), dayAndTimeNormalizer = createUnitsNormalizer([ "days", "hours", "minutes", "seconds", "milliseconds" ], (function(unit) {
+    return units_1$4.UNITS_META_MAP_LITERAL[unit].milliseconds;
+}));
+
+normalize$1.normalize = function(duration, referenceDate) {
+    return function(duration) {
+        var _a = (0, parse_1$3.parse)(duration), years = _a.years, months = _a.months, weeks = _a.weeks, days = _a.days, rest = __rest(_a, [ "years", "months", "weeks", "days" ]), output = __assign$2({}, units_1$4.ZERO);
+        return output = yearMonthNormalizer(output, (0, toUnit_1.toMonths)({
+            years,
+            months
+        })), dayAndTimeNormalizer(output, (0, toUnit_1.toMilliseconds)(__assign$2(__assign$2({}, rest), {
+            days: days + 7 * weeks
+        })));
+    }(null != referenceDate ? (0, between_1.between)(referenceDate, (0, apply_1.apply)(referenceDate, duration)) : duration);
+};
+
+var subtract$1 = {}, sum$1 = {}, __assign$1 = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign$1 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign$1.apply(this, arguments);
+};
+
+Object.defineProperty(sum$1, "__esModule", {
+    value: !0
+}), sum$1.sum = void 0;
+
+var units_1$3 = units, parse_1$2 = requireParse();
+
+sum$1.sum = function() {
+    for (var durations = [], _i = 0; _i < arguments.length; _i++) durations[_i] = arguments[_i];
+    var output = __assign$1({}, units_1$3.ZERO);
+    return durations.map(parse_1$2.parse).forEach((function(duration) {
+        units_1$3.UNITS.forEach((function(key) {
+            output[key] += duration[key];
+        }));
+    })), output;
+};
+
+var __spreadArray = commonjsGlobal && commonjsGlobal.__spreadArray || function(to, from, pack) {
+    if (pack || 2 === arguments.length) for (var ar, i = 0, l = from.length; i < l; i++) !ar && i in from || (ar || (ar = Array.prototype.slice.call(from, 0, i)), 
+    ar[i] = from[i]);
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+
+Object.defineProperty(subtract$1, "__esModule", {
+    value: !0
+}), subtract$1.subtract = void 0;
+
+var negate_1$1 = requireNegate(), sum_1 = sum$1;
+
+subtract$1.subtract = function(duration) {
+    for (var durationsToSubtract = [], _i = 1; _i < arguments.length; _i++) durationsToSubtract[_i - 1] = arguments[_i];
+    return sum_1.sum.apply(void 0, __spreadArray([ duration ], durationsToSubtract.map(negate_1$1.negate), !1));
+};
+
+var toString$1 = {}, getUnitCount$1 = {}, __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign.apply(this, arguments);
+};
+
+Object.defineProperty(getUnitCount$1, "__esModule", {
+    value: !0
+}), getUnitCount$1.getUnitCount = void 0;
+
+var units_1$2 = units, parse_1$1 = requireParse();
+
+getUnitCount$1.getUnitCount = function(duration) {
+    var parsed = __assign({}, (0, parse_1$1.parse)(duration)), count = 0;
+    return units_1$2.UNITS.forEach((function(unit) {
+        0 !== parsed[unit] && count++;
+    })), count;
+};
+
+var checkAllUnitsNegative$1 = {};
+
+Object.defineProperty(checkAllUnitsNegative$1, "__esModule", {
+    value: !0
+}), checkAllUnitsNegative$1.checkAllUnitsNegative = void 0;
+
+var negate_1 = requireNegate(), parse_1 = requireParse(), units_1$1 = units;
+
+checkAllUnitsNegative$1.checkAllUnitsNegative = function(duration) {
+    var parsed = (0, parse_1.parse)(duration), hasPositive = !1, hasNegative = !1;
+    return units_1$1.UNITS.forEach((function(unit) {
+        var value = parsed[unit];
+        value < 0 ? hasNegative = !0 : value > 0 && (hasPositive = !0);
+    })), hasNegative && !hasPositive ? {
+        isAllNegative: !0,
+        maybeAbsDuration: (0, negate_1.negate)(parsed)
+    } : {
+        isAllNegative: !1,
+        maybeAbsDuration: parsed
+    };
+}, Object.defineProperty(toString$1, "__esModule", {
+    value: !0
+}), toString$1.toString = void 0;
+
+var isZero_1 = isZero$1, getUnitCount_1 = getUnitCount$1, units_1 = units, checkAllUnitsNegative_1 = checkAllUnitsNegative$1, joinComponents = function(component) {
+    return component.join("").replace(/\./g, ",");
+};
+
+toString$1.toString = function(duration) {
+    if ((0, isZero_1.isZero)(duration)) return "P0D";
+    var _a = (0, checkAllUnitsNegative_1.checkAllUnitsNegative)(duration), parsed = _a.maybeAbsDuration, isAllNegative = _a.isAllNegative;
+    if (1 === (0, getUnitCount_1.getUnitCount)(parsed) && 0 !== parsed.weeks) return "P".concat(parsed.weeks, "W");
+    var components = {
+        period: [],
+        time: []
+    };
+    units_1.UNITS_META.forEach((function(_a) {
+        var fromUnit = _a.unit, toUnit = _a.stringifyConvertTo;
+        if (null != toUnit) {
+            var millisecondValue = parsed[fromUnit] * units_1.UNITS_META_MAP[fromUnit].milliseconds;
+            parsed[toUnit] += millisecondValue / units_1.UNITS_META_MAP[toUnit].milliseconds, 
+            parsed[fromUnit] = 0;
+        }
+    })), units_1.UNITS_META.forEach((function(_a) {
+        var unit = _a.unit, ISOPrecision = _a.ISOPrecision, ISOCharacter = _a.ISOCharacter, value = parsed[unit];
+        null != ISOPrecision && 0 !== value && components[ISOPrecision].push("".concat(value).concat(ISOCharacter));
+    }));
+    var output = "P".concat(joinComponents(components.period));
+    return components.time.length && (output += "T".concat(joinComponents(components.time))), 
+    isAllNegative && (output = "-".concat(output)), output;
+};
+
+var types = {};
+
+Object.defineProperty(types, "__esModule", {
+    value: !0
+}), function(exports) {
+    var __createBinding = commonjsGlobal && commonjsGlobal.__createBinding || (Object.create ? function(o, m, k, k2) {
+        void 0 === k2 && (k2 = k), Object.defineProperty(o, k2, {
+            enumerable: !0,
+            get: function() {
+                return m[k];
+            }
+        });
+    } : function(o, m, k, k2) {
+        void 0 === k2 && (k2 = k), o[k2] = m[k];
+    }), __exportStar = commonjsGlobal && commonjsGlobal.__exportStar || function(m, exports) {
+        for (var p in m) "default" === p || Object.prototype.hasOwnProperty.call(exports, p) || __createBinding(exports, m, p);
+    };
+    Object.defineProperty(exports, "__esModule", {
+        value: !0
+    }), exports.UNITS = void 0, __exportStar(abs$1, exports), __exportStar(apply$1, exports), 
+    __exportStar(between$1, exports), __exportStar(isNegative$1, exports), __exportStar(isZero$1, exports), 
+    __exportStar(requireNegate(), exports), __exportStar(normalize$1, exports), __exportStar(requireParse(), exports), 
+    __exportStar(subtract$1, exports), __exportStar(sum$1, exports), __exportStar(toString$1, exports), 
+    __exportStar(toUnit, exports), __exportStar(types, exports);
+    var units_1 = units;
+    Object.defineProperty(exports, "UNITS", {
+        enumerable: !0,
+        get: function() {
+            return units_1.UNITS;
+        }
+    });
+}({});
 
 function attr(name) {
     return "@" + name;
 }
 
-function toNumber(str, radix = 10) {
-    if ("number" == typeof str) return str;
-    const num = 10 === radix ? Number.parseFloat(str) : Number.parseInt(str);
-    return Number.isNaN(num) ? 0 : num;
+function toNumber(str) {
+    let num;
+    return Number.isNaN(str) ? 0 : "number" == typeof str ? str : (num = "string" == typeof str && -1 != str.indexOf(".") ? Number.parseFloat(str) : Number.parseInt(str), 
+    num);
 }
 
 function filter(range, bandwidth, tolerance = 1e5) {
@@ -1709,7 +2219,7 @@ function filter(range, bandwidth, tolerance = 1e5) {
 
 function parseResolution(maxSupportedResolution) {
     const pair = maxSupportedResolution.split("-");
-    if (!pair[0] || !pair[1] || !pair[0] && !pair[1]) throw new GenericError(400, "DashParser: filterVariantsByResolution ,updateVariantAtIndex and updateVariants need resolution in format 'x-y'.");
+    if (!pair[0] || !pair[1] || !pair[0] && !pair[1]) throw new Error("DashParser: filterVariantsByResolution ,updateVariantAtIndex and updateVariants need resolution in format 'x-y'.");
     return {
         width: toNumber(pair[0]),
         height: toNumber(pair[1])
@@ -1781,7 +2291,7 @@ const dashMpd = new class {
     }
 }, Attr = function(name) {
     return "@" + name;
-}, MIME_TYPE_VIDEO_PREFIX = "video/", MIME_TYPE_AUDIO_PREFIX = "audio/", MIME_TYPE_TEXT_PREFIX = "application/";
+};
 
 class DashParser {
     static parseMPD(mpdXml) {
@@ -1808,9 +2318,10 @@ class DashParser {
 
 DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
     if (!mpdJson) throw new Error("DashParser: filterVariantsByBandwidth api failed ,dash mpd json object cannot be empty");
-    if (!bitrates) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates cannot be empty");
+    if (!bitrates || 0 == bitrates.length) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates cannot be empty");
     if (!Array.isArray(bitrates)) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be array");
-    if (!bitrates.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be of strings!");
+    if (!bitrates.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be of strings");
+    if (tolerance < 0) throw new Error("DashParser: filterVariantsByBandwidth api failed,invalid tolerance value, expected non-negative tolerance value");
     const filterFnForVideoAdaptationSet = knownMimeType => element => {
         let result = !1;
         const match = {};
@@ -1843,8 +2354,8 @@ DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
         throw new Error(`DashParser: failed to filterVariantsByBandwidth due to ${error.message}`);
     }
 }, DashParser.filterVariantsByResolution = (mpdJson, maxSupportedResolution) => {
-    if (!mpdJson) throw new Error("DashParser: filterVariantsByResolution api failed,dash mpd json object cannot be empty!");
-    if (!maxSupportedResolution || "string" != typeof maxSupportedResolution) throw new Error("DashParser: filterVariantsByResolution api failed,maxSupportedResolution should be a string and not empty !");
+    if (!mpdJson) throw new Error("DashParser: filterVariantsByResolution api failed,dash mpd json object cannot be empty");
+    if (!maxSupportedResolution || "string" != typeof maxSupportedResolution) throw new Error("DashParser: filterVariantsByResolution api failed,maxSupportedResolution should be a string and not empty");
     const maxSupportedResolutionObject = parseResolution(maxSupportedResolution), filterFnForVideoResolution = knownMimeType => element => {
         let result = !1;
         if (!knownMimeType) {
@@ -1876,11 +2387,11 @@ DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
     }
 }, DashParser.updateVariantAtIndex = (mpdJson, resolution, newIndex) => {
     if (logger.log(resolution, newIndex), logger.log(typeof resolution, typeof newIndex), 
-    !mpdJson) throw new Error("DashParser: updateVariantAtIndex api failed,dash mpd json object cannot be empty!");
-    if (!resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution cannot be empty!");
-    if ("string" != typeof resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution must be a string!");
-    if (0 != newIndex && !newIndex || null === newIndex) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex cannot be empty,undefined or null!");
-    if ("number" != typeof newIndex || newIndex < 0) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex must be a number greater than or equal to 0!");
+    !mpdJson) throw new Error("DashParser: updateVariantAtIndex api failed,dash mpd json object cannot be empty");
+    if (!resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution cannot be empty");
+    if ("string" != typeof resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution must be a string");
+    if ("number" != typeof newIndex || newIndex < 0) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex must be a number greater than or equal to 0");
+    if (0 != newIndex && !newIndex || null === newIndex) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex cannot be empty,undefined or null");
     try {
         mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
@@ -1906,10 +2417,10 @@ DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
         throw new Error(`DashParser: failed to updateVariantAtIndex due to ${error.message}`);
     }
 }, DashParser.updateVariants = (mpdJson, resolutions, newIndex = 0) => {
-    if (!mpdJson || !resolutions) throw new Error("DashParser: updateVariants api failed,dash mpd json object cannot be empty!");
-    if (!resolutions) throw new Error("DashParser: updateVariants api failed,resolutions cannot be empty!");
-    if (!Array.isArray(resolutions)) throw new Error("DashParser: updateVariants api failed,resolutions must be an array!");
-    if (!resolutions.every((item => "string" == typeof item))) throw new Error("DashParser: updateVariants api failed,resolutions must be an array of strings!");
+    if (!mpdJson) throw new Error("DashParser: updateVariants api failed,dash mpd json object cannot be empty");
+    if (!resolutions || 0 == resolutions.length) throw new Error("DashParser: updateVariants api failed,resolutions cannot be empty");
+    if (!Array.isArray(resolutions)) throw new Error("DashParser: updateVariants api failed,resolutions must be an array");
+    if (!resolutions.every((item => "string" == typeof item))) throw new Error("DashParser: updateVariants api failed,resolutions must be an array of strings");
     try {
         mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
@@ -1937,10 +2448,10 @@ DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
         throw new Error(`DashParser: failed to updateVariants due to ${error.message}`);
     }
 }, DashParser.filterVariantsByAudioLanguage = (mpdJson, languages) => {
-    if (!mpdJson) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,dash mpd json object cannot be empty!");
-    if (!languages) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages cannot be empty!");
-    if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array!");
-    if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array of strings!");
+    if (!mpdJson) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,dash mpd json object cannot be empty");
+    if (!languages || 0 === languages.length) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages cannot be empty");
+    if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array");
+    if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array of strings");
     try {
         mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             const filteredRenditions = period[DashConstants.ADAPTATION_SET].filter((element => {
@@ -1970,10 +2481,10 @@ DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
         throw new Error(`DashParser: failed to filterVariantsByAudioLanguage due to ${error.message}`);
     }
 }, DashParser.filterVariantsBySubtitlesLanguage = (mpdJson, languages) => {
-    if (!mpdJson) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,dash mpd json object cannot be empty!");
-    if (!languages) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages cannot be empty!");
-    if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array!");
-    if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array of strings!");
+    if (!mpdJson) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,dash mpd json object cannot be empty");
+    if (!languages || 0 === languages.length) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages cannot be empty");
+    if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array");
+    if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array of strings");
     try {
         mpdJson[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             const filteredRenditions = period[DashConstants.ADAPTATION_SET].filter((element => {
@@ -2003,4 +2514,4 @@ DashParser.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
     }
 };
 
-export { DashParser, MIME_TYPE_AUDIO_PREFIX, MIME_TYPE_TEXT_PREFIX, MIME_TYPE_VIDEO_PREFIX };
+export { DashParser };

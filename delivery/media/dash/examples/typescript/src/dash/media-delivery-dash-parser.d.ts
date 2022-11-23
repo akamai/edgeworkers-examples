@@ -1,6 +1,3 @@
-declare const MIME_TYPE_VIDEO_PREFIX: string;
-declare const MIME_TYPE_AUDIO_PREFIX: string;
-declare const MIME_TYPE_TEXT_PREFIX: string;
 /**
  * DashParser class with necessary API's for implementing Dash manifest manipulation usecase for media delivery.
  * Consumers of Dash manifest manipulation feature can import this class and call the necessay operations.
@@ -85,4 +82,4 @@ declare class DashParser {
     static filterVariantsBySubtitlesLanguage: (mpdJson: any, languages: string[]) => void;
 }
 
-export { DashParser, MIME_TYPE_AUDIO_PREFIX, MIME_TYPE_TEXT_PREFIX, MIME_TYPE_VIDEO_PREFIX };
+export { DashParser };

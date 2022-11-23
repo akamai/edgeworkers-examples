@@ -2,9 +2,11 @@ import { WritableStream } from "streams";
 
 import { crypto, pem2ab } from "crypto";
 
-import { TextEncoder as TextEncoder$1, base16, base64url, atob } from "encoding";
+import { TextEncoder as TextEncoder$1, base64url, base16, atob } from "encoding";
 
 import { logger } from "log";
+
+import { IrdetoAlgorithm } from "irdeto-algorithm.js";
 
 import { httpRequest } from "http-request";
 
@@ -73,119 +75,24 @@ function sortByRangeStart(a, b) {
     return a.start - b.start;
 }
 
-class Util {
-    static isEmptyString(str) {
-        return str instanceof Uint8Array ? !str || 0 === str.length : "string" != typeof str || (!str || 0 === str.trim().length);
-    }
-    static numberToArrayBuffer(value, view, idx) {
-        if (value < this.TWO_POWER_31 && value >= -this.TWO_POWER_31) for (let index = idx; index < idx + 8; index++) view.setUint8(index, value % 256), 
-        value >>= 8; else {
-            let big = BigInt(value);
-            for (let index = idx; index < idx + 8; index++) view.setUint8(index, Number(big % BigInt(256))), 
-            big >>= BigInt(8);
-        }
-    }
-    static uint8ArrayToHex(uint8Array) {
-        return Array.from(uint8Array, (function(byte) {
-            return ("0" + (255 & byte).toString(16)).slice(-2);
-        })).join("");
-    }
-    static parseRangeHeader(rangeHeader) {
-        if ("string" == typeof rangeHeader) {
-            const ranges = rangeParser_1(1 / 0, rangeHeader);
-            if ("number" != typeof ranges && "bytes" === ranges.type && 1 === ranges.length) return ranges[0];
-            throw new Error("Invalid range format!!");
-        }
-        throw new Error("Range header should be string!!");
-    }
-    static getURLByParts(url) {
-        const slashPos = url.lastIndexOf("/");
-        return {
-            basedir: url.substring(0, slashPos),
-            filename: url.substring(slashPos + 1)
-        };
-    }
-    static async streamToUint8Array(stream, size) {
-        const buffer = new ArrayBuffer(size), arr = new Uint8Array(buffer);
-        let currentPos = 0;
-        return await stream.pipeTo(new WritableStream({
-            write(chunk) {
-                arr.set(chunk, currentPos), currentPos += chunk.length;
-            }
-        })), arr;
-    }
-    static async buildKey(keys) {
-        let key = "";
-        for (const k of keys) k instanceof Uint8Array ? key += Util.uint8ArrayToHex(k) : key += "string" != typeof k ? JSON.stringify(k) : k.trim();
-        const hashBuf = await crypto.subtle.digest("SHA-256", (new TextEncoder$1).encode(key));
-        return Util.uint8ArrayToHex(new Uint8Array(hashBuf));
-    }
+function isEmptyString(str) {
+    return str instanceof Uint8Array ? !str || 0 === str.length : "string" != typeof str || (!str || 0 === str.trim().length);
 }
 
-Util.TWO_POWER_31 = 2147483648, Util.big0 = BigInt(0), Util.big1 = BigInt(1), Util.big8 = BigInt(8);
+function uint8ArrayToHex(uint8Array) {
+    return Array.from(uint8Array, (function(byte) {
+        return ("0" + (255 & byte).toString(16)).slice(-2);
+    })).join("");
+}
 
-class IrdetoAlgorithm {
-    static async generateTmid(wmid, wmopid, wmidfmt, wmpatlen, secretKey) {
-        IrdetoAlgorithm.validateIrdetoArguments(wmpatlen, wmopid, secretKey);
-        const wmidSHA1 = await IrdetoAlgorithm.calculateSHA1(wmid, wmidfmt), iv = IrdetoAlgorithm.calculateIV(wmopid), tmidSize = wmpatlen / 8, tmidArr = new Uint8Array(tmidSize);
-        for (let i = 0; i < tmidSize; i++) tmidArr[i] = wmidSHA1[i % wmidSHA1.byteLength];
-        try {
-            const tmidArrCopy = new Uint8Array(tmidSize);
-            for (let i = tmidSize / 16 - 1, j = 0; i >= 0; i--) {
-                const offset = 16 * i, bufBlock = tmidArr.slice(offset, offset + 16);
-                tmidArrCopy.set(bufBlock, j), j += 16;
-            }
-            const importedKey = await crypto.subtle.importKey("raw", base16.decode(secretKey, "Uint8Array").buffer, {
-                name: "AES-CBC",
-                length: 128
-            }, !1, [ "encrypt" ]), out = await crypto.subtle.encrypt({
-                name: "AES-CBC",
-                length: 128,
-                iv: new Uint8Array(iv.buffer)
-            }, importedKey, tmidArrCopy.buffer), data = new Uint8Array(out.slice(0, out.byteLength - 16)), tmidArrReve = new Uint8Array(tmidSize);
-            for (let i = tmidSize / 16 - 1, j = 0; i >= 0; i--) {
-                const offset = 16 * i, bufBlock = data.slice(offset, offset + 16);
-                tmidArrReve.set(bufBlock, j), j += 16;
-            }
-            return Util.uint8ArrayToHex(tmidArrReve);
-        } catch (error) {
-            throw new Error(`Irdeto: failed to generate tmid due to ${error.message}`);
-        }
-    }
-    static validateIrdetoArguments(wmpatlen, wmopid, secretKey) {
-        if (wmpatlen % 128 != 0) throw new Error("Irdeto: Invalid wmpatlen, it must be multiply of 128");
-        if (wmopid < IrdetoAlgorithm.MIN_OPERATOR_ID || wmopid > IrdetoAlgorithm.MAX_OPERATOR_ID) throw new Error("Irdeto: Invalid wmopid, it must be between 1 and 511");
-        if (wmpatlen < IrdetoAlgorithm.MIN_TMID_LENGTH || wmpatlen > IrdetoAlgorithm.MAX_TMID_LENGTH) throw new Error("Irdeto: Invalid wmpatlen, it must be between 128 and 4096.");
-        if (32 != secretKey.length) throw new Error("Irdeto: secretKey is not correctly hex encoded");
-    }
-    static calculateIV(wmoid) {
-        try {
-            const ab16 = new ArrayBuffer(16), iv = new DataView(ab16);
-            return Util.numberToArrayBuffer(wmoid, iv, 0), Util.numberToArrayBuffer(wmoid, iv, 8), 
-            new Uint8Array(iv.buffer);
-        } catch (err) {
-            throw new Error(`Irdeto: failed to calculate initalization vector due to ${err.message}`);
-        }
-    }
-    static async calculateSHA1(wmid, wmidfmt) {
-        if ("string" == typeof wmid) {
-            const data = (new TextEncoder$1).encode(wmid), key2DigestBuf = await crypto.subtle.digest("SHA-1", data);
-            return new Uint8Array(key2DigestBuf);
-        }
-        if ("number" == typeof wmid && "uint" === wmidfmt) {
-            const ab8 = new ArrayBuffer(8), bufView = new DataView(ab8);
-            Util.numberToArrayBuffer(wmid, bufView, 0);
-            const key2DigestBuf = await crypto.subtle.digest("SHA-1", bufView.buffer);
-            return new Uint8Array(key2DigestBuf);
-        }
-        throw new Error("Irdeto: invalid wmid and wmidfmt, type doesnt match");
-    }
+async function buildKey(keys) {
+    let key = "";
+    for (const k of keys) k instanceof Uint8Array ? key += uint8ArrayToHex(k) : key += "string" != typeof k ? JSON.stringify(k) : k.trim();
+    const hashBuf = await crypto.subtle.digest("SHA-256", (new TextEncoder$1).encode(key));
+    return uint8ArrayToHex(new Uint8Array(hashBuf));
 }
 
 let decoder, src, srcEnd;
-
-IrdetoAlgorithm.MAX_OPERATOR_ID = 511, IrdetoAlgorithm.MIN_OPERATOR_ID = 1, IrdetoAlgorithm.MAX_TMID_LENGTH = 4096, 
-IrdetoAlgorithm.MIN_TMID_LENGTH = 128;
 
 try {
     decoder = new TextDecoder;
@@ -1485,7 +1392,7 @@ class JWTValidator {
         }
         if (!(null === (_b = this.algorithms) || void 0 === _b ? void 0 : _b.includes(jwtHeader.alg.toUpperCase()))) throw new Error(`${jwtHeader.alg} is not supported at the moment`);
         for (const cryptoKey of keys) {
-            if (await this.validateSignature(jwtParts, jwtHeader.alg.toUpperCase(), cryptoKey)) return {
+            if (await this.validateSignature(base64JWTToken, jwtParts, jwtHeader.alg.toUpperCase(), cryptoKey)) return {
                 header: jwtHeader,
                 payload: jwtPayload
             };
@@ -1501,39 +1408,39 @@ class JWTValidator {
         if (void 0 === this.jwtOptions.allowUnsecuredToken) this.jwtOptions.allowUnsecuredToken = !1; else if ("boolean" != typeof this.jwtOptions.allowUnsecuredToken) throw new Error("Invalid jwtOptions: allowUnsecuredToken must be boolean");
         if (void 0 === this.jwtOptions.clockTolerance) this.jwtOptions.clockTolerance = 60; else if ("number" != typeof this.jwtOptions.clockTolerance) throw new Error("Invalid jwtOptions: clockTimestamp must be number");
     }
-    async validateSignature(jwtParts, alg, cryptoKey) {
+    async validateSignature(base64JWTToken, jwtParts, alg, cryptoKey) {
         switch (alg) {
           case "RS512":
           case "RS384":
           case "RS256":
             return await crypto.subtle.verify({
                 name: "RSASSA-PKCS1-v1_5"
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "HS512":
           case "HS384":
           case "HS256":
             return await crypto.subtle.verify({
                 name: "HMAC"
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "PS512":
             return await crypto.subtle.verify({
                 name: "RSA-PSS",
                 saltLength: 64
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "PS384":
             return await crypto.subtle.verify({
                 name: "RSA-PSS",
                 saltLength: 48
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "PS256":
             return await crypto.subtle.verify({
                 name: "RSA-PSS",
                 saltLength: 32
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "ES512":
             return await crypto.subtle.verify({
@@ -1541,7 +1448,7 @@ class JWTValidator {
                 hash: {
                     name: "SHA-512"
                 }
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "ES384":
             return await crypto.subtle.verify({
@@ -1549,7 +1456,7 @@ class JWTValidator {
                 hash: {
                     name: "SHA-384"
                 }
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "ES256":
             return await crypto.subtle.verify({
@@ -1557,7 +1464,7 @@ class JWTValidator {
                 hash: {
                     name: "SHA-256"
                 }
-            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(`${jwtParts[0]}.${jwtParts[1]}`));
+            }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder$1).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           default:
             throw new Error(`${alg} is not supported at the moment`);
@@ -1913,22 +1820,22 @@ class Watermarking {
     }
     async validateShortToken(authToken, keys) {
         if ("string" != typeof authToken) throw new Error("Invalid token type, expected string!");
-        if (Util.isEmptyString(authToken)) throw new Error("Token cannot be empty!");
+        if (isEmptyString(authToken)) throw new Error("Token cannot be empty!");
         if (0 == keys.length || !keys.every((item => "string" == typeof item && item.trim().length > 0))) throw new Error("Invalid keys type, expected array of hex encoded string!");
         const tokenParts = authToken.split(".");
         if (4 !== tokenParts.length) throw new Error("Token malformed: invalid short token format, expected token with four sets of base64url encoded fields joined by a period ‘.’!");
-        const cacheKey = await Util.buildKey([ authToken ].concat(keys)), v = Cache.getShortToken(cacheKey), clockTimestamp = Math.floor(Date.now() / 1e3);
+        const cacheKey = await buildKey([ authToken ].concat(keys)), v = Cache.getShortToken(cacheKey), clockTimestamp = Math.floor(Date.now() / 1e3);
         if (v) {
             if (clockTimestamp > v.exp + (this.wmOptions.clockTolerance || 0)) throw new Error("Token expired!");
             return v;
         }
-        const exp = parseInt(Util.uint8ArrayToHex(base64url.decode(tokenParts[0], "Uint8Array")), 16);
+        const exp = parseInt(uint8ArrayToHex(base64url.decode(tokenParts[0], "Uint8Array")), 16);
         if (clockTimestamp > exp + (this.wmOptions.clockTolerance || 0)) throw new Error("Token expired!");
-        const title = base64url.decode(tokenParts[1], "String"), wmid = parseInt(Util.uint8ArrayToHex(base64url.decode(tokenParts[2], "Uint8Array")), 16), signHex = Util.uint8ArrayToHex(base64url.decode(tokenParts[3], "Uint8Array"));
+        const title = base64url.decode(tokenParts[1], "String"), wmid = parseInt(uint8ArrayToHex(base64url.decode(tokenParts[2], "Uint8Array")), 16), signHex = uint8ArrayToHex(base64url.decode(tokenParts[3], "Uint8Array"));
         let isTokenVerified = !1;
         for (const k of keys) {
             const signature = sha256.exports.hmac(base16.decode(k, "Uint8Array"), (new TextEncoder$1).encode(`${tokenParts[0]}.${tokenParts[1]}.${tokenParts[2]}`));
-            if (Util.uint8ArrayToHex(new Uint8Array(signature)).substring(0, 30) === signHex) {
+            if (uint8ArrayToHex(new Uint8Array(signature)).substring(0, 30) === signHex) {
                 isTokenVerified = !0;
                 break;
             }
@@ -1946,9 +1853,9 @@ class Watermarking {
         }), shortToken;
     }
     async validateToken(authToken, keys) {
-        if (!("string" == typeof authToken && !Util.isEmptyString(authToken) || authToken instanceof Uint8Array && authToken.length > 0)) throw new Error("Invalid token type, expected non empty string or non empty Uint8Array!");
+        if (!("string" == typeof authToken && !isEmptyString(authToken) || authToken instanceof Uint8Array && authToken.length > 0)) throw new Error("Invalid token type, expected non empty string or non empty Uint8Array!");
         if (!Array.isArray(keys) || 0 == keys.length || !keys.every((item => "string" == typeof item && item.trim().length > 0))) throw new Error("Invalid keys type, expected array of hex or pem encoded strings!");
-        const wmJSON = {}, cacheKey = await Util.buildKey([ authToken ].concat(keys)), v = Cache.getToken(cacheKey);
+        const wmJSON = {}, cacheKey = await buildKey([ authToken ].concat(keys)), v = Cache.getToken(cacheKey);
         if (v) return wmJSON.header = v.header, wmJSON.payload = v.payload, this.validateClaims(wmJSON.payload), 
         wmJSON;
         if (this.wmOptions.tokenType === TokenType.CWT) {
@@ -2009,16 +1916,29 @@ class Watermarking {
         if (1 === payload.wmidtyp) {
             if ("irdeto" === payload.wmvnd) {
                 let position, tmid;
-                const {basedir, filename} = Util.getURLByParts(path), sidecarObject = await this.getSideCarObject(basedir, filename);
+                const {basedir, filename} = function(url) {
+                    const slashPos = url.lastIndexOf("/");
+                    return {
+                        basedir: url.substring(0, slashPos),
+                        filename: url.substring(slashPos + 1)
+                    };
+                }(path), sidecarObject = await this.getSideCarObject(basedir, filename);
                 if (rangeHeader) {
-                    const range = Util.parseRangeHeader(rangeHeader);
+                    const range = function(rangeHeader) {
+                        if ("string" == typeof rangeHeader) {
+                            const ranges = rangeParser_1(1 / 0, rangeHeader);
+                            if ("number" != typeof ranges && "bytes" === ranges.type && 1 === ranges.length) return ranges[0];
+                            throw new Error("Invalid range format!!");
+                        }
+                        throw new Error("Range header should be string!!");
+                    }(rangeHeader);
                     position = CborParser.findPosition(sidecarObject, BigInt(range.start), BigInt(range.end));
                 } else position = CborParser.findPosition(sidecarObject, BigInt(-1), BigInt(-1), filename);
                 if (void 0 === position) throw new Error("Unable to find position from the side car file!");
                 logger.log("D:pos: %s", position);
                 let subPath, tmidVariant = 0;
                 if (-1 == position) subPath = this.getSubVariantPath(variantSubPath, tmidVariant); else {
-                    const cacheKey = await Util.buildKey([ payload, secretKey ]);
+                    const cacheKey = await buildKey([ payload, secretKey ]);
                     tmid = Cache.getTmid(cacheKey), tmid || (tmid = await IrdetoAlgorithm.generateTmid(payload.wmid, payload.wmopid, payload.wmidfmt, payload.wmpatlen, secretKey), 
                     Cache.storeTmid(cacheKey, tmid));
                     const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
@@ -2035,7 +1955,15 @@ class Watermarking {
         if (!baseDir || !filename) throw new Error("Unable to get side car object for the request, invalid url!");
         const paceInfoResponse = await httpRequest(`${baseDir}/${Watermarking.WMPACEINFO_DIR}/${filename}`), contentLength = paceInfoResponse.getHeader("Content-Length");
         if (null == contentLength || 0 === contentLength.length) throw new Error("Side car processing failed due to no content-length response header found!");
-        const paceinfoLength = parseInt(contentLength[0]), dataArr = await Util.streamToUint8Array(paceInfoResponse.body, paceinfoLength);
+        const paceinfoLength = parseInt(contentLength[0]), dataArr = await async function(stream, size) {
+            const buffer = new ArrayBuffer(size), arr = new Uint8Array(buffer);
+            let currentPos = 0;
+            return await stream.pipeTo(new WritableStream({
+                write(chunk) {
+                    arr.set(chunk, currentPos), currentPos += chunk.length;
+                }
+            })), arr;
+        }(paceInfoResponse.body, paceinfoLength);
         return CborParser.decode(dataArr);
     }
     getSubVariantPath(variantSubPaths, tmidVariant) {

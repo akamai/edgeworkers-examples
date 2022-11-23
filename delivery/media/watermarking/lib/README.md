@@ -6,7 +6,7 @@ The Watermarking module exposes API's for supporting forensic watermarking for O
 - Validation of JWT based WM token signed using HS256/RS256.
 - Validation of CWT based WM token signed using HS256.
 - Validation of short WM tokens signed using HS256.
-- Support for irdeto based indirect watermarking flow as mentioned [here](https://docs.google.com/document/d/1N85WZ-LHlGhMSbyrCY7yfOdwnsQ7Es8t/edit#)
+- Support for irdeto based indirect watermarking flow.
 - Support byterange or discrete segment request.
 
 

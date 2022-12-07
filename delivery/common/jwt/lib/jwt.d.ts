@@ -1,3 +1,5 @@
+/** @preserve @version 1.0.0 */
+
 /**
  * JWTJson class to hold JWT header and payload in JSON format
  */

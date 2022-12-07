@@ -1,3 +1,4 @@
+/** @preserve @version 1.0.0 */
 import { crypto } from "crypto";
 
 import { base64url, TextEncoder } from "encoding";

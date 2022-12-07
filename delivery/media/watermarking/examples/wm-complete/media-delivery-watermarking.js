@@ -1,12 +1,11 @@
+/** @preserve @version 1.0.0 */
 import { WritableStream } from "streams";
 
 import { crypto, pem2ab } from "crypto";
 
-import { TextEncoder as TextEncoder$1, base64url, base16, atob } from "encoding";
+import { TextEncoder as TextEncoder$1, base64url, base16 } from "encoding";
 
 import { logger } from "log";
-
-import { IrdetoAlgorithm } from "irdeto-algorithm.js";
 
 import { httpRequest } from "http-request";
 
@@ -73,10 +72,6 @@ function sortByRangeIndex(a, b) {
 
 function sortByRangeStart(a, b) {
     return a.start - b.start;
-}
-
-function isEmptyString(str) {
-    return str instanceof Uint8Array ? !str || 0 === str.length : "string" != typeof str || (!str || 0 === str.trim().length);
 }
 
 function uint8ArrayToHex(uint8Array) {
@@ -1660,214 +1655,35 @@ class Cache {
 Cache.CACHE_ENTRIES = 150, Cache.tokenCache = new lru.exports.LRUMap(Cache.CACHE_ENTRIES), 
 Cache.tmidCache = new lru.exports.LRUMap(Cache.CACHE_ENTRIES);
 
-var module, sha256 = {
-    exports: {}
-};
-
-module = sha256, function(root, factory) {
-    var exports = {};
-    !function(exports) {
-        exports.__esModule = !0, exports.digestLength = 32, exports.blockSize = 64;
-        var K = new Uint32Array([ 1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221, 3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580, 3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986, 2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711, 113926993, 338241895, 666307205, 773529912, 1294757372, 1396182291, 1695183700, 1986661051, 2177026350, 2456956037, 2730485921, 2820302411, 3259730800, 3345764771, 3516065817, 3600352804, 4094571909, 275423344, 430227734, 506948616, 659060556, 883997877, 958139571, 1322822218, 1537002063, 1747873779, 1955562222, 2024104815, 2227730452, 2361852424, 2428436474, 2756734187, 3204031479, 3329325298 ]);
-        function hashBlocks(w, v, p, pos, len) {
-            for (var a, b, c, d, e, f, g, h, u, i, j, t1, t2; len >= 64; ) {
-                for (a = v[0], b = v[1], c = v[2], d = v[3], e = v[4], f = v[5], g = v[6], h = v[7], 
-                i = 0; i < 16; i++) j = pos + 4 * i, w[i] = (255 & p[j]) << 24 | (255 & p[j + 1]) << 16 | (255 & p[j + 2]) << 8 | 255 & p[j + 3];
-                for (i = 16; i < 64; i++) t1 = ((u = w[i - 2]) >>> 17 | u << 15) ^ (u >>> 19 | u << 13) ^ u >>> 10, 
-                t2 = ((u = w[i - 15]) >>> 7 | u << 25) ^ (u >>> 18 | u << 14) ^ u >>> 3, w[i] = (t1 + w[i - 7] | 0) + (t2 + w[i - 16] | 0);
-                for (i = 0; i < 64; i++) t1 = (((e >>> 6 | e << 26) ^ (e >>> 11 | e << 21) ^ (e >>> 25 | e << 7)) + (e & f ^ ~e & g) | 0) + (h + (K[i] + w[i] | 0) | 0) | 0, 
-                t2 = ((a >>> 2 | a << 30) ^ (a >>> 13 | a << 19) ^ (a >>> 22 | a << 10)) + (a & b ^ a & c ^ b & c) | 0, 
-                h = g, g = f, f = e, e = d + t1 | 0, d = c, c = b, b = a, a = t1 + t2 | 0;
-                v[0] += a, v[1] += b, v[2] += c, v[3] += d, v[4] += e, v[5] += f, v[6] += g, v[7] += h, 
-                pos += 64, len -= 64;
-            }
-            return pos;
-        }
-        var Hash = function() {
-            function Hash() {
-                this.digestLength = exports.digestLength, this.blockSize = exports.blockSize, this.state = new Int32Array(8), 
-                this.temp = new Int32Array(64), this.buffer = new Uint8Array(128), this.bufferLength = 0, 
-                this.bytesHashed = 0, this.finished = !1, this.reset();
-            }
-            return Hash.prototype.reset = function() {
-                return this.state[0] = 1779033703, this.state[1] = 3144134277, this.state[2] = 1013904242, 
-                this.state[3] = 2773480762, this.state[4] = 1359893119, this.state[5] = 2600822924, 
-                this.state[6] = 528734635, this.state[7] = 1541459225, this.bufferLength = 0, this.bytesHashed = 0, 
-                this.finished = !1, this;
-            }, Hash.prototype.clean = function() {
-                for (var i = 0; i < this.buffer.length; i++) this.buffer[i] = 0;
-                for (i = 0; i < this.temp.length; i++) this.temp[i] = 0;
-                this.reset();
-            }, Hash.prototype.update = function(data, dataLength) {
-                if (void 0 === dataLength && (dataLength = data.length), this.finished) throw new Error("SHA256: can't update because hash was finished.");
-                var dataPos = 0;
-                if (this.bytesHashed += dataLength, this.bufferLength > 0) {
-                    for (;this.bufferLength < 64 && dataLength > 0; ) this.buffer[this.bufferLength++] = data[dataPos++], 
-                    dataLength--;
-                    64 === this.bufferLength && (hashBlocks(this.temp, this.state, this.buffer, 0, 64), 
-                    this.bufferLength = 0);
-                }
-                for (dataLength >= 64 && (dataPos = hashBlocks(this.temp, this.state, data, dataPos, dataLength), 
-                dataLength %= 64); dataLength > 0; ) this.buffer[this.bufferLength++] = data[dataPos++], 
-                dataLength--;
-                return this;
-            }, Hash.prototype.finish = function(out) {
-                if (!this.finished) {
-                    var bytesHashed = this.bytesHashed, left = this.bufferLength, bitLenHi = bytesHashed / 536870912 | 0, bitLenLo = bytesHashed << 3, padLength = bytesHashed % 64 < 56 ? 64 : 128;
-                    this.buffer[left] = 128;
-                    for (var i = left + 1; i < padLength - 8; i++) this.buffer[i] = 0;
-                    this.buffer[padLength - 8] = bitLenHi >>> 24 & 255, this.buffer[padLength - 7] = bitLenHi >>> 16 & 255, 
-                    this.buffer[padLength - 6] = bitLenHi >>> 8 & 255, this.buffer[padLength - 5] = bitLenHi >>> 0 & 255, 
-                    this.buffer[padLength - 4] = bitLenLo >>> 24 & 255, this.buffer[padLength - 3] = bitLenLo >>> 16 & 255, 
-                    this.buffer[padLength - 2] = bitLenLo >>> 8 & 255, this.buffer[padLength - 1] = bitLenLo >>> 0 & 255, 
-                    hashBlocks(this.temp, this.state, this.buffer, 0, padLength), this.finished = !0;
-                }
-                for (i = 0; i < 8; i++) out[4 * i + 0] = this.state[i] >>> 24 & 255, out[4 * i + 1] = this.state[i] >>> 16 & 255, 
-                out[4 * i + 2] = this.state[i] >>> 8 & 255, out[4 * i + 3] = this.state[i] >>> 0 & 255;
-                return this;
-            }, Hash.prototype.digest = function() {
-                var out = new Uint8Array(this.digestLength);
-                return this.finish(out), out;
-            }, Hash.prototype._saveState = function(out) {
-                for (var i = 0; i < this.state.length; i++) out[i] = this.state[i];
-            }, Hash.prototype._restoreState = function(from, bytesHashed) {
-                for (var i = 0; i < this.state.length; i++) this.state[i] = from[i];
-                this.bytesHashed = bytesHashed, this.finished = !1, this.bufferLength = 0;
-            }, Hash;
-        }();
-        exports.Hash = Hash;
-        var HMAC = function() {
-            function HMAC(key) {
-                this.inner = new Hash, this.outer = new Hash, this.blockSize = this.inner.blockSize, 
-                this.digestLength = this.inner.digestLength;
-                var pad = new Uint8Array(this.blockSize);
-                if (key.length > this.blockSize) (new Hash).update(key).finish(pad).clean(); else for (var i = 0; i < key.length; i++) pad[i] = key[i];
-                for (i = 0; i < pad.length; i++) pad[i] ^= 54;
-                for (this.inner.update(pad), i = 0; i < pad.length; i++) pad[i] ^= 106;
-                for (this.outer.update(pad), this.istate = new Uint32Array(8), this.ostate = new Uint32Array(8), 
-                this.inner._saveState(this.istate), this.outer._saveState(this.ostate), i = 0; i < pad.length; i++) pad[i] = 0;
-            }
-            return HMAC.prototype.reset = function() {
-                return this.inner._restoreState(this.istate, this.inner.blockSize), this.outer._restoreState(this.ostate, this.outer.blockSize), 
-                this;
-            }, HMAC.prototype.clean = function() {
-                for (var i = 0; i < this.istate.length; i++) this.ostate[i] = this.istate[i] = 0;
-                this.inner.clean(), this.outer.clean();
-            }, HMAC.prototype.update = function(data) {
-                return this.inner.update(data), this;
-            }, HMAC.prototype.finish = function(out) {
-                return this.outer.finished ? this.outer.finish(out) : (this.inner.finish(out), this.outer.update(out, this.digestLength).finish(out)), 
-                this;
-            }, HMAC.prototype.digest = function() {
-                var out = new Uint8Array(this.digestLength);
-                return this.finish(out), out;
-            }, HMAC;
-        }();
-        function hash(data) {
-            var h = (new Hash).update(data), digest = h.digest();
-            return h.clean(), digest;
-        }
-        function hmac(key, data) {
-            var h = new HMAC(key).update(data), digest = h.digest();
-            return h.clean(), digest;
-        }
-        function fillBuffer(buffer, hmac, info, counter) {
-            var num = counter[0];
-            if (0 === num) throw new Error("hkdf: cannot expand more");
-            hmac.reset(), num > 1 && hmac.update(buffer), info && hmac.update(info), hmac.update(counter), 
-            hmac.finish(buffer), counter[0]++;
-        }
-        exports.HMAC = HMAC, exports.hash = hash, exports.default = hash, exports.hmac = hmac;
-        var hkdfSalt = new Uint8Array(exports.digestLength);
-        function hkdf(key, salt, info, length) {
-            void 0 === salt && (salt = hkdfSalt), void 0 === length && (length = 32);
-            for (var counter = new Uint8Array([ 1 ]), okm = hmac(salt, key), hmac_ = new HMAC(okm), buffer = new Uint8Array(hmac_.digestLength), bufpos = buffer.length, out = new Uint8Array(length), i = 0; i < length; i++) bufpos === buffer.length && (fillBuffer(buffer, hmac_, info, counter), 
-            bufpos = 0), out[i] = buffer[bufpos++];
-            return hmac_.clean(), buffer.fill(0), counter.fill(0), out;
-        }
-        function pbkdf2(password, salt, iterations, dkLen) {
-            for (var prf = new HMAC(password), len = prf.digestLength, ctr = new Uint8Array(4), t = new Uint8Array(len), u = new Uint8Array(len), dk = new Uint8Array(dkLen), i = 0; i * len < dkLen; i++) {
-                var c = i + 1;
-                ctr[0] = c >>> 24 & 255, ctr[1] = c >>> 16 & 255, ctr[2] = c >>> 8 & 255, ctr[3] = c >>> 0 & 255, 
-                prf.reset(), prf.update(salt), prf.update(ctr), prf.finish(u);
-                for (var j = 0; j < len; j++) t[j] = u[j];
-                for (j = 2; j <= iterations; j++) {
-                    prf.reset(), prf.update(u).finish(u);
-                    for (var k = 0; k < len; k++) t[k] ^= u[k];
-                }
-                for (j = 0; j < len && i * len + j < dkLen; j++) dk[i * len + j] = t[j];
-            }
-            for (i = 0; i < len; i++) t[i] = u[i] = 0;
-            for (i = 0; i < 4; i++) ctr[i] = 0;
-            return prf.clean(), dk;
-        }
-        exports.hkdf = hkdf, exports.pbkdf2 = pbkdf2;
-    }(exports);
-    var sha256 = exports.default;
-    for (var k in exports) sha256[k] = exports[k];
-    module.exports = sha256;
-}();
-
 class Watermarking {
-    constructor(wmOptions) {
-        if (this.wmOptions = wmOptions || {
+    constructor(wmOptions, vendorAlgorithms) {
+        if (this.cryptoKCache = new lru.exports.LRUMap(10), this.wmOptions = wmOptions || {
             tokenType: TokenType.CWT,
             validateWMClaims: !0
         }, this.wmOptions.tokenType = void 0 === this.wmOptions.tokenType ? TokenType.CWT : this.wmOptions.tokenType, 
         this.wmOptions.validateWMClaims = void 0 === this.wmOptions.validateWMClaims || this.wmOptions.validateWMClaims, 
         ![ TokenType.CWT, TokenType.JWT ].includes(this.wmOptions.tokenType)) throw new Error("Invalid token type! Only cwt or jwt auth tokens are supported!");
-        this.wmOptions.tokenType === TokenType.CWT ? this.cwtValidator = new CWTValidator(wmOptions) : this.jwtValidator = new JWTValidator(wmOptions);
+        this.wmOptions.tokenType === TokenType.CWT ? this.cwtValidator = new CWTValidator(wmOptions) : this.jwtValidator = new JWTValidator(wmOptions), 
+        this.vendorAlgorithms = vendorAlgorithms || new Map;
     }
-    async validateShortToken(authToken, keys) {
-        if ("string" != typeof authToken) throw new Error("Invalid token type, expected string!");
-        if (isEmptyString(authToken)) throw new Error("Token cannot be empty!");
-        if (0 == keys.length || !keys.every((item => "string" == typeof item && item.trim().length > 0))) throw new Error("Invalid keys type, expected array of hex encoded string!");
-        const tokenParts = authToken.split(".");
-        if (4 !== tokenParts.length) throw new Error("Token malformed: invalid short token format, expected token with four sets of base64url encoded fields joined by a period ‘.’!");
-        const cacheKey = await buildKey([ authToken ].concat(keys)), v = Cache.getShortToken(cacheKey), clockTimestamp = Math.floor(Date.now() / 1e3);
-        if (v) {
-            if (clockTimestamp > v.exp + (this.wmOptions.clockTolerance || 0)) throw new Error("Token expired!");
-            return v;
-        }
-        const exp = parseInt(uint8ArrayToHex(base64url.decode(tokenParts[0], "Uint8Array")), 16);
-        if (clockTimestamp > exp + (this.wmOptions.clockTolerance || 0)) throw new Error("Token expired!");
-        const title = base64url.decode(tokenParts[1], "String"), wmid = parseInt(uint8ArrayToHex(base64url.decode(tokenParts[2], "Uint8Array")), 16), signHex = uint8ArrayToHex(base64url.decode(tokenParts[3], "Uint8Array"));
-        let isTokenVerified = !1;
-        for (const k of keys) {
-            const signature = sha256.exports.hmac(base16.decode(k, "Uint8Array"), (new TextEncoder$1).encode(`${tokenParts[0]}.${tokenParts[1]}.${tokenParts[2]}`));
-            if (uint8ArrayToHex(new Uint8Array(signature)).substring(0, 30) === signHex) {
-                isTokenVerified = !0;
-                break;
-            }
-        }
-        if (!isTokenVerified) throw new Error("Token signature verification failed!");
-        const shortToken = {
-            exp,
-            wmid,
-            title
-        };
-        return Cache.storeShortToken(cacheKey, {
-            exp,
-            wmid,
-            title
-        }), shortToken;
-    }
-    async validateToken(authToken, keys) {
-        if (!("string" == typeof authToken && !isEmptyString(authToken) || authToken instanceof Uint8Array && authToken.length > 0)) throw new Error("Invalid token type, expected non empty string or non empty Uint8Array!");
+    async validateToken(authToken, keys, keyAlg) {
+        if (!("string" == typeof authToken && (str = authToken, !(str instanceof Uint8Array ? !str || 0 === str.length : "string" != typeof str || !str || 0 === str.trim().length)) || authToken instanceof Uint8Array && authToken.length > 0)) throw new Error("Invalid token type, expected non empty string or non empty Uint8Array!");
+        var str;
         if (!Array.isArray(keys) || 0 == keys.length || !keys.every((item => "string" == typeof item && item.trim().length > 0))) throw new Error("Invalid keys type, expected array of hex or pem encoded strings!");
         const wmJSON = {}, cacheKey = await buildKey([ authToken ].concat(keys)), v = Cache.getToken(cacheKey);
         if (v) return wmJSON.header = v.header, wmJSON.payload = v.payload, this.validateClaims(wmJSON.payload), 
         wmJSON;
+        const cryptoKeys = await this.importCryptoKeys(keys, keyAlg);
         if (this.wmOptions.tokenType === TokenType.CWT) {
             let authTokenBuf;
             authTokenBuf = "string" == typeof authToken ? base16.decode(authToken, "Uint8Array") : authToken;
-            const cryptoKeys = await this.importCryptoKeys(keys, authToken), cwtJSON = await this.cwtValidator.validate(authTokenBuf, cryptoKeys);
+            const cwtJSON = await this.cwtValidator.validate(authTokenBuf, cryptoKeys);
             wmJSON.header = cwtJSON.header, wmJSON.payload = CWTUtil.claimsTranslate(Object.fromEntries(new Map(cwtJSON.payload)), claimsLabelMap);
         } else {
             if (this.wmOptions.tokenType !== TokenType.JWT) throw new Error("Invalid token type! Only cwt or jwt auth tokens are supported!");
             {
                 if ("string" != typeof authToken) throw new Error("JWT token must be base64 url encoded string!");
-                const cryptoKeys = await this.importCryptoKeys(keys, authToken), jsonJWT = await this.jwtValidator.validate(authToken, cryptoKeys);
+                const jsonJWT = await this.jwtValidator.validate(authToken, cryptoKeys);
                 wmJSON.header = jsonJWT.header, wmJSON.payload = jsonJWT.payload;
             }
         }
@@ -1939,8 +1755,11 @@ class Watermarking {
                 let subPath, tmidVariant = 0;
                 if (-1 == position) subPath = this.getSubVariantPath(variantSubPath, tmidVariant); else {
                     const cacheKey = await buildKey([ payload, secretKey ]);
-                    tmid = Cache.getTmid(cacheKey), tmid || (tmid = await IrdetoAlgorithm.generateTmid(payload.wmid, payload.wmopid, payload.wmidfmt, payload.wmpatlen, secretKey), 
-                    Cache.storeTmid(cacheKey, tmid));
+                    if (tmid = Cache.getTmid(cacheKey), !tmid) {
+                        const vendorAlgorithm = this.vendorAlgorithms.get(payload.wmvnd);
+                        if (!vendorAlgorithm) throw new Error("Unable to exeute irdeto algorithm, Kindly provide irdeto algorithm implementation!");
+                        tmid = await vendorAlgorithm.generateTmid(payload, secretKey), Cache.storeTmid(cacheKey, tmid);
+                    }
                     const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
                     tmidVariant = 0 == (parseInt(tmidChar, 16) & tmidBitPos) ? 0 : 1, subPath = this.getSubVariantPath(variantSubPath, tmidVariant);
                 }
@@ -1994,136 +1813,131 @@ class Watermarking {
             if (wmPayload.nbf > clockTimestamp + (this.wmOptions.clockTolerance || 0)) throw new Error(`${this.wmOptions.tokenType} not active`);
         }
     }
-    async importCryptoKeys(keys, authToken) {
+    async importCryptoKeys(keys, keyAlg) {
         const cryptoKeys = [];
-        if (this.wmOptions.tokenType == TokenType.CWT) for (const key of keys) {
-            const cKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
-                name: "HMAC",
-                hash: "SHA-256"
-            }, !1, [ "verify" ]);
-            cryptoKeys.push(cKey);
-        } else {
-            const jwtParts = authToken.split("."), jwtHBin = atob(jwtParts[0]);
-            switch (JSON.parse(jwtHBin).alg) {
-              case "HS512":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
-                        name: "HMAC",
-                        hash: "SHA-512"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "HS384":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
-                        name: "HMAC",
-                        hash: "SHA-384"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "HS256":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
-                        name: "HMAC",
-                        hash: "SHA-256"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "RS512":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "RSASSA-PKCS1-v1_5",
-                        hash: "SHA-512"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "RS384":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "RSASSA-PKCS1-v1_5",
-                        hash: "SHA-384"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "RS256":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "RSASSA-PKCS1-v1_5",
-                        hash: "SHA-256"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "ES512":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "ECDSA",
-                        namedCurve: "P-521"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "ES384":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "ECDSA",
-                        namedCurve: "P-384"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "ES256":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "ECDSA",
-                        namedCurve: "P-256"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "PS512":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "RSA-PSS",
-                        hash: "SHA-512"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "PS384":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "RSA-PSS",
-                        hash: "SHA-384"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
-                break;
-
-              case "PS256":
-                for (const key of keys) {
-                    const cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
-                        name: "RSA-PSS",
-                        hash: "SHA-256"
-                    }, !1, [ "verify" ]);
-                    cryptoKeys.push(cKey);
-                }
+        switch (keyAlg.toUpperCase()) {
+          case "HS512":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
+                    name: "HMAC",
+                    hash: "SHA-512"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
             }
+            break;
+
+          case "HS384":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
+                    name: "HMAC",
+                    hash: "SHA-384"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "HS256":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("raw", base16.decode(key, "Uint8Array").buffer, {
+                    name: "HMAC",
+                    hash: "SHA-256"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "RS512":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "RSASSA-PKCS1-v1_5",
+                    hash: "SHA-512"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "RS384":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "RSASSA-PKCS1-v1_5",
+                    hash: "SHA-384"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "RS256":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "RSASSA-PKCS1-v1_5",
+                    hash: "SHA-256"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "ES512":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "ECDSA",
+                    namedCurve: "P-521"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "ES384":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "ECDSA",
+                    namedCurve: "P-384"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "ES256":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "ECDSA",
+                    namedCurve: "P-256"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "PS512":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "RSA-PSS",
+                    hash: "SHA-512"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "PS384":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "RSA-PSS",
+                    hash: "SHA-384"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          case "PS256":
+            for (const key of keys) {
+                let cKey = this.cryptoKCache.get(key);
+                cKey || (cKey = await crypto.subtle.importKey("spki", pem2ab(key), {
+                    name: "RSA-PSS",
+                    hash: "SHA-256"
+                }, !1, [ "verify" ]), this.cryptoKCache.set(key, cKey)), cryptoKeys.push(cKey);
+            }
+            break;
+
+          default:
+            throw new Error(`Unable to import ${keyAlg.toUpperCase()} type keys.`);
         }
         return cryptoKeys;
     }

@@ -1,68 +1,43 @@
 import { logger } from 'log';
 import { TokenType, Watermarking} from './media-delivery-watermarking.js';
+//Obtained the required vendor specific code to generate TMID from the vendor
+//Contact our representative to get more infomation on supported vendors.
+import { vendorAlgoritm } from './vendor-algorithm.js';
 
-const watermarking = new Watermarking( { tokenType: TokenType.CWT});
+//Map each vendor specific code with the vendor identifier. This identifier should be same as wmvnd field from the token.
+//In Direct case i.e wmtype=0, this is not required and is handled internally by watermarking module.
+const vendorAlgoritms = new Map();
+//vendorIdentifier should be same as wmvnd claim from watermarking token
+vendorAlgoritms.set('<vendorIdentifier>',vendorAlgorithm);
+
+//CWT Token will be used. Watermarking module also support JWT based token, set TokenType.JWT to enable JWT based tokens.
+//register vendor specic algorithms in watermarking module
+const watermarking = new Watermarking( { tokenType: TokenType.CWT, validateWMClaims: true }, vendorAlgoritms);
 
 const variantSubPath= [{ variant: 0, subPath: 'A' }, { variant: 1, subPath: 'B'}];
 
-//extract token type from URL
-function getTokenType(path) {
-  const paths = path.split('/');
-  for (const p of paths) {
-    if (p.includes('$1$')){
-      return { tokenType: 1, token: p.substring(p.indexOf('$1$')+ 3), filename: paths[paths.length-1]};
-    } else if (p.includes('$2$')){
-      return { tokenType: 2, token: p.substring(p.indexOf('$2$') + 3), filename: paths[paths.length-1]};
-    }
-  }
-  return null;
-}
 
 export async function onClientRequest (request) {
-  
+
   try {
-    let wmJSON, reqPath;
+    let wmJSON = {}, reqPath;
     //hmac verification key used to sign CWT token
     const cwtAuthTokenHmacKey = request.getVariable('PMUSER_CWT_HMAC_KEY');
-    //hmac key used to sign short token
-    const shortTokenHmacKey = request.getVariable('PMUSER_SHORTTOKEN_HMAC_KEY');
-    //irdeto key
-    const secretKey = request.getVariable('PMUSER_IRDETO_KEY');
+    const secretKey = request.getVariable('PMUSER_VENDOR_SECRET_KEY');
     const rangeHeaders = request.getHeader('Range');
     const rangeHeader = rangeHeaders? rangeHeaders[0]: undefined;
-    //Fetch token type details from URL.
-    //Example of short token format: /some/path/$1$<shorttoken>/to/filename.mp4
-    //Example of short token format: /some/path/$2$<longtoken>/to/filename.mp4
-    const token = getTokenType(request.path);
+    //Fetch token from request Auth header.
+    //We are considering CWT based token in this example
+    const token = request.getHeader('Authorization')
     if (token === null) {
       request.respondWith(400, {}, "Failed to obtain token from request URL");
     }
-    //short token validation
-    if (token.tokenType == 1) {
-      reqPath = request.path.replace('$1$' + token.token + '/','');
-      const shorttoken = await watermarking.validateShortToken(token.token,[shortTokenHmacKey]);
-      //set required constants
-      shorttoken['wmidtyp'] = 1;
-      shorttoken['wmvnd'] = 'irdeto';
-      shorttoken['wmopid'] = 40;
-      shorttoken['wmidfmt'] = 'uint';
-      shorttoken['wmpatlen'] = 2048;
-      wmJSON.payload = shorttoken;
-    
-    //Long token validation
-    } else {
-      reqPath = request.path.replace('$2$' + token.token + '/','');
-      //CWT token is assumed to be passed as hex encoded. if not, pass it as binary (i.e Uint8Array) after decoding it appropriating.
-      wmJSON = await watermarking.validateToken(token.token,[cwtAuthTokenHmacKey]);
-    }
-    logger.log('D:reqPath= %s', reqPath);
+    //validate the token
+    wmJSON = await watermarking.validateToken(token.token,[cwtAuthTokenHmacKey], 'HS256');
+    logger.log('D:wmJSON= %o', wmJSON);
     //if request is for media playback
     if (request.path.includes('.mp4') || request.path.includes('.m4a') || request.path.includes('.m3u8') || request.path.includes('.mpd') ){
-      //title check
-      if (token.filename !== wmJSON.payload.title) {
-        request.respondWith(400, {}, 'Filename doesnt match title');
-      }
-      //Request is segment request
+      //Generate watermarking variant path only for video/audio segment request
       if (request.path.includes('.mp4') || request.path.includes('.m4a')) {
         if (rangeHeader) {
           const path = await watermarking.getWMPathWithVariant(reqPath, wmJSON.payload, secretKey, variantSubPath,rangeHeader);

@@ -1,3 +1,5 @@
+/** @preserve @version 1.0.0 */
+
 /**
  * Claim validation depends on integer label in the CWT claims set.
  * If the claims set does not use integer keys then its customer responsibility to handle basic claim validation as required

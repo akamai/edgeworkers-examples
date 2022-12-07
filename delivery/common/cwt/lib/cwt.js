@@ -1,3 +1,4 @@
+/** @preserve @version 1.0.0 */
 import { crypto } from "crypto";
 
 const COSE_Mac0 = 17, COSE_Mac = 97, COSE_Sign = 98, COSE_Sign1 = 18, COSE_Encrypt0 = 16, COSE_Encrypt = 96, coseAlgTags = {

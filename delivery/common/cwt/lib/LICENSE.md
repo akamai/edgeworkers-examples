@@ -198,15 +198,7 @@ Apache License
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
-
-
-Dependency: cbor-x
-Version: 1.4.1
-License: MIT
-License Copyright:
-
-MIT License
+   limitations under the License.</br></br></br>Dependency: cbor-x</br>Version: 1.4.1</br>License: MIT</br>License Copyright:</br></br>MIT License
 
 Copyright (c) 2020 Kris Zyp
 

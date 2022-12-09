@@ -198,15 +198,7 @@ Apache License
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
-
-
-Dependency: range-parser
-Version: 1.2.1
-License: MIT
-License Copyright:
-
-(The MIT License)
+   limitations under the License.</br></br></br>Dependency: range-parser</br>Version: 1.2.1</br>License: MIT</br>License Copyright:</br></br>(The MIT License)
 
 Copyright (c) 2012-2014 TJ Holowaychuk <tj@vision-media.ca>
 Copyright (c) 2015-2016 Douglas Christopher Wilson <doug@somethingdoug.com
@@ -230,12 +222,7 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Dependency: cbor-x
-Version: 1.4.1
-License: MIT
-License Copyright:
-
-MIT License
+Dependency: cbor-x</br>Version: 1.4.1</br>License: MIT</br>License Copyright:</br></br>MIT License
 
 Copyright (c) 2020 Kris Zyp
 

@@ -1730,43 +1730,41 @@ class Watermarking {
         if (rangeHeader && "string" != typeof rangeHeader) throw new Error("Invalid rangeHeader type, expected string!");
         if (0 === payload.wmidtyp) throw new Error("Direct case is not supported at the moment!");
         if (1 === payload.wmidtyp) {
-            if ("irdeto" === payload.wmvnd) {
-                let position, tmid;
-                const {basedir, filename} = function(url) {
-                    const slashPos = url.lastIndexOf("/");
-                    return {
-                        basedir: url.substring(0, slashPos),
-                        filename: url.substring(slashPos + 1)
-                    };
-                }(path), sidecarObject = await this.getSideCarObject(basedir, filename);
-                if (rangeHeader) {
-                    const range = function(rangeHeader) {
-                        if ("string" == typeof rangeHeader) {
-                            const ranges = rangeParser_1(1 / 0, rangeHeader);
-                            if ("number" != typeof ranges && "bytes" === ranges.type && 1 === ranges.length) return ranges[0];
-                            throw new Error("Invalid range format!!");
-                        }
-                        throw new Error("Range header should be string!!");
-                    }(rangeHeader);
-                    position = CborParser.findPosition(sidecarObject, BigInt(range.start), BigInt(range.end));
-                } else position = CborParser.findPosition(sidecarObject, BigInt(-1), BigInt(-1), filename);
-                if (void 0 === position) throw new Error("Unable to find position from the side car file!");
-                logger.log("D:pos: %s", position);
-                let subPath, tmidVariant = 0;
-                if (-1 == position) subPath = this.getSubVariantPath(variantSubPath, tmidVariant); else {
-                    const cacheKey = await buildKey([ payload, secretKey ]);
-                    if (tmid = Cache.getTmid(cacheKey), !tmid) {
-                        const vendorAlgorithm = this.vendorAlgorithms.get(payload.wmvnd);
-                        if (!vendorAlgorithm) throw new Error("Unable to exeute irdeto algorithm, Kindly provide irdeto algorithm implementation!");
-                        tmid = await vendorAlgorithm.generateTmid(payload, secretKey), Cache.storeTmid(cacheKey, tmid);
+            if (!this.vendorAlgorithms.get(payload.wmvnd)) throw new Error(`Unable to find vendor: ${payload.wmvnd} specific algorithm, Kindly provide the algorithm implementation!`);
+            let position, tmid;
+            const {basedir, filename} = function(url) {
+                const slashPos = url.lastIndexOf("/");
+                return {
+                    basedir: url.substring(0, slashPos),
+                    filename: url.substring(slashPos + 1)
+                };
+            }(path), sidecarObject = await this.getSideCarObject(basedir, filename);
+            if (rangeHeader) {
+                const range = function(rangeHeader) {
+                    if ("string" == typeof rangeHeader) {
+                        const ranges = rangeParser_1(1 / 0, rangeHeader);
+                        if ("number" != typeof ranges && "bytes" === ranges.type && 1 === ranges.length) return ranges[0];
+                        throw new Error("Invalid range format!!");
                     }
-                    const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
-                    tmidVariant = 0 == (parseInt(tmidChar, 16) & tmidBitPos) ? 0 : 1, subPath = this.getSubVariantPath(variantSubPath, tmidVariant);
+                    throw new Error("Range header should be string!!");
+                }(rangeHeader);
+                position = CborParser.findPosition(sidecarObject, BigInt(range.start), BigInt(range.end));
+            } else position = CborParser.findPosition(sidecarObject, BigInt(-1), BigInt(-1), filename);
+            if (void 0 === position) throw new Error("Unable to find position from the side car file!");
+            logger.log("D:pos: %s", position);
+            let subPath, tmidVariant = 0;
+            if (-1 == position) subPath = this.getSubVariantPath(variantSubPath, tmidVariant); else {
+                const cacheKey = await buildKey([ payload, secretKey ]);
+                if (tmid = Cache.getTmid(cacheKey), !tmid) {
+                    const vendorAlgorithm = this.vendorAlgorithms.get(payload.wmvnd);
+                    vendorAlgorithm ? tmid = await vendorAlgorithm.generateTmid(payload, secretKey) : logger.log("E:vendor alg not registered!"), 
+                    Cache.storeTmid(cacheKey, tmid);
                 }
-                if (null === subPath) throw new Error(`No watermarking subpath found for the variant ${tmidVariant}!`);
-                return `${basedir}/${subPath}/${filename}`;
+                const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
+                tmidVariant = 0 == (parseInt(tmidChar, 16) & tmidBitPos) ? 0 : 1, subPath = this.getSubVariantPath(variantSubPath, tmidVariant);
             }
-            throw new Error("Invalid wmvnd, indirect case with only 'irdeto' vendor is supported at the moment!");
+            if (null === subPath) throw new Error(`No watermarking subpath found for the variant ${tmidVariant}!`);
+            return `${basedir}/${subPath}/${filename}`;
         }
         throw new Error("Invalid wmidtyp, must be 0 (direct) or 1 (indirect)!");
     }

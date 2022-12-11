@@ -19,45 +19,45 @@ export class DashManifestManipulation extends TransformStream{
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function flush(controller) {
-      DashParser.parseMPD(manifestBuffer);
+      const dashParser = new DashParser();
+      dashParser.parseMPD(manifestBuffer);
       const mpdJson = DashParser.getJSON();
-      logger.log("mpdJson : %s",mpdJson);
       let keyValuePairs = new URLSearchParams(request.query);
       if(keyValuePairs.has('br_in_range') === true) {
         const bws = keyValuePairs.get('br_in_range');
         const bws_array = bws.split(",");
-        DashParser.filterVariantsByBandwidth(mpdJson, bws_array);
+        dashParser.filterVariantsByBandwidth(mpdJson, bws_array);
       }
       if (keyValuePairs.has('br_in')) {
         const bws = keyValuePairs.get('br_in');
         const bws_array = bws.split(",");
-        DashParser.filterVariantsByBandwidth(mpdJson,bws_array);
+        dashParser.filterVariantsByBandwidth(mpdJson,bws_array);
       }
 
       if (keyValuePairs.has('rs_device')){
         const resolution = keyValuePairs.get('rs_device');
-        DashParser.filterVariantsByResolution(mpdJson,resolution);
+        dashParser.filterVariantsByResolution(mpdJson,resolution);
       }
 
       if (keyValuePairs.has('rs_element') && keyValuePairs.has('rs_index')) {
         const resolution = keyValuePairs.get('rs_element');
         const index = keyValuePairs.get('rs_index');
-        DashParser.updateVariantAtIndex(mpdJson, resolution,index );
+        dashParser.updateVariantAtIndex(mpdJson, resolution,index );
       }
 
       if (keyValuePairs.has('rs_order')) {
         const resolutions = keyValuePairs.get('rs_order');
         const resolutions_array = resolutions.split(",");
-        DashParser.updateVariants(mpdJson, resolutions_array);
+        dashParser.updateVariants(mpdJson, resolutions_array);
       }
 
       if (keyValuePairs.has('lo_geo') === true) {
         const langs = keyValuePairs.get('lo_geo');
         const langs_array = (langs && langs.split(',')) || [];
-        DashParser.filterVariantsByAudioLanguage(mpdJson, langs_array);
-        DashParser.filterVariantsBySubtitlesLanguage(mpdJson, langs_array);
+        dashParser.filterVariantsByAudioLanguage(mpdJson, langs_array);
+        dashParser.filterVariantsBySubtitlesLanguage(mpdJson, langs_array);
       }
-      const mpdXml =  DashParser.stringifyMPD();
+      const mpdXml =  dashParser.stringifyMPD();
       controller.enqueue(mpdXml);
       logger.log("D-T:flush");
     }
@@ -67,16 +67,11 @@ export class DashManifestManipulation extends TransformStream{
 }
 
 
-export function onClientResponse (request, response) {
-  response.setHeader(`Request Parameters: scheme:${request.scheme}, hostname:${request.host}, path:${request.path}`);
-}
-
 export function responseProvider (request) {
   try {
     return httpRequest(`${request.scheme}://${request.host}${request.path}`).then(response => {
       return createResponse(
-        response.status,
-        response.headers,
+        response.status, {},
         response.body.pipeThrough(new TextDecoderStream()).pipeThrough(new DashManifestManipulation(request)).pipeThrough(new TextEncoderStream())
       );
     });

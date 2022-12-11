@@ -1,5 +1,5 @@
 # Example
-This example demonstrate usage of Dash module in typescript project.
+This example demonstrate usage of Dash module in TypeScript project.
 
 ## Usage
 

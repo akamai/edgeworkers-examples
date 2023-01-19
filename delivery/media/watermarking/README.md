@@ -9,6 +9,8 @@ The Watermarking module exposes API's for supporting forensic watermarking for O
 - Support for irdeto based indirect watermarking flow.
 - Support byterange or discrete segment request.
 
+## Prerequisite
+The module requires [cwt](./examples/wm-complete/cwt.js), [cbor-x](./examples/wm-complete/cbor-x.js) and [jwt](./examples/wm-complete/jwt.js) files to be present at same location. Refer [examples](./examples/wm-complete/) for project structure.
 
 ## Limitations
 - Currently the watermarking support only indirect case and not direct case.

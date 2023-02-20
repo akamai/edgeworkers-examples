@@ -33,17 +33,17 @@ declare class DashParser {
      * when the params are list of values default tolerance of 100000 is subtracted to obtain lower of the range and added 100000 to obtain higher of range values.
      * In above example ['400000','600000'] would be transformed as ['300000-500000','500000-700000']
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error messages.
-     * @example (Error: DashParser: failed to filterVariantsByBandwidth due to Cannot read properties of undefined (reading 'forEach')).
+     * @example (Error: DashParser: failed to filterRepresentationsByBandwidth due to Cannot read properties of undefined (reading 'forEach')).
      */
-    filterVariantsByBandwidth: (mpdJson: any, bitrates: string[], tolerance?: number) => void;
+    filterRepresentationsByBandwidth: (mpdJson: any, bitrates: string[], tolerance?: number) => void;
     /**
      * This function filters DASH MPD representations based on resolution value passed. Any representation above the provided resolution will be removed
      * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
      * @param maxSupportedResolution string eg,'320-240'
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error messages.
-     * @example (Error: DashParser: failed to filterVariantsByResolution due to DashParser: filterVariantsByResolution ,updateVariantAtIndex and updateVariants need resolution in format 'x-y'.)
+     * @example (Error: DashParser: failed to filterRepresentationsByResolution due to DashParser: filterRepresentationsByResolution ,updateRepresentationAtIndex and updateRepresentations need resolution in format 'x-y'.)
      */
-    filterVariantsByResolution: (mpdJson: any, maxSupportedResolution: string) => void;
+    filterRepresentationsByResolution: (mpdJson: any, maxSupportedResolution: string) => void;
     /**
      * This function updates DASH MPD representation based on resolution value passed and index.
      * If the passed resolution matches any representation's resolution in the provided mpd , the corresponding representation will be removed and added at the specified newIndex
@@ -51,33 +51,33 @@ declare class DashParser {
      * @param resolution string eg,'320-240'
      * @param newIndex number eg,1 where the representation with matched resolution will be moved to
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error messages.
-     * @example (Error: DashParser: failed to updateVariantAtIndex due to DashParser: filterVariantsByResolution ,updateVariantAtIndex and updateVariants need resolution in format 'x-y'.)
+     * @example (Error: DashParser: failed to updateRepresentationAtIndex due to DashParser: filterRepresentationsByResolution ,updateRepresentationAtIndex and updateRepresentations need resolution in format 'x-y'.)
      */
-    updateVariantAtIndex: (mpdJson: any, resolution: string, newIndex: number) => void;
+    updateRepresentationAtIndex: (mpdJson: any, resolution: string, newIndex: number) => void;
     /**
      * This function updates DASH MPD representations based on the provided resolution order.
      * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
      * @param resolution string eg,'320-240'
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error messages.
-     * @example (GenericError: DashParser: failed to updateVariants due to DashParser: filterVariantsByResolution ,updateVariantAtIndex and updateVariants need resolution in format 'x-y'.)
+     * @example (GenericError: DashParser: failed to updateRepresentations due to DashParser: filterRepresentationsByResolution ,updateRepresentationAtIndex and updateRepresentations need resolution in format 'x-y'.)
      */
-    updateVariants: (mpdJson: any, resolutions: string[], newIndex?: number) => void;
+    updateRepresentations: (mpdJson: any, resolutions: string[], newIndex?: number) => void;
     /**
      * This function filters DASH MPD audio representations based on languages provided as input.
      * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
      * @param languages array of strings eg,['en','fr']
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error messages.
-     * @example (Error: DashParser: failed to filterVariantsByBandwidth due to Cannot read properties of undefined (reading 'forEach')).
+     * @example (Error: DashParser: failed to filterAdaptationSetsByAudioLanguage due to Cannot read properties of undefined (reading 'forEach')).
      */
-    filterVariantsByAudioLanguage: (mpdJson: any, languages: string[]) => void;
+    filterAdaptationSetsByAudioLanguage: (mpdJson: any, languages: string[]) => void;
     /**
      * This function filters DASH MPD subtitle representations based on languages provided as input.
      * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
      * @param languages array of strings eg,['en','fr']
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error messages.
-     * @example (Error: DashParser: failed to filterVariantsByBandwidth due to Cannot read properties of undefined (reading 'forEach')).
+     * @example (Error: DashParser: failed to filterAdaptationSetsBySubtitlesLanguage due to Cannot read properties of undefined (reading 'forEach')).
      */
-    filterVariantsBySubtitlesLanguage: (mpdJson: any, languages: string[]) => void;
+    filterAdaptationSetsBySubtitlesLanguage: (mpdJson: any, languages: string[]) => void;
 }
 
 export { DashParser };

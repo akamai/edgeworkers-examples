@@ -30,36 +30,36 @@ class DashManifestManipulation{
         if(keyValuePairs.has('br_in_range') === true) {
           const bws = keyValuePairs.get('br_in_range');
           const bws_array = bws && bws.split(",");
-          dashParser.filterVariantsByBandwidth(mpdJson, bws_array as Array<string>);
+          dashParser.filterRepresentationsByBandwidth(mpdJson, bws_array as Array<string>);
         }
         if (keyValuePairs.has('br_in')) {
           const bws = keyValuePairs.get('br_in');
           const bws_array = bws && bws.split(",");
-          dashParser.filterVariantsByBandwidth(mpdJson,bws_array as Array<string>);
+          dashParser.filterRepresentationsByBandwidth(mpdJson,bws_array as Array<string>);
         }
 
         if (keyValuePairs.has('rs_device')){
           const resolution = keyValuePairs.get('rs_device');
-          dashParser.filterVariantsByResolution(mpdJson,resolution as string);
+          dashParser.filterRepresentationsByResolution(mpdJson,resolution as string);
         }
 
         if (keyValuePairs.has('rs_element') && keyValuePairs.has('rs_index')) {
           const resolution = keyValuePairs.get('rs_element');
           const index = parseInt(<string>keyValuePairs.get('rs_index'),10);
-          dashParser.updateVariantAtIndex(mpdJson, resolution as string, index as number);
+          dashParser.updateRepresentationAtIndex(mpdJson, resolution as string, index as number);
         }
 
         if (keyValuePairs.has('rs_order')) {
           const resolutions = keyValuePairs.get('rs_order');
           const resolutions_array = resolutions && resolutions.split(",");
-          dashParser.updateVariants(mpdJson, resolutions_array as Array<string>);
+          dashParser.updateRepresentations(mpdJson, resolutions_array as Array<string>);
         }
 
         if (keyValuePairs.has('lo_geo') === true) {
           const langs = keyValuePairs.get('lo_geo');
           const langs_array = (langs && langs.split(',')) || [];
-          dashParser.filterVariantsByAudioLanguage(mpdJson, langs_array as Array<string>);
-          dashParser.filterVariantsBySubtitlesLanguage(mpdJson, langs_array as Array<string>);
+          dashParser.filterAdaptationSetsByAudioLanguage(mpdJson, langs_array as Array<string>);
+          dashParser.filterAdaptationSetsBySubtitlesLanguage(mpdJson, langs_array as Array<string>);
         }
         const mpdXml =  dashParser.stringifyMPD();
         write(mpdXml);

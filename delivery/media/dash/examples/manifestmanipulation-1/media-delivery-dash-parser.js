@@ -1765,7 +1765,7 @@ function filter(range, bandwidth, tolerance = 1e5) {
 
 function parseResolution(maxSupportedResolution) {
     const pair = maxSupportedResolution.split("-");
-    if (!pair[0] || !pair[1] || !pair[0] && !pair[1]) throw new Error("DashParser: filterVariantsByResolution ,updateVariantAtIndex and updateVariants need resolution in format 'x-y'.");
+    if (!pair[0] || !pair[1] || !pair[0] && !pair[1]) throw new Error("DashParser: filterRepresentationsByResolution ,updateRepresentationAtIndex and updateRepresentations need resolution in format 'x-y'.");
     return {
         width: toNumber(pair[0]),
         height: toNumber(pair[1])
@@ -1788,19 +1788,19 @@ Constants.MIME_TYPE_AUDIO_PREFIX = `${Constants.MEDIA_TYPE_AUDIO}/`, Constants.M
 
 class DashParser {
     constructor() {
-        this.filterVariantsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
-            if (!mpdJson) throw new Error("DashParser: filterVariantsByBandwidth api failed ,dash mpd json object cannot be empty");
-            if (!bitrates || 0 == bitrates.length) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates cannot be empty");
-            if (!Array.isArray(bitrates)) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be array");
-            if (!bitrates.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByBandwidth api failed,bitrates should be of strings");
-            if (tolerance < 0) throw new Error("DashParser: filterVariantsByBandwidth api failed,invalid tolerance value, expected non-negative tolerance value");
+        this.filterRepresentationsByBandwidth = (mpdJson, bitrates, tolerance = 1e5) => {
+            if (!mpdJson) throw new Error("DashParser: filterRepresentationsByBandwidth api failed ,dash mpd json object cannot be empty");
+            if (!bitrates || 0 == bitrates.length) throw new Error("DashParser: filterRepresentationsByBandwidth api failed,bitrates cannot be empty");
+            if (!Array.isArray(bitrates)) throw new Error("DashParser: filterRepresentationsByBandwidth api failed,bitrates should be array");
+            if (!bitrates.every((item => "string" == typeof item))) throw new Error("DashParser: filterRepresentationsByBandwidth api failed,bitrates should be of strings");
+            if (tolerance < 0) throw new Error("DashParser: filterRepresentationsByBandwidth api failed,invalid tolerance value, expected non-negative tolerance value");
             const filterFnForVideoAdaptationSet = knownMimeType => element => {
                 let result = !1;
                 const match = {};
                 if (!knownMimeType) {
                     const _mimeType = element[Constants.ATTR_MIME_TYPE] ? element[Constants.ATTR_MIME_TYPE] : "", _contentType = element[Constants.ATTR_CONTENT_TYPE] ? element[Constants.ATTR_CONTENT_TYPE] : "";
-                    if (logger.log("filterVariantsByBandwidth filterFnForVideoAdaptationSet mimetype : %s", _mimeType), 
-                    logger.log("filterVariantsByBandwidth filterFnForVideoAdaptationSet contenttype : %s", _contentType), 
+                    if (logger.log("filterRepresentationsByBandwidth filterFnForVideoAdaptationSet mimetype : %s", _mimeType), 
+                    logger.log("filterRepresentationsByBandwidth filterFnForVideoAdaptationSet contenttype : %s", _contentType), 
                     _mimeType && !_mimeType.startsWith(Constants.MIME_TYPE_VIDEO_PREFIX) || _contentType && _contentType != Constants.MEDIA_TYPE_VIDEO) return !0;
                 }
                 return bitrates.forEach((range => {
@@ -1817,23 +1817,23 @@ class DashParser {
                         const [_contentType, _mimeType] = getContentType(adaptationSet);
                         let filteredRenditions = [];
                         _contentType == Constants.MEDIA_TYPE_VIDEO || _mimeType.startsWith(Constants.MIME_TYPE_VIDEO_PREFIX) ? (filteredRenditions = filteredRenditions.concat(adaptationSet[Constants.REPRESENTATION].filter(filterFnForVideoAdaptationSet(!0))), 
-                        logger.log("filterVariantsByBandwidth video representations", filteredRenditions), 
+                        logger.log("filterRepresentationsByBandwidth video representations", filteredRenditions), 
                         adaptationSet[Constants.REPRESENTATION] = filteredRenditions) : "" === _contentType && "" === _mimeType && (filteredRenditions = adaptationSet[Constants.REPRESENTATION].filter(filterFnForVideoAdaptationSet(!1)), 
                         adaptationSet[Constants.REPRESENTATION] = filteredRenditions);
                     }));
                 }));
             } catch (error) {
-                throw new Error(`DashParser: failed to filterVariantsByBandwidth due to ${error.message}`);
+                throw new Error(`DashParser: failed to filterRepresentationsByBandwidth due to ${error.message}`);
             }
-        }, this.filterVariantsByResolution = (mpdJson, maxSupportedResolution) => {
-            if (!mpdJson) throw new Error("DashParser: filterVariantsByResolution api failed,dash mpd json object cannot be empty");
-            if (!maxSupportedResolution || "string" != typeof maxSupportedResolution) throw new Error("DashParser: filterVariantsByResolution api failed,maxSupportedResolution should be a string and not empty");
+        }, this.filterRepresentationsByResolution = (mpdJson, maxSupportedResolution) => {
+            if (!mpdJson) throw new Error("DashParser: filterRepresentationsByResolution api failed,dash mpd json object cannot be empty");
+            if (!maxSupportedResolution || "string" != typeof maxSupportedResolution) throw new Error("DashParser: filterRepresentationsByResolution api failed,maxSupportedResolution should be a string and not empty");
             const maxSupportedResolutionObject = parseResolution(maxSupportedResolution), filterFnForVideoResolution = knownMimeType => element => {
                 let result = !1;
                 if (!knownMimeType) {
                     const _mimeType = element[Constants.ATTR_MIME_TYPE] ? element[Constants.ATTR_MIME_TYPE] : "";
                     if (!_mimeType.startsWith(Constants.MIME_TYPE_VIDEO_PREFIX)) return !0;
-                    logger.log("filterVariantsByResolution filterFnForVideoResolution mimetype : %s", _mimeType);
+                    logger.log("filterRepresentationsByResolution filterFnForVideoResolution mimetype : %s", _mimeType);
                 }
                 const width = element[Constants.ATTR_WIDTH] ? element[Constants.ATTR_WIDTH] : 0, height = element[Constants.ATTR_HEIGHT] ? element[Constants.ATTR_HEIGHT] : 0;
                 return result = width <= maxSupportedResolutionObject.width && height <= maxSupportedResolutionObject.height, 
@@ -1843,7 +1843,7 @@ class DashParser {
                 mpdJson[Constants.MPD][Constants.PERIOD].forEach((period => {
                     period[Constants.ADAPTATION_SET].forEach((adaptationSet => {
                         const _contentType = adaptationSet[Constants.ATTR_CONTENT_TYPE] ? adaptationSet[Constants.ATTR_CONTENT_TYPE] : "", _mimeType = adaptationSet[Constants.ATTR_MIME_TYPE] ? adaptationSet[Constants.ATTR_MIME_TYPE] : "";
-                        if (logger.log("filterVariantsByResolution mimetype : %s", _mimeType), logger.log("filterVariantsByResolution contenttype : %s", _contentType), 
+                        if (logger.log("filterRepresentationsByResolution mimetype : %s", _mimeType), logger.log("filterRepresentationsByResolution contenttype : %s", _contentType), 
                         _contentType == Constants.MEDIA_TYPE_VIDEO || _mimeType.startsWith(Constants.MIME_TYPE_VIDEO_PREFIX)) {
                             logger.log("representation", adaptationSet[Constants.REPRESENTATION]);
                             const filteredRenditions = adaptationSet[Constants.REPRESENTATION].filter(filterFnForVideoResolution(!0));
@@ -1855,15 +1855,15 @@ class DashParser {
                     }));
                 }));
             } catch (error) {
-                throw new Error(`DashParser: failed to filterVariantsByResolution due to ${error.message}`);
+                throw new Error(`DashParser: failed to filterRepresentationsByResolution due to ${error.message}`);
             }
-        }, this.updateVariantAtIndex = (mpdJson, resolution, newIndex) => {
+        }, this.updateRepresentationAtIndex = (mpdJson, resolution, newIndex) => {
             if (logger.log(resolution, newIndex), logger.log(typeof resolution, typeof newIndex), 
-            !mpdJson) throw new Error("DashParser: updateVariantAtIndex api failed,dash mpd json object cannot be empty");
-            if (!resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution cannot be empty");
-            if ("string" != typeof resolution) throw new Error("DashParser: updateVariantAtIndex api failed,resolution must be a string");
-            if ("number" != typeof newIndex || newIndex < 0) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex must be a number greater than or equal to 0");
-            if (0 != newIndex && !newIndex || null === newIndex) throw new Error("DashParser: updateVariantAtIndex api failed,newIndex cannot be empty,undefined or null");
+            !mpdJson) throw new Error("DashParser: updateRepresentationAtIndex api failed,dash mpd json object cannot be empty");
+            if (!resolution) throw new Error("DashParser: updateRepresentationAtIndex api failed,resolution cannot be empty");
+            if ("string" != typeof resolution) throw new Error("DashParser: updateRepresentationAtIndex api failed,resolution must be a string");
+            if ("number" != typeof newIndex || newIndex < 0) throw new Error("DashParser: updateRepresentationAtIndex api failed,newIndex must be a number greater than or equal to 0");
+            if (0 != newIndex && !newIndex || null === newIndex) throw new Error("DashParser: updateRepresentationAtIndex api failed,newIndex cannot be empty,undefined or null");
             try {
                 mpdJson[Constants.MPD][Constants.PERIOD].forEach((period => {
                     period[Constants.ADAPTATION_SET].forEach((adaptationSet => {
@@ -1877,22 +1877,22 @@ class DashParser {
                                 if (currVariantIndex == newIndex) return;
                                 {
                                     const splicedEle = representations.splice(currVariantIndex, 1)[0];
-                                    representations.splice(newIndex, 0, splicedEle), isVariantAtIndexUpdated = !0, logger.log("updateVariantAtIndex variant updated at index %s", newIndex), 
-                                    logger.log("updateVariantAtIndex variant updated at index %s", newIndex), logger.log("updateVariantAtIndex element spliced %s", splicedEle), 
-                                    currVariantIndex++;
+                                    representations.splice(newIndex, 0, splicedEle), isVariantAtIndexUpdated = !0, logger.log("updateRepresentationAtIndex representation updated at index %s", newIndex), 
+                                    logger.log("updateRepresentationAtIndex representation updated at index %s", newIndex), 
+                                    logger.log("updateRepresentationAtIndex element spliced %s", splicedEle), currVariantIndex++;
                                 }
                             } else currVariantIndex++;
                         })(adaptationSet[Constants.REPRESENTATION]);
                     }));
                 }));
             } catch (error) {
-                throw new Error(`DashParser: failed to updateVariantAtIndex due to ${error.message}`);
+                throw new Error(`DashParser: failed to updateRepresentationAtIndex due to ${error.message}`);
             }
-        }, this.updateVariants = (mpdJson, resolutions, newIndex = 0) => {
-            if (!mpdJson) throw new Error("DashParser: updateVariants api failed,dash mpd json object cannot be empty");
-            if (!resolutions || 0 == resolutions.length) throw new Error("DashParser: updateVariants api failed,resolutions cannot be empty");
-            if (!Array.isArray(resolutions)) throw new Error("DashParser: updateVariants api failed,resolutions must be an array");
-            if (!resolutions.every((item => "string" == typeof item))) throw new Error("DashParser: updateVariants api failed,resolutions must be an array of strings");
+        }, this.updateRepresentations = (mpdJson, resolutions, newIndex = 0) => {
+            if (!mpdJson) throw new Error("DashParser: updateRepresentations api failed,dash mpd json object cannot be empty");
+            if (!resolutions || 0 == resolutions.length) throw new Error("DashParser: updateRepresentations api failed,resolutions cannot be empty");
+            if (!Array.isArray(resolutions)) throw new Error("DashParser: updateRepresentations api failed,resolutions must be an array");
+            if (!resolutions.every((item => "string" == typeof item))) throw new Error("DashParser: updateRepresentations api failed,resolutions must be an array of strings");
             try {
                 mpdJson[Constants.MPD][Constants.PERIOD].forEach((period => {
                     period[Constants.ADAPTATION_SET].forEach((adaptationSet => {
@@ -1906,8 +1906,8 @@ class DashParser {
                                 for (;currVariantIndex < representations.length; ) if (representations[currVariantIndex][Constants.ATTR_WIDTH] && representations[currVariantIndex][Constants.ATTR_HEIGHT] && representations[currVariantIndex][Constants.ATTR_WIDTH] === resolutionObject.width && representations[currVariantIndex][Constants.ATTR_HEIGHT] === resolutionObject.height) {
                                     if (currVariantIndex != newIndex) {
                                         const splicedEle = representations.splice(currVariantIndex, 1)[0];
-                                        representations.splice(newIndex, 0, splicedEle), logger.log("updateVariants variant updated at index %s", newIndex), 
-                                        logger.log("updateVariants currVariantIndex %s", currVariantIndex), logger.log("updateVariants element spliced %s", splicedEle), 
+                                        representations.splice(newIndex, 0, splicedEle), logger.log("updateRepresentations representation updated at index %s", newIndex), 
+                                        logger.log("updateRepresentations currVariantIndex %s", currVariantIndex), logger.log("updateRepresentations element spliced %s", splicedEle), 
                                         newIndex++, currVariantIndex++;
                                     }
                                 } else currVariantIndex++;
@@ -1916,24 +1916,24 @@ class DashParser {
                     }));
                 }));
             } catch (error) {
-                throw new Error(`DashParser: failed to updateVariants due to ${error.message}`);
+                throw new Error(`DashParser: failed to updateRepresentations due to ${error.message}`);
             }
-        }, this.filterVariantsByAudioLanguage = (mpdJson, languages) => {
-            if (!mpdJson) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,dash mpd json object cannot be empty");
-            if (!languages || 0 === languages.length) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages cannot be empty");
-            if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array");
-            if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsByAudioLanguage api failed,languages should be an array of strings");
+        }, this.filterAdaptationSetsByAudioLanguage = (mpdJson, languages) => {
+            if (!mpdJson) throw new Error("DashParser: filterAdaptationSetsByAudioLanguage api failed,dash mpd json object cannot be empty");
+            if (!languages || 0 === languages.length) throw new Error("DashParser: filterAdaptationSetsByAudioLanguage api failed,languages cannot be empty");
+            if (!Array.isArray(languages)) throw new Error("DashParser: filterAdaptationSetsByAudioLanguage api failed,languages should be an array");
+            if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterAdaptationSetsByAudioLanguage api failed,languages should be an array of strings");
             try {
                 mpdJson[Constants.MPD][Constants.PERIOD].forEach((period => {
                     const filteredRenditions = period[Constants.ADAPTATION_SET].filter((element => {
                         let result = !1;
                         const [_contentType, _mimeType] = getContentType(element);
-                        if (logger.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet _contentType %s", _contentType), 
-                        logger.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet _mimeType %s", _mimeType), 
+                        if (logger.log("filterAdaptationSetsByAudioLanguage filterFnForAudioAdaptationSet _contentType %s", _contentType), 
+                        logger.log("filterAdaptationSetsByAudioLanguage filterFnForAudioAdaptationSet _mimeType %s", _mimeType), 
                         !_mimeType && !_contentType) return !0;
                         if (_mimeType && !_mimeType.startsWith(Constants.MIME_TYPE_AUDIO_PREFIX) || _contentType && _contentType != Constants.MEDIA_TYPE_AUDIO) return !0;
                         const lang = element[Constants.ATTR_LANG] ? element[Constants.ATTR_LANG] : "";
-                        return result = languages.includes(lang), logger.log("filterVariantsByAudioLanguage filterFnForAudioAdaptationSet language matches %s", languages.includes(lang)), 
+                        return result = languages.includes(lang), logger.log("filterAdaptationSetsByAudioLanguage filterFnForAudioAdaptationSet language matches %s", languages.includes(lang)), 
                         result;
                     }));
                     period[Constants.ADAPTATION_SET] = filteredRenditions, filteredRenditions.forEach((adaptationSet => {
@@ -1942,30 +1942,30 @@ class DashParser {
                             const _mimeType = element[Constants.ATTR_MIME_TYPE] ? element[Constants.ATTR_MIME_TYPE] : "", _contentType = element[Constants.ATTR_CONTENT_TYPE] ? element[Constants.ATTR_CONTENT_TYPE] : "";
                             if (!_mimeType.startsWith(Constants.MIME_TYPE_AUDIO_PREFIX) || _contentType != Constants.MEDIA_TYPE_AUDIO) return !0;
                             const lang = element[Constants.ATTR_LANG] ? element[Constants.ATTR_LANG] : languageFromAdaptationSet;
-                            return result = languages.includes(lang), logger.log("filterVariantsByAudioLanguage filterFnForAudioRepresentation language matches %s", languages.includes(lang)), 
+                            return result = languages.includes(lang), logger.log("filterAdaptationSetsByAudioLanguage filterFnForAudioRepresentation language matches %s", languages.includes(lang)), 
                             result;
                         })(languageFromAdaptationSet));
                         adaptationSet[Constants.REPRESENTATION] = filteredRepresentation;
                     }));
                 }));
             } catch (error) {
-                throw new Error(`DashParser: failed to filterVariantsByAudioLanguage due to ${error.message}`);
+                throw new Error(`DashParser: failed to filterAdaptationSetsByAudioLanguage due to ${error.message}`);
             }
-        }, this.filterVariantsBySubtitlesLanguage = (mpdJson, languages) => {
-            if (!mpdJson) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,dash mpd json object cannot be empty");
-            if (!languages || 0 === languages.length) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages cannot be empty");
-            if (!Array.isArray(languages)) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array");
-            if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterVariantsBySubtitlesLanguage api failed,languages should be an array of strings");
+        }, this.filterAdaptationSetsBySubtitlesLanguage = (mpdJson, languages) => {
+            if (!mpdJson) throw new Error("DashParser: filterAdaptationSetsBySubtitlesLanguage api failed,dash mpd json object cannot be empty");
+            if (!languages || 0 === languages.length) throw new Error("DashParser: filterAdaptationSetsBySubtitlesLanguage api failed,languages cannot be empty");
+            if (!Array.isArray(languages)) throw new Error("DashParser: filterAdaptationSetsBySubtitlesLanguage api failed,languages should be an array");
+            if (!languages.every((item => "string" == typeof item))) throw new Error("DashParser: filterAdaptationSetsBySubtitlesLanguage api failed,languages should be an array of strings");
             try {
                 mpdJson[Constants.MPD][Constants.PERIOD].forEach((period => {
                     const filteredRenditions = period[Constants.ADAPTATION_SET].filter((element => {
                         let result = !1;
                         const [_contentType, _mimeType] = getContentType(element);
-                        if (logger.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _contentType %s", _contentType), 
-                        logger.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _mimeType %s", _mimeType), 
+                        if (logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _contentType %s", _contentType), 
+                        logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _mimeType %s", _mimeType), 
                         _mimeType && !_mimeType.startsWith(Constants.MIME_TYPE_TEXT_PREFIX) || _contentType && _contentType != Constants.MEDIA_TYPE_TEXT) return !0;
                         const lang = element[Constants.ATTR_LANG] ? element[Constants.ATTR_LANG] : "";
-                        return result = languages.includes(lang), logger.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleAdaptationSet language matches %s", languages.includes(lang)), 
+                        return result = languages.includes(lang), logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleAdaptationSet language matches %s", languages.includes(lang)), 
                         result;
                     }));
                     period[Constants.ADAPTATION_SET] = filteredRenditions, filteredRenditions.forEach((adaptationSet => {
@@ -1974,14 +1974,14 @@ class DashParser {
                             const _mimeType = element[Constants.ATTR_MIME_TYPE] ? element[Constants.ATTR_MIME_TYPE] : "", _contentType = element[Constants.ATTR_CONTENT_TYPE] ? element[Constants.ATTR_CONTENT_TYPE] : "";
                             if (!_mimeType.startsWith(Constants.MIME_TYPE_TEXT_PREFIX) || _contentType != Constants.MEDIA_TYPE_TEXT) return !0;
                             const lang = element[Constants.ATTR_LANG] ? element[Constants.ATTR_LANG] : languageFromAdaptationSet;
-                            return result = languages.includes(lang), logger.log("filterVariantsBySubtitlesLanguage filterFnForSubtitleRepresentation language matches %s", languages.includes(lang)), 
+                            return result = languages.includes(lang), logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleRepresentation language matches %s", languages.includes(lang)), 
                             result;
                         })(languageFromAdaptationSet));
                         adaptationSet[Constants.REPRESENTATION] = filteredRepresentation;
                     }));
                 }));
             } catch (error) {
-                throw new Error(`DashParser: failed to filterVariantsBySubtitlesLanguage due to ${error.message}`);
+                throw new Error(`DashParser: failed to filterAdaptationSetsBySubtitlesLanguage due to ${error.message}`);
             }
         }, this.dashMPD = new DashMPD;
     }

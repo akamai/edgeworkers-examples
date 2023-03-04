@@ -1,3 +1,8 @@
+declare type Bumper = {
+    responseBodyObject: any;
+    afterSeconds: number;
+};
+
 /**
  * DashParser class with necessary API's for implementing Dash manifest manipulation usecase for media delivery.
  * Consumers of Dash manifest manipulation feature can import this class and call the necessary operations.
@@ -78,6 +83,25 @@ declare class DashParser {
      * @example (Error: DashParser: failed to filterAdaptationSetsBySubtitlesLanguage due to Cannot read properties of undefined (reading 'forEach')).
      */
     filterAdaptationSetsBySubtitlesLanguage: (mpdJson: any, languages: string[]) => void;
+    /**
+     * This function inserts the auxiliary content to the main asset's playlist. This
+     * auxiliary content must be present as individual segments on the origin &
+     * must have have its own playlist. This auxiliary content can be inserted as
+     * pre/mid/post roll i.e this auxiliary content can be added before/middle/after
+     * the primary content segments.
+     *
+     * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
+     * @param bumperPlaylistArrayObject e.g, [ { responseBodyObject: bumperToBeInserted, afterSeconds: 30 },
+     *       { responseBodyObject: bumperToBeInserted afterSeconds: 0 }]
+     *
+     * @returns void
+     */
+    bumperInsertion: (mpd: any, bumperPlaylistArrayObject: Bumper[]) => void;
+    private postRollAdInsert;
+    private preRollAdInsert;
+    private midRollAdInsert;
+    private calculateStartNumberForMultipleSegmentTimeline;
+    private insertMidRollBumper;
 }
 
 export { DashParser };

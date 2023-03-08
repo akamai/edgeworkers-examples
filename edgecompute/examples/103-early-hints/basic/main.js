@@ -5,7 +5,7 @@ const PMUSER_103_ENABLED='PMUSER_103_ENABLED';
 const NAVIGATE='navigate'; 
 
 export async function onClientRequest(request){
-    if(isEarlyHintAllowed(request)){
+    if(isEarlyHintsAllowed(request)){
         let hints = [];
         hints.push('<https://static1.example.com>;rel=preconnect');
         hints.push('<https://cdn.example.com/assets/main.css>;rel=preload;as=style');
@@ -17,7 +17,7 @@ export async function onClientRequest(request){
 }
 
 //Only run Early hints for supporting browsers (Chromium 103+) and when sec-fetch-mode=navigate
-function isEarlyHintAllowed(request){
+function isEarlyHintsAllowed(request){
     if(request.getHeader('sec-fetch-mode')[0] == NAVIGATE) {
         let match  = request.getHeader('user-agent')[0].match(CHROME_REGEX);
         if (match && match[1]>=CHROME_MINVERSION){

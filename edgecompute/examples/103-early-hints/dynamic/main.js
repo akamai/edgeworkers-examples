@@ -9,7 +9,7 @@ export async function onClientRequest(request){
     if(isEarlyHintsAllowed(request)){
         let apiResponse = await httpRequest('https://www.yourdomain.com/api/listofresources'); //Cache+Extreme Prefresh for fast delivery and quick updates
         let data = await apiResponse.text();
-        request.setVariable(PMUSER_103_LIST,data); //max 1024-15=1009 bytes
+        request.setVariable(PMUSER_103_LIST,data); //Check variable size limits https://techdocs.akamai.com/edgeworkers/docs/request-object#setvariable
         request.setVariable(PMUSER_103_ENABLED,true);
     }
 }

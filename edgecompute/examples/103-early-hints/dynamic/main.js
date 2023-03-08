@@ -6,7 +6,7 @@ const PMUSER_103_ENABLED='PMUSER_103_ENABLED';
 const NAVIGATE='navigate'; 
 
 export async function onClientRequest(request){
-    if(isEarlyHintAllowed(request)){
+    if(isEarlyHintsAllowed(request)){
         let apiResponse = await httpRequest('https://www.yourdomain.com/api/listofresources'); //Cache+Extreme Prefresh for fast delivery and quick updates
         let data = await apiResponse.text();
         request.setVariable(PMUSER_103_LIST,data); //max 1024-15=1009 bytes
@@ -15,7 +15,7 @@ export async function onClientRequest(request){
 }
 
 //Only run Early hints for supporting browsers (Chromium 103+) and when sec-fetch-mode=navigate
-function isEarlyHintAllowed(request){
+function isEarlyHintsAllowed(request){
     if(request.getHeader('sec-fetch-mode')[0] == NAVIGATE) {
         let match  = request.getHeader('user-agent')[0].match(CHROME_REGEX);
         if (match && match[1]>=CHROME_MINVERSION){

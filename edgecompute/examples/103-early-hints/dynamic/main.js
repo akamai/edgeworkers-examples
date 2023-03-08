@@ -4,13 +4,20 @@ const CHROME_MINVERSION=103; //103 Early hints support was added in Chrome 103
 const PMUSER_103_LIST='PMUSER_103_LIST';
 const PMUSER_103_ENABLED='PMUSER_103_ENABLED'; 
 const NAVIGATE='navigate'; 
+const OPTIONS={timeout:50}; //Cancel Early hints when subrequest takes too long
 
 export async function onClientRequest(request){
     if(isEarlyHintsAllowed(request)){
-        let apiResponse = await httpRequest('https://www.yourdomain.com/api/listofresources'); //Cache+Extreme Prefresh for fast delivery and quick updates
-        let data = await apiResponse.text();
-        request.setVariable(PMUSER_103_LIST,data); //Check variable size limits https://techdocs.akamai.com/edgeworkers/docs/request-object#setvariable
-        request.setVariable(PMUSER_103_ENABLED,true);
+      try {
+        let apiResponse = await httpRequest('https://www.yourdomain.com/api/listofresources',OPTIONS); //Cache+Extreme Prefresh for fast delivery and quick updates
+        if(apiResponse.status==200){
+            let data = await apiResponse.text();
+            request.setVariable(PMUSER_103_LIST,data); //Check size limits https://techdocs.akamai.com/edgeworkers/docs/request-object#setvariable
+            request.setVariable(PMUSER_103_ENABLED,true);
+        }
+      }
+      catch{
+      }
     }
 }
 

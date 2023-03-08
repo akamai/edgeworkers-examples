@@ -1,5 +1,4 @@
-
-##103 Early Hints - Basic
+#103 Early Hints - Basic
 
 A simple EdgeWorker which 
 - Selectively enables 103 Early Hints (PMUSER_103_ENABLED=true): For supporting browsers (Chromium 103+) and when sec-fetch-mode=navigate HTTP request header is present.

@@ -6,7 +6,7 @@ A simple EdgeWorker which
 - Sets the list of resource hints to early hint (PMUSER_103_LIST): A list of 1 or multiple comma seperated [Resource Hints](https://www.w3.org/TR/resource-hints/)
 
 ## Prerequisites
-Your account needs to be enabled for the 103 Early Hint Prototyp
+Your account needs to be enabled for the 103 Early Hint Prototype
 
 In Property Manager these 2 specific variables need to be defined
 - PMUSER_103_ENABLED

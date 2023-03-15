@@ -4,10 +4,12 @@ The examples in this section detail how to use EdgeWorkers and EdgeKV to perform
 ## Subfolder organization
 * **/ab-test(EKV)**: A/B testing using EdgeWorkers only
 * **/ab-test**: A/B testing using EdgeWorkers and EdgeKV
+* **/ab-test-caching (EKV)**: A/B testing using EdgeWorkers and EdgeKV with cache key modification for caching
 * **/multivariate-test**: Test more than one variable to determine which combination leads to more conversions 
 * **/redirect-geo**: Redirect visitors based on the location of the request 
 * **/redirect-liquidator**: Transform 301/302 redirets into 200 responses at the Edge
-* **/redirect-unauthenticated**: Validate if a request originates from an authenticated user  
+* **/redirect-unauthenticated**: Validate if a request originates from an authenticated user
+* **/redirect-url (EKV)**: Dynamically constructed redirects using EKV configuration
 
 ## Related Resources
 - [EdgeWorkers CLI](https://developer.akamai.com/cli/packages/edgeworkers.html)

@@ -1,20 +1,14 @@
 import { hash } from "./hash";
 
-export function onClientRequest(
-  request: EW.ImmutableRequest & EW.HasRespondWith,
-  response: EW.Response
-) {
-  request.respondWith(
+export function onClientRequest(request: EW.IngressClientRequest) {
+    request.respondWith(
     200,
     {},
     "<html><body><h1>Hello World From Akamai EdgeWorkers</h1></body></html>"
   );
 }
 
-export function onClientResponse(
-  request: EW.ImmutableRequest,
-  response: EW.Response
-) {
+export function onClientResponse(request: EW.EgressClientRequest, response: EW.EgressClientResponse) {
   /**
    * Example of using custom modules. "hash" is a ES module in TypeScript and
    * it consumes a npm CommonJS module. Rollup is able to bundle both type of

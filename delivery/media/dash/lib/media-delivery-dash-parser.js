@@ -2526,8 +2526,9 @@ class DashParser {
                 1 == mpdPeriod.length && (mpdPeriod[0]["@" + Constants.ATTR_DURATION] || (mpdPeriod[0]["@" + Constants.ATTR_DURATION] = currentMediaDuration)), 
                 logger.log("bumperInsertion currentMediaDuration", currentMediaDuration);
                 const bumperDurations = bumperPlaylistArrayObject.map((bumper => {
-                    const bumperResponse = bumper.responseBodyObject;
-                    return convertTimeInMPDToSeconds(bumperResponse[Constants.MPD][Constants.PERIOD][0]["@" + Constants.ATTR_DURATION] ? bumperResponse[Constants.MPD][Constants.PERIOD][0]["@" + Constants.ATTR_DURATION] : bumperResponse[Constants.MPD]["@" + Constants.ATTR_MEDIA_PRESENTATION_DURATION]);
+                    const bumperResponse = bumper.responseBodyObject, bumperDuration = bumperResponse[Constants.MPD][Constants.PERIOD][0]["@" + Constants.ATTR_DURATION] ? bumperResponse[Constants.MPD][Constants.PERIOD][0]["@" + Constants.ATTR_DURATION] : bumperResponse[Constants.MPD]["@" + Constants.ATTR_MEDIA_PRESENTATION_DURATION];
+                    return bumperResponse[Constants.MPD][Constants.PERIOD][0]["@" + Constants.ATTR_DURATION] = bumperDuration, 
+                    convertTimeInMPDToSeconds(bumperDuration);
                 }));
                 logger.log("bumperInsertion midroll object durations", midRollObjectsDuration);
                 let jsonStr, midRollDuration = [];

@@ -7,6 +7,7 @@ A simple EdgeWorker which:
 
 ## Prerequisites
 Your account needs to be enabled for the 103 Early Hint Prototype.
+
 Your account needs to have EKV Enabled
 
 In Property Manager these 2 specific variables need to be defined

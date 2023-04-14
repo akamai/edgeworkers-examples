@@ -1,8 +1,3 @@
-declare type Bumper = {
-    responseBodyObject: any;
-    afterSeconds: number;
-};
-
 /**
  * DashParser class with necessary API's for implementing Dash manifest manipulation usecase for media delivery.
  * Consumers of Dash manifest manipulation feature can import this class and call the necessary operations.
@@ -50,6 +45,24 @@ declare class DashParser {
      */
     filterRepresentationsByResolution: (mpdJson: any, maxSupportedResolution: string) => void;
     /**
+     * This function updates DASH MPD representation based on resolution value passed and index.
+     * If the passed resolution matches any representation's resolution in the provided mpd , the corresponding representation will be removed and added at the specified newIndex
+     * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
+     * @param resolution string eg,'320-240'
+     * @param newIndex number eg,1 where the representation with matched resolution will be moved to
+     * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error messages.
+     * @example (Error: DashParser: failed to updateRepresentationAtIndex due to DashParser: filterRepresentationsByResolution ,updateRepresentationAtIndex and updateRepresentations need resolution in format 'x-y'.)
+     */
+    updateRepresentationAtIndex: (mpdJson: any, resolution: string, newIndex: number) => void;
+    /**
+     * This function updates DASH MPD representations based on the provided resolution order.
+     * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
+     * @param resolution string eg,'320-240'
+     * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error messages.
+     * @example (GenericError: DashParser: failed to updateRepresentations due to DashParser: filterRepresentationsByResolution ,updateRepresentationAtIndex and updateRepresentations need resolution in format 'x-y'.)
+     */
+    updateRepresentations: (mpdJson: any, resolutions: string[], newIndex?: number) => void;
+    /**
      * This function filters DASH MPD audio representations based on languages provided as input.
      * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
      * @param languages array of strings eg,['en','fr']
@@ -65,24 +78,6 @@ declare class DashParser {
      * @example (Error: DashParser: failed to filterAdaptationSetsBySubtitlesLanguage due to Cannot read properties of undefined (reading 'forEach')).
      */
     filterAdaptationSetsBySubtitlesLanguage: (mpdJson: any, languages: string[]) => void;
-    /**
-     * This function inserts the auxiliary content to the main asset's playlist. This
-     * auxiliary content must be present as individual segments on the origin &
-     * must have have its own playlist. This auxiliary content can be inserted as
-     * pre/mid/post roll i.e this auxiliary content can be added before/middle/after
-     * the primary content segments.
-     *
-     * @param mpd json object representing MPD(media presentation description)file, returned after calling parseMPD and getJSON methods
-     * @param bumperPlaylistArrayObject
-     *
-     * @returns void
-     */
-    bumperInsertion: (mpd: any, bumperPlaylistArrayObject: Bumper[]) => void;
-    private postRollAdInsert;
-    private preRollAdInsert;
-    private midRollAdInsert;
-    private calculateStartNumberForMultipleSegmentTimeline;
-    private insertMidRollBumper;
 }
 
 export { DashParser };

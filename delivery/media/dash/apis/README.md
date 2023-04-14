@@ -1,4 +1,2 @@
-For the latest DASH API documentation, please visit this [page]()
+For the latest DASH API documentation, please visit this [page](https://techdocs.akamai.com/edgeworkers/docs/dash-parser)
 
-### Todo
-- [ ] Add documentation page link.

@@ -6,6 +6,18 @@ import URLSearchParams from "url-search-params";
 import { TextEncoderStream, TextDecoderStream } from 'text-encode-transform';
 import { ReadableStream, WritableStream } from 'streams';
 
+const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+  'accept-encoding', 'content-encoding', 'keep-alive',
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade', 'host'];
+
+function getSafeResponseHeaders(headers) {
+  for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
+    if (unsafeResponseHeader in headers) {
+      delete headers[unsafeResponseHeader];
+    }
+  }
+  return headers;
+}
 class DashManifestManipulation{
   readable:ReadableStream;
   writable:WritableStream;
@@ -81,11 +93,13 @@ class DashManifestManipulation{
   }
 }
 
-export function responseProvider (request: EW.IngressClientRequest) {
+export function responseProvider (request: EW.ResponseProviderRequest) {
   try {
-    return httpRequest(`${request.scheme}://${request.host}${request.path}`).then((response: any) => {
+    let req_headers = request.getHeaders();
+    delete req_headers["host"];
+    return httpRequest(`${request.scheme}://${request.host}${request.path}`,{headers: req_headers}).then((response: any) => {
       return createResponse(
-        response.status, {},
+        response.status, getSafeResponseHeaders(response.getHeaders()),
         response.body.pipeThrough(new TextDecoderStream()).pipeThrough(new DashManifestManipulation(request)).pipeThrough(new TextEncoderStream())
       );
     });

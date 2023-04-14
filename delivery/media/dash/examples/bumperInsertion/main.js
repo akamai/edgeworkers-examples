@@ -6,6 +6,19 @@ import URLSearchParams from "url-search-params";
 import { TextEncoderStream, TextDecoderStream } from 'text-encode-transform';
 import { ReadableStream, WritableStream } from 'streams';
 
+const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+    'accept-encoding', 'content-encoding', 'keep-alive',
+    'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade', 'host'];
+
+function getSafeResponseHeaders(headers) {
+    for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
+        if (unsafeResponseHeader in headers) {
+            delete headers[unsafeResponseHeader];
+        }
+    }
+    return headers;
+}
+
 class DashManifestManipulation{
     constructor (bumperObjectList,dashParser) {
         logger.log("dash bumper insertion");
@@ -45,15 +58,12 @@ class DashManifestManipulation{
     }
 }
 
-export function onClientRequest (request) { }
-
-export function onClientResponse (request, response) {
-    response.setHeader(`Request Parameters: scheme:${request.scheme}://${request.host}/hls-clear/rkalra/sample/bumper/TOS/dash/source.mpd`);
-}
 export async function responseProvider (request) {
     let afterArr = []; let afterArrIndex = 0;
     let bumperObjectList = [];
     let keyValuePairs = new URLSearchParams(request.query);
+    let req_headers = request.getHeaders();
+    delete req_headers["host"];
     let dashParser = new DashParser();
 
     let bumper1RequestUrl,bumper1Response,bumper1ResponseBody,bumper1ResponseBodyObject;
@@ -88,10 +98,10 @@ export async function responseProvider (request) {
         bumperObjectList.push(bumper);
     }
     logger.log("bumperObjectList",bumperObjectList.length);
-    const primaryResponse = await httpRequest(`${request.scheme}://${request.host}${request.path}`);
+    const primaryResponse = await httpRequest(`${request.scheme}://${request.host}${request.path}`,{headers: req_headers});
     return createResponse(
         primaryResponse.status,
-        {},
+        getSafeResponseHeaders(primaryResponse.getHeaders()),
         primaryResponse.body.pipeThrough(new TextDecoderStream()).pipeThrough(new DashManifestManipulation(bumperObjectList,dashParser)).pipeThrough(new TextEncoderStream())
     );
 

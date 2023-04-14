@@ -6,13 +6,25 @@ import URLSearchParams from "url-search-params";
 import { TextEncoderStream, TextDecoderStream } from 'text-encode-transform';
 import { TransformStream } from 'streams';
 
+const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+  'accept-encoding', 'content-encoding', 'keep-alive',
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade', 'host'];
+
+function getSafeResponseHeaders(headers) {
+  for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
+    if (unsafeResponseHeader in headers) {
+      delete headers[unsafeResponseHeader];
+    }
+  }
+  return headers;
+}
+
 export class DashManifestManipulation extends TransformStream{
   constructor(request) {
     let manifestBuffer = '';
     function start() {
       logger.log("D-T:start");
     }
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unused-vars
     function transform(chunk, controller){
       manifestBuffer += chunk;
@@ -21,41 +33,29 @@ export class DashManifestManipulation extends TransformStream{
     function flush(controller) {
       const dashParser = new DashParser();
       dashParser.parseMPD(manifestBuffer);
-      const mpdJson = DashParser.getJSON();
+      const mpdJson = dashParser.getJSON();
       let keyValuePairs = new URLSearchParams(request.query);
       if(keyValuePairs.has('br_in_range') === true) {
         const bws = keyValuePairs.get('br_in_range');
         const bws_array = bws.split(",");
-        dashParser.filterVariantsByBandwidth(mpdJson, bws_array);
+        dashParser.filterRepresentationsByBandwidth(mpdJson, bws_array);
       }
       if (keyValuePairs.has('br_in')) {
         const bws = keyValuePairs.get('br_in');
         const bws_array = bws.split(",");
-        dashParser.filterVariantsByBandwidth(mpdJson,bws_array);
+        dashParser.filterRepresentationsByBandwidth(mpdJson,bws_array);
       }
 
       if (keyValuePairs.has('rs_device')){
         const resolution = keyValuePairs.get('rs_device');
-        dashParser.filterVariantsByResolution(mpdJson,resolution);
-      }
-
-      if (keyValuePairs.has('rs_element') && keyValuePairs.has('rs_index')) {
-        const resolution = keyValuePairs.get('rs_element');
-        const index = keyValuePairs.get('rs_index');
-        dashParser.updateVariantAtIndex(mpdJson, resolution,index );
-      }
-
-      if (keyValuePairs.has('rs_order')) {
-        const resolutions = keyValuePairs.get('rs_order');
-        const resolutions_array = resolutions.split(",");
-        dashParser.updateVariants(mpdJson, resolutions_array);
+        dashParser.filterRepresentationsByResolution(mpdJson,resolution);
       }
 
       if (keyValuePairs.has('lo_geo') === true) {
         const langs = keyValuePairs.get('lo_geo');
         const langs_array = (langs && langs.split(',')) || [];
-        dashParser.filterVariantsByAudioLanguage(mpdJson, langs_array);
-        dashParser.filterVariantsBySubtitlesLanguage(mpdJson, langs_array);
+        dashParser.filterAdaptationSetsByAudioLanguage(mpdJson, langs_array);
+        dashParser.filterAdaptationSetsBySubtitlesLanguage(mpdJson, langs_array);
       }
       const mpdXml =  dashParser.stringifyMPD();
       controller.enqueue(mpdXml);
@@ -69,9 +69,12 @@ export class DashManifestManipulation extends TransformStream{
 
 export function responseProvider (request) {
   try {
-    return httpRequest(`${request.scheme}://${request.host}${request.path}`).then(response => {
+    let req_headers = request.getHeaders();
+    delete req_headers["host"];
+    return httpRequest(`${request.scheme}://${request.host}${request.path}`, {headers: req_headers}).then(response => {
       return createResponse(
-        response.status, {},
+        response.status,
+          getSafeResponseHeaders(response.getHeaders()),
         response.body.pipeThrough(new TextDecoderStream()).pipeThrough(new DashManifestManipulation(request)).pipeThrough(new TextEncoderStream())
       );
     });

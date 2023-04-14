@@ -73,9 +73,7 @@ const DashConstants = new class {
     }
 };
 
-"undefined" != typeof globalThis ? globalThis : "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self && self;
-
-var hasRequiredEntities, X2JS$1 = {
+var hasRequiredEntities, commonjsGlobal = "undefined" != typeof globalThis ? globalThis : "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : {}, X2JS$1 = {
     exports: {}
 }, domParser = {}, entities = {};
 
@@ -84,7 +82,7 @@ var hasRequiredSax, sax = {};
 function requireSax() {
     if (hasRequiredSax) return sax;
     hasRequiredSax = 1;
-    var nameStartChar = /[A-Z_a-z\xC0-\xD6\xD8-\xF6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]/, nameChar = new RegExp("[\\-\\.0-9" + nameStartChar.source.slice(1, -1) + "\\u00B7\\u0300-\\u036F\\u203F-\\u2040]"), tagNamePattern = new RegExp("^" + nameStartChar.source + nameChar.source + "*(?::" + nameStartChar.source + nameChar.source + "*)?$");
+    var nameStartChar = /[A-Z_a-z\xC0-\xD6\xD8-\xF6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]/, nameChar = new RegExp("[\\-\\.0-9" + nameStartChar.source.slice(1, -1) + "\\u00B7\\u0300-\\u036F\\u203F-\\u2040]"), tagNamePattern = new RegExp("^" + nameStartChar.source + nameChar.source + "*(?::" + nameStartChar.source + nameChar.source + "*)?$"), S_TAG = 0, S_ATTR = 1, S_ATTR_SPACE = 2, S_EQ = 3, S_ATTR_NOQUOT_VALUE = 4, S_ATTR_END = 5, S_TAG_SPACE = 6, S_TAG_CLOSE = 7;
     function ParseError(message, locator) {
         this.message = message, this.locator = locator, Error.captureStackTrace && Error.captureStackTrace(this, ParseError);
     }
@@ -97,44 +95,44 @@ function requireSax() {
             qname in el.attributeNames && errorHandler.fatalError("Attribute " + qname + " redefined"), 
             el.addValue(qname, value, startIndex);
         }
-        for (var attrName, p = ++start, s = 0; ;) {
+        for (var attrName, p = ++start, s = S_TAG; ;) {
             var c = source.charAt(p);
             switch (c) {
               case "=":
-                if (1 === s) attrName = source.slice(start, p), s = 3; else {
-                    if (2 !== s) throw new Error("attribute equal must after attrName");
-                    s = 3;
+                if (s === S_ATTR) attrName = source.slice(start, p), s = S_EQ; else {
+                    if (s !== S_ATTR_SPACE) throw new Error("attribute equal must after attrName");
+                    s = S_EQ;
                 }
                 break;
 
               case "'":
               case '"':
-                if (3 === s || 1 === s) {
-                    if (1 === s && (errorHandler.warning('attribute value must after "="'), attrName = source.slice(start, p)), 
+                if (s === S_EQ || s === S_ATTR) {
+                    if (s === S_ATTR && (errorHandler.warning('attribute value must after "="'), attrName = source.slice(start, p)), 
                     start = p + 1, !((p = source.indexOf(c, start)) > 0)) throw new Error("attribute value no end '" + c + "' match");
                     addAttribute(attrName, value = source.slice(start, p).replace(/&#?\w+;/g, entityReplacer), start - 1), 
-                    s = 5;
+                    s = S_ATTR_END;
                 } else {
-                    if (4 != s) throw new Error('attribute value must after "="');
+                    if (s != S_ATTR_NOQUOT_VALUE) throw new Error('attribute value must after "="');
                     addAttribute(attrName, value = source.slice(start, p).replace(/&#?\w+;/g, entityReplacer), start), 
                     errorHandler.warning('attribute "' + attrName + '" missed start quot(' + c + ")!!"), 
-                    start = p + 1, s = 5;
+                    start = p + 1, s = S_ATTR_END;
                 }
                 break;
 
               case "/":
                 switch (s) {
-                  case 0:
+                  case S_TAG:
                     el.setTagName(source.slice(start, p));
 
-                  case 5:
-                  case 6:
-                  case 7:
-                    s = 7, el.closed = !0;
+                  case S_ATTR_END:
+                  case S_TAG_SPACE:
+                  case S_TAG_CLOSE:
+                    s = S_TAG_CLOSE, el.closed = !0;
 
-                  case 4:
-                  case 1:
-                  case 2:
+                  case S_ATTR_NOQUOT_VALUE:
+                  case S_ATTR:
+                  case S_ATTR_SPACE:
                     break;
 
                   default:
@@ -143,30 +141,30 @@ function requireSax() {
                 break;
 
               case "":
-                return errorHandler.error("unexpected end of input"), 0 == s && el.setTagName(source.slice(start, p)), 
+                return errorHandler.error("unexpected end of input"), s == S_TAG && el.setTagName(source.slice(start, p)), 
                 p;
 
               case ">":
                 switch (s) {
-                  case 0:
+                  case S_TAG:
                     el.setTagName(source.slice(start, p));
 
-                  case 5:
-                  case 6:
-                  case 7:
+                  case S_ATTR_END:
+                  case S_TAG_SPACE:
+                  case S_TAG_CLOSE:
                     break;
 
-                  case 4:
-                  case 1:
+                  case S_ATTR_NOQUOT_VALUE:
+                  case S_ATTR:
                     "/" === (value = source.slice(start, p)).slice(-1) && (el.closed = !0, value = value.slice(0, -1));
 
-                  case 2:
-                    2 === s && (value = attrName), 4 == s ? (errorHandler.warning('attribute "' + value + '" missed quot(")!'), 
+                  case S_ATTR_SPACE:
+                    s === S_ATTR_SPACE && (value = attrName), s == S_ATTR_NOQUOT_VALUE ? (errorHandler.warning('attribute "' + value + '" missed quot(")!'), 
                     addAttribute(attrName, value.replace(/&#?\w+;/g, entityReplacer), start)) : ("http://www.w3.org/1999/xhtml" === currentNSMap[""] && value.match(/^(?:disabled|checked|selected)$/i) || errorHandler.warning('attribute "' + value + '" missed value!! "' + value + '" instead!!'), 
                     addAttribute(value, value, start));
                     break;
 
-                  case 3:
+                  case S_EQ:
                     throw new Error("attribute value missed!!");
                 }
                 return p;
@@ -176,38 +174,38 @@ function requireSax() {
 
               default:
                 if (c <= " ") switch (s) {
-                  case 0:
-                    el.setTagName(source.slice(start, p)), s = 6;
+                  case S_TAG:
+                    el.setTagName(source.slice(start, p)), s = S_TAG_SPACE;
                     break;
 
-                  case 1:
-                    attrName = source.slice(start, p), s = 2;
+                  case S_ATTR:
+                    attrName = source.slice(start, p), s = S_ATTR_SPACE;
                     break;
 
-                  case 4:
+                  case S_ATTR_NOQUOT_VALUE:
                     var value = source.slice(start, p).replace(/&#?\w+;/g, entityReplacer);
                     errorHandler.warning('attribute "' + value + '" missed quot(")!!'), addAttribute(attrName, value, start);
 
-                  case 5:
-                    s = 6;
+                  case S_ATTR_END:
+                    s = S_TAG_SPACE;
                 } else switch (s) {
-                  case 2:
+                  case S_ATTR_SPACE:
                     el.tagName, "http://www.w3.org/1999/xhtml" === currentNSMap[""] && attrName.match(/^(?:disabled|checked|selected)$/i) || errorHandler.warning('attribute "' + attrName + '" missed value!! "' + attrName + '" instead2!!'), 
-                    addAttribute(attrName, attrName, start), start = p, s = 1;
+                    addAttribute(attrName, attrName, start), start = p, s = S_ATTR;
                     break;
 
-                  case 5:
+                  case S_ATTR_END:
                     errorHandler.warning('attribute space is required"' + attrName + '"!!');
 
-                  case 6:
-                    s = 1, start = p;
+                  case S_TAG_SPACE:
+                    s = S_ATTR, start = p;
                     break;
 
-                  case 3:
-                    s = 4, start = p;
+                  case S_EQ:
+                    s = S_ATTR_NOQUOT_VALUE, start = p;
                     break;
 
-                  case 7:
+                  case S_TAG_CLOSE:
                     throw new Error("elements closed character '/' and '>' must be connected to");
                 }
             }
@@ -420,7 +418,7 @@ function requireDom() {
         pt.constructor = Class);
     }
     hasRequiredDom = 1;
-    var NodeType = {}, ELEMENT_NODE = NodeType.ELEMENT_NODE = 1, ATTRIBUTE_NODE = NodeType.ATTRIBUTE_NODE = 2, TEXT_NODE = NodeType.TEXT_NODE = 3, CDATA_SECTION_NODE = NodeType.CDATA_SECTION_NODE = 4, ENTITY_REFERENCE_NODE = NodeType.ENTITY_REFERENCE_NODE = 5, ENTITY_NODE = NodeType.ENTITY_NODE = 6, PROCESSING_INSTRUCTION_NODE = NodeType.PROCESSING_INSTRUCTION_NODE = 7, COMMENT_NODE = NodeType.COMMENT_NODE = 8, DOCUMENT_NODE = NodeType.DOCUMENT_NODE = 9, DOCUMENT_TYPE_NODE = NodeType.DOCUMENT_TYPE_NODE = 10, DOCUMENT_FRAGMENT_NODE = NodeType.DOCUMENT_FRAGMENT_NODE = 11, NOTATION_NODE = NodeType.NOTATION_NODE = 12, ExceptionCode = {}, ExceptionMessage = {};
+    var htmlns = "http://www.w3.org/1999/xhtml", NodeType = {}, ELEMENT_NODE = NodeType.ELEMENT_NODE = 1, ATTRIBUTE_NODE = NodeType.ATTRIBUTE_NODE = 2, TEXT_NODE = NodeType.TEXT_NODE = 3, CDATA_SECTION_NODE = NodeType.CDATA_SECTION_NODE = 4, ENTITY_REFERENCE_NODE = NodeType.ENTITY_REFERENCE_NODE = 5, ENTITY_NODE = NodeType.ENTITY_NODE = 6, PROCESSING_INSTRUCTION_NODE = NodeType.PROCESSING_INSTRUCTION_NODE = 7, COMMENT_NODE = NodeType.COMMENT_NODE = 8, DOCUMENT_NODE = NodeType.DOCUMENT_NODE = 9, DOCUMENT_TYPE_NODE = NodeType.DOCUMENT_TYPE_NODE = 10, DOCUMENT_FRAGMENT_NODE = NodeType.DOCUMENT_FRAGMENT_NODE = 11, NOTATION_NODE = NodeType.NOTATION_NODE = 12, ExceptionCode = {}, ExceptionMessage = {};
     ExceptionCode.INDEX_SIZE_ERR = (ExceptionMessage[1] = "Index size error", 1), ExceptionCode.DOMSTRING_SIZE_ERR = (ExceptionMessage[2] = "DOMString size error", 
     2);
     var HIERARCHY_REQUEST_ERR = ExceptionCode.HIERARCHY_REQUEST_ERR = (ExceptionMessage[3] = "Hierarchy request error", 
@@ -567,7 +565,7 @@ function requireDom() {
           case ELEMENT_NODE:
             visibleNamespaces || (visibleNamespaces = []), visibleNamespaces.length;
             var attrs = node.attributes, len = attrs.length, child = node.firstChild, nodeName = node.tagName;
-            isHTML = "http://www.w3.org/1999/xhtml" === node.namespaceURI || isHTML, buf.push("<", nodeName);
+            isHTML = htmlns === node.namespaceURI || isHTML, buf.push("<", nodeName);
             for (var i = 0; i < len; i++) {
                 "xmlns" == (attr = attrs.item(i)).prefix ? visibleNamespaces.push({
                     prefix: attr.localName,
@@ -1672,7 +1670,7 @@ X2JS$1.exports = function(config) {
 
 var X2JS = X2JS$1.exports;
 
-const Attr = function(name) {
+const MIME_TYPE_VIDEO_PREFIX = "video/", Attr = function(name) {
     return "@" + name;
 };
 
@@ -1716,7 +1714,7 @@ class DashMPD {
             })), result;
         }
         function filterFnForUnknownAdaptationSet(element) {
-            if (!(element[Attr(DashConstants.ATTR_MIME_TYPE)] ? element[Attr(DashConstants.ATTR_MIME_TYPE)] : "").startsWith("video/")) return !0;
+            if (!(element[Attr(DashConstants.ATTR_MIME_TYPE)] ? element[Attr(DashConstants.ATTR_MIME_TYPE)] : "").startsWith(MIME_TYPE_VIDEO_PREFIX)) return !0;
             let result = !1;
             return ranges.forEach((range => {
                 range[0] <= element[Attr(DashConstants.ATTR_BANDWIDTH)] && element[Attr(DashConstants.ATTR_BANDWIDTH)] <= range[1] && (result = !0);
@@ -1725,7 +1723,7 @@ class DashMPD {
         this.mpd[DashConstants.MPD][DashConstants.PERIOD].forEach((period => {
             period[DashConstants.ADAPTATION_SET].forEach((adaptationSet => {
                 const _contentType = adaptationSet[this.attr(DashConstants.ATTR_CONTENT_TYPE)] ? adaptationSet[this.attr(DashConstants.ATTR_CONTENT_TYPE)] : "", _mimeType = adaptationSet[this.attr(DashConstants.ATTR_MIME_TYPE)] ? adaptationSet[this.attr(DashConstants.ATTR_MIME_TYPE)] : "";
-                if ("video" == _contentType || _mimeType.startsWith("video/")) {
+                if ("video" == _contentType || _mimeType.startsWith(MIME_TYPE_VIDEO_PREFIX)) {
                     let filteredRenditions = adaptationSet[DashConstants.REPRESENTATION].filter(filterFnForVideoAdaptationSet);
                     adaptationSet[DashConstants.REPRESENTATION] = filteredRenditions;
                 } else if ("" === _contentType && "" === _mimeType) {
@@ -1737,8 +1735,531 @@ class DashMPD {
     }
 }
 
+var dist = {}, abs$1 = {}, isNegative$1 = {}, toUnit = {}, parse = {}, units = {};
+
+!function(exports) {
+    var __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+        return __assign = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+            return t;
+        }, __assign.apply(this, arguments);
+    };
+    Object.defineProperty(exports, "__esModule", {
+        value: !0
+    }), exports.UNITS_META = exports.UNITS = exports.UNITS_META_MAP = exports.UNITS_META_MAP_LITERAL = exports.ZERO = void 0;
+    exports.ZERO = Object.freeze({
+        years: 0,
+        months: 0,
+        weeks: 0,
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        milliseconds: 0
+    }), exports.UNITS_META_MAP_LITERAL = {
+        years: {
+            milliseconds: 31536e6,
+            months: 12,
+            dateGetter: function(date) {
+                return date.getFullYear();
+            },
+            ISOCharacter: "Y",
+            ISOPrecision: "period"
+        },
+        months: {
+            milliseconds: 2628e6,
+            months: 1,
+            dateGetter: function(date) {
+                return date.getMonth();
+            },
+            ISOCharacter: "M",
+            ISOPrecision: "period"
+        },
+        weeks: {
+            milliseconds: 6048e5,
+            dateGetter: function() {
+                return 0;
+            },
+            ISOCharacter: "W",
+            ISOPrecision: "period",
+            stringifyConvertTo: "days"
+        },
+        days: {
+            milliseconds: 864e5,
+            dateGetter: function(date) {
+                return date.getDate();
+            },
+            ISOCharacter: "D",
+            ISOPrecision: "period"
+        },
+        hours: {
+            milliseconds: 36e5,
+            dateGetter: function(date) {
+                return date.getHours();
+            },
+            ISOCharacter: "H",
+            ISOPrecision: "time"
+        },
+        minutes: {
+            milliseconds: 6e4,
+            dateGetter: function(date) {
+                return date.getMinutes();
+            },
+            ISOCharacter: "M",
+            ISOPrecision: "time"
+        },
+        seconds: {
+            milliseconds: 1e3,
+            dateGetter: function(date) {
+                return date.getSeconds();
+            },
+            ISOCharacter: "S",
+            ISOPrecision: "time"
+        },
+        milliseconds: {
+            milliseconds: 1,
+            dateGetter: function(date) {
+                return date.getMilliseconds();
+            },
+            stringifyConvertTo: "seconds"
+        }
+    }, exports.UNITS_META_MAP = exports.UNITS_META_MAP_LITERAL, exports.UNITS = Object.freeze([ "years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds" ]), 
+    exports.UNITS_META = Object.freeze(exports.UNITS.map((function(unit) {
+        return __assign(__assign({}, exports.UNITS_META_MAP[unit]), {
+            unit
+        });
+    })));
+}(units);
+
+var hasRequiredNegate, parseISODuration = {}, negate = {};
+
+function requireNegate() {
+    if (hasRequiredNegate) return negate;
+    hasRequiredNegate = 1;
+    var __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+        return __assign = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+            return t;
+        }, __assign.apply(this, arguments);
+    };
+    Object.defineProperty(negate, "__esModule", {
+        value: !0
+    }), negate.negate = void 0;
+    var units_1 = units, parse_1 = requireParse();
+    return negate.negate = function(duration) {
+        var output = __assign({}, (0, parse_1.parse)(duration));
+        return units_1.UNITS.forEach((function(unit) {
+            output[unit] = 0 === output[unit] ? 0 : -output[unit];
+        })), output;
+    }, negate;
+}
+
+var numberUtils = {};
+
+Object.defineProperty(numberUtils, "__esModule", {
+    value: !0
+}), numberUtils.isNegativelySigned = void 0;
+
+var hasRequiredParseISODuration;
+
+numberUtils.isNegativelySigned = function(n) {
+    return n < 0 || Object.is(n, -0);
+};
+
+var validate$1 = {};
+
+Object.defineProperty(validate$1, "__esModule", {
+    value: !0
+}), validate$1.validate = void 0;
+
+var units_1$7 = units;
+
+validate$1.validate = function(duration) {
+    Object.keys(duration).forEach((function(unit) {
+        if (!units_1$7.UNITS.includes(unit)) throw new TypeError('Unexpected property "'.concat(unit, '" on Duration object.'));
+        if (!Number.isInteger(duration[unit])) throw new TypeError('Property "'.concat(unit, '" must be a an integer. Received ').concat(duration[unit], "."));
+    }));
+};
+
+var cleanDurationObject$1 = {}, __assign$4 = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign$4 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign$4.apply(this, arguments);
+};
+
+Object.defineProperty(cleanDurationObject$1, "__esModule", {
+    value: !0
+}), cleanDurationObject$1.cleanDurationObject = void 0;
+
+var hasRequiredParse, units_1$6 = units;
+
+function requireParse() {
+    if (hasRequiredParse) return parse;
+    hasRequiredParse = 1;
+    var __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+        return __assign = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+            return t;
+        }, __assign.apply(this, arguments);
+    };
+    Object.defineProperty(parse, "__esModule", {
+        value: !0
+    }), parse.parse = void 0;
+    var units_1 = units, parseISODuration_1 = function() {
+        if (hasRequiredParseISODuration) return parseISODuration;
+        hasRequiredParseISODuration = 1;
+        var __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+            return __assign = Object.assign || function(t) {
+                for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+                return t;
+            }, __assign.apply(this, arguments);
+        };
+        Object.defineProperty(parseISODuration, "__esModule", {
+            value: !0
+        }), parseISODuration.parseISODuration = void 0;
+        var units_1 = units, negate_1 = requireNegate(), numberUtils_1 = numberUtils, millisecondsPattern = "(?:[,.](\\d{1,3})\\d*)?", unitPattern = function(unit) {
+            return "(?:(-?\\d+)".concat(unit, ")?");
+        }, createDurationParser = function(regex, unitsOrder) {
+            return function(duration) {
+                var match = duration.match(regex);
+                if (!match) return null;
+                var isDurationNegative = "-" === match[1], unitStrings = match.slice(2);
+                if (unitStrings.every((function(value) {
+                    return void 0 === value;
+                }))) return null;
+                var unitNumbers = unitStrings.map((function(value, i) {
+                    value = null != value ? value : "0";
+                    var isMilliseconds = i === unitStrings.length - 1;
+                    return Number(isMilliseconds ? value.padEnd(3, "0") : value);
+                })), output = __assign({}, units_1.ZERO);
+                return unitsOrder.forEach((function(unit, i) {
+                    output[unit] = unitNumbers[i];
+                })), (0, numberUtils_1.isNegativelySigned)(output.seconds) && (output.milliseconds *= -1), 
+                isDurationNegative ? (0, negate_1.negate)(output) : output;
+            };
+        }, parseFullFormatISODuration = createDurationParser(new RegExp([ "^(-)?P", "(\\d{4})", "-?", "(\\d{2})", "-?", "(\\d{2})", "T", "(\\d{2})", ":?", "(\\d{2})", ":?", "(\\d{2})", millisecondsPattern, "$" ].join("")), [ "years", "months", "days", "hours", "minutes", "seconds", "milliseconds" ]), parseUnitsISODuration = createDurationParser(new RegExp([ "^(-)?P", unitPattern("Y"), unitPattern("M"), unitPattern("W"), unitPattern("D"), "(?:T", unitPattern("H"), unitPattern("M"), unitPattern("".concat(millisecondsPattern, "S")), ")?$" ].join("")), [ "years", "months", "weeks", "days", "hours", "minutes", "seconds", "milliseconds" ]);
+        return parseISODuration.parseISODuration = function(duration) {
+            var output = parseUnitsISODuration(duration) || parseFullFormatISODuration(duration);
+            if (null === output) throw new SyntaxError('Failed to parse duration. "'.concat(duration, '" is not a valid ISO duration string.'));
+            return output;
+        }, parseISODuration;
+    }(), validate_1 = validate$1, cleanDurationObject_1 = cleanDurationObject$1;
+    return parse.parse = function(duration) {
+        var output = function(duration) {
+            return "string" == typeof duration ? (0, parseISODuration_1.parseISODuration)(duration) : __assign(__assign({}, units_1.ZERO), "number" == typeof duration ? {
+                milliseconds: duration
+            } : duration);
+        }(duration);
+        return (0, validate_1.validate)(output), (0, cleanDurationObject_1.cleanDurationObject)(output);
+    }, parse;
+}
+
+cleanDurationObject$1.cleanDurationObject = function(duration) {
+    var output = __assign$4({}, duration);
+    return units_1$6.UNITS.forEach((function(key) {
+        0 === output[key] && (output[key] = 0);
+    })), output;
+}, function(exports) {
+    Object.defineProperty(exports, "__esModule", {
+        value: !0
+    }), exports.toYears = exports.toMonths = exports.toWeeks = exports.toDays = exports.toHours = exports.toMinutes = exports.toSeconds = exports.toUnit = exports.toMilliseconds = void 0;
+    var parse_1 = requireParse(), units_1 = units;
+    exports.toMilliseconds = function(duration) {
+        var parsed = (0, parse_1.parse)(duration);
+        return units_1.UNITS_META.reduce((function(total, _a) {
+            var unit = _a.unit, milliseconds = _a.milliseconds;
+            return total + parsed[unit] * milliseconds;
+        }), 0);
+    };
+    exports.toUnit = function(duration, unit) {
+        return (0, exports.toMilliseconds)(duration) / units_1.UNITS_META_MAP[unit].milliseconds;
+    };
+    var createDurationConverter = function(unit) {
+        return function(duration) {
+            return (0, exports.toUnit)(duration, unit);
+        };
+    };
+    exports.toSeconds = createDurationConverter("seconds"), exports.toMinutes = createDurationConverter("minutes"), 
+    exports.toHours = createDurationConverter("hours"), exports.toDays = createDurationConverter("days"), 
+    exports.toWeeks = createDurationConverter("weeks"), exports.toMonths = createDurationConverter("months"), 
+    exports.toYears = createDurationConverter("years");
+}(toUnit), Object.defineProperty(isNegative$1, "__esModule", {
+    value: !0
+}), isNegative$1.isNegative = void 0;
+
+var toUnit_1$2 = toUnit;
+
+isNegative$1.isNegative = function(duration) {
+    return (0, toUnit_1$2.toMilliseconds)(duration) < 0;
+}, Object.defineProperty(abs$1, "__esModule", {
+    value: !0
+}), abs$1.abs = void 0;
+
+var isNegative_1 = isNegative$1, negate_1$2 = requireNegate(), parse_1$5 = requireParse();
+
+abs$1.abs = function(duration) {
+    return (0, isNegative_1.isNegative)(duration) ? (0, negate_1$2.negate)(duration) : (0, 
+    parse_1$5.parse)(duration);
+};
+
+var apply$1 = {}, dateUtils = {};
+
+!function(exports) {
+    Object.defineProperty(exports, "__esModule", {
+        value: !0
+    }), exports.addMonths = exports.getDaysInMonth = void 0;
+    exports.getDaysInMonth = function(date) {
+        var monthIndex = date.getMonth(), lastDayOfMonth = new Date(0);
+        return lastDayOfMonth.setFullYear(date.getFullYear(), monthIndex + 1, 0), lastDayOfMonth.setHours(0, 0, 0, 0), 
+        lastDayOfMonth.getDate();
+    };
+    exports.addMonths = function(date, value) {
+        var desiredMonth = date.getMonth() + value, dateWithDesiredMonth = new Date(0);
+        dateWithDesiredMonth.setFullYear(date.getFullYear(), desiredMonth, 1), dateWithDesiredMonth.setHours(0, 0, 0, 0);
+        var daysInMonth = (0, exports.getDaysInMonth)(dateWithDesiredMonth);
+        date.setMonth(desiredMonth, Math.min(daysInMonth, date.getDate()));
+    };
+}(dateUtils), Object.defineProperty(apply$1, "__esModule", {
+    value: !0
+}), apply$1.apply = void 0;
+
+var dateUtils_1 = dateUtils, parse_1$4 = requireParse();
+
+apply$1.apply = function(date, duration) {
+    var parsedDate = new Date(date), _a = (0, parse_1$4.parse)(duration), years = _a.years, months = _a.months, weeks = _a.weeks, days = _a.days, hours = _a.hours, minutes = _a.minutes, seconds = _a.seconds, milliseconds = _a.milliseconds;
+    return (0, dateUtils_1.addMonths)(parsedDate, 12 * years + months), parsedDate.setDate(parsedDate.getDate() + 7 * weeks + days), 
+    parsedDate.setHours(parsedDate.getHours() + hours, parsedDate.getMinutes() + minutes, parsedDate.getSeconds() + seconds, parsedDate.getMilliseconds() + milliseconds), 
+    parsedDate;
+};
+
+var between$1 = {}, __assign$3 = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign$3 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign$3.apply(this, arguments);
+};
+
+Object.defineProperty(between$1, "__esModule", {
+    value: !0
+}), between$1.between = void 0;
+
+var units_1$5 = units;
+
+between$1.between = function(date1, date2) {
+    var a = new Date(date1), b = new Date(date2), output = __assign$3({}, units_1$5.ZERO);
+    return units_1$5.UNITS_META.forEach((function(_a) {
+        var unit = _a.unit, dateGetter = _a.dateGetter;
+        output[unit] = dateGetter(b) - dateGetter(a);
+    })), output;
+};
+
+var isZero$1 = {};
+
+Object.defineProperty(isZero$1, "__esModule", {
+    value: !0
+}), isZero$1.isZero = void 0;
+
+var toUnit_1$1 = toUnit;
+
+isZero$1.isZero = function(duration) {
+    return 0 === (0, toUnit_1$1.toMilliseconds)(duration);
+};
+
+var normalize$1 = {}, __assign$2 = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign$2 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign$2.apply(this, arguments);
+}, __rest = commonjsGlobal && commonjsGlobal.__rest || function(s, e) {
+    var t = {};
+    for (var p in s) Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0 && (t[p] = s[p]);
+    if (null != s && "function" == typeof Object.getOwnPropertySymbols) {
+        var i = 0;
+        for (p = Object.getOwnPropertySymbols(s); i < p.length; i++) e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]) && (t[p[i]] = s[p[i]]);
+    }
+    return t;
+};
+
+Object.defineProperty(normalize$1, "__esModule", {
+    value: !0
+}), normalize$1.normalize = void 0;
+
+var units_1$4 = units, between_1 = between$1, apply_1 = apply$1, toUnit_1 = toUnit, parse_1$3 = requireParse(), createUnitsNormalizer = function(keys, getDivisor) {
+    return function(duration, remaining) {
+        var output = __assign$2({}, duration);
+        return keys.forEach((function(unit) {
+            var divisor = getDivisor(unit);
+            output[unit] = ~~(remaining / divisor), remaining -= output[unit] * divisor;
+        })), output;
+    };
+}, yearMonthNormalizer = createUnitsNormalizer([ "years", "months" ], (function(unit) {
+    return units_1$4.UNITS_META_MAP_LITERAL[unit].months;
+})), dayAndTimeNormalizer = createUnitsNormalizer([ "days", "hours", "minutes", "seconds", "milliseconds" ], (function(unit) {
+    return units_1$4.UNITS_META_MAP_LITERAL[unit].milliseconds;
+}));
+
+normalize$1.normalize = function(duration, referenceDate) {
+    return function(duration) {
+        var _a = (0, parse_1$3.parse)(duration), years = _a.years, months = _a.months, weeks = _a.weeks, days = _a.days, rest = __rest(_a, [ "years", "months", "weeks", "days" ]), output = __assign$2({}, units_1$4.ZERO);
+        return output = yearMonthNormalizer(output, (0, toUnit_1.toMonths)({
+            years,
+            months
+        })), dayAndTimeNormalizer(output, (0, toUnit_1.toMilliseconds)(__assign$2(__assign$2({}, rest), {
+            days: days + 7 * weeks
+        })));
+    }(null != referenceDate ? (0, between_1.between)(referenceDate, (0, apply_1.apply)(referenceDate, duration)) : duration);
+};
+
+var subtract$1 = {}, sum$1 = {}, __assign$1 = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign$1 = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign$1.apply(this, arguments);
+};
+
+Object.defineProperty(sum$1, "__esModule", {
+    value: !0
+}), sum$1.sum = void 0;
+
+var units_1$3 = units, parse_1$2 = requireParse();
+
+sum$1.sum = function() {
+    for (var durations = [], _i = 0; _i < arguments.length; _i++) durations[_i] = arguments[_i];
+    var output = __assign$1({}, units_1$3.ZERO);
+    return durations.map(parse_1$2.parse).forEach((function(duration) {
+        units_1$3.UNITS.forEach((function(key) {
+            output[key] += duration[key];
+        }));
+    })), output;
+};
+
+var __spreadArray = commonjsGlobal && commonjsGlobal.__spreadArray || function(to, from, pack) {
+    if (pack || 2 === arguments.length) for (var ar, i = 0, l = from.length; i < l; i++) !ar && i in from || (ar || (ar = Array.prototype.slice.call(from, 0, i)), 
+    ar[i] = from[i]);
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+
+Object.defineProperty(subtract$1, "__esModule", {
+    value: !0
+}), subtract$1.subtract = void 0;
+
+var negate_1$1 = requireNegate(), sum_1 = sum$1;
+
+subtract$1.subtract = function(duration) {
+    for (var durationsToSubtract = [], _i = 1; _i < arguments.length; _i++) durationsToSubtract[_i - 1] = arguments[_i];
+    return sum_1.sum.apply(void 0, __spreadArray([ duration ], durationsToSubtract.map(negate_1$1.negate), !1));
+};
+
+var toString$1 = {}, getUnitCount$1 = {}, __assign = commonjsGlobal && commonjsGlobal.__assign || function() {
+    return __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) for (var p in s = arguments[i]) Object.prototype.hasOwnProperty.call(s, p) && (t[p] = s[p]);
+        return t;
+    }, __assign.apply(this, arguments);
+};
+
+Object.defineProperty(getUnitCount$1, "__esModule", {
+    value: !0
+}), getUnitCount$1.getUnitCount = void 0;
+
+var units_1$2 = units, parse_1$1 = requireParse();
+
+getUnitCount$1.getUnitCount = function(duration) {
+    var parsed = __assign({}, (0, parse_1$1.parse)(duration)), count = 0;
+    return units_1$2.UNITS.forEach((function(unit) {
+        0 !== parsed[unit] && count++;
+    })), count;
+};
+
+var checkAllUnitsNegative$1 = {};
+
+Object.defineProperty(checkAllUnitsNegative$1, "__esModule", {
+    value: !0
+}), checkAllUnitsNegative$1.checkAllUnitsNegative = void 0;
+
+var negate_1 = requireNegate(), parse_1 = requireParse(), units_1$1 = units;
+
+checkAllUnitsNegative$1.checkAllUnitsNegative = function(duration) {
+    var parsed = (0, parse_1.parse)(duration), hasPositive = !1, hasNegative = !1;
+    return units_1$1.UNITS.forEach((function(unit) {
+        var value = parsed[unit];
+        value < 0 ? hasNegative = !0 : value > 0 && (hasPositive = !0);
+    })), hasNegative && !hasPositive ? {
+        isAllNegative: !0,
+        maybeAbsDuration: (0, negate_1.negate)(parsed)
+    } : {
+        isAllNegative: !1,
+        maybeAbsDuration: parsed
+    };
+}, Object.defineProperty(toString$1, "__esModule", {
+    value: !0
+}), toString$1.toString = void 0;
+
+var isZero_1 = isZero$1, getUnitCount_1 = getUnitCount$1, units_1 = units, checkAllUnitsNegative_1 = checkAllUnitsNegative$1, joinComponents = function(component) {
+    return component.join("").replace(/\./g, ",");
+};
+
+toString$1.toString = function(duration) {
+    if ((0, isZero_1.isZero)(duration)) return "P0D";
+    var _a = (0, checkAllUnitsNegative_1.checkAllUnitsNegative)(duration), parsed = _a.maybeAbsDuration, isAllNegative = _a.isAllNegative;
+    if (1 === (0, getUnitCount_1.getUnitCount)(parsed) && 0 !== parsed.weeks) return "P".concat(parsed.weeks, "W");
+    var components = {
+        period: [],
+        time: []
+    };
+    units_1.UNITS_META.forEach((function(_a) {
+        var fromUnit = _a.unit, toUnit = _a.stringifyConvertTo;
+        if (null != toUnit) {
+            var millisecondValue = parsed[fromUnit] * units_1.UNITS_META_MAP[fromUnit].milliseconds;
+            parsed[toUnit] += millisecondValue / units_1.UNITS_META_MAP[toUnit].milliseconds, 
+            parsed[fromUnit] = 0;
+        }
+    })), units_1.UNITS_META.forEach((function(_a) {
+        var unit = _a.unit, ISOPrecision = _a.ISOPrecision, ISOCharacter = _a.ISOCharacter, value = parsed[unit];
+        null != ISOPrecision && 0 !== value && components[ISOPrecision].push("".concat(value).concat(ISOCharacter));
+    }));
+    var output = "P".concat(joinComponents(components.period));
+    return components.time.length && (output += "T".concat(joinComponents(components.time))), 
+    isAllNegative && (output = "-".concat(output)), output;
+};
+
+var types = {};
+
+Object.defineProperty(types, "__esModule", {
+    value: !0
+}), function(exports) {
+    var __createBinding = commonjsGlobal && commonjsGlobal.__createBinding || (Object.create ? function(o, m, k, k2) {
+        void 0 === k2 && (k2 = k), Object.defineProperty(o, k2, {
+            enumerable: !0,
+            get: function() {
+                return m[k];
+            }
+        });
+    } : function(o, m, k, k2) {
+        void 0 === k2 && (k2 = k), o[k2] = m[k];
+    }), __exportStar = commonjsGlobal && commonjsGlobal.__exportStar || function(m, exports) {
+        for (var p in m) "default" === p || Object.prototype.hasOwnProperty.call(exports, p) || __createBinding(exports, m, p);
+    };
+    Object.defineProperty(exports, "__esModule", {
+        value: !0
+    }), exports.UNITS = void 0, __exportStar(abs$1, exports), __exportStar(apply$1, exports), 
+    __exportStar(between$1, exports), __exportStar(isNegative$1, exports), __exportStar(isZero$1, exports), 
+    __exportStar(requireNegate(), exports), __exportStar(normalize$1, exports), __exportStar(requireParse(), exports), 
+    __exportStar(subtract$1, exports), __exportStar(sum$1, exports), __exportStar(toString$1, exports), 
+    __exportStar(toUnit, exports), __exportStar(types, exports);
+    var units_1 = units;
+    Object.defineProperty(exports, "UNITS", {
+        enumerable: !0,
+        get: function() {
+            return units_1.UNITS;
+        }
+    });
+}(dist);
+
+const AT = "@";
+
 function attr(name) {
-    return "@" + name;
+    return AT + name;
 }
 
 function toNumber(str) {
@@ -1763,17 +2284,17 @@ function filter(range, bandwidth, tolerance = 1e5) {
     return ranges[0] <= bandwidth && bandwidth <= ranges[1] && (result = !0), result;
 }
 
-function parseResolution(maxSupportedResolution) {
-    const pair = maxSupportedResolution.split("-");
-    if (!pair[0] || !pair[1] || !pair[0] && !pair[1]) throw new Error("DashParser: filterRepresentationsByResolution ,updateRepresentationAtIndex and updateRepresentations need resolution in format 'x-y'.");
-    return {
-        width: toNumber(pair[0]),
-        height: toNumber(pair[1])
-    };
-}
-
 function getContentType(adaptationSet) {
     return [ adaptationSet[attr(DashConstants.ATTR_CONTENT_TYPE)] ? adaptationSet[attr(DashConstants.ATTR_CONTENT_TYPE)] : "", adaptationSet[attr(DashConstants.ATTR_MIME_TYPE)] ? adaptationSet[attr(DashConstants.ATTR_MIME_TYPE)] : "" ];
+}
+
+function addTimeInMPD(periodDuration, currentMediaDuration) {
+    const totalDuration = dist.sum(periodDuration, currentMediaDuration);
+    return dist.toString(totalDuration).replace(/,/g, ".");
+}
+
+function convertTimeInMPDToSeconds(periodDuration) {
+    return dist.toSeconds(periodDuration);
 }
 
 class Constants {}
@@ -1781,10 +2302,15 @@ class Constants {}
 Constants.ATTR_MIME_TYPE = "@mimeType", Constants.ATTR_CONTENT_TYPE = "@contentType", 
 Constants.ATTR_BANDWIDTH = "@bandwidth", Constants.MPD = "MPD", Constants.PERIOD = "Period", 
 Constants.ADAPTATION_SET = "AdaptationSet", Constants.REPRESENTATION = "Representation", 
-Constants.ATTR_WIDTH = "@width", Constants.ATTR_HEIGHT = "@height", Constants.ATTR_LANG = "@lang", 
-Constants.MEDIA_TYPE_VIDEO = "video", Constants.MEDIA_TYPE_AUDIO = "audio", Constants.MEDIA_TYPE_TEXT = "text", 
-Constants.MEDIA_TYPE_APPLICATON = "application", Constants.MIME_TYPE_VIDEO_PREFIX = `${Constants.MEDIA_TYPE_VIDEO}/`, 
-Constants.MIME_TYPE_AUDIO_PREFIX = `${Constants.MEDIA_TYPE_AUDIO}/`, Constants.MIME_TYPE_TEXT_PREFIX = `${Constants.MEDIA_TYPE_APPLICATON}/`;
+Constants.ATTR_WIDTH = "@width", Constants.ATTR_T = "t", Constants.ATTR_HEIGHT = "@height", 
+Constants.ATTR_LANG = "@lang", Constants.MEDIA_TYPE_VIDEO = "video", Constants.MEDIA_TYPE_AUDIO = "audio", 
+Constants.MEDIA_TYPE_TEXT = "text", Constants.MEDIA_TYPE_APPLICATON = "application", 
+Constants.MIME_TYPE_VIDEO_PREFIX = `${Constants.MEDIA_TYPE_VIDEO}/`, Constants.MIME_TYPE_AUDIO_PREFIX = `${Constants.MEDIA_TYPE_AUDIO}/`, 
+Constants.MIME_TYPE_TEXT_PREFIX = `${Constants.MEDIA_TYPE_APPLICATON}/`, Constants.ATTR_START_NUMBER = "startNumber", 
+Constants.ATTR_PRESENTATION_TIME_OFFSET = "presentationTimeOffset", Constants.SEGMENT_TEMPLATE = "SegmentTemplate", 
+Constants.ATTR_DURATION = "duration", Constants.ATTR_TIMESCALE = "timescale", Constants.SEGMENT_TIMELINE = "SegmentTimeline", 
+Constants.ATTR_MIDROLL = "midroll", Constants.S = "S", Constants.ATTR_START = "start", 
+Constants.ATTR_MEDIA_PRESENTATION_DURATION = "mediaPresentationDuration", Constants.ATTR_ID = "id";
 
 class DashParser {
     constructor() {
@@ -1808,7 +2334,7 @@ class DashParser {
                         const intermediateResult = filter(range, element[Constants.ATTR_BANDWIDTH], tolerance);
                         match[range] = intermediateResult;
                     }
-                })), result = Object.values(match).includes(!0), logger.log("bws object values", Object.values(match)), 
+                })), result = Object.values(match).includes(!0), logger.log("filterRepresentationsByBandwidth filterFnForVideoAdaptationSet bws object values", Object.values(match)), 
                 result;
             };
             try {
@@ -1828,7 +2354,14 @@ class DashParser {
         }, this.filterRepresentationsByResolution = (mpdJson, maxSupportedResolution) => {
             if (!mpdJson) throw new Error("DashParser: filterRepresentationsByResolution api failed,dash mpd json object cannot be empty");
             if (!maxSupportedResolution || "string" != typeof maxSupportedResolution) throw new Error("DashParser: filterRepresentationsByResolution api failed,maxSupportedResolution should be a string and not empty");
-            const maxSupportedResolutionObject = parseResolution(maxSupportedResolution), filterFnForVideoResolution = knownMimeType => element => {
+            const maxSupportedResolutionObject = function(maxSupportedResolution) {
+                const pair = maxSupportedResolution.split("-");
+                if (!pair[0] || !pair[1] || !pair[0] && !pair[1]) throw new Error("DashParser: filterRepresentationsByResolution ,updateRepresentationAtIndex and updateRepresentations need resolution in format 'x-y'.");
+                return {
+                    width: toNumber(pair[0]),
+                    height: toNumber(pair[1])
+                };
+            }(maxSupportedResolution), filterFnForVideoResolution = knownMimeType => element => {
                 let result = !1;
                 if (!knownMimeType) {
                     const _mimeType = element[Constants.ATTR_MIME_TYPE] ? element[Constants.ATTR_MIME_TYPE] : "";
@@ -1856,67 +2389,6 @@ class DashParser {
                 }));
             } catch (error) {
                 throw new Error(`DashParser: failed to filterRepresentationsByResolution due to ${error.message}`);
-            }
-        }, this.updateRepresentationAtIndex = (mpdJson, resolution, newIndex) => {
-            if (logger.log(resolution, newIndex), logger.log(typeof resolution, typeof newIndex), 
-            !mpdJson) throw new Error("DashParser: updateRepresentationAtIndex api failed,dash mpd json object cannot be empty");
-            if (!resolution) throw new Error("DashParser: updateRepresentationAtIndex api failed,resolution cannot be empty");
-            if ("string" != typeof resolution) throw new Error("DashParser: updateRepresentationAtIndex api failed,resolution must be a string");
-            if ("number" != typeof newIndex || newIndex < 0) throw new Error("DashParser: updateRepresentationAtIndex api failed,newIndex must be a number greater than or equal to 0");
-            if (0 != newIndex && !newIndex || null === newIndex) throw new Error("DashParser: updateRepresentationAtIndex api failed,newIndex cannot be empty,undefined or null");
-            try {
-                mpdJson[Constants.MPD][Constants.PERIOD].forEach((period => {
-                    period[Constants.ADAPTATION_SET].forEach((adaptationSet => {
-                        const [_contentType, _mimeType] = getContentType(adaptationSet);
-                        (_contentType == Constants.MEDIA_TYPE_VIDEO || _mimeType.startsWith(Constants.MIME_TYPE_VIDEO_PREFIX)) && (representations => {
-                            let isVariantAtIndexUpdated = !1;
-                            if (newIndex >= representations.length) return isVariantAtIndexUpdated;
-                            let currVariantIndex = 0;
-                            const resolutionObject = parseResolution(resolution);
-                            for (;currVariantIndex < representations.length; ) if (representations[currVariantIndex][Constants.ATTR_WIDTH] && representations[currVariantIndex][Constants.ATTR_HEIGHT] && representations[currVariantIndex][Constants.ATTR_WIDTH] === resolutionObject.width && representations[currVariantIndex][Constants.ATTR_HEIGHT] === resolutionObject.height) {
-                                if (currVariantIndex == newIndex) return;
-                                {
-                                    const splicedEle = representations.splice(currVariantIndex, 1)[0];
-                                    representations.splice(newIndex, 0, splicedEle), isVariantAtIndexUpdated = !0, logger.log("updateRepresentationAtIndex representation updated at index %s", newIndex), 
-                                    logger.log("updateRepresentationAtIndex representation updated at index %s", newIndex), 
-                                    logger.log("updateRepresentationAtIndex element spliced %s", splicedEle), currVariantIndex++;
-                                }
-                            } else currVariantIndex++;
-                        })(adaptationSet[Constants.REPRESENTATION]);
-                    }));
-                }));
-            } catch (error) {
-                throw new Error(`DashParser: failed to updateRepresentationAtIndex due to ${error.message}`);
-            }
-        }, this.updateRepresentations = (mpdJson, resolutions, newIndex = 0) => {
-            if (!mpdJson) throw new Error("DashParser: updateRepresentations api failed,dash mpd json object cannot be empty");
-            if (!resolutions || 0 == resolutions.length) throw new Error("DashParser: updateRepresentations api failed,resolutions cannot be empty");
-            if (!Array.isArray(resolutions)) throw new Error("DashParser: updateRepresentations api failed,resolutions must be an array");
-            if (!resolutions.every((item => "string" == typeof item))) throw new Error("DashParser: updateRepresentations api failed,resolutions must be an array of strings");
-            try {
-                mpdJson[Constants.MPD][Constants.PERIOD].forEach((period => {
-                    period[Constants.ADAPTATION_SET].forEach((adaptationSet => {
-                        const [_contentType, _mimeType] = getContentType(adaptationSet);
-                        (_contentType == Constants.MEDIA_TYPE_VIDEO || _mimeType.startsWith(Constants.MIME_TYPE_VIDEO_PREFIX)) && (representations => {
-                            newIndex = 0;
-                            const numOfRes = resolutions.length;
-                            for (let currResIndex = 0; currResIndex < numOfRes; currResIndex++) {
-                                let currVariantIndex = 0;
-                                const resolutionObject = parseResolution(resolutions[currResIndex]);
-                                for (;currVariantIndex < representations.length; ) if (representations[currVariantIndex][Constants.ATTR_WIDTH] && representations[currVariantIndex][Constants.ATTR_HEIGHT] && representations[currVariantIndex][Constants.ATTR_WIDTH] === resolutionObject.width && representations[currVariantIndex][Constants.ATTR_HEIGHT] === resolutionObject.height) {
-                                    if (currVariantIndex != newIndex) {
-                                        const splicedEle = representations.splice(currVariantIndex, 1)[0];
-                                        representations.splice(newIndex, 0, splicedEle), logger.log("updateRepresentations representation updated at index %s", newIndex), 
-                                        logger.log("updateRepresentations currVariantIndex %s", currVariantIndex), logger.log("updateRepresentations element spliced %s", splicedEle), 
-                                        newIndex++, currVariantIndex++;
-                                    }
-                                } else currVariantIndex++;
-                            }
-                        })(adaptationSet[Constants.REPRESENTATION]);
-                    }));
-                }));
-            } catch (error) {
-                throw new Error(`DashParser: failed to updateRepresentations due to ${error.message}`);
             }
         }, this.filterAdaptationSetsByAudioLanguage = (mpdJson, languages) => {
             if (!mpdJson) throw new Error("DashParser: filterAdaptationSetsByAudioLanguage api failed,dash mpd json object cannot be empty");
@@ -1963,7 +2435,8 @@ class DashParser {
                         const [_contentType, _mimeType] = getContentType(element);
                         if (logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _contentType %s", _contentType), 
                         logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleAdaptationSet _mimeType %s", _mimeType), 
-                        _mimeType && !_mimeType.startsWith(Constants.MIME_TYPE_TEXT_PREFIX) || _contentType && _contentType != Constants.MEDIA_TYPE_TEXT) return !0;
+                        !_contentType && !_mimeType) return !0;
+                        if (_mimeType && !_mimeType.startsWith(Constants.MIME_TYPE_TEXT_PREFIX) || _contentType && _contentType != Constants.MEDIA_TYPE_TEXT) return !0;
                         const lang = element[Constants.ATTR_LANG] ? element[Constants.ATTR_LANG] : "";
                         return result = languages.includes(lang), logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleAdaptationSet language matches %s", languages.includes(lang)), 
                         result;
@@ -1974,7 +2447,8 @@ class DashParser {
                             const _mimeType = element[Constants.ATTR_MIME_TYPE] ? element[Constants.ATTR_MIME_TYPE] : "", _contentType = element[Constants.ATTR_CONTENT_TYPE] ? element[Constants.ATTR_CONTENT_TYPE] : "";
                             if (!_mimeType.startsWith(Constants.MIME_TYPE_TEXT_PREFIX) || _contentType != Constants.MEDIA_TYPE_TEXT) return !0;
                             const lang = element[Constants.ATTR_LANG] ? element[Constants.ATTR_LANG] : languageFromAdaptationSet;
-                            return result = languages.includes(lang), logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleRepresentation language matches %s", languages.includes(lang)), 
+                            return logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleRepresentation", lang), 
+                            result = languages.includes(lang), logger.log("filterAdaptationSetsBySubtitlesLanguage filterFnForSubtitleRepresentation language matches %s", languages.includes(lang)), 
                             result;
                         })(languageFromAdaptationSet));
                         adaptationSet[Constants.REPRESENTATION] = filteredRepresentation;
@@ -1983,6 +2457,108 @@ class DashParser {
             } catch (error) {
                 throw new Error(`DashParser: failed to filterAdaptationSetsBySubtitlesLanguage due to ${error.message}`);
             }
+        }, this.bumperInsertion = (mpd, bumperPlaylistArrayObject) => {
+            const self = this;
+            try {
+                if (!mpd || !bumperPlaylistArrayObject || 0 == bumperPlaylistArrayObject.length) throw new Error("Invalid arguments!");
+                const mpdPeriod = mpd[Constants.MPD][Constants.PERIOD], result = [], midRollObjectsDuration = (bumperPlaylistArrayObject = bumperPlaylistArrayObject.sort(((a, b) => a.afterSeconds - b.afterSeconds))).filter((obj => obj.afterSeconds > 0)).map((obj => obj.afterSeconds)), currentMediaDuration = mpd[Constants.MPD]["@" + Constants.ATTR_MEDIA_PRESENTATION_DURATION];
+                1 == mpdPeriod.length && (mpdPeriod[0]["@" + Constants.ATTR_DURATION] || (mpdPeriod[0]["@" + Constants.ATTR_DURATION] = currentMediaDuration)), 
+                logger.log("bumperInsertion currentMediaDuration", currentMediaDuration);
+                const bumperDurations = bumperPlaylistArrayObject.map((bumper => {
+                    const bumperResponse = bumper.responseBodyObject, bumperDuration = bumperResponse[Constants.MPD][Constants.PERIOD][0]["@" + Constants.ATTR_DURATION] ? bumperResponse[Constants.MPD][Constants.PERIOD][0]["@" + Constants.ATTR_DURATION] : bumperResponse[Constants.MPD]["@" + Constants.ATTR_MEDIA_PRESENTATION_DURATION];
+                    return bumperResponse[Constants.MPD][Constants.PERIOD][0]["@" + Constants.ATTR_DURATION] = bumperDuration, 
+                    convertTimeInMPDToSeconds(bumperDuration);
+                }));
+                logger.log("bumperInsertion midroll object durations", midRollObjectsDuration);
+                let jsonStr, midRollDuration = [];
+                for (let i = 0; i < midRollObjectsDuration.length; i++) {
+                    midRollDuration[i] = 0 === i ? midRollObjectsDuration[i] : midRollObjectsDuration[i] - midRollObjectsDuration[i - 1];
+                    const bumperToBeInserted = bumperPlaylistArrayObject[i].responseBodyObject;
+                    logger.log("midroll bumperToBeInserted", bumperToBeInserted);
+                    const periodToBeInserted = bumperToBeInserted[Constants.MPD][Constants.PERIOD][0];
+                    let periodDuration;
+                    periodToBeInserted["@" + Constants.ATTR_DURATION] || (periodDuration = bumperToBeInserted[Constants.MPD]["@" + Constants.ATTR_MEDIA_PRESENTATION_DURATION], 
+                    periodToBeInserted["@" + Constants.ATTR_DURATION] = periodDuration), self.midRollAdInsert(mpd, periodToBeInserted, midRollDuration[i], result);
+                }
+                if (midRollObjectsDuration.length > 0) {
+                    jsonStr = JSON.parse(JSON.stringify(mpdPeriod));
+                    let sum = 0;
+                    for (let i = 0; i < midRollDuration.length; i++) result.push(midRollDuration[i], bumperDurations[i]), 
+                    sum += midRollDuration[i];
+                    result[result.length] = convertTimeInMPDToSeconds(currentMediaDuration) - sum, logger.log("bumperInsertion result", result);
+                    for (let j = 0; j < result.length; j++) jsonStr[j].midroll && (jsonStr[j]["@" + Constants.ATTR_DURATION] = "PT" + result[j] + "S");
+                    mpd[Constants.MPD][Constants.PERIOD] = jsonStr;
+                }
+                const preRollObjects = bumperPlaylistArrayObject.filter((object => -1 === object.afterSeconds)), postRollObjects = bumperPlaylistArrayObject.filter((object => 0 === object.afterSeconds));
+                if (preRollObjects.length > 0 && self.preRollAdInsert(mpd, preRollObjects), postRollObjects.length > 0 && self.postRollAdInsert(mpd, postRollObjects), 
+                preRollObjects.length > 0 || postRollObjects.length > 0) {
+                    const mpdPeriod1 = mpd[Constants.MPD][Constants.PERIOD];
+                    jsonStr = JSON.parse(JSON.stringify(mpdPeriod1));
+                }
+                let periodDuration, mediaDurationAfterBumperInsertion = "PT0S";
+                const startTime = "PT0S";
+                for (let index = 0; index < jsonStr.length; index++) {
+                    const period = jsonStr[index];
+                    if (period["@" + Constants.ATTR_ID] = index, periodDuration = period["@" + Constants.ATTR_DURATION], 
+                    0 == index) period["@" + Constants.ATTR_START] = startTime; else {
+                        const periodStart = jsonStr[index - 1]["@" + Constants.ATTR_START], prevPeriodDuration = jsonStr[index - 1]["@" + Constants.ATTR_DURATION];
+                        period["@" + Constants.ATTR_START] = addTimeInMPD(periodStart, prevPeriodDuration);
+                    }
+                    mediaDurationAfterBumperInsertion = addTimeInMPD(mediaDurationAfterBumperInsertion, periodDuration);
+                }
+                mpd[Constants.MPD][Constants.PERIOD] = jsonStr, mpd[Constants.MPD]["@" + Constants.ATTR_MEDIA_PRESENTATION_DURATION] = mediaDurationAfterBumperInsertion;
+            } catch (error) {
+                throw new Error(`DashParser: failed to perform bumper insertion due to ${error.message}`);
+            }
+        }, this.postRollAdInsert = (mpd, bumper) => {
+            for (let i = 0; i < bumper.length; i++) {
+                const periodToBeInserted = bumper[i].responseBodyObject[Constants.MPD][Constants.PERIOD][0];
+                mpd[Constants.MPD][Constants.PERIOD].push(periodToBeInserted);
+            }
+        }, this.preRollAdInsert = (mpd, bumper) => {
+            for (let i = 0; i < bumper.length; i++) {
+                const periodToBeInserted = bumper[i].responseBodyObject[Constants.MPD][Constants.PERIOD][0];
+                mpd[Constants.MPD][Constants.PERIOD].splice(i, 0, periodToBeInserted);
+            }
+        }, this.midRollAdInsert = (mpd, bumper, secondsAfterWhichAdHasToBeInserted, result) => {
+            const Period = mpd[Constants.MPD][Constants.PERIOD][0];
+            Period[Constants.ATTR_MIDROLL] = !0;
+            const periodCopy = JSON.parse(JSON.stringify(Period));
+            periodCopy[Constants.ATTR_MIDROLL] = !0;
+            let startNumber, segmentTemplateDuration, segmentTimescale, segmentDuration;
+            periodCopy[Constants.ADAPTATION_SET].forEach((adaptationSet => {
+                const segmentTemplate = adaptationSet[Constants.SEGMENT_TEMPLATE];
+                if (segmentTemplate) segmentTemplateDuration = segmentTemplate["@" + Constants.ATTR_DURATION], 
+                segmentTimescale = segmentTemplate["@" + Constants.ATTR_TIMESCALE], segmentDuration = parseInt((segmentTemplateDuration / segmentTimescale).toFixed(2), 10), 
+                startNumber = Math.ceil(secondsAfterWhichAdHasToBeInserted / segmentDuration), logger.log("bumperInsertion segmentTemplate", segmentTemplate), 
+                segmentTemplate["@" + Constants.ATTR_START_NUMBER] = startNumber + 1; else {
+                    adaptationSet[Constants.REPRESENTATION].forEach((rep => {
+                        const segTemplate = rep[Constants.SEGMENT_TEMPLATE], segTimeLine = segTemplate[Constants.SEGMENT_TIMELINE];
+                        segmentTimescale = segTemplate["@" + Constants.ATTR_TIMESCALE];
+                        const segment = segTimeLine[Constants.S], segmentLength = segment.length;
+                        let presentationTimeOffset;
+                        segmentTemplateDuration = segment[0]["@d"], 1 == segmentLength ? (segmentDuration = parseInt((segmentTemplateDuration / segmentTimescale).toFixed(2), 10), 
+                        startNumber = Math.ceil(secondsAfterWhichAdHasToBeInserted / segmentDuration) + 1, 
+                        logger.log("bumperInsertion segment object secondsAfterWhichAdHasToBeInserted", secondsAfterWhichAdHasToBeInserted, segmentDuration, startNumber)) : startNumber = this.calculateStartNumberForMultipleSegmentTimeline(segment, segmentTimescale, secondsAfterWhichAdHasToBeInserted), 
+                        presentationTimeOffset = (startNumber - 1) * segmentDuration * segmentTimescale, 
+                        segment[0]["@" + Constants.ATTR_T] = presentationTimeOffset, segTemplate["@" + Constants.ATTR_START_NUMBER] = startNumber, 
+                        segTemplate["@" + Constants.ATTR_PRESENTATION_TIME_OFFSET] = presentationTimeOffset;
+                    }));
+                }
+            })), this.insertMidRollBumper(mpd, periodCopy, bumper);
+        }, this.calculateStartNumberForMultipleSegmentTimeline = (segment, SegmentTimescale, secondsAfterWhichAdHasToBeInserted) => {
+            let duration = 0, startNumber = 1;
+            return segment.forEach((seg => {
+                const segmentTimelineDuration = seg["@d"], segmentTimelineRepetition = seg["@r"] ? seg["@r"] : 0, segmentDuration = parseInt((segmentTimelineDuration / SegmentTimescale).toFixed(2), 10);
+                for (let i = 0; i <= segmentTimelineRepetition; i++) {
+                    if (!(duration < secondsAfterWhichAdHasToBeInserted)) return startNumber;
+                    duration += segmentDuration, startNumber += 1;
+                }
+            })), segment.map((seg => {
+                delete seg["@" + Constants.ATTR_T];
+            })), startNumber;
+        }, this.insertMidRollBumper = (mpd, periodCopy, bumper) => {
+            mpd[Constants.MPD][Constants.PERIOD].push(bumper, periodCopy);
         }, this.dashMPD = new DashMPD;
     }
     parseMPD(mpdXml) {

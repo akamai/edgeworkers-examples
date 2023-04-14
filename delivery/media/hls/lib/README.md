@@ -20,4 +20,4 @@ HLS modules also export necessary classes such as LiveManifestTransformer for li
 Please visit this [page](https://techdocs.akamai.com/edgeworkers/docs/hls-parser) for complete documentation and usage of HLS module.
 
 ## Resources
-Please see the examples [here](../examples/) for example usage of HLS module.
+Please see the examples [here](../examples/) for usage of HLS module.

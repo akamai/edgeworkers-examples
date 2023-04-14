@@ -36,7 +36,7 @@ const startDate1 = '2022-08-17T15:08:30.000Z';
 const endDate1 = '2022-08-17T15:08:50.000Z';
 
 // In this example the video policy is hardcoded.
-//You can also load the policy from EdgeKV or Property Manager and filterthe applicable policy based on the User Location Object.
+// You can also load the policy from EdgeKV or Property Manager and filter the applicable policy based on the User Location Object.
 const videoPolicy = [{
   "startDate": startDate,
   "endDate": endDate,
@@ -158,7 +158,7 @@ const audioPolicy = [{
 
 const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
   'accept-encoding', 'content-encoding', 'keep-alive',
-  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade'];
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade', 'host'];
 
 function getSafeResponseHeaders(headers) {
   for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {

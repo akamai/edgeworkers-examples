@@ -7,7 +7,7 @@ import { ReadableStream, WritableStream } from 'streams';
 
 const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
   'accept-encoding', 'content-encoding', 'keep-alive',
-  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade'];
+  'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade', 'host'];
 
 function getSafeResponseHeaders(headers) {
   for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {

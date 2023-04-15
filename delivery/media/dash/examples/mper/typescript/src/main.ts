@@ -10,7 +10,7 @@ const UNSAFE_RESPONSE_HEADERS = ['content-length', 'transfer-encoding', 'connect
   'accept-encoding', 'content-encoding', 'keep-alive',
   'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade', 'host'];
 
-function getSafeResponseHeaders(headers) {
+function getSafeResponseHeaders(headers:any) {
   for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
     if (unsafeResponseHeader in headers) {
       delete headers[unsafeResponseHeader];

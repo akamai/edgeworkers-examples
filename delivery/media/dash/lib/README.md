@@ -17,10 +17,7 @@ Currently the DASH parser accepts complete UTF-8 encoded MPD file contents and d
 * **media-delivery-dash-parse.d.ts** is the typescript declaration file for DASH module.
 
 ## Documentation
-Please visit this [page](https://) for complete documentation and usage of DASH module.
+Please visit this [page](https://techdocs.akamai.com/edgeworkers/docs/dash-parser) for complete documentation and usage of DASH module.
 
 ## Resources
 Please see the examples [here](../examples/) for example usage of DASH module.
-
-### Todo
-- [ ] Add documentation page link.

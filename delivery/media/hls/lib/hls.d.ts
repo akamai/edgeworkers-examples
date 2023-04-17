@@ -46,7 +46,7 @@ declare type Policy = {
 
 /**
  * LiveManifestTransformer class handles the replacement operation of blackslate segments in the hls manifest file for provided window.
- * Assumtion:
+ * Assumption:
  *  - Input policy should not have overlapping window
  *  - HLS manifest will have atleast one HLS_TAG_EXTX_PROGRAM_DATE_TIME tag for media playlist
  *  - Last line in HLS manifest should always end with '\n'

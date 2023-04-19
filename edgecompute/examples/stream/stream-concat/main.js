@@ -9,14 +9,14 @@ import { httpRequest } from 'http-request';
 import { createResponse } from 'create-response';
 import { TransformStream } from 'streams';
 
-const UNSAFE_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
+const UNSAFE_HTTP_HEADERS = ['content-length', 'transfer-encoding', 'connection', 'vary',
   'accept-encoding', 'content-encoding', 'keep-alive',
   'proxy-authenticate', 'proxy-authorization', 'te', 'trailers', 'upgrade', 'host'];
 
-  function getSafeResponseHeaders(headers) {
-  for (let unsafeResponseHeader of UNSAFE_RESPONSE_HEADERS) {
-      if (unsafeResponseHeader in headers) {
-          delete headers[unsafeResponseHeader]
+function removeUnsafeHttpHeaders(headers) {
+  for (let unsafeHttpHeader of UNSAFE_HTTP_HEADERS) {
+      if (unsafeHttpHeader in headers) {
+          delete headers[unsafeHttpHeader]
       }
   }
   return headers;
@@ -50,7 +50,7 @@ export async function responseProvider (request) {
   // List of URLs to concatenate
   const urls = ["/example/url/1.js", "/example/url/2.js"]
 
-  const requestHeaders = getSafeResponseHeaders(request.getHeaders());
+  const requestHeaders = removeUnsafeHttpHeaders(request.getHeaders());
 
 
   const outputStream = new TransformStream();

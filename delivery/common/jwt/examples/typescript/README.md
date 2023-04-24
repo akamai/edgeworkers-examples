@@ -1,5 +1,5 @@
 # Example
-This example demonstrate usage of JWT module in typescript project.
+This example demonstrates usage of the JWT module in a typescript project.
 
 ## Usage
 

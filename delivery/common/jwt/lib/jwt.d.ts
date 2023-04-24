@@ -14,16 +14,49 @@ declare type JWTJson = {
     payload: JWTPayload;
 };
 declare type JWTHeader = {
+    /**
+     * This parameter has the same meaning, syntax, and processing rules as
+     the "alg" Header Parameter defined in Section 4.1.1 of [JWS], except
+     that the Header Parameter identifies the cryptographic algorithm used
+     to encrypt or determine the value of the CEK. Refer https://www.rfc-editor.org/rfc/rfc7516.txt for more details
+     */
     alg: string;
+    /**
+     * The "typ" (type) Header Parameter defined by [JWS] and [JWE] is used
+     by JWT applications to declare the media type [IANA.MediaTypes] of
+     this complete JWT. Refer https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1 for more details
+     */
     typ: string;
 };
 declare type JWTPayload = {
+    /**
+     * The "iss" (issuer) claim identifies the principal that issued the JWT.
+     */
     iss?: string;
+    /**
+     * The "sub" (subject) claim identifies the principal that is the subject of the JWT.
+     */
     sub?: string;
+    /**
+     * The "aud" (audience) claim identifies the recipients that the JWT is intended for.
+     */
     aud?: string | Array<string>;
+    /**
+     * The "exp" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing.
+     */
     exp?: number;
+    /**
+     * The "nbf" (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing.
+     */
     nbf?: number;
+    /**
+     * The "iat" (issued at) claim identifies the time at which the JWT wasissued.
+     */
     iat?: number;
+    /**
+     *  The "jti" (JWT ID) claim provides a unique identifier for the JWT. The "jti" claim can be used
+     to prevent the JWT from being replayed.
+     */
     jti?: string;
 };
 

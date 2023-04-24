@@ -11,10 +11,7 @@ The JWT module can be used to perform operations related to JWT tokens such as J
 * **jwt.d.ts** is the typescript declaration file for JWT module.
 
 ## Documentation
-Please visit this [page](https://) for complete documentation and usage of JWT module.
+Please visit this [page](https://techdocs.akamai.com/edgeworkers/docs/jwt) for complete documentation and usage of JWT module.
 
 ## Resources
 Please see the examples [here](../examples/) for example usage of JWT module.
-
-### Todo
-- [ ] Add documentation page link.

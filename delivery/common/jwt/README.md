@@ -19,5 +19,3 @@ For more information on JWT Module, please refer to the following resources:
 ## Reporting Issues
 If you experience any problems, please raise a Github issue or create a pull request with fixes, suggestions, or code contributions.
 
-### Todo
-- [ ] Add documentation page link.

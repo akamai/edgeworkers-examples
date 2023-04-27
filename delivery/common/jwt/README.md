@@ -13,7 +13,7 @@ The JWT module can be used to perform operations related to JWT tokens such as J
 
 ## Resources
 For more information on JWT Module, please refer to the following resources:
-* [JWT API Documentation](https://)
+* [JWT API Documentation](https://techdocs.akamai.com/edgeworkers/docs/jwt)
 * [Examples](./examples/)
 
 ## Reporting Issues

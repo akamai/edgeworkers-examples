@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "1.0",
+    "description": "Script injection via response manipulation using html-rewriter module"
+}

@@ -20,4 +20,4 @@ For more information on Watermarking Module, please refer to the following resou
 If you experience any problems, please raise a Github issue or create a pull request with fixes, suggestions, or code contributions.
 
 #TODO
-- [ ] EW support for ECDH-SS+A128KW decryption algorithm + E2E testing of direct case.
+- [ ] EW support for A256GCM decryption algorithm + E2E testing of direct case. Also the spec likely to drop A256GCM algorithm and for with ECDH-SS+A128KW (key type -32) algorithm. The discussion can be tracked [here](https://github.com/Dash-Industry-Forum/Watermarking/issues/31)

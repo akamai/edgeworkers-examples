@@ -1,4 +1,4 @@
-/** @preserve @version 1.0.0 */
+/** @preserve @version 1.1.0 */
 
 /**
  * Claim validation depends on integer label in the CWT claims set.
@@ -94,7 +94,7 @@ declare class CWTUtil {
  * CWTValidator module provides APIs to validate CWT Token.
  * The module follows CWT tokens generated using spec defined here {@link https://www.rfc-editor.org/rfc/rfc8392.html}.
  * The module contains options that can be configured by the consumer to enable validation on CWT payload fields such as exp, nbf, iss, sub and aud.
- * As of now the module only supports verification of the CWT tokens and not generation of CWT tokens. Also the algorithms supported is only HS256.
+ * As of now the module only supports verification of the CWT tokens and not generation of CWT tokens. Also the algorithms supported is only HS256, ES256.
  */
 declare class CWTValidator {
     private cwtOptions;

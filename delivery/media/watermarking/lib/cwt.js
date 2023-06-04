@@ -1,10 +1,11 @@
-/** @preserve @version 1.0.0 */
+/** @preserve @version 1.1.0 */
 import { crypto } from "crypto";
 
 import { Encoder, Decoder } from "./cbor-x.js";
 
 const COSE_Mac0 = 17, COSE_Mac = 97, COSE_Sign = 98, COSE_Sign1 = 18, COSE_Encrypt0 = 16, COSE_Encrypt = 96, coseAlgTags = {
-    5: "HMAC 256/256"
+    5: "HMAC 256/256",
+    "-7": "ES256"
 }, HeaderLabelToKey_alg = 1, HeaderLabelToKey_crit = 2, claimsLabelToKey_iss = 1, claimsLabelToKey_sub = 2, claimsLabelToKey_aud = 3, claimsLabelToKey_exp = 4, claimsLabelToKey_nbf = 5;
 
 class Mac {
@@ -36,7 +37,25 @@ class CWTUtil {
     }
 }
 
-CWTUtil.EMPTY_BUFFER = new Uint8Array(0), globalThis.cborenc = new Encoder({
+CWTUtil.EMPTY_BUFFER = new Uint8Array(0);
+
+class Sign {
+    static async verifySignature(alg, message, signature, keys) {
+        if ("ES256" === alg) {
+            let isSignVerified = !1;
+            for (const key of keys) if (isSignVerified = await crypto.subtle.verify({
+                name: "ECDSA",
+                hash: {
+                    name: "SHA-256"
+                }
+            }, key, signature, new Uint8Array(message)), isSignVerified) return Promise.resolve(isSignVerified);
+            return Promise.resolve(isSignVerified);
+        }
+        throw new Error(`Unsupported Algorithm, ${alg}`);
+    }
+}
+
+globalThis.cborenc = new Encoder({
     tagUint8Array: !1
 }), globalThis.cbordec = new Decoder;
 
@@ -62,27 +81,60 @@ class CWTValidator {
         return this.validateClaims(cwtJSON.payload), cwtJSON;
     }
     async verifyCoseMessage(coseMessage, cwtType, keys, headerValidation, externalAAD) {
-        if (cwtType === COSE_Mac0) {
-            if (!Array.isArray(coseMessage) || 4 !== coseMessage.length) throw new Error("CWT malformed: invalid COSE message structure for COSE CBOR MAC0Tag, expected arry of length 4!");
-            const [p, u, payload, tag] = coseMessage;
-            let pH = p.length ? globalThis.cbordec.decode(p) : CWTUtil.EMPTY_BUFFER;
-            pH = pH.size ? pH : CWTUtil.EMPTY_BUFFER;
-            const uH = u.size ? u : CWTUtil.EMPTY_BUFFER;
-            headerValidation && this.validateHeader(pH, !0);
-            let alg = pH !== CWTUtil.EMPTY_BUFFER ? pH.get(HeaderLabelToKey_alg) : uH !== CWTUtil.EMPTY_BUFFER ? u.get(HeaderLabelToKey_alg) : void 0;
-            Number.isInteger(alg) && (alg = coseAlgTags[alg]);
-            const MACstructure = [ "MAC0", p, externalAAD, payload ], toBeMACed = globalThis.cborenc.encode(MACstructure);
-            if (!await Mac.verifyHMAC(alg, toBeMACed, tag, keys)) throw new Error("CWT token signature verification failed!");
-            const decodedPayload = globalThis.cbordec.decode(payload);
-            return Promise.resolve({
-                header: {
-                    p: pH,
-                    u: uH
-                },
-                payload: decodedPayload
-            });
+        switch (cwtType) {
+          case COSE_Mac0:
+            {
+                if (!Array.isArray(coseMessage) || 4 !== coseMessage.length) throw new Error("CWT malformed: invalid COSE message structure for COSE CBOR MAC0Tag, expected array of length 4!");
+                const [p, u, payload, tag] = coseMessage;
+                let pH = p.length ? globalThis.cbordec.decode(p) : CWTUtil.EMPTY_BUFFER;
+                pH = pH.size ? pH : CWTUtil.EMPTY_BUFFER;
+                const uH = u.size ? u : CWTUtil.EMPTY_BUFFER;
+                let alg;
+                if (headerValidation && this.validateHeader(pH, !0), pH !== CWTUtil.EMPTY_BUFFER) alg = pH.get(HeaderLabelToKey_alg); else {
+                    if (uH === CWTUtil.EMPTY_BUFFER) throw new Error("CWT malformed: unable to find algo field from CWT token.");
+                    alg = u.get(HeaderLabelToKey_alg);
+                }
+                alg = coseAlgTags[alg.toString()];
+                const MACstructure = [ "MAC0", p, externalAAD, payload ], toBeMACed = globalThis.cborenc.encode(MACstructure);
+                if (!await Mac.verifyHMAC(alg, toBeMACed, tag, keys)) throw new Error("CWT token signature verification failed!");
+                const decodedPayload = globalThis.cbordec.decode(payload);
+                return Promise.resolve({
+                    header: {
+                        p: pH,
+                        u: uH
+                    },
+                    payload: decodedPayload
+                });
+            }
+
+          case COSE_Sign1:
+            {
+                if (!Array.isArray(coseMessage) || 4 !== coseMessage.length) throw new Error("CWT malformed: invalid COSE message structure for COSE CBOR COSE_Sign1, expected array of length 4!");
+                const [p, u, payload, signer] = coseMessage;
+                let pH = p.length ? globalThis.cbordec.decode(p) : CWTUtil.EMPTY_BUFFER;
+                pH = pH.size ? pH : CWTUtil.EMPTY_BUFFER;
+                const uH = u.size ? u : CWTUtil.EMPTY_BUFFER;
+                let alg;
+                if (headerValidation && this.validateHeader(pH, !0), pH !== CWTUtil.EMPTY_BUFFER) alg = pH.get(HeaderLabelToKey_alg); else {
+                    if (uH === CWTUtil.EMPTY_BUFFER) throw new Error("CWT malformed: unable to find algo field from CWT token.");
+                    alg = u.get(HeaderLabelToKey_alg);
+                }
+                alg = coseAlgTags[alg.toString()];
+                const SigStructure = [ "Signature1", p, externalAAD, payload ], toBeVeried = globalThis.cborenc.encode(SigStructure);
+                if (!await Sign.verifySignature(alg, toBeVeried, signer, keys)) throw new Error("CWT token signature verification failed!");
+                const decodedPayload = globalThis.cbordec.decode(payload);
+                return Promise.resolve({
+                    header: {
+                        p: pH,
+                        u: uH
+                    },
+                    payload: decodedPayload
+                });
+            }
+
+          default:
+            throw new Error(`COSE CBOR tag ${cwtType} is not supported at the moment`);
         }
-        throw new Error(`COSE CBOR tag ${cwtType} is not supported at the moment`);
     }
     validateHeader(headers, pheader) {
         if (headers.size && pheader) {

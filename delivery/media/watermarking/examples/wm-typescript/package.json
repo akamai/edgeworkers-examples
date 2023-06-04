@@ -1,7 +1,7 @@
 {
-  "name": "cwtvalidator-typescript-bundle",
+  "name": "watermarking-typescript-bundle",
   "version": "0.0.0",
-  "description": "Example of using cwt-validator with TypeScript modules",
+  "description": "Example of using watermarking with TypeScript modules",
   "license": "ISC",
   "scripts": {
     "start": "rollup -c -w",

@@ -198,7 +198,9 @@ Apache License
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.</br></br></br>Dependency: range-parser</br>Version: 1.2.1</br>License: MIT</br>License Copyright:</br></br>(The MIT License)
+   limitations under the License.
+
+</br></br></br>Dependency: range-parser</br>Version: 1.2.1</br>License: MIT</br>License Copyright:</br></br>(The MIT License)
 
 Copyright (c) 2012-2014 TJ Holowaychuk <tj@vision-media.ca>
 Copyright (c) 2015-2016 Douglas Christopher Wilson <doug@somethingdoug.com

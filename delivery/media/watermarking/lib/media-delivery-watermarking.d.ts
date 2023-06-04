@@ -1,4 +1,4 @@
-/** @preserve @version 1.0.0 */
+/** @preserve @version 1.1.0 */
 
 /**
  * Claim validation depends on integer label in the CWT claims set.
@@ -123,21 +123,14 @@ declare type WMPayload = {
     iat?: number;
     jti?: string;
     cti?: string;
-    wmver?: number;
-    wmvnd?: string;
-    wmidtyp?: number;
-    wmidfmt: string;
+    wmver: number;
+    wmvnd: number;
     wmpatlen: number;
-    wmid: string | number;
-    segduration?: number;
-    wmidalg?: string;
-    wmidivlen?: number;
-    wmidivhex?: string;
-    wmidpid?: string;
-    wmidpalg?: string;
-    wmidkeyver?: number;
+    wmid?: string | number;
+    wmpattern?: Uint8Array;
+    wmsegduration?: Array<number>;
     wmopid?: number;
-    title?: string;
+    wmkeyver?: number;
 };
 
 /**
@@ -180,7 +173,7 @@ declare class Watermarking {
      * @throws {[Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)} with appropriate error message if type check on {@link WMOptions} fields fails.
      * @example Error('Invalid token type! only cwt or jwt auth tokens are supported')
      */
-    constructor(wmOptions: WMOptions, vendorAlgorithms?: Map<string, VendorAlgorithm>);
+    constructor(wmOptions: WMOptions, vendorAlgorithms?: Map<number, VendorAlgorithm>);
     /**
      * Validates the auth token (JWT or CWT) as per the validation rules, performs signature verfication for each key from @param keys array.
      * The JWT/CWT signature needs to be successfully verified by atleast one key from @param keys array.
@@ -221,9 +214,8 @@ declare class Watermarking {
      * @example Error(400, `Watermarking: invalid wmidtyp, must be 0 or 1`) - If watermarking payload claims are not as per the rules.
      * @example Error(500, 'Watermarking: unable to find watermarking position from the side car') - If any issue occurs while processing side car file.
      */
-    getWMPathWithVariant(path: string, payload: WMPayload, secretKey: string, variantSubPath: Array<VariantSubPath>, rangeHeader?: string): Promise<string>;
+    getWMPathWithVariant(path: string, payload: WMPayload, secretKey: string, rangeHeader?: string): Promise<number>;
     private getSideCarObject;
-    private getSubVariantPath;
     /**
      * Performs validations on basic CWT or JWT payload fields such as exp, nbf, etc only if token is fetched from cache.
      * @param wmPayload Watermarking payload

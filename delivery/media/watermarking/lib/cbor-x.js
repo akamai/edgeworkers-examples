@@ -6,7 +6,7 @@ try {
 
 let position$1 = 0;
 
-const STOP_CODE = {};
+const RECORD_DEFINITIONS_ID = 57342, RECORD_INLINE_ID = 57343, BUNDLED_STRINGS_ID = 57337, STOP_CODE = {};
 
 let currentStructures, srcString, bundledStrings$1, referenceMap, packedValues, dataView, restoreMapsAsObject, currentDecoder = {}, srcStringStart = 0, srcStringEnd = 0, currentExtensions = [], currentExtensionRanges = [], defaultOptions = {
     useRecords: !1,
@@ -240,18 +240,18 @@ function read() {
         }
 
       case 6:
-        if (token >= 57337) {
+        if (token >= BUNDLED_STRINGS_ID) {
             let structure = currentStructures[8191 & token];
             if (structure) return structure.read || (structure.read = createStructureReader(structure)), 
             structure.read();
             if (token < 65536) {
-                if (57343 == token) return recordDefinition(read());
-                if (57342 == token) {
+                if (token == RECORD_INLINE_ID) return recordDefinition(read());
+                if (token == RECORD_DEFINITIONS_ID) {
                     let length = readJustLength(), id = read();
                     for (let i = 2; i < length; i++) recordDefinition([ id++, read() ]);
                     return read();
                 }
-                if (57337 == token) return function() {
+                if (token == BUNDLED_STRINGS_ID) return function() {
                     let length = readJustLength(), bundlePosition = position$1 + read();
                     for (let i = 2; i < length; i++) {
                         let bundleLength = readJustLength();

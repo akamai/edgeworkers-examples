@@ -1,24 +1,25 @@
 import { logger } from 'log';
-import { base16 } from 'encoding';
-
-import { TokenType, VariantSubPath, Watermarking, WMPayload} from './watermarking/media-delivery-watermarking';
-import { vendorAlgorithm } from './vendor-algorithm/vendor-algorithm';
-
+import { TokenType, Watermarking} from './media-delivery-watermarking.js';
+//Obtained the required vendor specific code to generate TMID from the vendor
+import { vendorAlgorithm } from './vendor-algorithm.js';
+//Map each vendor specific code with the vendor identifier. This identifier should be same as wmvnd field from the token.
+//In Direct case i.e this is not required and is handled internally by watermarking module.
 const vendorAlgoritms = new Map();
 vendorAlgoritms.set(40, vendorAlgorithm);
 
+//CWT Token will be used. Watermarking module also support JWT based token, set TokenType.JWT to enable JWT based tokens.
 const watermarking = new Watermarking( { tokenType: TokenType.CWT, validateWMClaims: true }, vendorAlgoritms);
 
-const variantSubPath: Array<VariantSubPath> = [{ variant: 0, subPath: 'A' }, { variant: 1, subPath: 'B'}];
+const variantSubPath= [{ variant: 0, subPath: 'A' }, { variant: 1, subPath: 'B'}];
 
-function getURLByParts(url: string): { basedir: string; filename: string;} {
+function getURLByParts(url) {
   const slashPos = url.lastIndexOf('/');
   const basedir = url.substring(0, slashPos);
   const filename = url.substring(slashPos + 1);
   return { basedir, filename };
 }
 
-export async function onClientRequest (request: EW.IngressClientRequest) {
+export async function onClientRequest (request) {
 
   try {
     //Hmac verification key used to sign CWT token.
@@ -61,7 +62,7 @@ export async function onClientRequest (request: EW.IngressClientRequest) {
       request.route({ path: request.path, query: request.query});
     }
   } catch(error) {
-    logger.log('D:error=%s', (error as Error).message));
-    request.respondWith(400, {}, JSON.stringify({ error: (error as Error).message}));
+    logger.log('D:error=%s', error.message);
+    request.respondWith(400, {}, JSON.stringify({ error: error.message}));
   }
 }

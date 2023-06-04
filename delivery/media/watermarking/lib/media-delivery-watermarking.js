@@ -1,15 +1,15 @@
-/** @preserve @version 1.0.0 */
+/** @preserve @version 1.1.0 */
 import { WritableStream } from "streams";
 
 import { crypto, pem2ab } from "crypto";
 
-import { TextEncoder, base16 } from "encoding";
+import { TextEncoder, base16, base64url } from "encoding";
 
 import { logger } from "log";
 
 import { httpRequest } from "http-request";
 
-import { decode } from "./cbor-x.js";
+import { decode, Encoder } from "./cbor-x.js";
 
 import { CWTValidator, CWTUtil } from "./cwt.js";
 
@@ -105,11 +105,10 @@ class CborParser {
             const segments = sc[scLabel_segments];
             for (const seg of segments) {
                 const regex = seg[segmentsLabel_segmentRegex];
+                if (!regex) return seg[segmentsLabel_position];
                 if (new RegExp(regex).test(fileName)) return seg[segmentsLabel_position];
             }
-            return -1;
-        }
-        {
+        } else {
             let startSearch = 0;
             const segments = sc[scLabel_segments], numSegments = segments.length, filesize = BigInt(sc[scLabel_fileSize]);
             let endSearch = numSegments - 1;
@@ -126,7 +125,6 @@ class CborParser {
                     }
                 }
             }
-            return;
         }
     }
 }
@@ -139,20 +137,14 @@ const claimsLabelMap = {
     5: "nbf",
     6: "iat",
     7: "cti",
-    200: "wmver",
-    201: "wmvnd",
-    202: "wmidtyp",
-    203: "wmidfmt",
-    204: "wmpatlen",
-    205: "wmid",
-    206: "wmsegduration",
-    207: "wmidalg",
-    208: "wmidivlen",
-    209: "wmidivhex",
-    210: "wmidpid",
-    211: "wmidpalg",
-    212: "wmidkeyver",
-    213: "wmopid"
+    300: "wmver",
+    301: "wmvnd",
+    302: "wmpatlen",
+    303: "wmsegduration",
+    304: "wmpattern",
+    305: "wmid",
+    306: "wmopid",
+    307: "wmkeyver"
 };
 
 var lru = {
@@ -319,6 +311,56 @@ class Cache {
 Cache.CACHE_ENTRIES = 150, Cache.tokenCache = new lru.exports.LRUMap(Cache.CACHE_ENTRIES), 
 Cache.tmidCache = new lru.exports.LRUMap(Cache.CACHE_ENTRIES);
 
+const CoseAlgTags = {
+    3: "A256GCM"
+}, HeaderLabelToKey_alg = 1, HeaderLabelToKey_IV = 5;
+
+class DirectAlgorithm {
+    static async generateTmid(payload, secretKey) {
+        if (64 != secretKey.length) throw new Error("secretKey is not 256 bits / correctly hex encoded");
+        if (!(payload.wmpattern instanceof Uint8Array)) throw new Error("Token malformed: wmpattern must be bytes");
+        const {alg, headers, ciphertext} = this.decodeWmpattern(payload.wmpattern), {p, u} = headers, iv = u[HeaderLabelToKey_IV], Enc_structure = [ "Encrypt0", p, DirectAlgorithm.EMPTY_BUFFER ], aad = DirectAlgorithm.encoder.encode(Enc_structure), decryptedData = await this.decrypt(alg, ciphertext, iv, aad, secretKey);
+        if (void 0 === decryptedData || 0 === decryptedData.byteLength) throw new Error("Error decrypting payload");
+        return uint8ArrayToHex(new Uint8Array(decryptedData));
+    }
+    static decodeWmpattern(wmpattern) {
+        let coseMessage = CborParser.decode(wmpattern);
+        if ("number" != typeof coseMessage.tag || 16 !== coseMessage.tag) throw new Error("Invalid COSE message structure, expected Encrypt0");
+        if (coseMessage = coseMessage.value, !Array.isArray(coseMessage) || 3 !== coseMessage.length) throw new Error("Invalid COSE message structure for COSE CBOR Encrypt0Tag, expected arry of length 3!");
+        const [p, u, ciphertext] = coseMessage;
+        let pH = p.length ? CborParser.decode(p) : this.EMPTY_BUFFER;
+        pH = Object.keys(pH).length ? pH : this.EMPTY_BUFFER;
+        const uH = Object.keys(u).length ? u : this.EMPTY_BUFFER;
+        let alg = pH !== this.EMPTY_BUFFER ? pH[HeaderLabelToKey_alg] : uH !== this.EMPTY_BUFFER ? u[HeaderLabelToKey_alg] : void 0;
+        if (!alg) throw new Error("Missing mandatory alg protected header");
+        return alg = CoseAlgTags[Number(alg)], {
+            alg,
+            headers: {
+                p,
+                u: uH
+            },
+            ciphertext
+        };
+    }
+    static async decrypt(alg, ciphertext, iv, aad, secretKey) {
+        if ("A256GCM" === alg) {
+            const key = await crypto.subtle.importKey("raw", base16.decode(secretKey, "Uint8Array").buffer, {
+                name: "AES-GCM"
+            }, !1, [ "decrypt" ]);
+            return crypto.subtle.decrypt({
+                name: "AES-GCM",
+                iv,
+                additionalData: aad
+            }, key, ciphertext);
+        }
+        throw new Error(`Unsupported Algorithm, ${alg}`);
+    }
+}
+
+DirectAlgorithm.EMPTY_BUFFER = new Uint8Array(0), DirectAlgorithm.encoder = new Encoder({
+    tagUint8Array: !1
+});
+
 class Watermarking {
     constructor(wmOptions, vendorAlgorithms) {
         if (this.cryptoKCache = new lru.exports.LRUMap(10), this.wmOptions = wmOptions || {
@@ -358,101 +400,97 @@ class Watermarking {
         if (!payload.wmver) throw new Error("Token malformed: missing mandatory wmver claim");
         if ("number" != typeof payload.wmver) throw new Error("Token malformed: wmver must be number");
         if (!payload.wmvnd) throw new Error("Token malformed: missing mandatory wmvnd claim");
-        if ("string" != typeof payload.wmvnd) throw new Error("Token malformed: wmvnd must be string");
-        if (!payload.wmid) throw new Error("Token malformed: missing mandatory wmid claim");
-        if (![ "string", "number", "" ].includes(typeof payload.wmid)) throw new Error("Token malformed: wmid must be string | number");
-        if ("number" == typeof payload.wmid && Math.floor(payload.wmid) !== payload.wmid) throw new Error("Token malformed: wmid must be integer");
+        if ("number" != typeof payload.wmvnd) throw new Error("Token malformed: wmvnd must be number");
+        if (payload.wmid) {
+            if (![ "string", "number" ].includes(typeof payload.wmid)) throw new Error("Token malformed: wmid must be string or number");
+            if ("number" == typeof payload.wmid && Math.floor(payload.wmid) !== payload.wmid) throw new Error("Token malformed: wmid must be integer");
+            if (void 0 === payload.wmopid) throw new Error("Token malformed: missing wmopid claim for indirect case");
+            if (payload.wmopid && ("number" != typeof payload.wmopid || Math.floor(payload.wmopid) !== payload.wmopid)) throw new Error("Token malformed: wmopid must be number");
+            if (payload.wmkeyver && "number" != typeof payload.wmkeyver) throw new Error("Token malformed: wmkeyver must be number");
+        } else {
+            if (!payload.wmpattern) throw new Error("Token malformed: missing mandatory wmid or wmpattern claim");
+            if (!(payload.wmpattern instanceof Uint8Array)) throw new Error("Token malformed: wmpattern must be bytes");
+        }
         if (!payload.wmpatlen) throw new Error("Token malformed: missing mandatory wmpatlen claim");
         if ("number" != typeof payload.wmpatlen) throw new Error("Token malformed: wmpatlen must be number");
-        if (!payload.wmidfmt) throw new Error("Token malformed: missing mandatory wmidfmt claim");
-        if (![ "base64", "hexascii", "uint", "ab" ].includes(payload.wmidfmt)) throw new Error("Token malformed: invalid wmidfmt, must be any of base64, hexascii, uint or ab");
-        if (payload.segduration && "number" != typeof payload.segduration) throw new Error("Token malformed: segduration must be number");
-        if (void 0 === payload.wmidtyp) throw new Error("Token malformed: missing mandatory wmidtyp claim");
-        if (0 === payload.wmidtyp) {
-            if (!payload.wmidalg) throw new Error("Token malformed: missing wmidalg claim for direct case (i.e wmidtyp = 0)");
-            if (![ "aes-128-cbc", "aes-256-cbc" ].includes(payload.wmidalg)) throw new Error("Token malformed: invalid wmidalg, must be any of aes-128-cb or aes-256-cbc");
-            if (void 0 === payload.wmidivlen) throw new Error("Token malformed: missing wmidivlen claim for direct case (i.e wmidtyp = 0)");
-            if ("number" != typeof payload.wmidivlen) throw new Error("Token malformed: wmidivlen must be number");
-            if (!payload.wmidivhex) throw new Error("Token malformed: missing wmidivhex claim for direct case (i.e wmidtyp = 0)");
-            if ("string" != typeof payload.wmidivhex) throw new Error("Token malformed: wmidivhex must be string");
-            if (!payload.wmidpid) throw new Error("Token malformed: missing wmidpid claim for direct case (i.e wmidtyp = 0)");
-            if ("string" != typeof payload.wmidpid) throw new Error("Token malformed: wmidpid must be string");
-            if (!payload.wmidpalg) throw new Error("Token malformed: missing wmidpalg claim for direct case (i.e wmidtyp = 0)");
-            if ("sha256" !== payload.wmidpalg) throw new Error("Token malformed: invalid wmidpalg, must be sha256");
-        } else {
-            if (1 !== payload.wmidtyp) throw new Error("Token malformed: invalid wmidtyp, must be 0 or 1");
-            if (payload.wmidkeyver && "number" != typeof payload.wmidkeyver) throw new Error("Token malformed: wmidkeyver must be number");
-            if (void 0 === payload.wmopid) throw new Error("Token malformed: missing wmopid claim for indirect case (i.e wmidtyp = 1)");
-            if (payload.wmopid && ("number" != typeof payload.wmopid || Math.floor(payload.wmopid) !== payload.wmopid)) throw new Error("Token malformed: wmopid must be number");
-        }
+        if (payload.wmsegduration && !Array.isArray(payload.wmsegduration)) throw new Error("Token malformed: wmsegduration must be array of number");
     }
-    async getWMPathWithVariant(path, payload, secretKey, variantSubPath, rangeHeader) {
+    async getWMPathWithVariant(path, payload, secretKey, rangeHeader) {
         if ("string" != typeof path) throw new Error("Invalid path type, expected string!");
         if ("object" != typeof payload) throw new Error("Invalid payload type, expected JSON object!");
         if ("string" != typeof secretKey) throw new Error("Invalid secretKey type, expected hex encoded string!");
-        if (!Array.isArray(variantSubPath)) throw new Error("Invalid variantSubPath type, expected list of object containing field variant and subPath. (e.g [{variant: 0, subPath: A}])!");
         if (rangeHeader && "string" != typeof rangeHeader) throw new Error("Invalid rangeHeader type, expected string!");
-        if (0 === payload.wmidtyp) throw new Error("Direct case is not supported at the moment!");
-        if (1 === payload.wmidtyp) {
-            if (!this.vendorAlgorithms.get(payload.wmvnd)) throw new Error(`Unable to find vendor: ${payload.wmvnd} specific algorithm, Kindly provide the algorithm implementation!`);
-            let position, tmid;
-            const {basedir, filename} = function(url) {
-                const slashPos = url.lastIndexOf("/");
-                return {
-                    basedir: url.substring(0, slashPos),
-                    filename: url.substring(slashPos + 1)
-                };
-            }(path), sidecarObject = await this.getSideCarObject(basedir, filename);
-            if (rangeHeader) {
-                const range = function(rangeHeader) {
-                    if ("string" == typeof rangeHeader) {
-                        const ranges = rangeParser_1(1 / 0, rangeHeader);
-                        if ("number" != typeof ranges && "bytes" === ranges.type && 1 === ranges.length) return ranges[0];
-                        throw new Error("Invalid range format!!");
-                    }
-                    throw new Error("Range header should be string!!");
-                }(rangeHeader);
-                position = CborParser.findPosition(sidecarObject, BigInt(range.start), BigInt(range.end));
-            } else position = CborParser.findPosition(sidecarObject, BigInt(-1), BigInt(-1), filename);
-            if (void 0 === position) throw new Error("Unable to find position from the side car file!");
-            logger.log("D:pos: %s", position);
-            let subPath, tmidVariant = 0;
-            if (-1 == position) subPath = this.getSubVariantPath(variantSubPath, tmidVariant); else {
-                const cacheKey = await buildKey([ payload, secretKey ]);
-                if (tmid = Cache.getTmid(cacheKey), !tmid) {
+        let position, tmid;
+        const cacheKey = await buildKey([ payload, secretKey ]);
+        if (tmid = Cache.getTmid(cacheKey), !tmid) {
+            if (payload.wmpattern) tmid = await DirectAlgorithm.generateTmid(payload, secretKey); else {
+                if (!payload.wmid) throw new Error("Invalid watermarking token, must contain field wmid (indirect) or wmpattern (direct)!");
+                {
                     const vendorAlgorithm = this.vendorAlgorithms.get(payload.wmvnd);
-                    vendorAlgorithm ? tmid = await vendorAlgorithm.generateTmid(payload, secretKey) : logger.log("E:vendor alg not registered!"), 
-                    Cache.storeTmid(cacheKey, tmid);
+                    if (!vendorAlgorithm) throw new Error(`Unable to find vendor: ${payload.wmvnd} specific algorithm, Kindly provide the algorithm implementation!`);
+                    tmid = await vendorAlgorithm.generateTmid(payload, secretKey);
                 }
-                const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
-                tmidVariant = 0 == (parseInt(tmidChar, 16) & tmidBitPos) ? 0 : 1, subPath = this.getSubVariantPath(variantSubPath, tmidVariant);
             }
-            if (null === subPath) throw new Error(`No watermarking subpath found for the variant ${tmidVariant}!`);
-            return `${basedir}/${subPath}/${filename}`;
+            Cache.storeTmid(cacheKey, tmid);
         }
-        throw new Error("Invalid wmidtyp, must be 0 (direct) or 1 (indirect)!");
+        const {basedir, filename} = function(url) {
+            const slashPos = url.lastIndexOf("/");
+            return {
+                basedir: url.substring(0, slashPos),
+                filename: url.substring(slashPos + 1)
+            };
+        }(path), sidecarObject = await this.getSideCarObject(basedir, filename);
+        if (rangeHeader) {
+            const range = function(rangeHeader) {
+                if ("string" == typeof rangeHeader) {
+                    const ranges = rangeParser_1(1 / 0, rangeHeader);
+                    if ("number" != typeof ranges && "bytes" === ranges.type && 1 === ranges.length) return ranges[0];
+                    throw new Error("Invalid range format!!");
+                }
+                throw new Error("Range header should be string!!");
+            }(rangeHeader);
+            position = CborParser.findPosition(sidecarObject, BigInt(range.start), BigInt(range.end));
+        } else position = CborParser.findPosition(sidecarObject, BigInt(-1), BigInt(-1), filename);
+        if (null == position) throw new Error("Unable to find position from the side car file!");
+        logger.log("D:pos: %s", position);
+        let tmidVariant = 0;
+        if (-1 !== position) {
+            const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
+            tmidVariant = 0 == (parseInt(tmidChar, 16) & tmidBitPos) ? 0 : 1;
+        }
+        return tmidVariant;
     }
     async getSideCarObject(baseDir, filename) {
         if (!baseDir || !filename) throw new Error("Unable to get side car object for the request, invalid url!");
-        const paceInfoResponse = await httpRequest(`${baseDir}/${Watermarking.WMPACEINFO_DIR}/${filename}`), contentLength = paceInfoResponse.getHeader("Content-Length");
-        if (null == contentLength || 0 === contentLength.length) throw new Error("Side car processing failed due to no content-length response header found!");
-        const paceinfoLength = parseInt(contentLength[0]), dataArr = await async function(stream, size) {
-            const buffer = new ArrayBuffer(size), arr = new Uint8Array(buffer);
-            let currentPos = 0;
-            return await stream.pipeTo(new WritableStream({
-                write(chunk) {
-                    arr.set(chunk, currentPos), currentPos += chunk.length;
+        const paceInfoResponse = await httpRequest(`${baseDir}/${Watermarking.WMPACEINFO_DIR}/${filename}`);
+        if (paceInfoResponse.ok) {
+            const contentLength = paceInfoResponse.getHeader("Content-Length");
+            if (null == contentLength || 0 === contentLength.length) throw new Error("Side car processing failed due to no content-length response header found!");
+            {
+                const paceinfoLength = parseInt(contentLength[0]);
+                if (0 === paceinfoLength) {
+                    const wmPaceInfoEgress = paceInfoResponse.getHeader("WMPaceInfoEgress");
+                    if (null == wmPaceInfoEgress || 0 === wmPaceInfoEgress.length) throw new Error("Side car processing failed. Could not find side car file in response header or body!");
+                    {
+                        const dataArr = base64url.decode(wmPaceInfoEgress[0], "Uint8Array");
+                        return CborParser.decode(dataArr);
+                    }
                 }
-            })), arr;
-        }(paceInfoResponse.body, paceinfoLength);
-        return CborParser.decode(dataArr);
-    }
-    getSubVariantPath(variantSubPaths, tmidVariant) {
-        for (let i = 0; i < variantSubPaths.length; i++) {
-            const variantSubPath = variantSubPaths[i];
-            if (null !== variantSubPath && variantSubPath.variant == tmidVariant) return variantSubPath.subPath;
+                {
+                    const dataArr = await async function(stream, size) {
+                        const buffer = new ArrayBuffer(size), arr = new Uint8Array(buffer);
+                        let currentPos = 0;
+                        return await stream.pipeTo(new WritableStream({
+                            write(chunk) {
+                                arr.set(chunk, currentPos), currentPos += chunk.length;
+                            }
+                        })), arr;
+                    }(paceInfoResponse.body, paceinfoLength);
+                    return CborParser.decode(dataArr);
+                }
+            }
         }
-        return null;
+        throw new Error("Side car processing failed due to error code from origin server!");
     }
     validateClaims(wmPayload) {
         if (this.wmOptions.issuer && wmPayload.iss && this.wmOptions.issuer !== wmPayload.iss) throw new Error(`${this.wmOptions.tokenType} malformed: invalid iss, expected ${this.wmOptions.issuer}`);

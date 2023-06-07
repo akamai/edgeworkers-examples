@@ -643,6 +643,6 @@ class Watermarking {
     }
 }
 
-Watermarking.WMPACEINFO_DIR = "WmPaceInfo";
+Watermarking.WMPACEINFO_DIR = "WMPaceInfo";
 
 export { TokenType, Watermarking };

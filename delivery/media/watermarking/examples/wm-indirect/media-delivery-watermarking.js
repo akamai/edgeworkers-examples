@@ -3,13 +3,13 @@ import { WritableStream } from "streams";
 
 import { crypto, pem2ab } from "crypto";
 
-import { TextEncoder, base16 } from "encoding";
+import { TextEncoder, base16, base64url } from "encoding";
 
 import { logger } from "log";
 
 import { httpRequest } from "http-request";
 
-import { decode } from "./cbor-x.js";
+import { decode, Encoder } from "./cbor-x.js";
 
 import { CWTValidator, CWTUtil } from "./cwt.js";
 
@@ -311,34 +311,55 @@ class Cache {
 Cache.CACHE_ENTRIES = 150, Cache.tokenCache = new lru.exports.LRUMap(Cache.CACHE_ENTRIES), 
 Cache.tmidCache = new lru.exports.LRUMap(Cache.CACHE_ENTRIES);
 
+const CoseAlgTags = {
+    3: "A256GCM"
+}, HeaderLabelToKey_alg = 1, HeaderLabelToKey_IV = 5;
+
 class DirectAlgorithm {
-    static getWmidCipher(wmidEnc, wmidfmt) {
-        if ("base64" === wmidfmt) return base64.decode(wmidEnc, "Uint8Array");
-        if ("hexascii" === wmidfmt) return base16.decode(wmidEnc, "Uint8Array");
-        throw new Error(`Invalid representation format 'wmidfmt: ${wmidfmt}' used in direct case, expected base64 or hexascii`);
+    static async generateTmid(payload, secretKey) {
+        if (64 != secretKey.length) throw new Error("secretKey is not 256 bits / correctly hex encoded");
+        if (!(payload.wmpattern instanceof Uint8Array)) throw new Error("Token malformed: wmpattern must be bytes");
+        const {alg, headers, ciphertext} = this.decodeWmpattern(payload.wmpattern), {p, u} = headers, iv = u[HeaderLabelToKey_IV], Enc_structure = [ "Encrypt0", p, DirectAlgorithm.EMPTY_BUFFER ], aad = DirectAlgorithm.encoder.encode(Enc_structure), decryptedData = await this.decrypt(alg, ciphertext, iv, aad, secretKey);
+        if (void 0 === decryptedData || 0 === decryptedData.byteLength) throw new Error("Error decrypting payload");
+        return uint8ArrayToHex(new Uint8Array(decryptedData));
     }
-    static async generateTmid(wmid, wmidfmt, wmidalg, wmidivhex, secretKey) {
-        switch (wmidalg) {
-          case "aes-128-cbc":
-            if (32 !== secretKey.length) throw new Error("Invalid secretKey, expected key to be 128 bits for aes-128-cbc in hex encoded format!");
-            break;
-
-          case "aes-256-cbc":
-            if (64 !== secretKey.length) throw new Error("Invalid secretKey, expected key to be 256 bits for aes-256-cbc in hex encoded format!");
-            break;
-
-          default:
-            throw new Error(`Unsupported wmidalg ${wmidalg} for direct case!`);
+    static decodeWmpattern(wmpattern) {
+        let coseMessage = CborParser.decode(wmpattern);
+        if ("number" != typeof coseMessage.tag || 16 !== coseMessage.tag) throw new Error("Invalid COSE message structure, expected Encrypt0");
+        if (coseMessage = coseMessage.value, !Array.isArray(coseMessage) || 3 !== coseMessage.length) throw new Error("Invalid COSE message structure for COSE CBOR Encrypt0Tag, expected arry of length 3!");
+        const [p, u, ciphertext] = coseMessage;
+        let pH = p.length ? CborParser.decode(p) : this.EMPTY_BUFFER;
+        pH = Object.keys(pH).length ? pH : this.EMPTY_BUFFER;
+        const uH = Object.keys(u).length ? u : this.EMPTY_BUFFER;
+        let alg = pH !== this.EMPTY_BUFFER ? pH[HeaderLabelToKey_alg] : uH !== this.EMPTY_BUFFER ? u[HeaderLabelToKey_alg] : void 0;
+        if (!alg) throw new Error("Missing mandatory alg protected header");
+        return alg = CoseAlgTags[Number(alg)], {
+            alg,
+            headers: {
+                p,
+                u: uH
+            },
+            ciphertext
+        };
+    }
+    static async decrypt(alg, ciphertext, iv, aad, secretKey) {
+        if ("A256GCM" === alg) {
+            const key = await crypto.subtle.importKey("raw", base16.decode(secretKey, "Uint8Array").buffer, {
+                name: "AES-GCM"
+            }, !1, [ "decrypt" ]);
+            return crypto.subtle.decrypt({
+                name: "AES-GCM",
+                iv,
+                additionalData: aad
+            }, key, ciphertext);
         }
-        const cipherText = DirectAlgorithm.getWmidCipher(wmid.toString(), wmidfmt), iv = base16.decode(wmidivhex, "Uint8Array"), cryptoKey = await crypto.subtle.importKey("raw", base16.decode(secretKey, "Uint8Array").buffer, {
-            name: "AES-CBC"
-        }, !1, [ "decrypt" ]), tmidArr = await crypto.subtle.decrypt({
-            name: "AES-CBC",
-            iv
-        }, cryptoKey, cipherText.buffer);
-        return uint8ArrayToHex(new Uint8Array(tmidArr));
+        throw new Error(`Unsupported Algorithm, ${alg}`);
     }
 }
+
+DirectAlgorithm.EMPTY_BUFFER = new Uint8Array(0), DirectAlgorithm.encoder = new Encoder({
+    tagUint8Array: !1
+});
 
 class Watermarking {
     constructor(wmOptions, vendorAlgorithms) {
@@ -399,44 +420,45 @@ class Watermarking {
         if ("object" != typeof payload) throw new Error("Invalid payload type, expected JSON object!");
         if ("string" != typeof secretKey) throw new Error("Invalid secretKey type, expected hex encoded string!");
         if (rangeHeader && "string" != typeof rangeHeader) throw new Error("Invalid rangeHeader type, expected string!");
-        if (payload.wmpattern) throw new Error("Direct case is not supported at the moment!");
-        if (payload.wmid) {
-            if (!this.vendorAlgorithms.get(payload.wmvnd)) throw new Error(`Unable to find vendor: ${payload.wmvnd} specific algorithm, Kindly provide the algorithm implementation!`);
-            let position, tmid;
-            const {basedir, filename} = function(url) {
-                const slashPos = url.lastIndexOf("/");
-                return {
-                    basedir: url.substring(0, slashPos),
-                    filename: url.substring(slashPos + 1)
-                };
-            }(path), sidecarObject = await this.getSideCarObject(basedir, filename);
-            if (rangeHeader) {
-                const range = function(rangeHeader) {
-                    if ("string" == typeof rangeHeader) {
-                        const ranges = rangeParser_1(1 / 0, rangeHeader);
-                        if ("number" != typeof ranges && "bytes" === ranges.type && 1 === ranges.length) return ranges[0];
-                        throw new Error("Invalid range format!!");
-                    }
-                    throw new Error("Range header should be string!!");
-                }(rangeHeader);
-                position = CborParser.findPosition(sidecarObject, BigInt(range.start), BigInt(range.end));
-            } else position = CborParser.findPosition(sidecarObject, BigInt(-1), BigInt(-1), filename);
-            if (null == position) throw new Error("Unable to find position from the side car file!");
-            logger.log("D:pos: %s", position);
-            let tmidVariant = 0;
-            if (-1 !== position) {
-                const cacheKey = await buildKey([ payload, secretKey ]);
-                if (tmid = Cache.getTmid(cacheKey), !tmid) {
+        let position, tmid;
+        const cacheKey = await buildKey([ payload, secretKey ]);
+        if (tmid = Cache.getTmid(cacheKey), !tmid) {
+            if (payload.wmpattern) tmid = await DirectAlgorithm.generateTmid(payload, secretKey); else {
+                if (!payload.wmid) throw new Error("Invalid watermarking token, must contain field wmid (indirect) or wmpattern (direct)!");
+                {
                     const vendorAlgorithm = this.vendorAlgorithms.get(payload.wmvnd);
-                    vendorAlgorithm ? tmid = await vendorAlgorithm.generateTmid(payload, secretKey) : logger.log("E:vendor alg not registered!"), 
-                    Cache.storeTmid(cacheKey, tmid);
+                    if (!vendorAlgorithm) throw new Error(`Unable to find vendor: ${payload.wmvnd} specific algorithm, Kindly provide the algorithm implementation!`);
+                    tmid = await vendorAlgorithm.generateTmid(payload, secretKey);
                 }
-                const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
-                tmidVariant = 0 == (parseInt(tmidChar, 16) & tmidBitPos) ? 0 : 1;
             }
-            return tmidVariant;
+            Cache.storeTmid(cacheKey, tmid);
         }
-        throw new Error("Invalid watermarking token, must contain field wmid (indirect) or wmpattern (direct)!");
+        const {basedir, filename} = function(url) {
+            const slashPos = url.lastIndexOf("/");
+            return {
+                basedir: url.substring(0, slashPos),
+                filename: url.substring(slashPos + 1)
+            };
+        }(path), sidecarObject = await this.getSideCarObject(basedir, filename);
+        if (rangeHeader) {
+            const range = function(rangeHeader) {
+                if ("string" == typeof rangeHeader) {
+                    const ranges = rangeParser_1(1 / 0, rangeHeader);
+                    if ("number" != typeof ranges && "bytes" === ranges.type && 1 === ranges.length) return ranges[0];
+                    throw new Error("Invalid range format!!");
+                }
+                throw new Error("Range header should be string!!");
+            }(rangeHeader);
+            position = CborParser.findPosition(sidecarObject, BigInt(range.start), BigInt(range.end));
+        } else position = CborParser.findPosition(sidecarObject, BigInt(-1), BigInt(-1), filename);
+        if (null == position) throw new Error("Unable to find position from the side car file!");
+        logger.log("D:pos: %s", position);
+        let tmidVariant = 0;
+        if (-1 !== position) {
+            const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
+            tmidVariant = 0 == (parseInt(tmidChar, 16) & tmidBitPos) ? 0 : 1;
+        }
+        return tmidVariant;
     }
     async getSideCarObject(baseDir, filename) {
         if (!baseDir || !filename) throw new Error("Unable to get side car object for the request, invalid url!");
@@ -444,16 +466,29 @@ class Watermarking {
         if (paceInfoResponse.ok) {
             const contentLength = paceInfoResponse.getHeader("Content-Length");
             if (null == contentLength || 0 === contentLength.length) throw new Error("Side car processing failed due to no content-length response header found!");
-            const paceinfoLength = parseInt(contentLength[0]), dataArr = await async function(stream, size) {
-                const buffer = new ArrayBuffer(size), arr = new Uint8Array(buffer);
-                let currentPos = 0;
-                return await stream.pipeTo(new WritableStream({
-                    write(chunk) {
-                        arr.set(chunk, currentPos), currentPos += chunk.length;
+            {
+                const paceinfoLength = parseInt(contentLength[0]);
+                if (0 === paceinfoLength) {
+                    const wmPaceInfoEgress = paceInfoResponse.getHeader("WMPaceInfoEgress");
+                    if (null == wmPaceInfoEgress || 0 === wmPaceInfoEgress.length) throw new Error("Side car processing failed. Could not find side car file in response header or body!");
+                    {
+                        const dataArr = base64url.decode(wmPaceInfoEgress[0], "Uint8Array");
+                        return CborParser.decode(dataArr);
                     }
-                })), arr;
-            }(paceInfoResponse.body, paceinfoLength);
-            return CborParser.decode(dataArr);
+                }
+                {
+                    const dataArr = await async function(stream, size) {
+                        const buffer = new ArrayBuffer(size), arr = new Uint8Array(buffer);
+                        let currentPos = 0;
+                        return await stream.pipeTo(new WritableStream({
+                            write(chunk) {
+                                arr.set(chunk, currentPos), currentPos += chunk.length;
+                            }
+                        })), arr;
+                    }(paceInfoResponse.body, paceinfoLength);
+                    return CborParser.decode(dataArr);
+                }
+            }
         }
         throw new Error("Side car processing failed due to error code from origin server!");
     }
@@ -608,6 +643,6 @@ class Watermarking {
     }
 }
 
-Watermarking.WMPACEINFO_DIR = "WmPaceInfo";
+Watermarking.WMPACEINFO_DIR = "WMPaceInfo";
 
 export { TokenType, Watermarking };

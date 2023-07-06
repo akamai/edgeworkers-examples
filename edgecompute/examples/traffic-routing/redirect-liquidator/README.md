@@ -21,23 +21,14 @@ This JS snippet updates the original URL without triggering a redirect. This is 
   
 From a high level perspective the EgdeWorkers does 3 steps:
 * Manages super fast redirects at the Edge and chases redirects from the origin
-* Injects `<history.replaceState>` in the response body 
+* Injects `<history.replaceState>` in the response body using the native [html-rewriter module](https://techdocs.akamai.com/edgeworkers/docs/htmlrewriter)
 * Sends a 200 response to the end-user
   
-### find-replace-stream.js Library
-We build on top of the ready to use [find-replace-stream library](edgeworkers-examples/edgecompute/examples/stream/find-replace-stream) available on Github. This allows us to search for a tag (eg. </title>)  and append it with the history.replaceState() JavaScript method.
-
-`import { FindAndReplaceStream } from 'find-replace-stream.js';`
-
-Make sure the find-replace-stream.js is part of your bundle.
-  
-### bundle-redirect-liquidation.tgz
-A [ready to use code bundle](edgeworkers-examples/edgecompute/examples/traffic-routing/redirect-liquidator/bundle-redirect-liquidation.tgz) can be imported via the CLI or the UI 
 
 ### Configuration Options
   
 * `REDIRECT_CODES;`: Configure for which response codes you enable Redirect Liquidation. _Default value is `[301,302,303,307,308]`_
-* `INJECT_AFTER_TAG`: Configure where in the HTML the JS snippet is injected. _Default value is `</title>`_
+* `INJECT_AFTER_TAG`: Configure after which tag in the HTML the JS snippet is injected. _Default value is `title`_
 
 ### getRedirectLocationFromEdge()
 A hook to implement redirect logic at the Edge. This optional method allows you to manage redirect logic at the Edge. It is up to you to implement this logic inside your bundle, by loading redirect instructions from an API call or from EdgeKV.
@@ -60,7 +51,6 @@ This screenshot from WebPageTest (4G Connection) shows the result when for multi
 ![WebPageTest showing the difference ](redirect-liquidation-chained-wpt.jpg)
 
 
-  
 ## Q&A
 **Isn’t this the same as redirect chasing available in Property Manager?**
 Redirect chasing is great, however the result is a `200` on the original URL. While this Redirect Liquidator also covers updating the URL in the browser.

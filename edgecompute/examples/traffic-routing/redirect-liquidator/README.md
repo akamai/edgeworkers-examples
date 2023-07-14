@@ -36,7 +36,7 @@ A hook to implement redirect logic at the Edge. This optional method allows you 
 ### Disable for bots
 
 This feature should not be enabled for bots (eg. Google Crawler). When a bot crawls an outdated link they must receive the original 301/302 response.
-This can be done based on User Agent matching or more correctly using Bot Manager and the technique [described here](https://developer.akamai.com/blog/2020/02/25/improve-performance-and-seo-tuning-crawlers).
+This can be done based on User Agent matching or more correctly using Bot Manager and the technique [described here](https://discuss.akamai.com/t/improve-performance-and-seo-by-tuning-for-crawlers/543).
 
 ### Scoping?
 Use Property Manager criteria (UI or API) to limit this EdgeWorker to only run on HTML pages.

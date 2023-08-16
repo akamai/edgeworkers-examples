@@ -455,7 +455,7 @@ class Watermarking {
         logger.log("D:pos: %s", position);
         let tmidVariant = 0;
         if (-1 !== position) {
-            const tmidLenBits = 4 * tmid.length, tmidPos = position % tmidLenBits, tmidChar = tmid[tmidLenBits / 4 - Math.floor(tmidPos / 4) - 1], tmidBitPos = 1 << tmidPos % 4;
+            const tmidPos = position % (4 * tmid.length), tmidChar = tmid[Math.floor(tmidPos / 4)], tmidBitPos = 8 >> tmidPos % 4;
             tmidVariant = 0 == (parseInt(tmidChar, 16) & tmidBitPos) ? 0 : 1;
         }
         return tmidVariant;

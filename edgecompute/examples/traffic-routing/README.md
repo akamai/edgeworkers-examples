@@ -5,6 +5,7 @@ The examples in this section detail how to use EdgeWorkers and EdgeKV to perform
 * **/ab-test(EKV)**: A/B testing using EdgeWorkers only
 * **/ab-test**: A/B testing using EdgeWorkers and EdgeKV
 * **/ab-test-caching (EKV)**: A/B testing using EdgeWorkers and EdgeKV with cache key modification for caching
+* **/clone-request**: Clone request to two origin servers
 * **/multivariate-test**: Test more than one variable to determine which combination leads to more conversions 
 * **/redirect-geo**: Redirect visitors based on the location of the request 
 * **/redirect-liquidator**: Transform 301/302 redirets into 200 responses at the Edge

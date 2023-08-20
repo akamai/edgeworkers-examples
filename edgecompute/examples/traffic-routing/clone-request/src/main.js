@@ -21,7 +21,7 @@ export async function responseProvider (request) {
   const originA = request.getVariable('PMUSER_ORIGINA_HOST');
   const originB = request.getVariable('PMUSER_ORIGINB_HOST');
 
-  var headers = request.getHeaders();
+  const headers = request.getHeaders();
   delete headers['host'];
   let options = {};
 
@@ -29,15 +29,19 @@ export async function responseProvider (request) {
   options.headers = headers;
   options.body = await request.text();
 
-  // Fire the request to origin B
-  httpRequest(`${request.scheme}://${originB}${request.url}`, options).catch(err => { logger.log('Error : %s', err.message) });
+  const promiseA = httpRequest(`${request.scheme}://${originA}${request.url}`, options);
+  const promiseB = httpRequest(`${request.scheme}://${originB}${request.url}`, options);
 
-  const response = await httpRequest(`${request.scheme}://${originA}${request.url}`, options);
-  return Promise.resolve(
-    createResponse(
-      response.status,
-      getSafeResponseHeaders(response.getHeaders()),
-      response.body
-    )
-  );
+  try {
+    const [responseFromOriginA, responseFromOriginB] = await Promise.all([promiseA, promiseB]);
+
+    return createResponse(
+      responseFromOriginA.status,
+      getSafeResponseHeaders(responseFromOriginA.getHeaders()),
+      responseFromOriginA.body
+    );
+  } catch (error) {
+    logger.log('Error: %s', error.message);
+    throw error;
+  }
 }

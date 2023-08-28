@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "0.1",
+    "description" : "Watermarking (direct case) sample example with CWT based token passed in request URL"
+}

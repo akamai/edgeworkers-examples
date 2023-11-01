@@ -49,19 +49,20 @@ export async function onClientResponse(request, response) {
         logger.log(beaconUrlParams);
 
         // Send Beacon
-        await send(beaconUrlParams);
+        send(beaconUrlParams);
     } catch (error) {
         logger.log(`Error: ${error.message}`);
     }
 }
 
-async function send(url) {
-    try {
-        const response = await httpRequest(url);
-        if (!response.ok) {
-            logger.log("Failed to send beacon");
-        }
-    } catch (error) {
-        logger.log(`Error: ${error.message}`);
-    }
+function send(url) {
+    httpRequest(url)
+        .then((response) => {
+            if (!response.ok) {
+                logger.log("Failed to send beacon");
+            }
+        })
+        .catch((error) => {
+            logger.log(`Error: ${error.message}`);
+        });
 }

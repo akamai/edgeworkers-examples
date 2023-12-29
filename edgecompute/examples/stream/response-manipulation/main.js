@@ -46,9 +46,10 @@ class HTMLStream {
     this.writable = new WritableStream({
       write (text) {
         completeProcessing = handleTemplate(text, 0);
+        return completeProcessing;
       },
       close (controller) {
-        completeProcessing.then(() => readController.close());
+        return completeProcessing.then(() => readController.close());
       }
     });
   }

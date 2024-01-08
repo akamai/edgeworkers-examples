@@ -3,6 +3,7 @@ The examples in this section detail how to use EdgeWorkers for authentication
 
 ## Subfolder organization
 * **/jwt**: Verifies JSON Web Tokens (JWTs) with ES256 algorithm
+* **/signed-url-custom-policy**: Verifies Amazon CloudFront signed URL using a custom policy
 
 ## Related Resources
 - [EdgeWorkers CLI](https://developer.akamai.com/cli/packages/edgeworkers.html)

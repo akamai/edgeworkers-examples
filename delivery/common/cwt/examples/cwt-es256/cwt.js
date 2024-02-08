@@ -1,4 +1,4 @@
-/** @preserve @version 1.1.0 */
+/** @preserve @version 1.1.1 */
 import { crypto } from "crypto";
 
 import { Encoder, Decoder } from "./cbor-x.js";
@@ -45,9 +45,7 @@ class Sign {
             let isSignVerified = !1;
             for (const key of keys) if (isSignVerified = await crypto.subtle.verify({
                 name: "ECDSA",
-                hash: {
-                    name: "SHA-256"
-                }
+                hash: "SHA-256"
             }, key, signature, new Uint8Array(message)), isSignVerified) return Promise.resolve(isSignVerified);
             return Promise.resolve(isSignVerified);
         }

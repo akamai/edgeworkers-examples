@@ -15,9 +15,7 @@ export async function responseProvider(request) {
     let headerNonce = 'nonce-' + encodedData;
 
     //Step 2: Replace the origin nonce with our generated nonce in the CSP response header
-    const headers = request.getHeaders();
-    let options = {};
-    let htmlResponse = await httpRequest("/", options);
+    let htmlResponse = await httpRequest("/");
     if (!htmlResponse.ok) {
         return createResponse(500, {}, `Failed to fetch doc: ${htmlResponse.status}`);
     }

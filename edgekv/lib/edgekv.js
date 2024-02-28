@@ -25,14 +25,20 @@ export class EdgeKV {
 
 	/**
 	 * Constructor to allow setting default namespace and group
-	 * These defaults can be overriden when making individual GET, PUT, and DELETE operations
-	 * @param {string} [$0.namepsace="default"] the default namespace to use for all GET, PUT, and DELETE operations
+	 * These defaults can be overridden when making individual GET, PUT, and DELETE operations
+	 * 
+	 * @typedef {Object} Opts
+	 * @property {string} [namespace="default"] the default namespace to use for all GET, PUT, and DELETE operations
 	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -
-	 * @param {string} [$0.group="default"] the default group to use for all GET, PUT, and DELETE operations
+	 * @property {string} [group="default"] the default group to use for all GET, PUT, and DELETE operations
 	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
-	 * @param {number} [$0.num_retries_on_timeout=0] the number of times to retry a GET requests when the sub request times out
-	 * @param {object} [$0.ew_request=null] passes the request object from the EdgeWorkers event handler to enable access to EdgeKV data in sandbox environments
-	 * @param {boolean} [$0.sandbox_fallback=false] whether to fallback to retrieving staging data if the sandbox data does not exist, instead of returning null or the specified default value
+	 * @property {number} [num_retries_on_timeout=0] the number of times to retry a GET requests when the sub request times out
+	 * @property {object} [ew_request=null] passes the request object from the EdgeWorkers event handler to enable access to EdgeKV data in sandbox environments
+	 * @property {boolean} [sandbox_fallback=false] whether to fallback to retrieving staging data if the sandbox data does not exist, instead of returning null or the specified default value
+	 * 
+	 * @param {Opts|string} [namespace="default"] the default namespace to use for all GET, PUT, and DELETE operations
+	 * @param {string} [group="default"] the default group to use for all GET, PUT, and DELETE operations
+	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
 	 */
 	constructor(namespace = "default", group = "default") {
 		if (typeof namespace === "object") {
@@ -53,6 +59,14 @@ export class EdgeKV {
 			this.#sandbox_fallback = false;
 		}
 	}
+
+	/**
+	 * if EdgeKV operation was not successful, an object describing the non-200 response
+	 * @typedef {Object} EdgeKVError
+	 * @property {string} failed - Failure reason.
+	 * @property {number} status - HTTP status code.
+	 * @property {*} body - Response body.
+	 */
 
 	throwError(failed_reason, status, body) {
 		throw {
@@ -155,7 +169,7 @@ export class EdgeKV {
 		return JSON.parse(await this.streamText(response_body));
 	}
 
-	putRequest({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
+	putRequest({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
@@ -167,16 +181,17 @@ export class EdgeKV {
 
 	/**
 	 * async PUT text into an item in the EdgeKV.
-	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {Object} $0
+	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {string} $0.value text value to put into the EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
+	 * @param {number?} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
 	 * @returns {Promise<string>} if the operation was successful, the response from the EdgeKV
-	 * @throws {object} if the operation was not successful,
+	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async putText({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
+	async putText({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
 		return this.requestHandlerTemplate(
 			() => this.putRequest({ namespace: namespace, group: group, item: item, value: value, timeout: timeout }),
 			(response) => response.text(),
@@ -189,14 +204,15 @@ export class EdgeKV {
 
 	/**
 	 * PUT text into an item in the EdgeKV while only waiting for the request to send and not for the response.
-	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {Object} $0
+	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {string} $0.value text value to put into the EdgeKV
-	 * @throws {object} if the operation was not successful at sending the request,
+	 * @throws {EdgeKVError} if the operation was not successful at sending the request,
 	 * 		an object describing the error: {failed, status, body}
 	 */
-	putTextNoWait({ namespace = this.#namespace, group = this.#group, item, value } = {}) {
+	putTextNoWait({ namespace = this.#namespace, group = this.#group, item, value }) {
 		try {
 			this.putRequest({ namespace: namespace, group: group, item: item, value: value });
 		} catch (error) {
@@ -206,16 +222,17 @@ export class EdgeKV {
 
 	/**
 	 * async PUT json into an item in the EdgeKV.
-	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {Object} $0
+	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
-	 * @param {object} $0.value json value to put into the EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
+	 * @param {Object} $0.value json value to put into the EdgeKV
+	 * @param {number?} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
 	 * @returns {Promise<string>} if the operation was successful, the response from the EdgeKV
-	 * @throws {object} if the operation was not successful,
+	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async putJson({ namespace = this.#namespace, group = this.#group, item, value, timeout = null } = {}) {
+	async putJson({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
 		return this.requestHandlerTemplate(
 			() => this.putRequest({ namespace: namespace, group: group, item: item, value: JSON.stringify(value), timeout: timeout }),
 			(response) => response.text(),
@@ -228,14 +245,15 @@ export class EdgeKV {
 
 	/**
 	 * PUT json into an item in the EdgeKV while only waiting for the request to send and not for the response.
-	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {Object} $0 
+	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
 	 * @param {object} $0.value json value to put into the EdgeKV
-	 * @throws {object} if the operation was not successful at sending the request,
+	 * @throws {EdgeKVError} if the operation was not successful at sending the request,
 	 * 		an object describing the error: {failed, status, body}
 	 */
-	putJsonNoWait({ namespace = this.#namespace, group = this.#group, item, value } = {}) {
+	putJsonNoWait({ namespace = this.#namespace, group = this.#group, item, value }) {
 		try {
 			this.putRequest({ namespace: namespace, group: group, item: item, value: JSON.stringify(value) });
 		} catch (error) {
@@ -243,7 +261,7 @@ export class EdgeKV {
 		}
 	}
 
-	getRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
+	getRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null }) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
@@ -254,17 +272,18 @@ export class EdgeKV {
 
 	/**
 	 * async GET text from an item in the EdgeKV.
-	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {Object} $0
+	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to get from the EdgeKV
-	 * @param {string} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @param {number} [$0.num_retries_on_timeout=null] the number of times to retry a requests when the sub request times out
+	 * @param {string?} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
+	 * @param {number?} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
+	 * @param {number?} [$0.num_retries_on_timeout=null] the number of times to retry a requests when the sub request times out
 	 * @returns {Promise<string>} if the operation was successful, the text response from the EdgeKV or the default_value on 404
-	 * @throws {object} if the operation was not successful,
+	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null } = {}) {
+	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null }) {
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.text(),
@@ -277,17 +296,18 @@ export class EdgeKV {
 
 	/**
 	 * async GET json from an item in the EdgeKV.
-	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {Object} $0
+	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to get from the EdgeKV
-	 * @param {object} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @param {number} [$0.num_retries_on_timeout=null] the number of times to retry a requests when the sub request times out
-	 * @returns {Promise<object>} if the operation was successful, the json response from the EdgeKV or the default_value on 404
-	 * @throws {object} if the operation was not successful,
+	 * @param {Object} [$0.default_value=null] the default value to return if a 404 response is returned from EdgeKV
+	 * @param {number?} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
+	 * @param {number?} [$0.num_retries_on_timeout=null] the number of times to retry a requests when the sub request times out
+	 * @returns {Promise<Object>} if the operation was successful, the json response from the EdgeKV or the default_value on 404
+	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null } = {}) {
+	async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null }) {
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.json(),
@@ -298,7 +318,7 @@ export class EdgeKV {
 		);
 	}
 
-	deleteRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null } = {}) {
+	deleteRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null }) {
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
@@ -309,15 +329,16 @@ export class EdgeKV {
 
 	/**
 	 * async DELETE an item in the EdgeKV.
-	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {Object} $0
+	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to delete from the EdgeKV
-	 * @param {number} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @returns {Promise<string>} if the operation was successful, the text response from the EdgeKV
-	 * @throws {object} if the operation was not successful,
+	 * @param {number?} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
+	 * @returns {Promise<string, EdgeKVError>} if the operation was successful, the text response from the EdgeKV
+	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async delete({ namespace = this.#namespace, group = this.#group, item, timeout = null} = {}) {
+	async delete({ namespace = this.#namespace, group = this.#group, item, timeout = null}) {
 		return this.requestHandlerTemplate(
 			() => this.deleteRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.text(),
@@ -330,13 +351,14 @@ export class EdgeKV {
 
 	/**
 	 * DELETE an item in the EdgeKV while only waiting for the request to send and not for the response.
-	 * @param {string} [$0.namepsace=this.#namespace] specify a namespace other than the default
+	 * @param {Object} $0
+	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to delete from the EdgeKV
-	 * @throws {object} if the operation was not successful at sending the request,
+	 * @throws {EdgeKVError} if the operation was not successful at sending the request,
 	 * 		an object describing the error: {failed, status, body}
 	 */
-	deleteNoWait({ namespace = this.#namespace, group = this.#group, item } = {}) {
+	deleteNoWait({ namespace = this.#namespace, group = this.#group, item }) {
 		try {
 			this.delete({ namespace: namespace, group: group, item: item });
 		} catch (error) {

@@ -169,7 +169,8 @@ export class EdgeKV {
 		return JSON.parse(await this.streamText(response_body));
 	}
 
-	putRequest({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
+	putRequest(args) {
+		const { namespace = this.#namespace, group = this.#group, item, value, timeout = null } = args || {};
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
@@ -191,7 +192,8 @@ export class EdgeKV {
 	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async putText({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
+	async putText(args) {
+		const { namespace = this.#namespace, group = this.#group, item, value, timeout = null } = args || {};
 		return this.requestHandlerTemplate(
 			() => this.putRequest({ namespace: namespace, group: group, item: item, value: value, timeout: timeout }),
 			(response) => response.text(),
@@ -212,7 +214,8 @@ export class EdgeKV {
 	 * @throws {EdgeKVError} if the operation was not successful at sending the request,
 	 * 		an object describing the error: {failed, status, body}
 	 */
-	putTextNoWait({ namespace = this.#namespace, group = this.#group, item, value }) {
+	putTextNoWait(args) {
+		const { namespace = this.#namespace, group = this.#group, item, value } = args || {};
 		try {
 			this.putRequest({ namespace: namespace, group: group, item: item, value: value });
 		} catch (error) {
@@ -232,7 +235,8 @@ export class EdgeKV {
 	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async putJson({ namespace = this.#namespace, group = this.#group, item, value, timeout = null }) {
+	async putJson(args) {
+		const { namespace = this.#namespace, group = this.#group, item, value, timeout = null } = args || {};
 		return this.requestHandlerTemplate(
 			() => this.putRequest({ namespace: namespace, group: group, item: item, value: JSON.stringify(value), timeout: timeout }),
 			(response) => response.text(),
@@ -253,7 +257,8 @@ export class EdgeKV {
 	 * @throws {EdgeKVError} if the operation was not successful at sending the request,
 	 * 		an object describing the error: {failed, status, body}
 	 */
-	putJsonNoWait({ namespace = this.#namespace, group = this.#group, item, value }) {
+	putJsonNoWait(args) {
+		const { namespace = this.#namespace, group = this.#group, item, value } = args || {};
 		try {
 			this.putRequest({ namespace: namespace, group: group, item: item, value: JSON.stringify(value) });
 		} catch (error) {
@@ -261,7 +266,8 @@ export class EdgeKV {
 		}
 	}
 
-	getRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null }) {
+	getRequest(args) {
+		const { namespace = this.#namespace, group = this.#group, item, timeout = null } = args || {};
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
@@ -283,7 +289,8 @@ export class EdgeKV {
 	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getText({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null }) {
+	async getText(args) {
+		const { namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null } = args || {};
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.text(),
@@ -307,7 +314,8 @@ export class EdgeKV {
 	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 and non-404 response from the EdgeKV: {failed, status, body}
 	 */
-	async getJson({ namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null }) {
+	async getJson(args) {
+		const { namespace = this.#namespace, group = this.#group, item, default_value = null, timeout = null, num_retries_on_timeout = null } = args || {};
 		return this.requestHandlerTemplate(
 			() => this.getRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.json(),
@@ -318,7 +326,8 @@ export class EdgeKV {
 		);
 	}
 
-	deleteRequest({ namespace = this.#namespace, group = this.#group, item, timeout = null }) {
+	deleteRequest(args) {
+		const { namespace = this.#namespace, group = this.#group, item, timeout = null } = args || {};
 		this.validate({ namespace: namespace, group: group, item: item });
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
@@ -338,7 +347,8 @@ export class EdgeKV {
 	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */
-	async delete({ namespace = this.#namespace, group = this.#group, item, timeout = null}) {
+	async delete(args) {
+		const { namespace = this.#namespace, group = this.#group, item, timeout = null } = args || {};
 		return this.requestHandlerTemplate(
 			() => this.deleteRequest({ namespace: namespace, group: group, item: item, timeout: timeout }),
 			(response) => response.text(),
@@ -358,7 +368,8 @@ export class EdgeKV {
 	 * @throws {EdgeKVError} if the operation was not successful at sending the request,
 	 * 		an object describing the error: {failed, status, body}
 	 */
-	deleteNoWait({ namespace = this.#namespace, group = this.#group, item }) {
+	deleteNoWait(args) {
+		const { namespace = this.#namespace, group = this.#group, item } = args || {};
 		try {
 			this.delete({ namespace: namespace, group: group, item: item });
 		} catch (error) {

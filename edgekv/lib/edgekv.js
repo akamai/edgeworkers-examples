@@ -343,7 +343,7 @@ export class EdgeKV {
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to delete from the EdgeKV
 	 * @param {number?} [$0.timeout=null] the maximum time, between 1 and 1000 milliseconds, to wait for the response
-	 * @returns {Promise<string, EdgeKVError>} if the operation was successful, the text response from the EdgeKV
+	 * @returns {Promise<string>} if the operation was successful, the text response from the EdgeKV
 	 * @throws {EdgeKVError} if the operation was not successful,
 	 * 		an object describing the non-200 response from the EdgeKV: {failed, status, body}
 	 */

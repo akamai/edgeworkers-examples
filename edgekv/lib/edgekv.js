@@ -1,6 +1,6 @@
 /*
 (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-Version: 0.6.0
+Version: 0.6.1
 Purpose:  Provide a helper class to simplify the interaction with EdgeKV in an EdgeWorker.
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/lib
 */

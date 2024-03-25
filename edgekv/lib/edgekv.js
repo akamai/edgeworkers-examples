@@ -122,7 +122,7 @@ export class EdgeKV {
 		}
 	}
 
-	getNamespaceToken(namespace) {
+	getNamespaceTokenHeader(namespace) {
 		if (this.#token_override) {
 			return this.#token_override;
 		}
@@ -130,7 +130,13 @@ export class EdgeKV {
 		if (!(name in edgekv_access_tokens)) {
 			throw "MISSING ACCESS TOKEN. No EdgeKV Access Token defined for namespace '" + namespace + "'.";
 		}
-		return edgekv_access_tokens[name]["value"];
+		if ("value" in edgekv_access_tokens[name]) {
+			return { 'X-Akamai-EdgeDB-Auth': [edgekv_access_tokens[name]["value"]]};
+		} else if ("reference" in edgekv_access_tokens[name]) {
+			return { 'X-Akamai-EdgeDB-Auth-Ref': [edgekv_access_tokens[name]["reference"]]};
+		} else {
+			throw "MISSING ACCESS TOKEN. No EdgeKV Access Token value or reference defined for namespace '" + namespace + "'.";
+		}
 	}
 
 	addTimeout(options, timeout) {
@@ -176,7 +182,7 @@ export class EdgeKV {
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "PUT",
 			body: typeof value === "object" ? JSON.stringify(value) : value,
-			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
+			headers: { ...this.getNamespaceTokenHeader(namespace) }
 		}, timeout));
 	}
 
@@ -272,7 +278,7 @@ export class EdgeKV {
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "GET",
-			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
+			headers: { ...this.getNamespaceTokenHeader(namespace) }
 		}, timeout));
 	}
 
@@ -332,7 +338,7 @@ export class EdgeKV {
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "DELETE",
-			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
+			headers: { ...this.getNamespaceTokenHeader(namespace) }
 		}, timeout));
 	}
 

@@ -51,7 +51,7 @@ The key used for each item will be the code defined in the "code"" column of the
 1. Create a tarball of your EdgeWorker bundle (do not forget to update the version info in your `bundle.json` before creating the tarball)
 
 ```
-tar czvf validate-promo-code.tgz bundle.json main.js lib/edgekv.js lib/edgekv_tokens.js
+tar czvf validate-promo-code.tgz bundle.json main.js edgekv.js edgekv_tokens.js
 ```
 
 2. Upload your code bundle and activate your EWID. [link to EdgeWorker instructions](https://learn.akamai.com/en-us/webhelp/edgeworkers/edgeworkers-user-guide/GUID-430E06BE-81C9-4F26-ABB7-C1FD2BAC7497.html)

@@ -1,6 +1,6 @@
 import URLSearchParams from 'url-search-params';
 import { createResponse } from 'create-response';
-import { EdgeKV } from './lib/edgekv.js';
+import { EdgeKV } from './edgekv.js';
 
 function createErrorResponse(message) {
   return createResponse(

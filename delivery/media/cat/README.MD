@@ -6,7 +6,7 @@ It exports implementations of CAT class that contains API's to create, decode an
 ## Important Note
 - CAT module is reference implementation which matches with the spec as of 13th May 2024.
 - Implementation covers high level claims and customers are free to extend it to other claims in the spec as per their requirement.
-- As of now the enc claim is supported using A256-GCM encryption algorithm only and users are free to adopt to new algorithms when it is avilable in EW crypto
+- As of now the enc claim is supported using A256-GCM encryption algorithm only and users are free to adopt to new algorithms when it is available in EW crypto
 
 ## Limitations
 - The CAT module relies on the alg header claim defined in protected header of the CAT token. However the CAT spec does not mandate this, but this module uses the value defined in the protected header to identiy the algorithm used for token verification. The protected header also provides additional security. 

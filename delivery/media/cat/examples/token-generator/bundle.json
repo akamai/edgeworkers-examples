@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "0.4",
+    "description" : "CAT token generator with HS256 and ES256"
+}

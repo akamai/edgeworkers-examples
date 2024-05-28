@@ -13,7 +13,7 @@ It exports implementations of CAT class that contains API's to create, decode an
 - The module depends on CWT module (1.2.0 version) and its limitations are also extended. Refer [cwt](https://techdocs.akamai.com/edgeworkers/docs/cwt) doc to know its limitations.
 
 ## Subfolder organization
-* **/apis**: CAT API documentation.
+* **/api**: CAT API documentation.
 * **/lib**: CAT module (js) and typescript definition.
 * **/examples**: Usage examples of CAT module.
 

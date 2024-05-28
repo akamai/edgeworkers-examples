@@ -176,6 +176,10 @@ export async function onClientRequest (request) {
   }
 }
 
+/** 
+ The renewed token can be sent back to client in response using EW onClientResponse event handler. 
+ However, same can also be achieved by applying necessary PM configuration rules without executing EW.
+**/
 // export function onClientResponse (request, response) {
 
 //   const catRenewed = request.getVariable('PMUSER_RENEWED_CAT');

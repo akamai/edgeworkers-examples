@@ -1,6 +1,6 @@
 /*
 (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
-Version: 0.6.1
+Version: 0.6.2
 Purpose:  Provide a helper class to simplify the interaction with EdgeKV in an EdgeWorker.
 Repo: https://github.com/akamai/edgeworkers-examples/tree/master/edgekv/lib
 */
@@ -26,7 +26,7 @@ export class EdgeKV {
 	/**
 	 * Constructor to allow setting default namespace and group
 	 * These defaults can be overridden when making individual GET, PUT, and DELETE operations
-	 * 
+	 *
 	 * @typedef {Object} Opts
 	 * @property {string} [namespace="default"] the default namespace to use for all GET, PUT, and DELETE operations
 	 * 		Namespace must be 32 characters or less, consisting of A-Z a-z 0-9 _ or -
@@ -35,7 +35,7 @@ export class EdgeKV {
 	 * @property {number} [num_retries_on_timeout=0] the number of times to retry a GET requests when the sub request times out
 	 * @property {object} [ew_request=null] passes the request object from the EdgeWorkers event handler to enable access to EdgeKV data in sandbox environments
 	 * @property {boolean} [sandbox_fallback=false] whether to fallback to retrieving staging data if the sandbox data does not exist, instead of returning null or the specified default value
-	 * 
+	 *
 	 * @param {Opts|string} [namespace="default"] the default namespace to use for all GET, PUT, and DELETE operations
 	 * @param {string} [group="default"] the default group to use for all GET, PUT, and DELETE operations
 	 * 		Group must be 128 characters or less, consisting of A-Z a-z 0-9 _ or -
@@ -122,7 +122,7 @@ export class EdgeKV {
 		}
 	}
 
-	getNamespaceToken(namespace) {
+	getNamespaceTokenHeader(namespace) {
 		if (this.#token_override) {
 			return this.#token_override;
 		}
@@ -130,7 +130,13 @@ export class EdgeKV {
 		if (!(name in edgekv_access_tokens)) {
 			throw "MISSING ACCESS TOKEN. No EdgeKV Access Token defined for namespace '" + namespace + "'.";
 		}
-		return edgekv_access_tokens[name]["value"];
+		if ("value" in edgekv_access_tokens[name]) {
+			return { 'X-Akamai-EdgeDB-Auth': [edgekv_access_tokens[name]["value"]]};
+		} else if ("reference" in edgekv_access_tokens[name]) {
+			return { 'X-Akamai-EdgeDB-Auth-Ref': [edgekv_access_tokens[name]["reference"]]};
+		} else {
+			throw "MISSING ACCESS TOKEN. No EdgeKV Access Token value or reference defined for namespace '" + namespace + "'.";
+		}
 	}
 
 	addTimeout(options, timeout) {
@@ -176,7 +182,7 @@ export class EdgeKV {
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "PUT",
 			body: typeof value === "object" ? JSON.stringify(value) : value,
-			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
+			headers: { ...this.getNamespaceTokenHeader(namespace) }
 		}, timeout));
 	}
 
@@ -249,7 +255,7 @@ export class EdgeKV {
 
 	/**
 	 * PUT json into an item in the EdgeKV while only waiting for the request to send and not for the response.
-	 * @param {Object} $0 
+	 * @param {Object} $0
 	 * @param {string} [$0.namespace=this.#namespace] specify a namespace other than the default
 	 * @param {string} [$0.group=this.#group] specify a group other than the default
 	 * @param {string} $0.item item key to put into the EdgeKV
@@ -272,7 +278,7 @@ export class EdgeKV {
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "GET",
-			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
+			headers: { ...this.getNamespaceTokenHeader(namespace) }
 		}, timeout));
 	}
 
@@ -332,7 +338,7 @@ export class EdgeKV {
 		let uri = this.#edgekv_uri + "/api/v1/namespaces/" + namespace + "/groups/" + group + "/items/" + item;
 		return httpRequest(this.addSandboxId(uri), this.addTimeout({
 			method: "DELETE",
-			headers: { "X-Akamai-EdgeDB-Auth": [this.getNamespaceToken(namespace)] }
+			headers: { ...this.getNamespaceTokenHeader(namespace) }
 		}, timeout));
 	}
 

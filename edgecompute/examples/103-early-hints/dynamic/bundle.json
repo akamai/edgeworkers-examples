@@ -1,4 +1,4 @@
 {
-    "edgeworker-version": "1.00",
-    "description" : "EdgeWorker enabeling 103 Early hints and configuring the list of Resource Hints based on the data of an HTTP subrequest"
+    "edgeworker-version": "1.0.0",
+    "description" : "EdgeWorker enabling 103 Early hints and configuring the list of Resource Hints based on the data of an HTTP subrequest"
 }

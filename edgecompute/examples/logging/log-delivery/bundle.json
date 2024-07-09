@@ -1,0 +1,9 @@
+{
+    "edgeworker-version": "0.2",
+    "description": "Hello World Example",
+    "config": {
+        "logging": {
+            "ds2id": <update with DataStream2 identifier>
+        }
+    }
+}

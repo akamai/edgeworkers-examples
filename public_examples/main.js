@@ -28,7 +28,6 @@ export async function responseProvider(request)
   //logger.log(`In responseProvider function request - ${JSON.stringify(decodeURI(request))}`);
   try 
   {
-    //let dccFeatureObj = JSON.parse(request.getVariable("PMUSER_DCC_CONFIG"));
     const edgeKv = new EdgeKV({ namespace: "edgekv-token-test", group: "1111" });
     logger.log('responseProvider function edgeKv: ', edgeKv);
   }catch(error){

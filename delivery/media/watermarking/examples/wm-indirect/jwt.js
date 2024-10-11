@@ -1,4 +1,4 @@
-/** @preserve @version 1.0.0 */
+/** @preserve @version 1.0.1 */
 import { crypto } from "crypto";
 
 import { base64url, TextEncoder } from "encoding";
@@ -103,25 +103,19 @@ class JWTValidator {
           case "ES512":
             return await crypto.subtle.verify({
                 name: "ECDSA",
-                hash: {
-                    name: "SHA-512"
-                }
+                hash: "SHA-512"
             }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "ES384":
             return await crypto.subtle.verify({
                 name: "ECDSA",
-                hash: {
-                    name: "SHA-384"
-                }
+                hash: "SHA-384"
             }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           case "ES256":
             return await crypto.subtle.verify({
                 name: "ECDSA",
-                hash: {
-                    name: "SHA-256"
-                }
+                hash: "SHA-256"
             }, cryptoKey, base64url.decode(jwtParts[2], "Uint8Array").buffer, (new TextEncoder).encode(base64JWTToken.substring(0, jwtParts[0].length + 1 + jwtParts[1].length)));
 
           default:

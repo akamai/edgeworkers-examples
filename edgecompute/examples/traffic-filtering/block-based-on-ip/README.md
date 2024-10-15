@@ -16,11 +16,6 @@ Host: www.example.com
 HTTP/1.1 403 Forbidden
 {}
 ````
-## Property Variable
-To enable EdgeWorker to get a user's IP address, the Set Variable behavior must be configured in Property Manager.
-![Property Variable](propertyvariable.png)
-![Set Variable](setvariable.png)
-
 ## Similar Uses
 Allowlist or blocklist capabilities can be setup based on other end user request context information such as connecting IP, Geo, Device Characteristics, Accept-Language, User-Agent, etc. 
 

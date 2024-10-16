@@ -1,3 +1,8 @@
+/*
+(c) Copyright 2024 Akamai Technologies, Inc. Licensed under Apache 2 license.
+Purpose:  Block by IP address
+*/
+
 import { blockedIPs } from './ipList.js';
 
 export async function onClientRequest(request) {

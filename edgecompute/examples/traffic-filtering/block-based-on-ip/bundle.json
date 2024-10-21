@@ -1,0 +1,4 @@
+{
+  "edgeworker-version": "0.1",
+  "description" : "Deny based on ip list"
+}

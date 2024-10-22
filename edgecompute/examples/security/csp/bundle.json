@@ -1,4 +1,4 @@
 {
     "edgeworker-version": "1.0",
-    "description" : "Dynamic CSP"
+    "description" : "Updates existing Content Security Policies at the edge with fresh nonces"
 }

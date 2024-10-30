@@ -1,3 +1,11 @@
+/*
+(c) Copyright 2024 Akamai Technologies, Inc. Licensed under Apache 2 license.
+
+Version: 1.0
+Purpose:  EdgeWorker that signs a JWT for origin validation by leveraging the Web Crypto API
+
+*/
+
 import { logger } from 'log';
 import { crypto } from 'crypto';
 import { TextEncoder, base64url } from 'encoding';

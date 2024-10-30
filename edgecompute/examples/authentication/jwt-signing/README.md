@@ -4,7 +4,7 @@ _Keyword(s):_ jwt, authentication<br>
 
 ## Copyright Notice
 
-    (c) Copyright 2020 Akamai Technologies, Inc. Licensed under Apache 2 license.
+    (c) Copyright 2024 Akamai Technologies, Inc. Licensed under Apache 2 license.
 
 This project provides an Akamai Edgeworker solution for signing JSON Web Tokens (JWTs) and attaching them to API requests. It includes an example of how to sign a JWT using HMAC-SHA256 and then add the JWT and an API key to the headers of an outgoing request.
 

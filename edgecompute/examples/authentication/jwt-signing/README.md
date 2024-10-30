@@ -8,7 +8,7 @@ _Keyword(s):_ jwt, authentication<br>
 
 This project provides an Akamai Edgeworker solution for signing JSON Web Tokens (JWTs) and attaching them to API requests. It includes an example of how to sign a JWT using HMAC-SHA256 and then add the JWT and an API key to the headers of an outgoing request.
 
-## Limitations
+## Security Considerations
 
 -   Secrets are stored in [Property Manager variables](https://techdocs.akamai.com/property-mgr/docs/user-defined-vars). Property Manager variables should be marked as hidden to prevent exposure with akamai-x-get-extracted-values. Depending on your security considerations, you may wish to store secrets elsewhere or use asymmetric keys.
 

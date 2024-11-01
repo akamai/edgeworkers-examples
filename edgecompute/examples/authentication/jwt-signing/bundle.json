@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "0.1",
+    "description": "Generates a signed JWT for origin verification."
+}

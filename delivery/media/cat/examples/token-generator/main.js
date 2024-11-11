@@ -25,17 +25,20 @@ export async function responseProvider (request) {
         //decode catu
         let catu = body['catu']
         if (catu) {
-         const catuMap = CWTUtil.claimsTranslate(catu, CatURILabelMap);
-         for (const [key, value] of catuMap) {
-             const [a, v] = value;
-             if (a === MatchTypeLabelMap.sha256 || a === MatchTypeLabelMap.sha512) {
-               const decodedValue = base16.decode(v);
-               catuMap.set(key, [a, decodedValue])
-             } else {
-               catuMap.set(key, value)
-             }
-         }
-         body['catu'] = catuMap
+          const catuMap = CWTUtil.claimsTranslate(catu, CatURILabelMap);
+          for (const [key, value] of catuMap) {
+            const uriComponentMatch = new Map();
+    				for (const a in value) {
+              if (a === MatchTypeLabelMap.sha256 || a === MatchTypeLabelMap.sha512) {
+              	const decodedValue = base16.decode(value[a]);
+                uriComponentMatch.set(a, decodedValue);
+              } else {
+                uriComponentMatch.set(a, value[a]);
+              }
+    				}
+            catuMap.set(key, uriComponentMatch);
+          }
+          body['catu'] = catuMap
         }
         //decode catalpn
         let catalpn = body['catalpn']

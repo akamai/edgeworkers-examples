@@ -1,4 +1,4 @@
-/** @preserve @version 1.0.0 */
+/** @preserve @version 1.0.1 */
 
 /**
  * Claim validation depends on integer label in the CAT claims set.

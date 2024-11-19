@@ -1,7 +1,7 @@
 # EdgeWorkers CSP: Cutting Latency, Not Security
 
 ### Resources:
-See the full writeup and explanation at [Akamai EdgeWorker Techdocs](techdocs.akamai.com/edgeworkers/docs/content-security-policy) for additional guidance.
+See the full writeup and explanation at [Akamai EdgeWorker Techdocs](https://techdocs.akamai.com/edgeworkers/docs/content-security-policy) for additional guidance.
 
 ### Proposed Solution:
 ![img.png](img.png)

@@ -109,7 +109,7 @@ class Geohash {
     static cta_decode(geohash) {
         const decArray = [];
         [ ...geohash ].forEach((c => {
-            for (let i = 0; i < base32.length; i++) base32[i] === c && decArray.push(i);
+            for (let i = 0; i < 32; i++) base32[i] === c && decArray.push(i);
         }));
         let int = 0;
         for (let i = 0; i < decArray.length; i++) int += decArray[i] * Math.pow(32, decArray.length - i - 1);

@@ -1,8 +1,8 @@
 import { logger } from 'log';
-import { CWTGenerator, CWTValidator } from './cwt.js';
-import { HeaderLabelMap, CAT, ClaimsLabelMap, CatRLabelMap, AlgoLabelMap } from './cat.js';
-import { TextDecoder, TextEncoder, base16, base64url } from 'encoding';
-import { crypto, pem2ab } from 'crypto';
+import { CWTValidator } from './cwt.js';
+import { HeaderLabelMap, CAT} from './cat.js';
+import { TextDecoder, base16, base64url } from 'encoding';
+import { crypto } from 'crypto';
 import URLSearchParams from 'url-search-params';
 import { Cookies } from 'cookies';
 

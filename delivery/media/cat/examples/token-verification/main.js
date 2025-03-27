@@ -4,7 +4,7 @@ import { HeaderLabelMap, CAT, ClaimsLabelMap, CatRLabelMap, AlgoLabelMap } from 
 import { TextDecoder, TextEncoder, base16, base64url } from 'encoding';
 import { crypto, pem2ab } from 'crypto';
 import URLSearchParams from 'url-search-params';
-import { Cookies, SetCookie } from 'cookies';
+import { Cookies } from 'cookies';
 
 const hs256KeyHex = '403697de87af64611c1d32a05dab0fe1fcb715a86ab435f1ec99192d79569388';
 

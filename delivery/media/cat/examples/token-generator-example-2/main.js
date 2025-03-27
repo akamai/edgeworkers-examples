@@ -1,6 +1,6 @@
 import { logger } from 'log';
 import { CWTGenerator, CWTUtil } from './cwt.js';
-import { AlgoLabelMap, CatURILabelMap, ClaimsLabelMap, HeaderLabelMap, MatchTypeLabelMap, CAT, CatRLabelMap } from './cat.js';
+import { AlgoLabelMap, CatURILabelMap, ClaimsLabelMap, HeaderLabelMap, MatchTypeLabelMap, CAT } from './cat.js';
 import { TextDecoder, TextEncoder, base16, base64url } from 'encoding';
 import { crypto } from 'crypto';
 import { createResponse } from 'create-response';
@@ -17,8 +17,9 @@ export async function responseProvider (request) {
     if (request.path === '/token' && request.method === 'POST') {
       try {
         let body = '';
+        const decoder = new TextDecoder();
         for await (let chunk of request.body) {
-          body += new TextDecoder().decode(chunk);
+          body += decoder.decode(chunk, {stream: true});
         }
         logger.log('D: body: %s', body);
         body = JSON.parse(body);

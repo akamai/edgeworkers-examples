@@ -27,14 +27,14 @@ export async function onClientRequest (request) {
     let catToken;
     // Find CAT token from cookie 
     const cookie = request.getHeader('cookie');
-    if (cookie !== null && cookie !== undefined){
+    if (cookie !== null && cookie !== undefined) {
       let cookies = new Cookies(cookie)
       catToken = cookies.get('Common-Access-Token')
       if (catToken !== undefined) {
         logger.log('CAT obtained from cookie')
       }
-    // Try in QS
-    } else if (request.getHeader('Common-Access-Token') !== null && request.getHeader('Common-Access-Token') !== undefined) {
+    }
+    if ((catToken === null || catToken === undefined) && (request.getHeader('Common-Access-Token') !== null && request.getHeader('Common-Access-Token') !== undefined)) {
       catToken = request.getHeader('Common-Access-Token')[0];
       if (catToken !== undefined) {
         logger.log('CAT obtained from header')
@@ -42,9 +42,6 @@ export async function onClientRequest (request) {
     } else {
       const querys_params = new URLSearchParams(request.query);
       catToken = querys_params.get('CAT')
-      // Remove cat token from query string before forwarding to origin
-      querys_params.delete('CAT')
-      finalQs = querys_params.toString();
     }
     if (catToken !== null && catToken !== undefined) {
       try {
@@ -83,44 +80,6 @@ export async function onClientRequest (request) {
             result = await cat.isCATAcceptable(catJSON.payload, request);
             logger.log("result: %o", result)
             if (result.status === true) {
-              // // check renewal
-              // const catr = catJSON.payload.get(ClaimsLabelMap.catr);
-              // const exp = catJSON.payload.get(ClaimsLabelMap.exp);
-              // const renewalType = catr.get(CatRLabelMap.renewal_type);
-              // const exp_extension = catr.get(CatRLabelMap.exp_extension);
-              // const exp_deadline = catr.get(CatRLabelMap.exp_deadline);
-              // logger.log("renewalType: %s", renewalType)
-              // logger.log("exp_extension: %s", exp_extension)
-              // logger.log("exp_deadline: %s", exp_deadline)
-              // logger.log("exp: %s", exp)
-              // // support for cookie and header renewable type
-              // if ((renewalType === 1 || renewalType === 2)  && exp_extension !== undefined && exp !== undefined) {
-              //   let lowT;
-              //   if (exp_deadline !== undefined) {
-              //     lowT = exp - exp_deadline * 60
-              //   } else {
-              //     lowT = exp - 1 * 60 // 1 mins renewal window by default
-              //   }
-              //   const now = Math.floor(Date.now()/1000);
-              //   logger.log("lowT: %s", lowT)
-              //   logger.log("now: %s", now)
-              //   // renew the token
-              //   if (now >= lowT && now < exp) {
-              //     const new_exp = now + exp_extension
-              //     catJSON.payload.set(ClaimsLabelMap.exp, new_exp)
-              //     catJSON.payload.set(ClaimsLabelMap.iss, 'akamai.com')
-              //     catJSON.payload.set(ClaimsLabelMap.iat, now)
-              //     // renewal token is signed with same key
-              //     catJSON.header.u.set(HeaderLabelMap.kid, new TextEncoder().encode('akamai_key_hs256'))
-              //     catJSON.header.p.set(HeaderLabelMap.alg, AlgoLabelMap.HS256);
-              //     const cwtTokenBuf = await CWTGenerator.sign(catJSON.payload, { key: verificationKey }, catJSON.header, { isCoseCborTagAdded: true, isCWTTagAdded: true });
-              //     const cwtTokenBase64 = base64url.encode(new Uint8Array(cwtTokenBuf));
-              //     request.setVariable('PMUSER_RENEWED_CAT', cwtTokenBase64);
-              //     request.setVariable('PMUSER_RENEWAL_TYPE', renewalType);
-              //   }
-              // }
-              // Proceed and return the content
-              // request.route({ query: finalQs })
               request.respondWith(200, {}, "Token validation successfull, proceed futher!")
             } else {
               request.respondWith(401, {}, result.errMsg)
@@ -141,22 +100,3 @@ export async function onClientRequest (request) {
     }
   }
 }
-
-// export function onClientResponse (request, response) {
-
-//   const catRenewed = request.getVariable('PMUSER_RENEWED_CAT');
-//   const renewalType = request.getVariable('PMUSER_RENEWAL_TYPE');
-//   if (renewalType === 1) {
-//     if (catRenewed !== undefined && catRenewed.length > 0) {
-//       const cookie = new SetCookie({name: 'Common-Access-Token', value: catRenewed});
-//       cookie.sameSite = 'None';
-//       cookie.secure = true;
-//       cookie.path = '/'
-//       response.setHeader('Set-Cookie', cookie.toHeader());
-//     }
-//   } else if (renewalType === 2) {
-//     if (catRenewed !== undefined && catRenewed.length > 0) {
-//       response.setHeader('Common-Access-Token', catRenewed);
-//     }
-//   }
-// }

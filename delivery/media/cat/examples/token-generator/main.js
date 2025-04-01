@@ -1,6 +1,6 @@
 import { logger } from 'log';
 import { CWTGenerator, CWTUtil } from './cwt.js';
-import { AlgoLabelMap, CatURILabelMap, ClaimsLabelMap, HeaderLabelMap, MatchTypeLabelMap, CAT, CatRLabelMap } from './cat.js';
+import { AlgoLabelMap, CatURILabelMap, ClaimsLabelMap, HeaderLabelMap, MatchTypeLabelMap, CAT } from './cat.js';
 import { TextDecoder, TextEncoder, base16, base64url } from 'encoding';
 import { crypto } from 'crypto';
 import { createResponse } from 'create-response';
@@ -15,62 +15,51 @@ const cat = new CAT({
 export async function responseProvider (request) {
     // request to generate CAT token
     if (request.path === '/token' && request.method === 'POST') {
+
       try {
-        let body = '';
-        const decoder = new TextDecoder();
-        for await (let chunk of request.body) {
-          body += decoder.decode(chunk, { stream: true });
+        
+        let body = await request.json()
+        /*
+        Accepted Request Body
+        { 
+          "iss": "backoffice.synamedia.com",
+          "aud": "synamedia_cdn",
+          "catu": {
+            "scheme": {
+              "exact": "http"
+            },    
+            "host": {
+              "exact": "localhost:3070/synamedia"
+            }
+          },  
+          "cath": {
+            "userid": {
+              "exact": "38vh7mmers45zq1csjplkd"
+            }
+          },
+          "catm": [ "GET", "POST" ],
+          "catgeoiso3166": [ "FR", "US" ],
+          "catv": 1,
+          "nbf": 1742567042,
+          "exp": 1742567072,
+          "iat": 1742567042 
         }
-        logger.log('D: body: %s', body);
-        body = JSON.parse(body);
+        */
+        
         //decode catu
         let catu = body['catu']
         if (catu) {
-          const catuMap = CWTUtil.claimsTranslate(catu, CatURILabelMap);
-          for (const [key, value] of catuMap) {
-            const uriComponentMatch = new Map();
-    				for (const a in value) {
-              if (a === MatchTypeLabelMap.sha256 || a === MatchTypeLabelMap.sha512) {
-              	const decodedValue = base16.decode(value[a]);
-                uriComponentMatch.set(a, decodedValue);
-              } else {
-                uriComponentMatch.set(a, value[a]);
-              }
-    				}
-            catuMap.set(key, uriComponentMatch);
-          }
+          const catuMap = translateJsonToMap(catu, [CatURILabelMap, MatchTypeLabelMap], 0);
           body['catu'] = catuMap
         }
-        //decode catalpn
-        let catalpn = body['catalpn']
-        if (catalpn) {
-         const catalpns = []
-         if (Array.isArray(catalpn)) {
-           for (const c of catalpn) {
-             catalpns.push(new TextEncoder().encode(c))
-           }
-           body['catalpn'] = catalpns;
-         } else {
-           body['catalpn'] = new TextEncoder().encode(catalpn);
-         }
+        let cath = body['cath']
+        if (cath) {
+          const cathMap = translateJsonToMap(cath, [{}, MatchTypeLabelMap], 0);
+          body['cath'] = cathMap
         }
-        let catr = body['catr']
-        if (catr) {
-          const catrenewal = new Map();
-          catrenewal.set(CatRLabelMap.renewal_type, catr['renewabletype'])
-          if (catr['expext']) {
-            catrenewal.set(CatRLabelMap.exp_extension, catr['expext'])
-          }
-          if (catr['deadline']) {
-            catrenewal.set(CatRLabelMap.renewal_deadline, catr['deadline'])
-          }
-          body['catr'] = catrenewal
-        }
-        const now = Math.floor(Date.now()/1000)
-        const payload = CWTUtil.claimsTranslate(body, ClaimsLabelMap);  
-        payload.set(ClaimsLabelMap.iat, now);
-        payload.set(ClaimsLabelMap.nbf, now);
+        const payload = CWTUtil.claimsTranslate(body, ClaimsLabelMap);    
         const isWellFormedPayload = cat.isCATWellFormed(payload);
+
         if (isWellFormedPayload.status) {
           const protectedHeader = new Map();
           protectedHeader.set(HeaderLabelMap.alg, AlgoLabelMap.HS256)
@@ -81,8 +70,8 @@ export async function responseProvider (request) {
              u: unprotectedHeaders
           }
           const sKey = await crypto.subtle.importKey(
-           'raw',
-           base16.decode(hs256KeyHex, 'Uint8Array').buffer,
+            'raw',
+            base16.decode(hs256KeyHex, 'Uint8Array').buffer,
            {
              name: 'HMAC',
              hash: 'SHA-256'
@@ -90,7 +79,7 @@ export async function responseProvider (request) {
            false,
            ['sign','verify']
          );
-   
+  
           const signer = {
            key: sKey
           }
@@ -104,4 +93,25 @@ export async function responseProvider (request) {
         return Promise.resolve(createResponse(400, {}, err.message));
       }
     } 
+}
+
+// helper function to handle nested JSON object as payload and returns map with converted keys
+function translateJsonToMap(payload, labelMaps, i) {
+  const result = new Map()
+  if (payload instanceof Map) {
+      payload = Object.fromEntries(payload);
+  } 
+  for (const param in payload) {
+      let value = payload[param]
+      if (isJSONObject(value)) {
+        value = translateJsonToMap(value, labelMaps, i+1)
+      }
+      const key = labelMaps[i][param] != undefined ? labelMaps[i][param] : param
+      result.set(key, value);
+  }
+  return result;
+}
+
+function isJSONObject(value) {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

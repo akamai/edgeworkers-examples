@@ -1,4 +1,4 @@
-/** @preserve @version 1.0.0 */
+/** @preserve @version 1.0.2 */
 import { Decoder } from "./cbor-x.js";
 
 import { logger } from "log";
@@ -24,30 +24,30 @@ const HeaderLabelMap = {
     nbf: 5,
     iat: 6,
     cti: 7,
-    catreplay: 267,
-    catv: 279,
+    catreplay: 308,
+    catv: 310,
     crit: 45,
-    catnip: 269,
-    catu: 270,
-    catm: 271,
-    catalpn: 272,
-    cath: 280,
-    catgeoiso3166: 273,
-    catgeocoord: 281,
-    cattpk: 274,
-    catifdata: 65536,
+    catnip: 311,
+    catu: 312,
+    catm: 313,
+    catalpn: 314,
+    cath: 315,
+    catgeoiso3166: 316,
+    catgeocoord: 317,
+    cattpk: 319,
+    catifdata: 320,
     cnf: 8,
     catdpopw: 275,
     enc: 44,
     or: 41,
     nor: 42,
     and: 43,
-    catif: 277,
-    catr: 278,
+    catif: 322,
+    catr: 323,
     catdpopjti: "catdpopjti",
-    geohash: "geohash",
-    catgeoalt: "catgeoalt",
-    catpor: 283
+    geohash: 282,
+    catgeoalt: 318,
+    catpor: 309
 }, CatURILabelMap = {
     scheme: 0,
     host: 1,
@@ -109,7 +109,7 @@ class Geohash {
     static cta_decode(geohash) {
         const decArray = [];
         [ ...geohash ].forEach((c => {
-            for (let i = 0; i < 32; i++) base32[i] === c && decArray.push(i);
+            for (let i = 0; i < base32.length; i++) base32[i] === c && decArray.push(i);
         }));
         let int = 0;
         for (let i = 0; i < decArray.length; i++) int += decArray[i] * Math.pow(32, decArray.length - i - 1);
@@ -666,27 +666,27 @@ class ClaimsValidator {
         };
     }
     static typeCheckExp(value) {
-        return ("number" == typeof value || "bigint" == typeof value) && value > 0 ? {
+        return "bigint" == typeof value && value !== BigInt(0) || "number" == typeof value && Number.isFinite(value) && 0 !== value ? {
             status: !0
         } : {
             status: !1,
-            errMsg: `Invalid value type for exp-label[${ClaimsLabelMap.exp}], expected positive integer.`
+            errMsg: `Invalid value type for exp-label[${ClaimsLabelMap.exp}], expected positive or negative integer or floating-point number.`
         };
     }
     static typeCheckNbf(value) {
-        return ("number" == typeof value || "bigint" == typeof value) && value > 0 ? {
+        return "bigint" == typeof value && value !== BigInt(0) || "number" == typeof value && Number.isFinite(value) && 0 !== value ? {
             status: !0
         } : {
             status: !1,
-            errMsg: `Invalid value type for nbf-label[${ClaimsLabelMap.nbf}], expected positive integer.`
+            errMsg: `Invalid value type for nbf-label[${ClaimsLabelMap.nbf}], expected positive or negative integer or floating-point number.`
         };
     }
     static typeCheckIat(value) {
-        return ("number" == typeof value || "bigint" == typeof value) && value > 0 ? {
+        return "bigint" == typeof value && value !== BigInt(0) || "number" == typeof value && Number.isFinite(value) && 0 !== value ? {
             status: !0
         } : {
             status: !1,
-            errMsg: `Invalid value type for iat-label[${ClaimsLabelMap.iat}], expected positive integer.`
+            errMsg: `Invalid value type for iat-label[${ClaimsLabelMap.iat}], expected positive or negative integer or floating-point number.`
         };
     }
     static typeCheckCti(value) {
@@ -724,41 +724,42 @@ class ClaimsValidator {
     static typeCheckCatu(value) {
         if (!(value instanceof Map)) return {
             status: !1,
-            errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>.`
+            errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected Map<number, Map<number, string | bytes | array>>.`
         };
         for (const [k, v] of value) {
             if ("number" != typeof k) return {
                 status: !1,
-                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>.`
+                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected Map<number, Map<number, string | bytes | array>>.`
             };
-            if (!Array.isArray(v) || 2 != v.length) return {
+            if (!(v instanceof Map)) return {
                 status: !1,
-                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>.`
+                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected Map<number, Map<number, string | bytes | array>>.`
             };
-            const [a, b] = v;
-            if ("number" != typeof a) return {
-                status: !1,
-                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-            };
-            if (0 === a || 1 === a || 2 == a || 3 === a) {
-                if ("string" != typeof b) return {
+            for (const [a, b] of v) {
+                if ("number" != typeof a) return {
                     status: !1,
-                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>].`
+                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected Map<number, Map<number, string | bytes | array>>.`
                 };
-            } else if (-1 === a || -2 === a) {
-                if (!(b instanceof Uint8Array)) return {
-                    status: !1,
-                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-                };
-            } else {
-                if (4 !== a) return {
-                    status: !1,
-                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>]].`
-                };
-                if (!(Array.isArray(b) && b.length > 0 && "string" == typeof b[0] && b.every((item => null === item || "string" == typeof item)))) return {
-                    status: !1,
-                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-                };
+                if (0 === a || 1 === a || 2 == a || 3 === a) {
+                    if ("string" != typeof b) return {
+                        status: !1,
+                        errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}]. Match component value type for [exact, prefix, suffix, contains] should be of type string`
+                    };
+                } else if (-1 === a || -2 === a) {
+                    if (!(b instanceof Uint8Array)) return {
+                        status: !1,
+                        errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], Match component value type for [sha256, sha512] should be byte string.`
+                    };
+                } else {
+                    if (4 !== a) return {
+                        status: !1,
+                        errMsg: `Invalid match component key ${a} for catu-label[${ClaimsLabelMap.catu}], supported are [0=exact, 1=prefix, 2=suffix, 3=contains, 4=regularexp, -1=sha256, -2=sha512]`
+                    };
+                    if (!(Array.isArray(b) && b.length > 0 && "string" == typeof b[0] && b.every((item => null === item || "string" == typeof item)))) return {
+                        status: !1,
+                        errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], Match component value type for regular expression should be array of string.`
+                    };
+                }
             }
         }
         return {
@@ -784,41 +785,42 @@ class ClaimsValidator {
     static typeCheckCath(value) {
         if (!(value instanceof Map)) return {
             status: !1,
-            errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>.`
+            errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected Map<number, Map<number, string | bytes | array>>.`
         };
         for (const [k, v] of value) {
             if ("string" != typeof k) return {
                 status: !1,
-                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>.`
+                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected Map<number, Map<number, string | bytes | array>>.`
             };
-            if (!Array.isArray(v) || 2 != v.length) return {
+            if (!(v instanceof Map)) return {
                 status: !1,
-                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>.`
+                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected Map<number, Map<number, string | bytes | array>>.`
             };
-            const [a, b] = v;
-            if ("number" != typeof a) return {
-                status: !1,
-                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-            };
-            if (0 === a || 1 === a || 2 == a || 3 === a) {
-                if ("string" != typeof b) return {
+            for (const [a, b] of v) {
+                if ("number" != typeof a) return {
                     status: !1,
-                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>].`
+                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected Map<number, Map<number, string | bytes | array>>.`
                 };
-            } else if (-1 === a || -2 === a) {
-                if (!(b instanceof Uint8Array)) return {
-                    status: !1,
-                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-                };
-            } else {
-                if (4 !== a) return {
-                    status: !1,
-                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>]].`
-                };
-                if (!(Array.isArray(b) && b.length > 0 && "string" == typeof b[0] && b.every((item => null === item || "string" == typeof item)))) return {
-                    status: !1,
-                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-                };
+                if (0 === a || 1 === a || 2 == a || 3 === a) {
+                    if ("string" != typeof b) return {
+                        status: !1,
+                        errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}]. Match component value type for [exact, prefix, suffix, contains] should be of type string`
+                    };
+                } else if (-1 === a || -2 === a) {
+                    if (!(b instanceof Uint8Array)) return {
+                        status: !1,
+                        errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], Match component value type for [sha256, sha512] should be byte string.`
+                    };
+                } else {
+                    if (4 !== a) return {
+                        status: !1,
+                        errMsg: `Invalid match component key ${a} for cath-label[${ClaimsLabelMap.cath}], supported are [0=exact, 1=prefix, 2=suffix, 3=contains, 4=regularexp, -1=sha256, -2=sha512]`
+                    };
+                    if (!(Array.isArray(b) && b.length > 0 && "string" == typeof b[0] && b.every((item => null === item || "string" == typeof item)))) return {
+                        status: !1,
+                        errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], Match component value type for regular expression should be array of string.`
+                    };
+                }
             }
         }
         return {
@@ -1184,7 +1186,7 @@ class ClaimsValidator {
           default:
             return Promise.resolve({
                 status: !1,
-                errMsg: `Invalid catu uri component label ${k}`
+                errMsg: `Unsupported catu uri component key ${k}`
             });
         }
         return {
@@ -1223,16 +1225,16 @@ class ClaimsValidator {
                 status: !1,
                 errMsg: `${k.toLocaleLowerCase()} header is missing, required as per cath claim`
             });
-            let status = !1;
+            let status = !0;
             for (const hV of cliHeaderVal) {
-                if ((await this.evalMatchRule(hV, v)).status) {
-                    status = !0;
+                if (!(await this.evalMatchRule(hV, v)).status) {
+                    status = !1;
                     break;
                 }
             }
             if (!status) return Promise.resolve({
                 status: !1,
-                errMsg: `Cath match rule failed for header ${k}. Rule=${v}, header_values=${cliHeaderVal}`
+                errMsg: `Cath match rule failed for header ${k}. Rule=${JSON.stringify(Object.fromEntries(v))}, header_values=${cliHeaderVal}`
             });
         }
         return Promise.resolve({
@@ -1466,8 +1468,7 @@ class ClaimsValidator {
         });
     }
     static async evalMatchRule(tobeCompared, matchValue) {
-        const [t, v] = matchValue;
-        switch (t) {
+        for (const [t, v] of matchValue) switch (t) {
           case MatchTypeLabelMap.exact:
             return tobeCompared !== v ? {
                 status: !1,
@@ -1546,6 +1547,9 @@ class ClaimsValidator {
                 errMsg: `Invalid match type rule ${t}`
             };
         }
+        return {
+            status: !0
+        };
     }
     static calcHaversineDistance(lat1, lon1, lat2, lon2) {
         const radianLat1 = this.ToRadians(lat1), radianLon1 = this.ToRadians(lon1), radianLat2 = this.ToRadians(lat2), radianDistanceLat = radianLat1 - radianLat2, radianDistanceLon = radianLon1 - this.ToRadians(lon2), sinLat = Math.sin(radianDistanceLat / 2), sinLon = Math.sin(radianDistanceLon / 2), a = Math.pow(sinLat, 2) + Math.cos(radianLat1) * Math.cos(radianLat2) * Math.pow(sinLon, 2);

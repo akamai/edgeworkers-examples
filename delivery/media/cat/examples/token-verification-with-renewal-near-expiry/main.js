@@ -4,7 +4,7 @@ import { HeaderLabelMap, CAT, ClaimsLabelMap, CatRLabelMap, AlgoLabelMap } from 
 import { TextDecoder, TextEncoder, base16, base64url } from 'encoding';
 import { crypto, pem2ab } from 'crypto';
 import URLSearchParams from 'url-search-params';
-import { Cookies, SetCookie } from 'cookies';
+import { Cookies } from 'cookies';
 
 const hs256KeyHex = '403697de87af64611c1d32a05dab0fe1fcb715a86ab435f1ec99192d79569388';
 
@@ -33,7 +33,7 @@ const cat = new CAT({
 const cwtValidator = new CWTValidator({ isCWTTagAdded: true, isCoseCborTagAdded: true, headerValidation: false, ignoreExpiration: true, ignoreNotBefore: true });
 
 export async function onClientRequest (request) {
-  logger.log("%s", request.userLocation.latitude)
+ 
   let finalQs;
   // Media request 
   if ((request.path.includes('.mpd') || request.path.includes('.m3u8') || request.path.includes('.ts') || request.path.includes('.m4s') || 
@@ -42,14 +42,14 @@ export async function onClientRequest (request) {
     let catToken;
     // Find CAT token from cookie 
     const cookie = request.getHeader('cookie');
-    if (cookie !== null && cookie !== undefined){
+    if (cookie !== null && cookie !== undefined) {
       let cookies = new Cookies(cookie)
       catToken = cookies.get('Common-Access-Token')
       if (catToken !== undefined) {
         logger.log('CAT obtained from cookie')
       }
-    // Try in QS
-    } else if (request.getHeader('Common-Access-Token') !== null && request.getHeader('Common-Access-Token') !== undefined) {
+    }
+    if ((catToken === null || catToken === undefined) && (request.getHeader('Common-Access-Token') !== null && request.getHeader('Common-Access-Token') !== undefined)) {
       catToken = request.getHeader('Common-Access-Token')[0];
       if (catToken !== undefined) {
         logger.log('CAT obtained from header')

@@ -1,0 +1,4 @@
+{
+    "edgeworker-version": "0.34",
+    "description" : "CAT token validator and renewal when token close to expiry"
+}

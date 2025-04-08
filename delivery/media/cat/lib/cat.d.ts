@@ -1,4 +1,4 @@
-/** @preserve @version 1.0.1 */
+/** @preserve @version 1.0.2 */
 
 /**
  * Claim validation depends on integer label in the CAT claims set.
@@ -99,8 +99,8 @@ declare const ClaimsLabelMap: {
     catif: number;
     catr: number;
     catdpopjti: string;
-    geohash: string;
-    catgeoalt: string;
+    geohash: number;
+    catgeoalt: number;
     catpor: number;
 };
 declare const CatURILabelMap: {

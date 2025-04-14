@@ -1,6 +1,6 @@
 # CAT Module
 
-The CAT module can be used to perform operations related to CAT tokens such as CAT token generation and validation. The module considers CAT tokens defined as per this [spec](https://www.svta.org/document/web-application-video-ecosystem-common-access-token-cta-5007-a/). 
+The CAT module can be used to perform operations related to CAT tokens such as CAT token generation and validation. The module considers CAT tokens defined as per this [spec](https://shop.cta.tech/products/cta-5007). 
 It exports implementations of CAT class that contains API's to create, decode and validate CWT tokens.
 
 ## Important Note

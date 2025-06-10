@@ -4,7 +4,7 @@ cffi==1.14.6
 chardet==3.0.4
 cryptography==42.0.2
 edgegrid-python==1.1.1
-idna==2.8
+idna==3.7
 ndg-httpsclient==0.5.1
 pyasn1==0.4.8
 pycparser==2.20

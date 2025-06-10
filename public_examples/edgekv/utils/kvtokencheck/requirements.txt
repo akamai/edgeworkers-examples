@@ -2,7 +2,7 @@ akamai-edgeauth==0.3.2
 certifi==2023.7.22
 cffi==1.14.6
 chardet==3.0.4
-cryptography==3.4.8
+cryptography==42.0.2
 edgegrid-python==1.1.1
 idna==2.8
 ndg-httpsclient==0.5.1

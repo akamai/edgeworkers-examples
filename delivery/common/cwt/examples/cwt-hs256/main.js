@@ -1,42 +1,26 @@
 import { logger } from 'log';
-import { CWTUtil, CWTValidator} from './cwt.js';
+import { CWTUtil, CWTValidator, CWTGenerator, AlgorithmLabels, ClaimLabels, HeaderLabels} from './cwt.js';
 import { crypto } from 'crypto';
 import { base16 } from 'encoding';
 
 //Integer keys mapping for CWT payload. This mapping is application specific, However keys from 1-7 are reserved
 const claimsLabelMap = {
-
   1: 'iss',
   2: 'sub',
   3: 'aud',
   4: 'exp',
   5: 'nbf',
-  6: 'iat',
-  7: 'cti',
-  200: 'wmver',
-  201: 'wmvnd',
-  202: 'wmidtyp',
-  203: 'wmidfmt',
-  204: 'wmpatlen',
-  205: 'wmid',
-  206: 'wmsegduration',
-  207: 'wmidalg',
-  208: 'wmidivlen',
-  209: 'wmidivhex',
-  210: 'wmidpid',
-  211: 'wmidpalg',
-  212: 'wmidkeyver',
-  213: 'wmopid'
+  6: 'iat'
 };
 
 //advanced options for cwt validator
 const cwtOptions =  {
   //perform header validation
-  headerValidation: true,
+  headerValidation: false,
   //check token expiry
-  ignoreExpiration: false,
+  ignoreExpiration: true,
   //check token nbf
-  ignoreNotBefore: false
+  ignoreNotBefore: true
 };
 
 const cwtValidator = new CWTValidator(cwtOptions);
@@ -44,8 +28,7 @@ const cwtValidator = new CWTValidator(cwtOptions);
 export async function onClientRequest (request) {
 
   try {
-    // Fetch hmac veification key from Propery Manager
-    const secretKey = request.getVariable('PMUSER_CWT_HMAC_KEY');
+    const secretKey = '403697de87af64611c1d32a05dab0fe1fcb715a86ab435f1ec99192d79569388';
     const sKey = await crypto.subtle.importKey(
       'raw',
       base16.decode(secretKey, 'Uint8Array').buffer,
@@ -54,23 +37,34 @@ export async function onClientRequest (request) {
         hash: 'SHA-256'
       },
       false,
-      ['verify']
+      ['sign','verify']
     );
-    //Fetch the Authorization header from request
-    let cwt = request.getHeader('Authorization');
-    if (cwt){
-      cwt = cwt[0];
-      //replace auth scheme before validating
-      cwt = cwt.replace('Bearer ','');
-      //Assumption: CWT token as passed as hex encoded in authorization header. We decode the hex to get the binary
-      const tokenBuf = base16.decode(cwt,'Uint8Array');
-      const cwtJSON = await cwtValidator.validate(tokenBuf,[sKey]);
-      const claims = CWTUtil.claimsTranslate(Object.fromEntries(new Map(cwtJSON.payload)),claimsLabelMap);
-      logger.log('cwtJSON %s: ',JSON.stringify(claims));
-      request.respondWith(200, {}, JSON.stringify(claims));
+
+    if (request.path == '/token' && request.method == 'POST') {
+      const claims = { iss: 'mde_dev@akamai.com', iat: Date.now(), sub: "subject@akamai.com", aud: ["cdn@akamai.com"], exp: Date.now() + 86400, nbf: Date.now() - 86400};
+      const claimsSet = CWTUtil.claimsTranslate(claims, ClaimLabels);
+      const signer = {
+        key: sKey
+      };
+      const cwtToken = await CWTGenerator.mac(claimsSet, signer, { p: CWTUtil.claimsTranslate({ alg: AlgorithmLabels.HS256 }, HeaderLabels)});
+      const cwtTokenHex = base16.encode(new Uint8Array(cwtToken));
+      request.respondWith(200, {}, cwtTokenHex);
     } else {
-      //Return bad request of authorization header is not found
-      request.respondWith(400, {}, 'Authorization header is missing!');
+      //Fetch the Authorization header from request
+      let cwtToken = request.getHeader('Authorization');
+      if (cwtToken) {
+        cwtToken = cwtToken[0];
+        //replace auth scheme before validating
+        cwtToken = cwtToken.replace('Bearer ','');
+        //Assumption: CWT token as passed as hex encoded in authorization header. We decode the hex to get the binary
+        const tokenBuf = base16.decode(cwtToken,'Uint8Array');
+        const cwtJSON = await cwtValidator.validate(tokenBuf,[{ key: sKey }]);
+        const claims = CWTUtil.claimsTranslate(cwtJSON.payload,claimsLabelMap);
+        request.respondWith(200, {}, JSON.stringify(Object.fromEntries(claims)));
+      } else {
+        //Return bad request of authorization header is not found
+        request.respondWith(400, {}, 'Authorization header is missing!');
+      }
     }
   } catch (error) {
     logger.log(error);

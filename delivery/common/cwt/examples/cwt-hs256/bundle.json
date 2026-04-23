@@ -1,4 +1,4 @@
 {
     "edgeworker-version": "0.1",
-    "description" : "CWT validator example with HS256"
+    "description" : "CWT generator and validator example with HS256"
 }

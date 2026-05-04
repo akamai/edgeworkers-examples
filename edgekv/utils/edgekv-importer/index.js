@@ -8,7 +8,7 @@ const Bottleneck = require('bottleneck')
 const csv = require('csv-parser')
 const yargs = require('yargs/yargs');
 
-const EdgeGrid = require('edgegrid');
+const EdgeGrid = require('akamai-edgegrid');
 
 
 //console.log( "Hello!" );
@@ -23,13 +23,18 @@ function sendEdgeGrid (edgeGrid, method, endpoint, qs, bodyData) {
       body: bodyData
     }).send(function(error, response, body) {
       if (error) {
-        reject({
-          error:error,
-          response: response,
-          body: body
-        })
+        if (error.response) {
+          // axios rejects on non-2xx; treat as a normal response so callers can inspect status
+          resolve(error.response);
+        } else {
+          reject({
+            error: error,
+            response: response,
+            body: body
+          });
+        }
       } else {
-        resolve (response)
+        resolve(response);
       }
     })
   });
@@ -39,14 +44,14 @@ async function initEdgeKv(edgeGrid, parameters) {
   console.log('Checking EdgeKV initialization status.');
   let response = await sendEdgeGrid(edgeGrid, 'GET', '/edgekv/v1/initialize', parameters)
   //console.log(response);
-  if (response.statusCode == 200){
+  if (response.status == 200){
     console.log('EdgeKV previously initialized on account.');
-  } else if (response.statusCode == 404) {
+  } else if (response.status == 404) {
     console.log('EdgeKV not initialized on account.  Initializing.');
     initResponse = await sendEdgeGrid(edgeGrid, 'PUT', '/edgekv/v1/initialize', parameters)
     //console.log(initResponse);
   } else {
-    throw new Error (`Unexpected status code: ${response.statusCode}: ${response.body}`, response);
+    throw new Error (`Unexpected status code: ${response.status}: ${JSON.stringify(response.data)}`, response);
   }
 
 }
@@ -55,14 +60,14 @@ async function createKvNamespaceInEnvironment(environment, edgeGrid, namespace, 
   console.log(`Checking status of EdgeKV namespace ${namespace} on ${environment} environment.`);
   let response = await sendEdgeGrid(edgeGrid, 'GET', `/edgekv/v1/networks/${environment}/namespaces/${namespace}`, parameters)
   //console.log(response);
-  if (response.statusCode == 200){
+  if (response.status == 200){
     console.log(`Namespace ${namespace} previously created on ${environment} environment.`);
-  }else if (response.statusCode == 404) {
+  }else if (response.status == 404) {
     console.log(`EdgeKV namespace not previously created on ${environment} environment.  Creating.`);
     createResponse = await sendEdgeGrid(edgeGrid, 'POST', `/edgekv/v1/networks/${environment}/namespaces`, parameters, {name:namespace})
     //console.log(createResponse);
   } else {
-    throw new Error (`Unexpected status code: ${response.statusCode}: ${response.body}`, response);
+    throw new Error (`Unexpected status code: ${response.status}: ${JSON.stringify(response.data)}`, response);
   }
 }
 
@@ -92,7 +97,7 @@ async function generateKvAccessToken(edgeGrid, namespace, parameters) {
     tokenRequestBody
   )
   //console.log(response);
-  let token = JSON.parse(response.body);
+  let token = response.data;
   console.log("Generated EdgeKV access token.");
   console.log(token);
   return token;
@@ -115,10 +120,10 @@ async function upsertDataInEnvironment(upsertLimiter, csvFile, keyField, edgeGri
           data
         );
         //console.log(response);
-        if (response.statusCode == 200){
+        if (response.status == 200){
           console.log(`Successfully upserted data to ${network} with key: ${key}`);
         } else {
-          throw new Error (`Failed to upsert data to ${network} with key: ${key}.  Unexpected status code: ${response.statusCode}: ${response.body}`, response);
+          throw new Error (`Failed to upsert data to ${network} with key: ${key}.  Unexpected status code: ${response.status}: ${JSON.stringify(response.data)}`, response);
         }
       };
       upsertList.push(upsertLimiter.schedule(uploader));
@@ -184,7 +189,8 @@ async function main() {
 
   var eg = new EdgeGrid({
     path: argv.edgerc,
-    section: argv.section
+    section: argv.section,
+    debug: true
   });
 
   await initEdgeKv(eg, apiParameters);

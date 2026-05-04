@@ -11,34 +11,44 @@ Please ensure you have satisfied the following pre-requisites:
 * `pip3` installed on your system.
 * `slack webhook` to the slack application 
    * https://api.slack.com/messaging/webhooks
-* `Akamai API Credentials` to invoking the  EdgeKV (Service to read, write and configure EdgeKV to be used with Edgeworkers ) APIs with READ-WRITE permission
-   * https://developer.akamai.com/legacy/introduction/Prov_Creds.html
+* `Authentication credentials for Akamai APIs` to invoking the  EdgeKV (Service to read, write and configure EdgeKV to be used with Edgeworkers ) APIs with READ-WRITE permission
+   * https://techdocs.akamai.com/developer/docs/edgegrid
 
 ### Install the necessary modules
-To install necessary modules, execute:
+To install necessary modules, execute the following:
 ```
-$ pip3 install -r requirements.txt in your shell
+$ pip3 install -r requirements.txt
 ```
 
 ### Setup the environment variables
-Edit the file checkKVTokens.sh  and update the values of the following variables
-- Akamai API Credentials for accesing EdgeKV APIs (Generated as mentioned above)
-   - AKAMAI_CLIENT_SECRET
-   - AKAMAI_API_HOST
-   - AKAMAI_ACCESS_TOKEN
-   - AKAMAI_CLIENT_TOKEN
-- Slack web hook URL( Generated as mentioned above)
+Edit the file checkKVTokens.sh and update the value of the following variable:
+- Slack web hook URL (Generated as mentioned above)
    - SLACK_WEB_HOOK
-- LEAD_TIME ( default value 30 days)
 
+if you skip this step the tokens will be printed to the command line but not posted to Slack
 ### Run the script
 ```
-sh ./checkKVTokens.sh
+sh ./checkKVTokens.sh [OPTIONS]
+```
+
+**Options:**
+
+| Option | Default | Description |
+|---|---|---|
+| `--edgerc PATH` | `~/.edgerc` | Path to the Akamai `.edgerc` credentials file |
+| `--section SECTION` | `default` | Section within the `.edgerc` file to use |
+| `--lead_time DAYS` | `30` | Number of days before expiry to trigger an alert |
+
+**Example:**
+```
+sh ./checkKVTokens.sh --edgerc ~/.edgerc --section default --lead_time 60
 ```
 
 ### Enable Debugging
-To enable debugging add following environment variable to the checkKVTokens.sh file before the python command. This will log debug message in checkKVTokens.log file.
-export DEBUG="True"
+To enable debugging, set the `DEBUG` environment variable before the script. Debug messages will also be written to `checkKVTokens.log`.
+```
+DEBUG=1 sh ./checkKVTokens.sh --edgerc ~/.edgerc --section default
+```
 
 ### Schedule the job using Jenkins
 The python script can be invoked as a Jenkins job with the necessary parameters and secret texts. A regular schedule jpb will allow one to have slack notification sent when a token is coming up for expiration.

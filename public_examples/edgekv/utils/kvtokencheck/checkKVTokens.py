@@ -1,4 +1,5 @@
 """ This script allows user to get notification on expiring tokens"""
+import argparse
 import os
 import sys
 import datetime
@@ -8,23 +9,24 @@ from urllib.parse import urljoin
 import http.client
 import urllib3
 import requests
-from akamai.edgegrid import EdgeGridAuth
+from akamai.edgegrid import EdgeGridAuth, EdgeRc
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-def submit_request(testurl,payload,method,headers):
+def submit_request(testurl, payload, method, headers, edgerc_path='~/.edgerc', section='default'):
     """ Function to submit Akamai API """
     logger.debug("Requesting Method: %s URL %s with payload: %s with Headers %s", \
     method, testurl, payload, headers)
     my_headers = headers
-    logger.debug(my_headers)
+    logger.debug("Request Headers: %s", my_headers)
     req_session = requests.Session()
     req_session.trust_env = False
-    req_session.auth = EdgeGridAuth(
-        client_secret = client_secret,
-        access_token = access_token,
-        client_token = client_token
-    )
+
+    edgerc = EdgeRc(edgerc_path)
+
+
+    req_session.auth = EdgeGridAuth.from_edgerc(edgerc, section)
+
     try:
         if method == "GET":
             if len(payload) > 0:
@@ -44,6 +46,11 @@ def submit_request(testurl,payload,method,headers):
                            allow_redirects=False, verify=False)
                 logger.debug(response.url)
                 logger.debug(response.headers)
+
+            logger.debug(f'URL: {response.url}')
+            logger.debug(f'Status Code: {response.status_code}')
+            logger.debug(f'Headers: {response.headers}')
+            logger.debug(f'Body: {response.json()}')  
         return (response.status_code,response)
     except requests.exceptions.HTTPError as my_errh:
         logger.critical ("Http Error: %s",my_errh)
@@ -69,20 +76,22 @@ def submit_request(testurl,payload,method,headers):
         return (response.status_code,return_message,my_eree)
 
 
-def get_kv_tokens():
+def get_kv_tokens(edgerc_path='~/.edgerc', section='default'):
     """ Function to get the tokens """
-    host = os.environ['AKAMAI_API_HOST']
-    #baseurl = 'https://%s' % host
-    baseurl = (f"https://{host}")
+
+    logger.info("Getting the list of tokens with edgerc file %s and section %s", edgerc_path, section)
+    edgerc = EdgeRc(edgerc_path)
+    baseurl = 'https://%s' % edgerc.get(section, 'host')
+
     headers =  {}
     request_url = '/edgekv/v1/tokens'
     payload = {'includeExpired':'true' }
-    status = submit_request(urljoin(baseurl,request_url),payload,"GET",headers)
-    logger.debug (status[0])
+    status = submit_request(urljoin(baseurl,request_url), payload, "GET", headers, edgerc_path, section)
+    logger.debug("Status Code: %s", status[0])
     if status[0] != 200:
         logger.info("Request to fetch token info failed, please review below errors")
-        logger.error(status[0])
-        logger.error(status[1])
+        logger.error("Status Code: %s", status[0])
+        logger.error("Response: %s", status[1])
         sys.exit(1)
     else:
         json_list = json.loads(status[1].text)
@@ -96,14 +105,15 @@ def days_between(date1, date2):
     return abs((date2 - date1).days)
 
 ### Start Processing
-slack_webhook = os.environ['SLACK_WEB_HOOK']
-client_secret = os.environ['AKAMAI_CLIENT_SECRET']
-access_token = os.environ['AKAMAI_ACCESS_TOKEN']
-client_token = os.environ['AKAMAI_CLIENT_TOKEN']
-if isinstance(os.environ['LEAD_TIME'], str):
-    duration = int(os.environ['LEAD_TIME'])
-else:
-    duration = os.environ['LEAD_TIME']
+parser = argparse.ArgumentParser(description='Check expiring EdgeKV tokens')
+parser.add_argument('--edgerc', default='~/.edgerc', help='Path to .edgerc file (default: ~/.edgerc)')
+parser.add_argument('--section', default='default', help='Section in .edgerc file (default: default)')
+parser.add_argument('--lead_time', type=int, default=30, help='Days before expiry to alert (default: 30)')
+args = parser.parse_args()
+
+slack_webhook = os.environ.get('SLACK_WEB_HOOK', '')
+
+duration = args.lead_time
 
 
 ## Initialize logger
@@ -122,7 +132,7 @@ if os.environ.get("DEBUG", False):
     fh = logging.FileHandler(log_file,'w+')
     fh.setFormatter(formatter)
     fh.setLevel(logging.DEBUG)
-    ch.setLevel(logging.INFO)
+    ch.setLevel(logging.DEBUG)
     def httpclient_log(*args):
         """ function to get http debug """
         logger.debug(" ".join(args))
@@ -140,7 +150,7 @@ current_time = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
 today = datetime.datetime.now().strftime("%Y-%m-%d")
 logger.info("Started Processing at: %s", current_time)
 logger.info("Getting current KV tokens")
-info = get_kv_tokens()
+info = get_kv_tokens(args.edgerc, args.section)
 tokens = info['tokens']
 expiring_tokens = []
 block_data = []
@@ -160,11 +170,14 @@ for token in tokens:
         expiring_tokens.append(token)
 
 #Send all to slack
-slack_payload = {}
-slack_payload['blocks']= block_data
-try:
-    slack_response = requests.post( slack_webhook, data=json.dumps(slack_payload), \
-    headers={'Content-Type': 'application/json'})
-    slack_response.raise_for_status()
-except requests.exceptions.HTTPError as errh:
-    logger.error("Error Code: %s with Message: %s", slack_response.status_code, errh)
+if not slack_webhook:
+    logger.warning("SLACK_WEB_HOOK is not set or empty — skipping Slack notification")
+else:
+    slack_payload = {}
+    slack_payload['blocks']= block_data
+    try:
+        slack_response = requests.post( slack_webhook, data=json.dumps(slack_payload), \
+        headers={'Content-Type': 'application/json'})
+        slack_response.raise_for_status()
+    except requests.exceptions.HTTPError as errh:
+        logger.error("Error Code: %s with Message: %s", slack_response.status_code, errh)

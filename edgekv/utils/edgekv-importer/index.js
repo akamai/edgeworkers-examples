@@ -56,24 +56,28 @@ async function initEdgeKv(edgeGrid, parameters) {
 
 }
 
-async function createKvNamespaceInEnvironment(environment, edgeGrid, namespace, parameters) {
+async function createKvNamespaceInEnvironment(environment, edgeGrid, namespace, parameters, bodyData) {
   console.log(`Checking status of EdgeKV namespace ${namespace} on ${environment} environment.`);
   let response = await sendEdgeGrid(edgeGrid, 'GET', `/edgekv/v1/networks/${environment}/namespaces/${namespace}`, parameters)
   //console.log(response);
   if (response.status == 200){
     console.log(`Namespace ${namespace} previously created on ${environment} environment.`);
-  }else if (response.status == 404) {
+  }else if (response.status == 400) {
     console.log(`EdgeKV namespace not previously created on ${environment} environment.  Creating.`);
-    createResponse = await sendEdgeGrid(edgeGrid, 'POST', `/edgekv/v1/networks/${environment}/namespaces`, parameters, {name:namespace})
-    //console.log(createResponse);
+    createResponse = await sendEdgeGrid(edgeGrid, 'POST', `/edgekv/v1/networks/${environment}/namespaces`, parameters,
+      {name: namespace, groupId: bodyData.groupId, retentionInSeconds: bodyData.retentionInSeconds})
+    if (createResponse.status != 200) {
+      //console.log(createResponse);
+      throw new Error (`Unexpected status code: ${createResponse.status}: ${JSON.stringify(createResponse.data)}`, createResponse);
+    }
   } else {
     throw new Error (`Unexpected status code: ${response.status}: ${JSON.stringify(response.data)}`, response);
   }
 }
 
-async function createKvNamespace(edgeGrid, namespace, parameters) {
-  staging = createKvNamespaceInEnvironment("staging", edgeGrid, namespace, parameters)
-  production = createKvNamespaceInEnvironment("production", edgeGrid, namespace, parameters)
+async function createKvNamespace(edgeGrid, namespace, parameters, bodyData) {
+  staging = createKvNamespaceInEnvironment("staging", edgeGrid, namespace, parameters, bodyData)
+  production = createKvNamespaceInEnvironment("production", edgeGrid, namespace, parameters, bodyData)
   await Promise.all([staging, production]);
 }
 
@@ -169,6 +173,15 @@ async function main() {
     .option('account-key', {
         description: 'Account Switch Key'
     })
+    .option('groupId', {
+        description: 'The Akamai access group the namespace is assigned to. A value of 0 makes the namespace available to all Akamai access groups on the account with EdgeKV capabilities.',
+        default: 0
+    })
+    .option('retentionInSeconds', {
+        description: 'Retention period of underlying data, represented in seconds. Accepts values between 86400 for one day and 315360000 for 10 years. You can also enter a value of 0 to retain data indefinitely.',
+	type: 'int',
+        default: 172800 //2days for purposes of this example
+    })
     .option('edgerc', {
         description: 'Path to edgerc file',
         default: path.join(os.homedir(), '.edgerc')
@@ -176,6 +189,11 @@ async function main() {
     .option('section', {
           description: 'Section of edgerc file',
           default: 'default'
+    })
+    .option('verbose', {
+        description: 'Enable verbose output -- EdgeGrid http calls logging',
+        type: 'boolean',
+        default: false
     })
     .demandOption(['namespace', 'group', 'csv', 'key'])
     .help()
@@ -186,16 +204,19 @@ async function main() {
   if (argv['account-key']) {
     apiParameters.accountSwitchKey = argv['account-key']
   }
+  
+  bodyData = {}
+  bodyData.groupId = argv['groupId']
+  bodyData.retentionInSeconds = argv['retentionInSeconds']
 
   var eg = new EdgeGrid({
     path: argv.edgerc,
     section: argv.section,
-    debug: true
+    debug: argv.verbose
   });
 
   await initEdgeKv(eg, apiParameters);
-  await createKvNamespace(eg, argv.namespace, apiParameters)
-
+  await createKvNamespace(eg, argv.namespace, apiParameters, bodyData)
   await upsertData(argv.csv, argv.key, eg, argv.namespace, argv.group, apiParameters);
 
   if (argv.generateToken) {

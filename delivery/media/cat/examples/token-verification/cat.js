@@ -1,4 +1,4 @@
-/** @preserve @version 1.0.0 */
+/** @preserve @version 1.0.2 */
 import { Decoder } from "./cbor-x.js";
 
 import { logger } from "log";
@@ -24,30 +24,30 @@ const HeaderLabelMap = {
     nbf: 5,
     iat: 6,
     cti: 7,
-    catreplay: 267,
-    catv: 279,
+    catreplay: 308,
+    catv: 310,
     crit: 45,
-    catnip: 269,
-    catu: 270,
-    catm: 271,
-    catalpn: 272,
-    cath: 280,
-    catgeoiso3166: 273,
-    catgeocoord: 281,
-    cattpk: 274,
-    catifdata: 65536,
+    catnip: 311,
+    catu: 312,
+    catm: 313,
+    catalpn: 314,
+    cath: 315,
+    catgeoiso3166: 316,
+    catgeocoord: 317,
+    cattpk: 319,
+    catifdata: 320,
     cnf: 8,
     catdpopw: 275,
     enc: 44,
     or: 41,
     nor: 42,
     and: 43,
-    catif: 277,
-    catr: 278,
+    catif: 322,
+    catr: 323,
     catdpopjti: "catdpopjti",
-    geohash: "geohash",
-    catgeoalt: "catgeoalt",
-    catpor: 283
+    geohash: 282,
+    catgeoalt: 318,
+    catpor: 309
 }, CatURILabelMap = {
     scheme: 0,
     host: 1,
@@ -666,27 +666,27 @@ class ClaimsValidator {
         };
     }
     static typeCheckExp(value) {
-        return ("number" == typeof value || "bigint" == typeof value) && value > 0 ? {
+        return "bigint" == typeof value && value !== BigInt(0) || "number" == typeof value && Number.isFinite(value) && 0 !== value ? {
             status: !0
         } : {
             status: !1,
-            errMsg: `Invalid value type for exp-label[${ClaimsLabelMap.exp}], expected positive integer.`
+            errMsg: `Invalid value type for exp-label[${ClaimsLabelMap.exp}], expected positive or negative integer or floating-point number.`
         };
     }
     static typeCheckNbf(value) {
-        return ("number" == typeof value || "bigint" == typeof value) && value > 0 ? {
+        return "bigint" == typeof value && value !== BigInt(0) || "number" == typeof value && Number.isFinite(value) && 0 !== value ? {
             status: !0
         } : {
             status: !1,
-            errMsg: `Invalid value type for nbf-label[${ClaimsLabelMap.nbf}], expected positive integer.`
+            errMsg: `Invalid value type for nbf-label[${ClaimsLabelMap.nbf}], expected positive or negative integer or floating-point number.`
         };
     }
     static typeCheckIat(value) {
-        return ("number" == typeof value || "bigint" == typeof value) && value > 0 ? {
+        return "bigint" == typeof value && value !== BigInt(0) || "number" == typeof value && Number.isFinite(value) && 0 !== value ? {
             status: !0
         } : {
             status: !1,
-            errMsg: `Invalid value type for iat-label[${ClaimsLabelMap.iat}], expected positive integer.`
+            errMsg: `Invalid value type for iat-label[${ClaimsLabelMap.iat}], expected positive or negative integer or floating-point number.`
         };
     }
     static typeCheckCti(value) {
@@ -724,41 +724,42 @@ class ClaimsValidator {
     static typeCheckCatu(value) {
         if (!(value instanceof Map)) return {
             status: !1,
-            errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>.`
+            errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected Map<number, Map<number, string | bytes | array>>.`
         };
         for (const [k, v] of value) {
             if ("number" != typeof k) return {
                 status: !1,
-                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>.`
+                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected Map<number, Map<number, string | bytes | array>>.`
             };
-            if (!Array.isArray(v) || 2 != v.length) return {
+            if (!(v instanceof Map)) return {
                 status: !1,
-                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>.`
+                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected Map<number, Map<number, string | bytes | array>>.`
             };
-            const [a, b] = v;
-            if ("number" != typeof a) return {
-                status: !1,
-                errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-            };
-            if (0 === a || 1 === a || 2 == a || 3 === a) {
-                if ("string" != typeof b) return {
+            for (const [a, b] of v) {
+                if ("number" != typeof a) return {
                     status: !1,
-                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>].`
+                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected Map<number, Map<number, string | bytes | array>>.`
                 };
-            } else if (-1 === a || -2 === a) {
-                if (!(b instanceof Uint8Array)) return {
-                    status: !1,
-                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-                };
-            } else {
-                if (4 !== a) return {
-                    status: !1,
-                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>]].`
-                };
-                if (!(Array.isArray(b) && b.length > 0 && "string" == typeof b[0] && b.every((item => null === item || "string" == typeof item)))) return {
-                    status: !1,
-                    errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], expected map<number, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-                };
+                if (0 === a || 1 === a || 2 == a || 3 === a) {
+                    if ("string" != typeof b) return {
+                        status: !1,
+                        errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}]. Match component value type for [exact, prefix, suffix, contains] should be of type string`
+                    };
+                } else if (-1 === a || -2 === a) {
+                    if (!(b instanceof Uint8Array)) return {
+                        status: !1,
+                        errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], Match component value type for [sha256, sha512] should be byte string.`
+                    };
+                } else {
+                    if (4 !== a) return {
+                        status: !1,
+                        errMsg: `Invalid match component key ${a} for catu-label[${ClaimsLabelMap.catu}], supported are [0=exact, 1=prefix, 2=suffix, 3=contains, 4=regularexp, -1=sha256, -2=sha512]`
+                    };
+                    if (!(Array.isArray(b) && b.length > 0 && "string" == typeof b[0] && b.every((item => null === item || "string" == typeof item)))) return {
+                        status: !1,
+                        errMsg: `Invalid value type for catu-label[${ClaimsLabelMap.catu}], Match component value type for regular expression should be array of string.`
+                    };
+                }
             }
         }
         return {
@@ -784,41 +785,42 @@ class ClaimsValidator {
     static typeCheckCath(value) {
         if (!(value instanceof Map)) return {
             status: !1,
-            errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>.`
+            errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected Map<number, Map<number, string | bytes | array>>.`
         };
         for (const [k, v] of value) {
             if ("string" != typeof k) return {
                 status: !1,
-                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>.`
+                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected Map<number, Map<number, string | bytes | array>>.`
             };
-            if (!Array.isArray(v) || 2 != v.length) return {
+            if (!(v instanceof Map)) return {
                 status: !1,
-                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>.`
+                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected Map<number, Map<number, string | bytes | array>>.`
             };
-            const [a, b] = v;
-            if ("number" != typeof a) return {
-                status: !1,
-                errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-            };
-            if (0 === a || 1 === a || 2 == a || 3 === a) {
-                if ("string" != typeof b) return {
+            for (const [a, b] of v) {
+                if ("number" != typeof a) return {
                     status: !1,
-                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>].`
+                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected Map<number, Map<number, string | bytes | array>>.`
                 };
-            } else if (-1 === a || -2 === a) {
-                if (!(b instanceof Uint8Array)) return {
-                    status: !1,
-                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-                };
-            } else {
-                if (4 !== a) return {
-                    status: !1,
-                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>]].`
-                };
-                if (!(Array.isArray(b) && b.length > 0 && "string" == typeof b[0] && b.every((item => null === item || "string" == typeof item)))) return {
-                    status: !1,
-                    errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], expected map<string, array<>(2)>, array = [number, string | bytes | array<string | null>].`
-                };
+                if (0 === a || 1 === a || 2 == a || 3 === a) {
+                    if ("string" != typeof b) return {
+                        status: !1,
+                        errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}]. Match component value type for [exact, prefix, suffix, contains] should be of type string`
+                    };
+                } else if (-1 === a || -2 === a) {
+                    if (!(b instanceof Uint8Array)) return {
+                        status: !1,
+                        errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], Match component value type for [sha256, sha512] should be byte string.`
+                    };
+                } else {
+                    if (4 !== a) return {
+                        status: !1,
+                        errMsg: `Invalid match component key ${a} for cath-label[${ClaimsLabelMap.cath}], supported are [0=exact, 1=prefix, 2=suffix, 3=contains, 4=regularexp, -1=sha256, -2=sha512]`
+                    };
+                    if (!(Array.isArray(b) && b.length > 0 && "string" == typeof b[0] && b.every((item => null === item || "string" == typeof item)))) return {
+                        status: !1,
+                        errMsg: `Invalid value type for cath-label[${ClaimsLabelMap.cath}], Match component value type for regular expression should be array of string.`
+                    };
+                }
             }
         }
         return {
@@ -942,12 +944,17 @@ class ClaimsValidator {
     static typeCheckCatnip(value) {
         if (!Array.isArray(value)) return {
             status: !1,
-            errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], expected array of IPv6/IPv4 type.`
+            errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], expected array of IPv6/IPv4 type or positive integer ASN.`
         };
-        for (const catNip of value) {
-            if (!catNip.tag) return {
+        for (const catNip of value) if ("number" == typeof catNip) {
+            if (!this.isValidAutonomousSystemNumber(catNip)) return {
                 status: !1,
-                errMsg: `Module only support Tag 54 - IPv6 and Tag 52 - IPv4 type for catnip-label[${ClaimsLabelMap.catnip}], expected array of IPv6/IPv4 type.`
+                errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], expected ASN to be a positive integer between 1...4294967295.`
+            };
+        } else {
+            if (!catNip || "object" != typeof catNip || !catNip.tag) return {
+                status: !1,
+                errMsg: `Module only support Tag 54 - IPv6, Tag 52 - IPv4, and positive integer ASN type for catnip-label[${ClaimsLabelMap.catnip}], expected array of IPv6/IPv4 type or positive integer ASN.`
             };
             if (54 === catNip.tag) {
                 if (Array.isArray(catNip.value)) {
@@ -959,14 +966,14 @@ class ClaimsValidator {
                         status: !1,
                         errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], invalid ipv6 address length.`
                     };
-                } else if (catNip.value.length > 16 || 0 === catNip.value[1].length) return {
+                } else if (catNip.value.length > 16 || 0 === catNip.value.length) return {
                     status: !1,
                     errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], invalid ipv6 address length.`
                 };
             } else {
                 if (52 !== catNip.tag) return {
                     status: !1,
-                    errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], invalid tag for catnip value. Only Tag 54(IPv6) or Tag 52(IPv4) allowed.`
+                    errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], invalid tag for catnip value. Only Tag 54(IPv6), Tag 52(IPv4), or positive integer ASN allowed.`
                 };
                 if (Array.isArray(catNip.value)) {
                     if (catNip.value[0] < 0 || catNip.value[0] > 32) return {
@@ -977,7 +984,7 @@ class ClaimsValidator {
                         status: !1,
                         errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], invalid ipv4 address length.`
                     };
-                } else if (catNip.value.length > 4 || 0 === catNip.value[1].length) return {
+                } else if (catNip.value.length > 4 || 0 === catNip.value.length) return {
                     status: !1,
                     errMsg: `Invalid value type for catnip-label[${ClaimsLabelMap.catnip}], invalid ipv4 address length.`
                 };
@@ -1184,7 +1191,7 @@ class ClaimsValidator {
           default:
             return Promise.resolve({
                 status: !1,
-                errMsg: `Invalid catu uri component label ${k}`
+                errMsg: `Unsupported catu uri component key ${k}`
             });
         }
         return {
@@ -1223,16 +1230,16 @@ class ClaimsValidator {
                 status: !1,
                 errMsg: `${k.toLocaleLowerCase()} header is missing, required as per cath claim`
             });
-            let status = !1;
+            let status = !0;
             for (const hV of cliHeaderVal) {
-                if ((await this.evalMatchRule(hV, v)).status) {
-                    status = !0;
+                if (!(await this.evalMatchRule(hV, v)).status) {
+                    status = !1;
                     break;
                 }
             }
             if (!status) return Promise.resolve({
                 status: !1,
-                errMsg: `Cath match rule failed for header ${k}. Rule=${v}, header_values=${cliHeaderVal}`
+                errMsg: `Cath match rule failed for header ${k}. Rule=${JSON.stringify(Object.fromEntries(v))}, header_values=${cliHeaderVal}`
             });
         }
         return Promise.resolve({
@@ -1422,39 +1429,71 @@ class ClaimsValidator {
         });
     }
     static validateCatnip(value, request) {
-        const clientIp = request.getVariable("PMUSER_CLIENT_IP");
-        if (!clientIp) return Promise.resolve({
-            status: !1,
-            errMsg: "Unable to fetch client ip from request. Make sure PMUSER_CLIENT_IP variable is set accordingly."
-        });
-        let isValid = !1;
-        const validIpsList = [];
-        for (const catNip of value) {
-            if (54 === catNip.tag) if (Array.isArray(catNip.value)) {
-                const cidr = catNip.value[0];
-                let ip = base16.encode(new Uint8Array(catNip.value[1])).match(/.{1,4}/g).join(":");
-                ip = ip.split(":").length < 8 ? ip + "::" : ip, validIpsList.push(ip + "/" + cidr);
-            } else {
-                let ip = base16.encode(new Uint8Array(catNip.value)).match(/.{1,4}/g).join(":");
-                ip = ip.split(":").length < 8 ? ip + "::" : ip, validIpsList.push(ip);
-            } else if (Array.isArray(catNip.value)) {
-                const cidr = catNip.value[0];
-                let ip = new Uint8Array(catNip.value[1]).join(".");
-                const pad = ".0".repeat(4 - ip.split(".").length);
-                ip = 4 - ip.split(".").length > 0 ? ip + pad : ip, validIpsList.push(ip + "/" + cidr);
-            } else {
-                let ip = new Uint8Array(catNip.value).join(".");
-                const pad = ".0".repeat(4 - ip.split(".").length);
-                ip = 4 - ip.split(".").length > 0 ? ip + pad : ip, validIpsList.push(ip);
-            }
-            if (isValid = ipRangeCheck(clientIp, validIpsList), !isValid) return Promise.resolve({
-                status: !1,
-                errMsg: `${clientIp} is not listed in acceptable networks ${validIpsList}`
+        const clientIpOrAsn = request.getVariable("PMUSER_CLIENT_IP"), validIpsList = [], validAsnList = [];
+        for (const catNip of value) if ("number" != typeof catNip) if (54 === catNip.tag) if (Array.isArray(catNip.value)) {
+            const cidr = catNip.value[0];
+            let ip = base16.encode(new Uint8Array(catNip.value[1])).match(/.{1,4}/g).join(":");
+            ip = ip.split(":").length < 8 ? ip + "::" : ip, validIpsList.push(ip + "/" + cidr);
+        } else {
+            let ip = base16.encode(new Uint8Array(catNip.value)).match(/.{1,4}/g).join(":");
+            ip = ip.split(":").length < 8 ? ip + "::" : ip, validIpsList.push(ip);
+        } else if (Array.isArray(catNip.value)) {
+            const cidr = catNip.value[0];
+            let ip = new Uint8Array(catNip.value[1]).join(".");
+            const pad = ".0".repeat(4 - ip.split(".").length);
+            ip = 4 - ip.split(".").length > 0 ? ip + pad : ip, validIpsList.push(ip + "/" + cidr);
+        } else {
+            let ip = new Uint8Array(catNip.value).join(".");
+            const pad = ".0".repeat(4 - ip.split(".").length);
+            ip = 4 - ip.split(".").length > 0 ? ip + pad : ip, validIpsList.push(ip);
+        } else validAsnList.push(catNip);
+        if (validIpsList.length > 0 && clientIpOrAsn) {
+            if (this.isClientIpInRanges(clientIpOrAsn, validIpsList)) return Promise.resolve({
+                status: !0
+            });
+        }
+        if (validAsnList.length > 0 && clientIpOrAsn) {
+            const clientAsnValidationResult = this.parseClientAsn(clientIpOrAsn);
+            if (clientAsnValidationResult.status && void 0 !== clientAsnValidationResult.asn && validAsnList.includes(clientAsnValidationResult.asn)) return Promise.resolve({
+                status: !0
             });
         }
         return Promise.resolve({
-            status: !0
+            status: !1,
+            errMsg: this.getCatnipValidationFailureMessage(validIpsList, validAsnList, clientIpOrAsn)
         });
+    }
+    static isClientIpInRanges(clientIp, validIpsList) {
+        try {
+            return ipRangeCheck(clientIp, validIpsList);
+        } catch (_a) {
+            return !1;
+        }
+    }
+    static parseClientAsn(value) {
+        const normalizedValue = value.trim();
+        if (!/^\d+$/.test(normalizedValue)) return {
+            status: !1
+        };
+        const asn = Number(normalizedValue);
+        return this.isValidAutonomousSystemNumber(asn) ? {
+            status: !0,
+            asn
+        } : {
+            status: !1
+        };
+    }
+    static isValidAutonomousSystemNumber(value) {
+        return Number.isSafeInteger(value) && value > 0 && value <= 4294967295;
+    }
+    static getCatnipValidationFailureMessage(validIpsList, validAsnList, clientIpOrAsn) {
+        if (!clientIpOrAsn) return validIpsList.length > 0 && validAsnList.length > 0 ? "Unable to fetch client IP or ASN from request. Make sure PMUSER_CLIENT_IP variable is set accordingly." : validAsnList.length > 0 ? "Unable to fetch client ASN from request. Make sure PMUSER_CLIENT_IP variable is set accordingly." : "Unable to fetch client ip from request. Make sure PMUSER_CLIENT_IP variable is set accordingly.";
+        const validationMessages = [];
+        if (validIpsList.length > 0 && validationMessages.push(`${clientIpOrAsn} is not listed in acceptable networks ${validIpsList}`), 
+        validAsnList.length > 0) {
+            this.parseClientAsn(clientIpOrAsn).status ? validationMessages.push(`${clientIpOrAsn} is not listed in acceptable ASNs ${validAsnList}`) : validationMessages.push(`Invalid client ASN ${clientIpOrAsn} from PMUSER_CLIENT_IP. Expected a positive integer between 1...4294967295.`);
+        }
+        return validationMessages.join(" ");
     }
     static async validateClaimSet(payload, catOptions, request) {
         for (const [k, v] of payload) {
@@ -1466,8 +1505,7 @@ class ClaimsValidator {
         });
     }
     static async evalMatchRule(tobeCompared, matchValue) {
-        const [t, v] = matchValue;
-        switch (t) {
+        for (const [t, v] of matchValue) switch (t) {
           case MatchTypeLabelMap.exact:
             return tobeCompared !== v ? {
                 status: !1,
@@ -1546,6 +1584,9 @@ class ClaimsValidator {
                 errMsg: `Invalid match type rule ${t}`
             };
         }
+        return {
+            status: !0
+        };
     }
     static calcHaversineDistance(lat1, lon1, lat2, lon2) {
         const radianLat1 = this.ToRadians(lat1), radianLon1 = this.ToRadians(lon1), radianLat2 = this.ToRadians(lat2), radianDistanceLat = radianLat1 - radianLat2, radianDistanceLon = radianLon1 - this.ToRadians(lon2), sinLat = Math.sin(radianDistanceLat / 2), sinLon = Math.sin(radianDistanceLon / 2), a = Math.pow(sinLat, 2) + Math.cos(radianLat1) * Math.cos(radianLat2) * Math.pow(sinLon, 2);

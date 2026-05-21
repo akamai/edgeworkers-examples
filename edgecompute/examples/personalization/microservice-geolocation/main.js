@@ -14,6 +14,13 @@ export function onClientRequest (request) {
   info.zip = (request.userLocation.zipCode) ? request.userLocation.zipCode : 'N/A';
   info.region = (request.userLocation.region) ? request.userLocation.region : 'N/A';
   info.city = (request.userLocation.city) ? request.userLocation.city : 'N/A';
+  
+  info.dma = (request.userLocation.dma) ? request.userLocation.dma : 'N/A';
+  info.timezone = (request.userLocation.timezone) ? request.userLocation.timezone : 'N/A';
+  info.networkType = (request.userLocation.networkType) ? request.userLocation.networkType : 'N/A';
+  info.bandwidth = (request.userLocation.bandwidth) ? request.userLocation.bandwidth : 'N/A';
+  info.areaCodes = (request.userLocation.areaCodes) ? request.userLocation.areaCodes : 'N/A';
+  info.fips = (request.userLocation.fips) ? request.userLocation.fips : 'N/A';
 
   info.source = 'Akamai EdgeWorkers';
 

@@ -9,7 +9,7 @@ Purpose:  Modify an HTML streamed response by replacing a text string two times 
 import { httpRequest } from 'http-request';
 import { createResponse } from 'create-response';
 import { TextEncoderStream, TextDecoderStream } from 'text-encode-transform';
-import { FindAndReplaceStream } from 'find-replace-stream.js';
+import { FindAndReplaceStream } from './find-replace-stream.js';
 
 // Some headers aren't safe to forward from the origin response through an EdgeWorker on to the client
 // For more information see the tech doc on create-response: https://techdocs.akamai.com/edgeworkers/docs/create-response

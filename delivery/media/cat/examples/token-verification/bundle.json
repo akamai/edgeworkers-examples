@@ -1,4 +1,0 @@
-{
-    "edgeworker-version": "0.34",
-    "description" : "CAT token validator and renewal example with HS256 and ES256"
-}

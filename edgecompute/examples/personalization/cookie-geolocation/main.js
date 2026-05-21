@@ -5,7 +5,7 @@
 
 // Import cookies library to provide helper functions
 import { SetCookie } from 'cookies';
-import { salesRegions } from 'data.js';
+import { salesRegions } from './data.js';
 
 // Helper function to find a sales region by state.
 function findRegionByState (state) {

@@ -9,5 +9,5 @@ export default {
     format: "es",
   },
   external: ['http-request', 'log' ],
-  plugins: [typescript({ target: 'es2017'}), commonjs(), resolve()]
+  plugins: [typescript({ target: 'es2017', include: ['**/*.ts', '**/*.tsx'] }), commonjs(), resolve()]
 };

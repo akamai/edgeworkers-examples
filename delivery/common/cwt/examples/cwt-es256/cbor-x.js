@@ -11,7 +11,13 @@ const RECORD_DEFINITIONS_ID = 57342, RECORD_INLINE_ID = 57343, BUNDLED_STRINGS_I
 let currentStructures, srcString, bundledStrings$1, referenceMap, packedValues, dataView, restoreMapsAsObject, currentDecoder = {}, srcStringStart = 0, srcStringEnd = 0, currentExtensions = [], currentExtensionRanges = [], defaultOptions = {
     useRecords: !1,
     mapsAsObjects: !0
-}, sequentialMode = !1;
+}, sequentialMode = !1, inlineObjectReadThreshold = 2;
+
+try {
+    new Function("");
+} catch (error) {
+    inlineObjectReadThreshold = 1 / 0;
+}
 
 class Decoder {
     constructor(options) {
@@ -201,9 +207,7 @@ function read() {
         return ~token;
 
       case 2:
-        return function(length) {
-            return currentDecoder.copyBuffers ? Uint8Array.prototype.slice.call(src, position$1, position$1 += length) : src.subarray(position$1, position$1 += length);
-        }(token);
+        return length = token, currentDecoder.copyBuffers ? Uint8Array.prototype.slice.call(src, position$1, position$1 += length) : src.subarray(position$1, position$1 += length);
 
       case 3:
         if (srcStringEnd >= position$1) return srcString.slice(position$1 - srcStringStart, (position$1 += token) - srcStringStart);
@@ -245,10 +249,20 @@ function read() {
             if (structure) return structure.read || (structure.read = createStructureReader(structure)), 
             structure.read();
             if (token < 65536) {
-                if (token == RECORD_INLINE_ID) return recordDefinition(read());
+                if (token == RECORD_INLINE_ID) {
+                    let length = readJustLength(), id = read(), structure = read();
+                    recordDefinition(id, structure);
+                    let object = {};
+                    if (currentDecoder.keyMap) for (let i = 2; i < length; i++) {
+                        object[safeKey(currentDecoder.decodeKey(structure[i - 2]))] = read();
+                    } else for (let i = 2; i < length; i++) {
+                        object[safeKey(structure[i - 2])] = read();
+                    }
+                    return object;
+                }
                 if (token == RECORD_DEFINITIONS_ID) {
                     let length = readJustLength(), id = read();
-                    for (let i = 2; i < length; i++) recordDefinition([ id++, read() ]);
+                    for (let i = 2; i < length; i++) recordDefinition(id++, read());
                     return read();
                 }
                 if (token == BUNDLED_STRINGS_ID) return function() {
@@ -305,6 +319,7 @@ function read() {
         }
         throw new Error("Unknown CBOR token " + token);
     }
+    var length;
 }
 
 const validName = /^[a-zA-Z_$][a-zA-Z\d_$]*$/;
@@ -333,7 +348,7 @@ function createStructureReader(structure) {
             if (compiledReader.propertyCount === length) return compiledReader(read);
             compiledReader = compiledReader.next;
         }
-        if (this.slowReads++ >= 3) {
+        if (this.slowReads++ >= inlineObjectReadThreshold) {
             let array = this.length == length ? this : this.slice(0, length);
             return compiledReader = currentDecoder.keyMap ? new Function("r", "return {" + array.map((k => currentDecoder.decodeKey(k))).map((k => validName.test(k) ? safeKey(k) + ":r()" : "[" + JSON.stringify(k) + "]:r()")).join(",") + "}") : new Function("r", "return {" + array.map((key => validName.test(key) ? safeKey(key) + ":r()" : "[" + JSON.stringify(key) + "]:r()")).join(",") + "}"), 
             this.compiledReader && (compiledReader.next = this.compiledReader), compiledReader.propertyCount = length, 
@@ -346,7 +361,9 @@ function createStructureReader(structure) {
 }
 
 function safeKey(key) {
-    return "__proto__" === key ? "__proto_" : key;
+    if ("string" == typeof key) return "__proto__" === key ? "__proto_" : key;
+    if ("object" != typeof key) return key.toString();
+    throw new Error("Invalid property name type " + typeof key);
 }
 
 let readFixedString = readStringJS, isNativeAccelerationEnabled = !1;
@@ -467,20 +484,21 @@ currentExtensions[2] = buffer => {
 }, currentExtensions[3] = buffer => BigInt(-1) - currentExtensions[2](buffer), currentExtensions[4] = fraction => +(fraction[1] + "e" + fraction[0]), 
 currentExtensions[5] = fraction => fraction[1] * Math.exp(fraction[0] * Math.log(2));
 
-const recordDefinition = definition => {
-    let id = definition[0] - 57344, structure = definition[1], existingStructure = currentStructures[id];
+const recordDefinition = (id, structure) => {
+    let existingStructure = currentStructures[id -= 57344];
     existingStructure && existingStructure.isShared && ((currentStructures.restoreStructures || (currentStructures.restoreStructures = []))[id] = existingStructure), 
     currentStructures[id] = structure, structure.read = createStructureReader(structure);
-    let object = {};
-    if (currentDecoder.keyMap) for (let i = 2, l = definition.length; i < l; i++) {
-        object[safeKey(currentDecoder.decodeKey(structure[i - 2]))] = definition[i];
-    } else for (let i = 2, l = definition.length; i < l; i++) {
-        object[safeKey(structure[i - 2])] = definition[i];
-    }
-    return object;
 };
 
-currentExtensions[105] = recordDefinition, currentExtensions[14] = value => bundledStrings$1 ? bundledStrings$1[0].slice(bundledStrings$1.position0, bundledStrings$1.position0 += value) : new Tag(value, 14), 
+currentExtensions[105] = data => {
+    let length = data.length, structure = data[1];
+    recordDefinition(data[0], structure);
+    let object = {};
+    for (let i = 2; i < length; i++) {
+        object[safeKey(structure[i - 2])] = data[i];
+    }
+    return object;
+}, currentExtensions[14] = value => bundledStrings$1 ? bundledStrings$1[0].slice(bundledStrings$1.position0, bundledStrings$1.position0 += value) : new Tag(value, 14), 
 currentExtensions[15] = value => bundledStrings$1 ? bundledStrings$1[1].slice(bundledStrings$1.position1, bundledStrings$1.position1 += value) : new Tag(value, 15);
 
 let glbl = {
@@ -491,8 +509,15 @@ let glbl = {
 currentExtensions[27] = data => (glbl[data[0]] || Error)(data[1], data[2]);
 
 const packedTable = read => {
-    if (132 != src[position$1++]) throw new Error("Packed values structure must be followed by a 4 element array");
+    if (132 != src[position$1++]) {
+        let error = new Error("Packed values structure must be followed by a 4 element array");
+        throw src.length < position$1 && (error.incomplete = !0), error;
+    }
     let newPackedValues = read();
+    if (!newPackedValues || !newPackedValues.length) {
+        let error = new Error("Packed values structure must be followed by a 4 element array");
+        throw error.incomplete = !0, error;
+    }
     return packedValues = packedValues ? newPackedValues.concat(packedValues.slice(newPackedValues.length)) : newPackedValues, 
     packedValues.prefixes = read(), packedValues.suffixes = read(), read();
 };
@@ -515,7 +540,8 @@ packedTable.handlesRead = !0, currentExtensions[51] = packedTable, currentExtens
         loadShared();
     }
     if ("number" == typeof data) return packedValues[16 + (data >= 0 ? 2 * data : -2 * data - 1)];
-    throw new Error("No support for non-integer packed references yet");
+    let error = new Error("No support for non-integer packed references yet");
+    throw void 0 === data && (error.incomplete = !0), error;
 }, currentExtensions[28] = read => {
     referenceMap || (referenceMap = new Map, referenceMap.id = 0);
     let target, id = referenceMap.id++;
@@ -548,15 +574,14 @@ const isLittleEndianMachine$1 = 1 == new Uint8Array(new Uint16Array([ 1 ]).buffe
 for (let i = 0; i < typedArrays.length; i++) registerTypedArray(typedArrays[i], typedArrayTags[i]);
 
 function registerTypedArray(TypedArray, tag) {
-    let dvMethod = "get" + TypedArray.name.slice(0, -5);
-    "function" != typeof TypedArray && (TypedArray = null);
-    let bytesPerElement = TypedArray.BYTES_PER_ELEMENT;
+    let bytesPerElement, dvMethod = "get" + TypedArray.name.slice(0, -5);
+    "function" == typeof TypedArray ? bytesPerElement = TypedArray.BYTES_PER_ELEMENT : TypedArray = null;
     for (let littleEndian = 0; littleEndian < 2; littleEndian++) {
         if (!littleEndian && 1 == bytesPerElement) continue;
         let sizeShift = 2 == bytesPerElement ? 1 : 4 == bytesPerElement ? 2 : 3;
         currentExtensions[littleEndian ? tag : tag - 4] = 1 == bytesPerElement || littleEndian == isLittleEndianMachine$1 ? buffer => {
             if (!TypedArray) throw new Error("Could not find typed array for code " + tag);
-            return new TypedArray(Uint8Array.prototype.slice.call(buffer, 0).buffer);
+            return currentDecoder.copyBuffers || 1 !== bytesPerElement && (2 !== bytesPerElement || 1 & buffer.byteOffset) && (4 !== bytesPerElement || 3 & buffer.byteOffset) && (8 !== bytesPerElement || 7 & buffer.byteOffset) ? new TypedArray(Uint8Array.prototype.slice.call(buffer, 0).buffer) : new TypedArray(buffer.buffer, buffer.byteOffset, buffer.byteLength);
         } : buffer => {
             if (!TypedArray) throw new Error("Could not find typed array for code " + tag);
             let dv = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength), elements = buffer.length >> sizeShift, ta = new TypedArray(elements), method = dv[dvMethod];
@@ -631,7 +656,7 @@ try {
     textEncoder = new TextEncoder;
 } catch (error) {}
 
-const hasNodeBuffer = "undefined" != typeof Buffer, ByteArrayAllocate = hasNodeBuffer ? Buffer.allocUnsafeSlow : Uint8Array, ByteArray = hasNodeBuffer ? Buffer : Uint8Array, BlobConstructor = "undefined" == typeof Blob ? {} : Blob, MAX_BUFFER_SIZE = hasNodeBuffer ? 4294967296 : 2144337920;
+const Buffer$1 = "object" == typeof globalThis && globalThis.Buffer, hasNodeBuffer = void 0 !== Buffer$1, ByteArrayAllocate = hasNodeBuffer ? Buffer$1.allocUnsafeSlow : Uint8Array, ByteArray = hasNodeBuffer ? Buffer$1 : Uint8Array, MAX_BUFFER_SIZE = hasNodeBuffer ? 4294967296 : 2144337920;
 
 let throwOnIterable, target, targetView, safeEnd, position = 0, bundledStrings = null;
 
@@ -804,13 +829,7 @@ class Encoder extends Decoder {
                 target[position++] = 121, target[position++] = length >> 8, target[position++] = 255 & length) : (headerSize < 5 && target.copyWithin(position + 5, position + 3, position + 3 + length), 
                 target[position++] = 122, targetView.setUint32(position, length), position += 4), 
                 position += length;
-            } else if ("number" === type) if (value >>> 0 === value) value < 24 ? target[position++] = value : value < 256 ? (target[position++] = 24, 
-            target[position++] = value) : value < 65536 ? (target[position++] = 25, target[position++] = value >> 8, 
-            target[position++] = 255 & value) : (target[position++] = 26, targetView.setUint32(position, value), 
-            position += 4); else if (value >> 0 === value) value >= -24 ? target[position++] = 31 - value : value >= -256 ? (target[position++] = 56, 
-            target[position++] = ~value) : value >= -65536 ? (target[position++] = 57, targetView.setUint16(position, ~value), 
-            position += 2) : (target[position++] = 58, targetView.setUint32(position, ~value), 
-            position += 4); else {
+            } else if ("number" === type) if (this.alwaysUseFloat || value >>> 0 !== value) if (this.alwaysUseFloat || value >> 0 !== value) {
                 let useFloat32;
                 if ((useFloat32 = this.useFloat32) > 0 && value < 4294967296 && value >= -2147483648) {
                     let xShifted;
@@ -818,7 +837,13 @@ class Encoder extends Decoder {
                     position--;
                 }
                 target[position++] = 251, targetView.setFloat64(position, value), position += 8;
-            } else if ("object" === type) if (value) {
+            } else value >= -24 ? target[position++] = 31 - value : value >= -256 ? (target[position++] = 56, 
+            target[position++] = ~value) : value >= -65536 ? (target[position++] = 57, targetView.setUint16(position, ~value), 
+            position += 2) : (target[position++] = 58, targetView.setUint32(position, ~value), 
+            position += 4); else value < 24 ? target[position++] = value : value < 256 ? (target[position++] = 24, 
+            target[position++] = value) : value < 65536 ? (target[position++] = 25, target[position++] = value >> 8, 
+            target[position++] = 255 & value) : (target[position++] = 26, targetView.setUint32(position, value), 
+            position += 4); else if ("object" === type) if (value) {
                 if (referenceMap) {
                     let referee = referenceMap.get(value);
                     if (referee) {
@@ -862,9 +887,13 @@ class Encoder extends Decoder {
                         for (let entry of value) encode(entry);
                         return void (target[position++] = 255);
                     }
-                    if (value[Symbol.asyncIterator] || constructor === BlobConstructor) {
+                    if (value[Symbol.asyncIterator] || isBlob(value)) {
                         let error = new Error("Iterable/blob should be serialized as iterator");
                         throw error.iteratorNotHandled = !0, error;
+                    }
+                    if (this.useToJSON && value.toJSON) {
+                        const json = value.toJSON();
+                        if (json !== value) return encode(json);
                     }
                     writeObject(value, !value.hasOwnProperty);
                 }
@@ -884,7 +913,7 @@ class Encoder extends Decoder {
             if (length < 24 ? target[position++] = 160 | length : length < 256 ? (target[position++] = 184, 
             target[position++] = length) : length < 65536 ? (target[position++] = 185, target[position++] = length >> 8, 
             target[position++] = 255 & length) : (target[position++] = 186, targetView.setUint32(position, length), 
-            position += 4), encoder.keyMap) for (let i = 0; i < length; i++) encode(encodeKey(keys[i])), 
+            position += 4), encoder.keyMap) for (let i = 0; i < length; i++) encode(encoder.encodeKey(keys[i])), 
             encode(vals[i]); else for (let i = 0; i < length; i++) encode(keys[i]), encode(vals[i]);
         } : (object, safePrototype) => {
             target[position++] = 185;
@@ -952,7 +981,8 @@ class Encoder extends Decoder {
                     useRecords || encode(key), value && "object" == typeof value ? iterateProperties[key] ? yield* encodeObjectAsIterable(value, iterateProperties[key]) : yield* tryEncode(value, iterateProperties, key) : encode(value);
                 }
             } else if (constructor === Array) {
-                writeArrayHeader(object.length);
+                let length = object.length;
+                writeArrayHeader(length);
                 for (let i = 0; i < length; i++) {
                     let value = object[i];
                     value && ("object" == typeof value || position - start > chunkThreshold) ? iterateProperties.element ? yield* encodeObjectAsIterable(value, iterateProperties.element) : yield* tryEncode(value, iterateProperties, "element") : encode(value);
@@ -961,7 +991,7 @@ class Encoder extends Decoder {
                 target[position++] = 159;
                 for (let value of object) value && ("object" == typeof value || position - start > chunkThreshold) ? iterateProperties.element ? yield* encodeObjectAsIterable(value, iterateProperties.element) : yield* tryEncode(value, iterateProperties, "element") : encode(value);
                 target[position++] = 255;
-            } else constructor === BlobConstructor ? (writeEntityLength(object.size, 64), yield target.subarray(start, position), 
+            } else isBlob(object) ? (writeEntityLength(object.size, 64), yield target.subarray(start, position), 
             yield object, restartEncoding()) : object[Symbol.asyncIterator] ? (target[position++] = 159, 
             yield target.subarray(start, position), yield object, restartEncoding(), target[position++] = 255) : encode(object);
             finalIterable && position > start ? yield target.subarray(start, position) : position - start > chunkThreshold && (yield target.subarray(start, position), 
@@ -987,7 +1017,7 @@ class Encoder extends Decoder {
         async function* encodeObjectAsAsyncIterable(value, iterateProperties) {
             for (let encodedValue of encodeObjectAsIterable(value, iterateProperties, !0)) {
                 let constructor = encodedValue.constructor;
-                if (constructor === ByteArray || constructor === Uint8Array) yield encodedValue; else if (constructor === BlobConstructor) {
+                if (constructor === ByteArray || constructor === Uint8Array) yield encodedValue; else if (isBlob(encodedValue)) {
                     let next, reader = encodedValue.stream().getReader();
                     for (;!(next = await reader.read()).done; ) yield next.value;
                 } else if (encodedValue[Symbol.asyncIterator]) for await (let asyncValue of encodedValue) restartEncoding(), 
@@ -1038,6 +1068,14 @@ function writeArrayHeader(length) {
     position += 4);
 }
 
+const BlobConstructor = "undefined" == typeof Blob ? function() {} : Blob;
+
+function isBlob(object) {
+    if (object instanceof BlobConstructor) return !0;
+    let tag = object[Symbol.toStringTag];
+    return "Blob" === tag || "File" === tag;
+}
+
 function findRepetitiveStrings(value, packedValues) {
     switch (typeof value) {
       case "string":
@@ -1075,7 +1113,7 @@ function typedArrayEncoder(tag, size) {
         tag,
         encode: function(typedArray, encode) {
             let length = typedArray.byteLength, offset = typedArray.byteOffset || 0, buffer = typedArray.buffer || typedArray;
-            encode(hasNodeBuffer ? Buffer.from(buffer, offset, length) : new Uint8Array(buffer, offset, length));
+            encode(hasNodeBuffer ? Buffer$1.from(buffer, offset, length) : new Uint8Array(buffer, offset, length));
         }
     };
 }

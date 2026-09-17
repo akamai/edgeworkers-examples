@@ -39,7 +39,7 @@ export class FindAndReplaceTransformer {
   // Create FindAndReplaceTransformer object
   // toreplace: a string to be replaced by newtext
   // newtext: a string that replaces the found text 
-  // timesToReplace: (optional) number of occurrences of toreplace to search for.  If not provided, replace all occurences  
+  // timesToReplace: (optional) number of occurrences of toreplace to search for.  If not provided, replace all occurrences  
   constructor(toreplace, newtext, timesToReplace) {
       this.toreplace = toreplace;
       this.newtext = newtext;

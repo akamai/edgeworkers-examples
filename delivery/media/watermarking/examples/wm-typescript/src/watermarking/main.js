@@ -3,8 +3,8 @@ import { TokenType, Watermarking} from './media-delivery-watermarking.js';
 //Required only for customer that needs to validate short token as per the spec.
 import { ShortTokenValidator } from './short-token-validator.js';
 
-//CWT Token will be used. Watermarking module also support JWT based token, set TokenType.JWT to enable JWT based tokens.
-//register vendor specic algorithms in watermarking module
+//CWT Token will be used. Watermarking module also supports JWT based token, set TokenType.JWT to enable JWT based tokens.
+//register vendor specific algorithms in watermarking module
 const watermarking = new Watermarking( { tokenType: TokenType.CWT, validateWMClaims: true });
 
 const variantSubPath= [{ variant: 0, subPath: 'A' }, { variant: 1, subPath: 'B'}];
@@ -67,8 +67,8 @@ export async function onClientRequest (request) {
       //reqPath = request.path.replace('$2$' + token.token + '/','');
       reqPath = outcome_url.replace('$2$' + token.token + '/','');
 
-      //CWT token is assumed to be passed as hex encoded. if not, pass it as binary (i.e Uint8Array) after decoding it appropriating.
-      //'HS256' is the alogrithm used to genearte keys. 
+      //CWT token is assumed to be passed as hex encoded. if not, pass it as binary (i.e Uint8Array) after decoding it appropriately.
+      //'HS256' is the algorithm used to generate keys. 
       wmJSON = await watermarking.validateToken(token.token,[cwtAuthTokenHmacKey], 'HS256');
     }
     logger.log('D:reqPath= %s', reqPath);
@@ -78,7 +78,7 @@ export async function onClientRequest (request) {
     if (request.path.includes('.mp4') || request.path.includes('.m4a') || request.path.includes('.m3u8') || request.path.includes('.mpd') ){
       //title check
       if (token.filename !== wmJSON.payload.title) {
-        request.respondWith(400, {}, 'Filename doesnt match title');
+        request.respondWith(400, {}, 'Filename doesn\'t match title');
       }
       //Request is segment request
       if (request.path.includes('.mp4') || request.path.includes('.m4a')) {

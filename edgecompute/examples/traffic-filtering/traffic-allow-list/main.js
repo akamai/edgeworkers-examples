@@ -7,7 +7,7 @@ Purpose:  Respond with allow or deny message depending on country of end user.
 */
 
 // List of currently US embargoed countries, plus N/A indicating no country data found (rare, if any)
-const embargoedCountries = ['IR', 'KP', 'SY', 'SD', 'CU', 'VE', 'N/A'];
+const embargoedCountries = ['IR', 'KP', 'SD', 'CU', 'VE', 'N/A'];
 
 export function onClientRequest (request) {
   // Collect the end user's country based on Akamai EdgeScape data

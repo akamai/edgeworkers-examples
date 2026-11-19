@@ -76,11 +76,11 @@ export async function onClientRequest (request) {
           try {
             // Perform signature verification with expiry and nbf field check
             await cwtValidator.validate(catTokenBuf,[{ key: verificationKey }]);
-            // Check is CAT claim set is acceptable. 
+            // Check if CAT claim set is acceptable. 
             result = await cat.isCATAcceptable(catJSON.payload, request);
             logger.log("result: %o", result)
             if (result.status === true) {
-              request.respondWith(200, {}, "Token validation successfull, proceed futher!")
+              request.respondWith(200, {}, "Token validation successful, proceed further!")
             } else {
               request.respondWith(401, {}, result.errMsg)
             }

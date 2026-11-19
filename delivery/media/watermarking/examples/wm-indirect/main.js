@@ -2,7 +2,7 @@ import { logger } from 'log';
 import { TokenType, Watermarking} from './media-delivery-watermarking.js';
 //Obtained the required vendor specific code to generate TMID from the vendor
 import { vendorAlgorithm } from './vendor-algorithm.js';
-//Map each vendor specific code with the vendor identifier. This identifier should be same as wmvnd field from the token.
+//Map each vendor specific code with the vendor identifier. This identifier should be the same as wmvnd field from the token.
 //In Direct case i.e this is not required and is handled internally by watermarking module.
 const vendorAlgoritms = new Map();
 vendorAlgoritms.set(40, vendorAlgorithm);
@@ -24,7 +24,7 @@ export async function onClientRequest (request) {
   try {
     //Hmac verification key used to sign CWT token.
     const cwtAuthTokenHmacKey = request.getVariable('PMUSER_CWT_HMAC_KEY');
-    //Vendor specific key to used to generate wmid
+    //Vendor specific key used to generate wmid
     const secretKey = request.getVariable('PMUSER_VENDOR_KEY');
     const rangeHeaders = request.getHeader('Range');
     const rangeHeader = rangeHeaders? rangeHeaders[0]: undefined;

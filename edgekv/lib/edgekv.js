@@ -128,7 +128,10 @@ export class EdgeKV {
 		}
 		let name = "namespace-" + namespace;
 		if (!(name in edgekv_access_tokens)) {
-			throw "MISSING ACCESS TOKEN. No EdgeKV Access Token defined for namespace '" + namespace + "'.";
+			name = namespace;
+			if (!(name in edgekv_access_tokens)) {
+				throw "MISSING ACCESS TOKEN. No EdgeKV Access Token defined for namespace '" + namespace + "'.";
+			}
 		}
 		if ("value" in edgekv_access_tokens[name]) {
 			return { 'X-Akamai-EdgeDB-Auth': [edgekv_access_tokens[name]["value"]]};
